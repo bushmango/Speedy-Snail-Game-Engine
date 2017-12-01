@@ -11,8 +11,12 @@
 // import * as audioSample from './tutorials/audioSample'
 // audioSample.run()
 
-import * as ludumDareStart from './ludumDareStart/game'
-ludumDareStart.run()
+// import * as ludumDareStart from './ludumDareStart/game'
+// ludumDareStart.run()
+
+import * as ludumDare40 from './ludumDare40/game'
+ludumDare40.run()
+
 
 // import * as snakeBatle from './snakeBattle/snakeBattle'
 // snakeBatle.run()
