@@ -1,1 +1,13 @@
-/node_modules/
+
+src-build/
+node_modules
+
+Thumbs.db
+
+*.mp3
+*.m4a
+*.aac
+
+*.orig
+
+*.zip

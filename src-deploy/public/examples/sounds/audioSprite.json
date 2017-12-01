@@ -1,0 +1,18 @@
+{
+  "urls": [
+    "public/sounds/audioSprite.ogg",
+    "public/sounds/audioSprite.m4a",
+    "public/sounds/audioSprite.mp3",
+    "public/sounds/audioSprite.ac3"
+  ],
+  "sprite": {
+    "hurt001": [
+      0,
+      155.66893424036283
+    ],
+    "pickup001": [
+      2000,
+      503.4467120181407
+    ]
+  }
+}

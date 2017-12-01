@@ -1,0 +1,30 @@
+{
+  "name": "soundbuilder3",
+  "version": "0.0.3",
+  "description": "Convert sounds from wav to something internet playable",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc index.ts && node index.js hello=world",
+    "start2": "ts-node index.ts hello=worldTs",
+    "dev": "ts-node-dev index.ts hello=dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bin": {
+    "soundsbuilder": "./index.ts"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.74",
+    "audiosprite": "^0.7.0",
+    "chalk": "^2.1.0",
+    "chokidar": "^1.7.0",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.11.0",
+    "jsonfile": "^3.0.1",
+    "lodash": "^4.17.4",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2"
+  }
+}

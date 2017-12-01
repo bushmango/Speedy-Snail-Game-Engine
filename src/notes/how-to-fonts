@@ -1,0 +1,19 @@
+http://www.angelcode.com/products/bmfont/
+
+Download and install ttf from Google Fonts
+
+http://kvazars.com/littera/
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!№;%:?*()_+-=.,/|"'@#$^&{}[]0123456789
+export basic set @ 72 px
+name font
+change file from .fnt to .fnt.xml
+
+
+
+import into sge :)
+
+doesn't seem to work with trans :(
+bmpfnt
+Export into fnt and png
+rename to font.xml
+
