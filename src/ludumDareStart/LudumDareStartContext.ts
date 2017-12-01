@@ -14,6 +14,7 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 // import * as tileMapLoader from 'snakeBattle/tiles/tileMapLoader'
 
 import { MenuManager } from 'ludumDareStart/menu/MenuManager'
+import { SplashScreen } from 'engine/misc/SplashScreen';
 
 
 const turn = Math.PI * 2
@@ -47,15 +48,26 @@ export class LudumDareStartContext {
   tileMap: TileMap<IGridSpot>
   menuManager = new MenuManager()
 
+  splash: SplashScreen
+
+  rootContainer: PIXI.Container
   layerObjects: PIXI.Container
   ship: Ship
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
 
+    this.rootContainer = new PIXI.Container()
+
     this.initTileMap()
     this.initShip()
 
     this.menuManager.init(this.sge)
+
+    this.rootContainer.visible = false
+    this.splash = new SplashScreen()
+    this.splash.init(this.sge, 'prariesnailgames', () => {
+      this.rootContainer.visible = true
+    })
 
     // Add layers
     this.addLayer(this.tileMap.containers[0])
@@ -63,17 +75,22 @@ export class LudumDareStartContext {
     this.layerObjects.addChild(this.ship.ship)
     this.addLayer(this.menuManager.menuManager.container)
     this.addLayer(this.menuManager.container)
+
+    this.sge.stage.addChild(this.rootContainer)
+    this.sge.stage.addChild(this.splash.container)
+
   }
 
   addLayer(container: PIXI.Container = null) {
     if(!container) {
       container = new PIXI.Container()
     }
-    this.sge.stage.addChild(container)
+    this.rootContainer.addChild(container)
     return container
   }
 
   onUpdate() {
+    this.splash.update()
     this.ship.update()
     this.menuManager.update()
   }

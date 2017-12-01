@@ -40,6 +40,7 @@ export function preload() {
   ])
   sge.preloadSprites([
     'test-ship',
+    'prariesnailgames',
   ])
   sge.preloadSpriteSheets([
     'test-tileset',
@@ -69,6 +70,10 @@ export function run() {
       onLoaded()
     },
   )
+
+  window.onresize = () => {
+    sge.resize()
+  }
 
   function onLoaded() {
 

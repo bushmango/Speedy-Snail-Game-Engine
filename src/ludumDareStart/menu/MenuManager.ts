@@ -19,6 +19,8 @@ export class MenuManager {
 
   currentItemIndicator: PIXI.Sprite
 
+
+
   menuTitle: MenuTitle
   menuAbout: MenuAbout
   menuGame: MenuGame
@@ -31,6 +33,7 @@ export class MenuManager {
     this.sge = sge
 
     this.container = new PIXI.Container()
+    this.container.visible = false
 
     let texture = this.sge.getTexture("test-tileset")
     let size = 32
@@ -76,8 +79,6 @@ export class MenuManager {
     this.currentItemIndicator.visible = this.menuManager.getMode() !== 'game'
     this.currentItemIndicator.x = this.menuManager.currentItemX
     this.currentItemIndicator.y = this.menuManager.currentItemY
-
-
   }
 
 }
