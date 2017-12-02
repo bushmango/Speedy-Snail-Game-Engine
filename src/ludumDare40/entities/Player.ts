@@ -3,6 +3,8 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 import { KeyCodes } from 'engine/input/Keyboard';
 
+const turn = Math.PI * 2
+
 let hats = [
   {
     y: 2,
@@ -255,20 +257,24 @@ export class Player {
 
     this.body.position.set(x, y)
     this.head.position.set(x, y - 16)
-
+    
     this.head.scale.set(this.facingRight ? 1 : -1, 1)
 
     _.forEach(this.hats, (c, cIdx) => {
       c.position.set(x + (this.facingRight ? 1 : -1), y - 16 - 8 + 1 + 12 - 3 * cIdx)
+      c.scale.set(this.facingRight ? 1 : -1, 1)
     })
   }
 
   addHat() {
 
+    let hatTilts = [turn/64, turn/32, turn/16, 0, 0, 0, -turn/16, -turn/32, -turn/64]
+
     let hatData = _.sample(hats)
 
     let hat = spriteCreator.createSprite16(this.sge, 'ase-512-16', hatData.y, hatData.x)
     hat.anchor.set(0.5, 0.5)
+    hat.rotation = _.sample(hatTilts)
     this.hats.push(hat)
     this.container.addChild(hat)
   }
