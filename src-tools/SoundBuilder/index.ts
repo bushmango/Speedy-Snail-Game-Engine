@@ -24,13 +24,17 @@ process.argv.forEach((val, index, array) => {
   console.log(index + ': ' + val)
 })
 
+// let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
+// let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
+
+let watchPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\ludumDare40\\sounds\\sprite1\\`
+let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\sounds\\`
+
 let verbose = false
 
 let mode = 'sprite'
 
 let ffmpegPath = 'C:/dev/tools/ffmpeg-3.3.3-win64-static/bin/ffmpeg.exe'
-let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
-let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
 let watchGlob = watchPath + '*.wav'
 
 function run() {

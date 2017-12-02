@@ -1,9 +1,9 @@
 {
   "urls": [
-    "public/ludumDareStart/sounds/audioSprite.ogg",
-    "public/ludumDareStart/sounds/audioSprite.m4a",
-    "public/ludumDareStart/sounds/audioSprite.mp3",
-    "public/ludumDareStart/sounds/audioSprite.ac3"
+    "public/sounds/audioSprite.ogg",
+    "public/sounds/audioSprite.m4a",
+    "public/sounds/audioSprite.mp3",
+    "public/sounds/audioSprite.ac3"
   ],
   "sprite": {
     "hurt001": [

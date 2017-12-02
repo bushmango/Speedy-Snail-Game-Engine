@@ -26,17 +26,27 @@ process.argv.forEach((val, index, array) => {
   console.log(index + ': ' + val)
 })
 
+
+//let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/images/`
+//let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
+//let inPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
+//let outPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images-packed/`
+
+let watchPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\ludumDare40\\images\\`
+let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images\\`
+let inPathPacked = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images\\`
+let outPathPacked = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images-packed\\`
+
+
+
 let doPack = true
 let mode = 'convert-only'
 let verbose = false
 let aseSpritePath = '"C:\\Program Files (x86)\\Aseprite\\aseprite.exe"'
-let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/images/`
-let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
+
 let watchGlob = watchPath + '**/*.ase'
 
 let texturePackerPath = '"C:\\Program Files\\CodeAndWeb\\TexturePacker\\bin\\TexturePacker.exe"'
-let inPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
-let outPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images-packed/`
 
 function run() {
 

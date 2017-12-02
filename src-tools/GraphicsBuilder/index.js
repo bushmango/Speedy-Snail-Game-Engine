@@ -15,16 +15,20 @@ console.log('Graphics Builder - watch and convert asesprite files to png - v0.0.
 process.argv.forEach(function (val, index, array) {
     console.log(index + ': ' + val);
 });
+//let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/images/`
+//let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
+//let inPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
+//let outPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images-packed/`
+var watchPath = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\ludumDare40\\images\\";
+var outPath = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images\\";
+var inPathPacked = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images\\";
+var outPathPacked = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\images-packed\\";
 var doPack = true;
 var mode = 'convert-only';
 var verbose = false;
 var aseSpritePath = '"C:\\Program Files (x86)\\Aseprite\\aseprite.exe"';
-var watchPath = "C:/dev/stevieweb/SimpleGameEngine/src-resources/images/";
-var outPath = "C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/";
 var watchGlob = watchPath + '**/*.ase';
 var texturePackerPath = '"C:\\Program Files\\CodeAndWeb\\TexturePacker\\bin\\TexturePacker.exe"';
-var inPathPacked = "C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/";
-var outPathPacked = "C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images-packed/";
 function run() {
     // TODO: command line args
     program

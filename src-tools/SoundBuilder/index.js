@@ -1,21 +1,28 @@
 #!/usr/bin/env ts-node
 "use strict";
 exports.__esModule = true;
+var _ = require("lodash");
 var fs = require('fs');
 var chokidar = require('chokidar');
 var chalk = require('chalk');
 var program = require('commander');
-var _ = require("lodash");
 console.log(chalk.bold.cyan('-.-'));
 console.log(chalk.bold.green("~Stevie Bushman Presents~"));
 console.log('Sounds Builder - watch and convert sounds - v0.0.3');
+// print args
+process.argv.forEach(function (val, index, array) {
+    console.log(index + ': ' + val);
+});
+// let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
+// let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
+var watchPath = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\ludumDare40\\sounds\\sprite1\\";
+var outPath = "C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\sounds\\";
 var verbose = false;
 var mode = 'sprite';
 var ffmpegPath = 'C:/dev/tools/ffmpeg-3.3.3-win64-static/bin/ffmpeg.exe';
-var watchPath = "C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/";
-var outPath = "C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/";
 var watchGlob = watchPath + '*.wav';
 function run() {
+    // TODO: command line args
     program
         .arguments('<file>')
         .option('-n, --narm <narm>', 'Your name')
@@ -104,14 +111,16 @@ function createSprite() {
                 console.error(err);
                 return;
             }
-            console.log(JSON.stringify(obj, null, 2));
+            // console.log(JSON.stringify(obj, null, 2))
             obj.urls = [
                 "public/sounds/audioSprite.ogg",
                 "public/sounds/audioSprite.m4a",
                 "public/sounds/audioSprite.mp3",
                 "public/sounds/audioSprite.ac3",
             ];
-            console.log(JSON.stringify(obj, null, 2));
+            if (verbose) {
+                console.log(JSON.stringify(obj, null, 2));
+            }
             var jsonfile = require('jsonfile');
             var file = outPath + 'audioSprite.json';
             jsonfile.writeFileSync(file, obj, { spaces: 2 });
