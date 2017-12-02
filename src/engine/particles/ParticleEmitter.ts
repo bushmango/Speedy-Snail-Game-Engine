@@ -17,7 +17,7 @@ export interface IParticle {
 
 export class ParticleEmitter {
 
-  maxParticles = 100
+  maxParticles = 200
   sge: SimpleGameEngine
   particles: IParticle[] = []
   textureKey: string

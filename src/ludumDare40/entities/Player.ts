@@ -39,15 +39,20 @@ export class Player {
   maxVx = 64
   maxVy = 64
 
+  boundsX1 = 0
+  boundsX2 = 0
+  boundsY1 = 0
+  boundsY2 = 0
+
   facingRight = true
 
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
     this.body = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 1)
-    this.body.anchor.set(0.5, 0)
+    this.body.anchor.set(0.5, 1)
     this.head = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 2)
-    this.head.anchor.set(0.5, 0)
+    this.head.anchor.set(0.5, 1)
 
     this.hats.init(_sge)
 
@@ -60,6 +65,13 @@ export class Player {
   moveTo(x, y) {
     this.subX = x * 32
     this.subY = y * 32
+  }
+
+  setBounds(x1, y1, x2, y2) {
+    this.boundsX1 = x1
+    this.boundsX2 = x2
+    this.boundsY1 = y1
+    this.boundsY2 = y2
   }
 
   update() {
@@ -195,10 +207,6 @@ export class Player {
           this.accelY = 16
         }
       }
-
-
-
-
     }
 
     this.vy += this.accelY
@@ -235,6 +243,8 @@ export class Player {
     let x = Math.floor(this.subX / subPix)
     let y = Math.floor(this.subY / subPix)
 
+    this.setBounds(x - 4, y - 16, x + 4, y)    
+
     this.container.position.set(x, y)
 
     this.body.position.set(0, 0)
@@ -243,7 +253,7 @@ export class Player {
     this.head.scale.set(this.facingRight ? 1 : -1, 1)
 
     this.hats.x = 0
-    this.hats.y = -5
+    this.hats.y = -16 - 8
     this.hats.facingRight = this.facingRight
     this.hats.update()
 

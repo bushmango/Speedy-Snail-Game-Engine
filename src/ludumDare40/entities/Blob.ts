@@ -7,12 +7,13 @@ const turn = Math.PI * 2
 
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 
 const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
 
 export class Blob {
 
-  sge: SimpleGameEngine
+  context: LudumDare40Context
   container = new PIXI.Container()
 
   body: PIXI.Sprite
@@ -26,13 +27,18 @@ export class Blob {
 
   facingRight = true
 
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
+  boundsX1 = 0
+  boundsX2 = 0
+  boundsY1 = 0
+  boundsY2 = 0
 
-    this.body = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 4, 1)
-    this.body.anchor.set(0.5, 0)
+  init(cx: LudumDare40Context) {
+    this.context = cx
 
-    this.hats.init(_sge)
+    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 4, 1)
+    this.body.anchor.set(0.5, 1)
+
+    this.hats.init(this.context.sge)
 
     this.frameIdx = _.random(0, 1, false)
 
@@ -40,6 +46,14 @@ export class Blob {
     this.container.addChild(this.hats.container)
 
   }
+
+  setBounds(x1, y1, x2, y2) {
+    this.boundsX1 = x1
+    this.boundsX2 = x2
+    this.boundsY1 = y1
+    this.boundsY2 = y2
+  }
+
   update() {
 
     this.frame++
@@ -54,13 +68,17 @@ export class Blob {
     let x = Math.floor(this.subX / subPix)
     let y = Math.floor(this.subY / subPix)
 
+    this.setBounds(x - 3, y - 8, x + 3, y)
+
     this.container.position.set(x, y)
     this.body.scale.set(this.facingRight ? 1 : -1, 1)
 
-    this.hats.y = this.frameIdx === 0 ? 2 : 2.5
+    this.hats.x = 0
+    this.hats.y = -9 + (this.frameIdx === 0 ? 0 : 1)
     this.hats.facingRight = this.facingRight
     this.hats.update()
 
+    // this.context.particles.emitBlobParts(this.body.texture.frame, x, y)
   }
 
   moveTo(x, y) {
