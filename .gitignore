@@ -1,5 +1,5 @@
 
-src-build/
+build/
 node_modules
 
 Thumbs.db

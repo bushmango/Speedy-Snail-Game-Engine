@@ -34,6 +34,8 @@ export class Blob {
 
     this.hats.init(_sge)
 
+    this.frameIdx = _.random(0, 1, false)
+
     this.container.addChild(this.body)
     this.container.addChild(this.hats.container)
 

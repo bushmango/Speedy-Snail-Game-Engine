@@ -8,7 +8,16 @@ A quick startup for Ludum Dare Jams!
 [View the demo](https://jam.steviebushman.com/ludum-dare-start)
 
 
+
 To try it out, clone the repo and
+
+install global dependencies
+
+```
+npm install typescript@latest -g
+```
+
+run program
 
 ```
 npm install
