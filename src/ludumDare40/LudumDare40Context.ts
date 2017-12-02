@@ -17,7 +17,7 @@ import { MenuManager } from 'ludumDare40/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
 
 import { Player } from 'ludumDare40/entities/Player'
-import { Blob } from 'ludumDare40/entities/Blob'
+import { Blob, BlobManager } from 'ludumDare40/entities/Blob'
 import { ParticleManager } from 'ludumDare40/entities/ParticleManager';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 
@@ -45,7 +45,7 @@ export class LudumDare40Context {
   particles = new ParticleManager()
   boundsDrawer = new BoundsDrawer()
 
-  blobs: Blob[] = []
+  blobs = new BlobManager()
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -90,12 +90,10 @@ export class LudumDare40Context {
 
     this.player.moveTo(200, 200)
 
+
+    this.blobs.init(this)
     for (let i = 0; i < 3; i++) {
-      let blob = new Blob()
-      blob.init(this)
-      blob.moveTo(130 + i * 40, 0)
-      this.blobs.push(blob)
-      this.layerObjects.addChild(blob.container)
+      this.blobs.createAt(130 + i * 40, 0)
     }
 
     this.sge.stage.addChild(this.rootContainer)
@@ -131,27 +129,26 @@ export class LudumDare40Context {
 
     this.player.update()
 
-
-    _.forEach(this.blobs, (c) => {
-      c.update()
-    })
+    this.blobs.update()
 
     // Draw bounds
     this.boundsDrawer.draw(this.player)
-    _.forEach(this.blobs, (c) => {
-      this.boundsDrawer.draw(c)
-    })
+    this.blobs.drawBounds(this.boundsDrawer)
 
     // Check collisions
-    _.forEach(this.blobs, (c) => {
+    _.forEach(this.blobs.items, (c) => {
 
       let p = this.player
       let b = c
 
       if (collisions.isRectOverlap(p, b)) {
-        this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
+        if(p.boundsY2 < b.boundsY2 && p.vy > 0) {
+          // Stomp
+          //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
+          b.destroy()
+        }
+       
       }
-
     })
 
 

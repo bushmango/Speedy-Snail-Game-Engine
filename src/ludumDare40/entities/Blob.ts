@@ -8,8 +8,56 @@ const turn = Math.PI * 2
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
 import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 
 const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
+
+export class BlobManager {
+
+  context: LudumDare40Context
+
+  items: Blob[] = []
+
+  init(context: LudumDare40Context) {
+    this.context = context
+  }
+
+  createAt(x, y) {
+    let item = new Blob()
+    item.init(this.context)
+    item.moveTo(x, y)
+    this.items.push(item)
+    this.context.layerObjects.addChild(item.container)
+    return item
+  }
+
+  update() {
+    _.forEach(this.items, (c) => {
+      c.update()
+    })
+    this.destroyMarked()
+  }
+
+  destroyMarked() {
+    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+  
+    if (removed.length > 0) {
+
+      _.forEach(removed, (c) => {
+        this.context.layerObjects.removeChild(c.container)
+      })
+
+      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+    }
+  }
+
+  drawBounds(boundsDrawer: BoundsDrawer) {
+    _.forEach(this.items, (c) => {
+      boundsDrawer.draw(c)
+    })
+  }
+
+}
 
 export class Blob {
 
@@ -26,6 +74,8 @@ export class Blob {
   subY = 0 * 16
 
   facingRight = true
+
+  isReadyToBeDestroyed = false
 
   boundsX1 = 0
   boundsX2 = 0
@@ -47,6 +97,14 @@ export class Blob {
 
   }
 
+  destroy() {
+    if (this.isReadyToBeDestroyed) { return }
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.isReadyToBeDestroyed = true
+  }
+
   setBounds(x1, y1, x2, y2) {
     this.boundsX1 = x1
     this.boundsX2 = x2
@@ -55,6 +113,8 @@ export class Blob {
   }
 
   update() {
+
+    if (this.isReadyToBeDestroyed) { return }
 
     this.frame++
 

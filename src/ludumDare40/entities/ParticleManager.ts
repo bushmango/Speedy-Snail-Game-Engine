@@ -4,6 +4,7 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { ParticleEmitter } from 'engine/particles/ParticleEmitter'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 import * as assert from 'engine/common/assert'
+import { create16_frameHRun } from 'ludumDare40/util/spriteCreator';
 
 export function splitSpriteIntoParticles(y, x, num) {
 
@@ -56,10 +57,12 @@ export class ParticleManager {
     this.container = new PIXI.Container()
 
     //let particlesShip = splitSpriteIntoParticles(26, 9, 4)
-
+ 
+    
     this.particleEmitterBlob = this.addEmitter()
 
   }
+
 
   addEmitter(frames = [[0, 0, 8, 8]]) {
     let emitter = new ParticleEmitter()
@@ -72,8 +75,8 @@ export class ParticleManager {
 
   emitBlobParts(frame: PIXI.Rectangle, x, y) {
     // Split frameRect
-    let particles = splitFrameIntoParticles(frame, 4)
-
+    //let particles = splitFrameIntoParticles(frame, 4)
+    let blobGreenFrames = create16_frameHRun(4, 3, 2)
     this.particleEmitterBlob.emit(
       x,
       y,
@@ -81,11 +84,12 @@ export class ParticleManager {
         numMin: 1,
         numMax: 5,
         vMax: 20 / 60,
+        ay: 0.02,
         rMin: -Math.PI * 2 / 60,
         rMax: Math.PI * 2 / 60,
         framesMin: 30,
         framesMax: 120,
-        rects: particles,
+        rects: blobGreenFrames,
       }
     )
   }
