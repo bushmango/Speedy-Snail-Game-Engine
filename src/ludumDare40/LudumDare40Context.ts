@@ -142,12 +142,21 @@ export class LudumDare40Context {
       let b = c
 
       if (collisions.isRectOverlap(p, b)) {
-        if(p.boundsY2 < b.boundsY2 && p.vy > 0) {
+        if (p.boundsY2 < b.boundsY2 && p.vy > 0) {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
-          b.destroy()
+
+          if (!b.isReadyToBeDestroyed) {
+            b.destroy()
+            _.forEach(b.hats.hats, (c) => {
+              p.hats.addHat()
+            })
+          }
+
+
+
         }
-       
+
       }
     })
 
