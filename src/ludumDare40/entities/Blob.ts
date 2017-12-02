@@ -7,12 +7,61 @@ const turn = Math.PI * 2
 
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 
 const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
 
+export class BlobManager {
+
+  context: LudumDare40Context
+
+  items: Blob[] = []
+
+  init(context: LudumDare40Context) {
+    this.context = context
+  }
+
+  createAt(x, y) {
+    let item = new Blob()
+    item.init(this.context)
+    item.moveTo(x, y)
+    this.items.push(item)
+    this.context.layerObjects.addChild(item.container)
+    return item
+  }
+
+  update() {
+    _.forEach(this.items, (c) => {
+      c.update()
+    })
+    this.destroyMarked()
+  }
+
+  destroyMarked() {
+    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+  
+    if (removed.length > 0) {
+
+      _.forEach(removed, (c) => {
+        this.context.layerObjects.removeChild(c.container)
+      })
+
+      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+    }
+  }
+
+  drawBounds(boundsDrawer: BoundsDrawer) {
+    _.forEach(this.items, (c) => {
+      boundsDrawer.draw(c)
+    })
+  }
+
+}
+
 export class Blob {
 
-  sge: SimpleGameEngine
+  context: LudumDare40Context
   container = new PIXI.Container()
 
   body: PIXI.Sprite
@@ -26,13 +75,20 @@ export class Blob {
 
   facingRight = true
 
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
+  isReadyToBeDestroyed = false
 
-    this.body = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 4, 1)
-    this.body.anchor.set(0.5, 0)
+  boundsX1 = 0
+  boundsX2 = 0
+  boundsY1 = 0
+  boundsY2 = 0
 
-    this.hats.init(_sge)
+  init(cx: LudumDare40Context) {
+    this.context = cx
+
+    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 4, 1)
+    this.body.anchor.set(0.5, 1)
+
+    this.hats.init(this.context.sge)
 
     this.frameIdx = _.random(0, 1, false)
 
@@ -40,7 +96,25 @@ export class Blob {
     this.container.addChild(this.hats.container)
 
   }
+
+  destroy() {
+    if (this.isReadyToBeDestroyed) { return }
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.isReadyToBeDestroyed = true
+  }
+
+  setBounds(x1, y1, x2, y2) {
+    this.boundsX1 = x1
+    this.boundsX2 = x2
+    this.boundsY1 = y1
+    this.boundsY2 = y2
+  }
+
   update() {
+
+    if (this.isReadyToBeDestroyed) { return }
 
     this.frame++
 
@@ -54,13 +128,17 @@ export class Blob {
     let x = Math.floor(this.subX / subPix)
     let y = Math.floor(this.subY / subPix)
 
+    this.setBounds(x - 3, y - 8, x + 3, y)
+
     this.container.position.set(x, y)
     this.body.scale.set(this.facingRight ? 1 : -1, 1)
 
-    this.hats.y = this.frameIdx === 0 ? 2 : 2.5
+    this.hats.x = 0
+    this.hats.y = -9 + (this.frameIdx === 0 ? 0 : 1)
     this.hats.facingRight = this.facingRight
     this.hats.update()
 
+    // this.context.particles.emitBlobParts(this.body.texture.frame, x, y)
   }
 
   moveTo(x, y) {

@@ -6,6 +6,8 @@ export interface IParticle {
   sprite: PIXI.Sprite
   vx: number
   vy: number
+  ax: number
+  ay: number
   vr: number
   framesStart: number
   framesLeft: number
@@ -17,7 +19,7 @@ export interface IParticle {
 
 export class ParticleEmitter {
 
-  maxParticles = 100
+  maxParticles = 200
   sge: SimpleGameEngine
   particles: IParticle[] = []
   textureKey: string
@@ -45,12 +47,15 @@ export class ParticleEmitter {
       let texture = this.sge.getTexture(this.textureKey)
       let sprite = new PIXI.Sprite(new PIXI.Texture(texture.baseTexture))
       sprite.texture.frame = this.textureRects[0]
+      sprite.anchor.set(0.5, 0.5)
       this.container.addChild(sprite)
       let p: IParticle = {
         sprite: sprite,
         vx: 0,
         vy: 0,
         vr: 0,
+        ax: 0,
+        ay: 0,
         alpha1: 1,
         alpha2: 0,
         scale1: 2,
@@ -74,6 +79,9 @@ export class ParticleEmitter {
       p.sprite.rotation += p.vr
       p.framesLeft--
 
+      p.vx += p.ax
+      p.vy += p.ay
+
       let t = 1 - (p.framesLeft / p.framesStart)
       p.sprite.alpha = (1 - t) * p.alpha1 + t * p.alpha2
       p.sprite.scale.set((1 - t) * p.scale1 + t * p.scale2)
@@ -90,6 +98,8 @@ export class ParticleEmitter {
     vMax?: number,
     rMin?: number,
     rMax?: number,
+    ax?: number,
+    ay?: number,
     framesMin?: number,
     framesMax?: number,
     rects?: PIXI.Rectangle[],
@@ -99,6 +109,8 @@ export class ParticleEmitter {
     let vMax = options.vMax
     let rMin = 0
     let rMax = 0
+    let ax = 0
+    let ay = 0
     let framesMin = 60
     let framesMax = 60
     if (options) {
@@ -109,6 +121,12 @@ export class ParticleEmitter {
       if (options.rMax) {
         rMax = options.rMax
       }
+      if (options.ax) {
+        ax = options.ax
+      }
+      if (options.ay) {
+        ay = options.ay
+      }
       framesMin = options.framesMin || framesMin
       framesMax = options.framesMax || framesMax
     }
@@ -116,13 +134,13 @@ export class ParticleEmitter {
       let p = this.getNextSprite()
       if (!p) { break } // Out of sprites
 
-      if(options && options.rects) {
+      if (options && options.rects) {
         p.sprite.texture.frame = _.sample(options.rects)
-        
+
       } else {
-        p.sprite.texture.frame = _.sample(this.textureRects)        
+        p.sprite.texture.frame = _.sample(this.textureRects)
       }
-     
+
       p.sprite.visible = true
       p.sprite.position.x = x
       p.sprite.position.y = y
@@ -130,6 +148,8 @@ export class ParticleEmitter {
       p.vx = _.random(-vMax, vMax, true)
       p.vy = _.random(-vMax, vMax, true)
       p.vr = _.random(rMin, rMax, false)
+      p.ax = ax
+      p.ay = ay
 
       p.alpha1 = 1
       p.alpha2 = 0

@@ -17,7 +17,11 @@ import { MenuManager } from 'ludumDare40/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
 
 import { Player } from 'ludumDare40/entities/Player'
-import { Blob } from 'ludumDare40/entities/Blob'
+import { Blob, BlobManager } from 'ludumDare40/entities/Blob'
+import { ParticleManager } from 'ludumDare40/entities/ParticleManager';
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
+
+import * as collisions from './entities/collisions'
 
 const turn = Math.PI * 2
 
@@ -33,10 +37,15 @@ export class LudumDare40Context {
   rootContainerUI: PIXI.Container = new PIXI.Container()
 
   layerObjects: PIXI.Container
+  layerParticles: PIXI.Container
+  layerBounds: PIXI.Container
 
   player: Player
 
-  blobs: Blob[] = []
+  particles = new ParticleManager()
+  boundsDrawer = new BoundsDrawer()
+
+  blobs = new BlobManager()
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -48,9 +57,6 @@ export class LudumDare40Context {
 
     this.initTileMap()
 
-
-
-
     this.menuManager.init(this.sge)
 
     this.rootContainer.visible = false
@@ -61,28 +67,33 @@ export class LudumDare40Context {
       this.rootContainerUI.visible = true
     })
 
+    this.particles.init(this.sge)
+
     // Add layers
     //this.addLayer(this.tileMap.containers[0])
     this.layerObjects = this.addLayer()
-    //this.layerObjects.addChild(this.ship.ship)
+    this.layerParticles = this.addLayer()
+    this.layerParticles.addChild(this.particles.container)
+    this.layerBounds = this.addLayer()
 
+    this.boundsDrawer.init(this)
+    this.layerBounds.addChild(this.boundsDrawer.container)
+
+    //this.layerObjects.addChild(this.ship.ship)
 
     this.addLayerUI(this.menuManager.menuManager.container)
     this.addLayerUI(this.menuManager.container)
-
 
     this.player = new Player()
     this.player.init(_sge)
     this.layerObjects.addChild(this.player.container)
 
-    this.player.moveTo(200, 200)    
+    this.player.moveTo(200, 200)
 
+
+    this.blobs.init(this)
     for (let i = 0; i < 3; i++) {
-      let blob = new Blob()
-      blob.init(_sge)
-      blob.moveTo(130 + i * 40, 0)
-      this.blobs.push(blob)
-      this.layerObjects.addChild(blob.container)
+      this.blobs.createAt(130 + i * 40, 0)
     }
 
     this.sge.stage.addChild(this.rootContainer)
@@ -111,13 +122,48 @@ export class LudumDare40Context {
   }
 
   onUpdate() {
+
+    this.boundsDrawer.clear()
+
     this.splash.update()
 
     this.player.update()
 
-    _.forEach(this.blobs, (c) => {
-      c.update()
+    this.blobs.update()
+
+    // Draw bounds
+    this.boundsDrawer.draw(this.player)
+    this.blobs.drawBounds(this.boundsDrawer)
+
+    // Check collisions
+    _.forEach(this.blobs.items, (c) => {
+
+      let p = this.player
+      let b = c
+
+      if (collisions.isRectOverlap(p, b)) {
+        if (p.boundsY2 < b.boundsY2 && p.vy > 0) {
+          // Stomp
+          //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
+
+          if (!b.isReadyToBeDestroyed) {
+            b.destroy()
+            _.forEach(b.hats.hats, (c) => {
+              p.hats.addHat()
+            })
+          }
+
+
+
+        }
+
+      }
     })
+
+
+    // this.particles.emitBlobParts(this.blobs[0].body.texture.frame, this.player.subX / 32, this.player.subY / 32)
+
+    this.particles.update()
 
     this.menuManager.update()
   }
