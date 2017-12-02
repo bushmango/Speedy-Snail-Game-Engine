@@ -45,7 +45,7 @@ export class Keyboard {
     console.log('key down', ev.keyCode)
 
     key._delay_justPressed = true
-    key._delay_isDown = true
+    key._delay_isPressed = true
     event.preventDefault()
   }
   onKeyUp(ev) {
@@ -56,12 +56,12 @@ export class Keyboard {
     console.log('key up', ev.keyCode)
 
     key._delay_justReleased = true
-    key._delay_isDown = true
+    key._delay_isPressed = false
     event.preventDefault()
   }
   onUpdate() {
     _.forEach(this.keys, (c) => {
-      c.isDown = c._delay_isDown
+      c.isPressed = c._delay_isPressed
       c.justPressed = c._delay_justPressed
       c.justReleased = c._delay_justReleased
       c._delay_justPressed = false

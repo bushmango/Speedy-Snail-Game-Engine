@@ -16,63 +16,10 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 import { MenuManager } from 'ludumDare40/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
 
-import * as spriteCreator from 'ludumDare40/util/spriteCreator'
+import { Player } from 'ludumDare40/entities/Player'
+import { Blob } from 'ludumDare40/entities/Blob'
 
 const turn = Math.PI * 2
-
-
-export class Player {
- 
-  sge: SimpleGameEngine
-  container = new PIXI.Container
-
-  body: PIXI.Sprite
-  head: PIXI.Sprite
-
-  x = 100
-  y = 100
-
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
-
-    this.body = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 1)
-    this.body.anchor.set(0.5, 0)
-    this.head = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 2)
-    this.head.anchor.set(0.5, 0)
-
-    this.container.addChild(this.body)
-    this.container.addChild(this.head)
-
-  }
-  update() {
-    this.body.position.set(this.x, this.y)
-    this.head.position.set(this.x, this.y - 16)
-  }
-
-}
-
-export class Ship {
-  sge: SimpleGameEngine
-  ship: PIXI.Sprite
-
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
-
-    let texture = this.sge.getTexture("test-tileset")
-    let size = 32
-    let rectangle = new Rectangle(size * 3, size * 2, size, size)
-    texture.frame = rectangle
-    this.ship = new Sprite(texture)
-    this.ship.x = 32 + 300
-    this.ship.y = 32 + 300
-    this.ship.anchor.set(0.5, 0.5)
-
-  }
-  update() {
-    this.ship.rotation += turn / (60 * 4)
-  }
-
-}
 
 export class LudumDare40Context {
 
@@ -86,18 +33,23 @@ export class LudumDare40Context {
   rootContainerUI: PIXI.Container = new PIXI.Container()
 
   layerObjects: PIXI.Container
-  ship: Ship
 
   player: Player
+
+  blobs: Blob[] = []
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    this.initTileMap()
-    this.initShip()
+    _sge.renderer.transparent = false
+    // Force color property
+    let r: any = _sge.renderer
+    r.backgroundColor = 0xFF333333
 
-    this.player = new Player()
-    this.player.init(_sge)
+    this.initTileMap()
+
+
+
 
     this.menuManager.init(this.sge)
 
@@ -114,13 +66,28 @@ export class LudumDare40Context {
     this.layerObjects = this.addLayer()
     //this.layerObjects.addChild(this.ship.ship)
 
-    this.layerObjects.addChild(this.player.container)
 
     this.addLayerUI(this.menuManager.menuManager.container)
     this.addLayerUI(this.menuManager.container)
 
+
+    this.player = new Player()
+    this.player.init(_sge)
+    this.layerObjects.addChild(this.player.container)
+
+    this.player.moveTo(200, 200)    
+
+    for (let i = 0; i < 3; i++) {
+      let blob = new Blob()
+      blob.init(_sge)
+      blob.moveTo(130 + i * 40, 0)
+      this.blobs.push(blob)
+      this.layerObjects.addChild(blob.container)
+    }
+
     this.sge.stage.addChild(this.rootContainer)
     this.rootContainer.scale.set(4)
+    this.rootContainer.position.set(0, 400)
     this.sge.stage.addChild(this.rootContainerUI)
     this.sge.stage.addChild(this.splash.container)
 
@@ -129,14 +96,14 @@ export class LudumDare40Context {
   }
 
   addLayer(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainer.addChild(container)
     return container
   }
   addLayerUI(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainerUI.addChild(container)
@@ -145,17 +112,16 @@ export class LudumDare40Context {
 
   onUpdate() {
     this.splash.update()
-    this.ship.update()
 
     this.player.update()
+
+    _.forEach(this.blobs, (c) => {
+      c.update()
+    })
 
     this.menuManager.update()
   }
 
-  initShip() {
-    this.ship = new Ship()
-    this.ship.init(this.sge)
-  }
 
   initTileMap() {
     let defaultTextureName = 'test-tileset'
