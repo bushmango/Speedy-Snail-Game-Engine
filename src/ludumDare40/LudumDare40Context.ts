@@ -20,14 +20,38 @@ import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 
 const turn = Math.PI * 2
 
+let hats = [
+  {
+    y: 2,
+    x: 1,
+  },
+  {
+    y: 2,
+    x: 2,
+  },
+  {
+    y: 2,
+    x: 3,
+  },
+  {
+    y: 2,
+    x: 4,
+  },
+  {
+    y: 2,
+    x: 5,
+  },
+]
 
 export class Player {
- 
+
   sge: SimpleGameEngine
   container = new PIXI.Container
 
   body: PIXI.Sprite
   head: PIXI.Sprite
+
+  hats: PIXI.Sprite[] = []
 
   x = 100
   y = 100
@@ -35,18 +59,35 @@ export class Player {
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    this.body = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 1)
+    this.body = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 1)
     this.body.anchor.set(0.5, 0)
-    this.head = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 2)
+    this.head = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 2)
     this.head.anchor.set(0.5, 0)
 
     this.container.addChild(this.body)
     this.container.addChild(this.head)
 
+    for (let i = 0; i < 10; i++) {
+      this.addHat()
+    }
+
   }
   update() {
     this.body.position.set(this.x, this.y)
     this.head.position.set(this.x, this.y - 16)
+    _.forEach(this.hats, (c, cIdx) => {
+      c.position.set(this.x + 1, this.y - 16 - 8 + 1 + 12 - 3 * cIdx)
+    })
+  }
+
+  addHat() {
+
+    let hatData = _.sample(hats)
+
+    let hat = spriteCreator.createSprite16(this.sge, 'ase-512-16', hatData.y, hatData.x)
+    hat.anchor.set(0.5, 0.5)
+    this.hats.push(hat)
+    this.container.addChild(hat)
   }
 
 }
@@ -93,6 +134,11 @@ export class LudumDare40Context {
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
 
+    _sge.renderer.transparent = false
+    // Force color property
+    let r: any = _sge.renderer
+    r.backgroundColor = 0xFF333333
+
     this.initTileMap()
     this.initShip()
 
@@ -129,14 +175,14 @@ export class LudumDare40Context {
   }
 
   addLayer(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainer.addChild(container)
     return container
   }
   addLayerUI(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainerUI.addChild(container)
