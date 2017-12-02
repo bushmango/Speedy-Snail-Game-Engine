@@ -7,10 +7,11 @@ const turn = Math.PI * 2
 
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack';
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 
 export class Player {
 
-  sge: SimpleGameEngine
+  context: LudumDare40Context
   container = new PIXI.Container()
 
   body: PIXI.Sprite
@@ -46,15 +47,15 @@ export class Player {
 
   facingRight = true
 
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
+  init(cx: LudumDare40Context) {
+    this.context = cx
 
-    this.body = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 1)
+    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, 1)
     this.body.anchor.set(0.5, 1)
-    this.head = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 2)
+    this.head = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, 2)
     this.head.anchor.set(0.5, 1)
 
-    this.hats.init(_sge)
+    this.hats.init(this.context.sge)
 
     this.container.addChild(this.body)
     this.container.addChild(this.head)
@@ -74,10 +75,27 @@ export class Player {
     this.boundsY2 = y2
   }
 
+
+  setStateFalling() {
+    this.onGround = false
+    this.isJumping = false
+    this.isFalling = true
+    this.isFastFalling = true
+  }
+  setStateOnGround() {
+    this.onGround = true
+    this.isFalling = false
+    this.isFastFalling = false
+    this.isJumping = false
+    this.fallFrames = 0
+    this.vy = 0
+    this.accelY = 0
+  }
+
   update() {
 
     // controls
-    let kb = this.sge.keyboard
+    let kb = this.context.sge.keyboard
 
     let subPix = 32
 
@@ -158,9 +176,9 @@ export class Player {
       this.jumpFrames++
 
       if (kb.justReleased(KeyCodes.space)) {
-        this.isJumping = false
-        this.isFalling = true
-        this.isFastFalling = true
+
+        this.setStateFalling()
+
         //this.accelY = 8
         //this.vy = 8
       } else {
@@ -173,13 +191,12 @@ export class Player {
         } else if (this.jumpFrames < 28) {
           this.accelY = -1
         } else {
-          this.isJumping = false
-          this.isFalling = true
+          this.setStateFalling()
         }
       }
     } else if (this.isFalling) {
 
-      if (kb.justReleased(KeyCodes.space)) {
+      if (kb.isUp(KeyCodes.space)) {
         this.isFastFalling = true
       }
 
@@ -228,23 +245,50 @@ export class Player {
     this.subY += this.vy
     this.subX += this.vx
 
-    let floor = 64*32*16  // Maximum lowest point
-    if (this.subY >= floor ) {
+    // Check for contacts
+    let tm = this.context.tileMap
+    let gs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 + 1)
+    let groundContact1 = false
+    let groundY = 0
+    if (gs1) {
+      if (!gs1.canMove) {
+        groundContact1 = true
+        groundY = gs1.by * 16
+      }
+    }
+    let gs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY2 + 1)
+    let groundContact2 = false
+    if (gs2) {
+      if (!gs2.canMove) {
+        groundContact2 = true
+        groundY = gs1.by * 16
+      }
+    }
+
+    if (this.isFalling) {
+      if (groundContact1 || groundContact2) {
+        this.subY = groundY * 32d
+        this.setStateOnGround()
+      }
+    }
+
+    if (this.onGround) {
+      if (!groundContact1 && !groundContact2) {
+        this.setStateFalling()
+      }
+    }
+
+    let floor = 64 * 32 * 16  // Maximum lowest point
+    if (this.subY >= floor) {
       this.subY = floor
-      this.onGround = true
-      this.isFalling = false
-      this.isFastFalling = false
-      this.isJumping = false
-      this.fallFrames = 0
-      this.vy = 0
-      this.accelY = 0
+      this.setStateOnGround()
     }
 
 
     let x = Math.floor(this.subX / subPix)
     let y = Math.floor(this.subY / subPix)
 
-    this.setBounds(x - 4, y - 16, x + 4, y)    
+    this.setBounds(x - 4, y - 16, x + 4, y)
 
     this.container.position.set(x, y)
 

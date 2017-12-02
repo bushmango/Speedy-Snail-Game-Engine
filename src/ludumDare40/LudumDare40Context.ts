@@ -99,7 +99,7 @@ export class LudumDare40Context {
     this.addLayerUI(this.menuManager.container)
 
     this.player = new Player()
-    this.player.init(_sge)
+    this.player.init(this)
     this.layerObjects.addChild(this.player.container)
 
     this.blobs.init(this)

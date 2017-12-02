@@ -189,6 +189,16 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     let gs = this.data[by * this.blockWidth + bx]
     return gs
   }
+  safeGetTileAtWorld(x, y) {
+    let bx = Math.floor(x / this.blockSize)
+    let by = Math.floor(y / this.blockSize)
+    
+    if (bx < 0 || bx >= this.blockWidth) { return null }
+    if (by < 0 || by >= this.blockHeight) { return null }
+
+    let gs = this.data[by * this.blockWidth + bx]
+    return gs
+  }
   canMoveOn(bx, by) {
     if (false === this.checkInRange(bx, by)) {
       return false
