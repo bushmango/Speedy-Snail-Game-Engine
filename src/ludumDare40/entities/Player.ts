@@ -5,39 +5,18 @@ import { KeyCodes } from 'engine/input/Keyboard';
 
 const turn = Math.PI * 2
 
-let hats = [
-  {
-    y: 2,
-    x: 1,
-  },
-  {
-    y: 2,
-    x: 2,
-  },
-  {
-    y: 2,
-    x: 3,
-  },
-  {
-    y: 2,
-    x: 4,
-  },
-  {
-    y: 2,
-    x: 5,
-  },
-]
+import { hats } from './hats'
+import { HatStack } from 'ludumDare40/entities/HatStack';
 
 export class Player {
 
   sge: SimpleGameEngine
-  container = new PIXI.Container
+  container = new PIXI.Container()
 
   body: PIXI.Sprite
   head: PIXI.Sprite
 
-  hats: PIXI.Sprite[] = []
-
+  hats = new HatStack()
 
   onGround = true
   isJumping = false
@@ -52,10 +31,8 @@ export class Player {
 
   vx = 0
   vy = 0
-  ySubPix = 0
-  xSubPix = 0
-  subX = 0 * 16
-  subY = 0 * 16
+  subX = 0 * 32
+  subY = 0 * 32
   accelX = 0
   accelY = 0
 
@@ -67,21 +44,24 @@ export class Player {
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    this.body = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 1)
+    this.body = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 1)
     this.body.anchor.set(0.5, 0)
-    this.head = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 2)
+    this.head = spriteCreator.create16_sprite(this.sge, 'ase-512-16', 1, 2)
     this.head.anchor.set(0.5, 0)
+
+    this.hats.init(_sge)
 
     this.container.addChild(this.body)
     this.container.addChild(this.head)
-
-    this.container.position.set(100, 100)
-
-    for (let i = 0; i < 10; i++) {
-      this.addHat()
-    }
+    this.container.addChild(this.hats.container)
 
   }
+
+  moveTo(x, y) {
+    this.subX = x * 32
+    this.subY = y * 32
+  }
+
   update() {
 
     // controls
@@ -255,28 +235,19 @@ export class Player {
     let x = Math.floor(this.subX / subPix)
     let y = Math.floor(this.subY / subPix)
 
-    this.body.position.set(x, y)
-    this.head.position.set(x, y - 16)
-    
+    this.container.position.set(x, y)
+
+    this.body.position.set(0, 0)
+    this.head.position.set(0, 0 - 16)
+
     this.head.scale.set(this.facingRight ? 1 : -1, 1)
 
-    _.forEach(this.hats, (c, cIdx) => {
-      c.position.set(x + (this.facingRight ? 1 : -1), y - 16 - 8 + 1 + 12 - 3 * cIdx)
-      c.scale.set(this.facingRight ? 1 : -1, 1)
-    })
+    this.hats.x = 0
+    this.hats.y = -5
+    this.hats.facingRight = this.facingRight
+    this.hats.update()
+
   }
 
-  addHat() {
-
-    let hatTilts = [turn/64, turn/32, turn/16, 0, 0, 0, -turn/16, -turn/32, -turn/64]
-
-    let hatData = _.sample(hats)
-
-    let hat = spriteCreator.createSprite16(this.sge, 'ase-512-16', hatData.y, hatData.x)
-    hat.anchor.set(0.5, 0.5)
-    hat.rotation = _.sample(hatTilts)
-    this.hats.push(hat)
-    this.container.addChild(hat)
-  }
 
 }
