@@ -16,81 +16,9 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 import { MenuManager } from 'ludumDare40/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
 
-import * as spriteCreator from 'ludumDare40/util/spriteCreator'
+import { Player } from 'ludumDare40/entities/Player'
 
 const turn = Math.PI * 2
-
-let hats = [
-  {
-    y: 2,
-    x: 1,
-  },
-  {
-    y: 2,
-    x: 2,
-  },
-  {
-    y: 2,
-    x: 3,
-  },
-  {
-    y: 2,
-    x: 4,
-  },
-  {
-    y: 2,
-    x: 5,
-  },
-]
-
-export class Player {
-
-  sge: SimpleGameEngine
-  container = new PIXI.Container
-
-  body: PIXI.Sprite
-  head: PIXI.Sprite
-
-  hats: PIXI.Sprite[] = []
-
-  x = 100
-  y = 100
-
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
-
-    this.body = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 1)
-    this.body.anchor.set(0.5, 0)
-    this.head = spriteCreator.createSprite16(this.sge, 'ase-512-16', 1, 2)
-    this.head.anchor.set(0.5, 0)
-
-    this.container.addChild(this.body)
-    this.container.addChild(this.head)
-
-    for (let i = 0; i < 10; i++) {
-      this.addHat()
-    }
-
-  }
-  update() {
-    this.body.position.set(this.x, this.y)
-    this.head.position.set(this.x, this.y - 16)
-    _.forEach(this.hats, (c, cIdx) => {
-      c.position.set(this.x + 1, this.y - 16 - 8 + 1 + 12 - 3 * cIdx)
-    })
-  }
-
-  addHat() {
-
-    let hatData = _.sample(hats)
-
-    let hat = spriteCreator.createSprite16(this.sge, 'ase-512-16', hatData.y, hatData.x)
-    hat.anchor.set(0.5, 0.5)
-    this.hats.push(hat)
-    this.container.addChild(hat)
-  }
-
-}
 
 export class Ship {
   sge: SimpleGameEngine
