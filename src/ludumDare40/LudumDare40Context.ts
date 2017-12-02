@@ -16,8 +16,40 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 import { MenuManager } from 'ludumDare40/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
 
+import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 
 const turn = Math.PI * 2
+
+
+export class Player {
+ 
+  sge: SimpleGameEngine
+  container = new PIXI.Container
+
+  body: PIXI.Sprite
+  head: PIXI.Sprite
+
+  x = 100
+  y = 100
+
+  init(_sge: SimpleGameEngine) {
+    this.sge = _sge
+
+    this.body = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 1)
+    this.body.anchor.set(0.5, 0)
+    this.head = spriteCreator.createSprite16(_sge, 'ase-512-16', 1, 2)
+    this.head.anchor.set(0.5, 0)
+
+    this.container.addChild(this.body)
+    this.container.addChild(this.head)
+
+  }
+  update() {
+    this.body.position.set(this.x, this.y)
+    this.head.position.set(this.x, this.y - 16)
+  }
+
+}
 
 export class Ship {
   sge: SimpleGameEngine
@@ -50,34 +82,49 @@ export class LudumDare40Context {
 
   splash: SplashScreen
 
-  rootContainer: PIXI.Container
+  rootContainer: PIXI.Container = new PIXI.Container()
+  rootContainerUI: PIXI.Container = new PIXI.Container()
+
   layerObjects: PIXI.Container
   ship: Ship
+
+  player: Player
+
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
-
-    this.rootContainer = new PIXI.Container()
 
     this.initTileMap()
     this.initShip()
 
+    this.player = new Player()
+    this.player.init(_sge)
+
     this.menuManager.init(this.sge)
 
     this.rootContainer.visible = false
+    this.rootContainerUI.visible = false
     this.splash = new SplashScreen()
     this.splash.init(this.sge, 'prariesnailgames', () => {
       this.rootContainer.visible = true
+      this.rootContainerUI.visible = true
     })
 
     // Add layers
-    this.addLayer(this.tileMap.containers[0])
+    //this.addLayer(this.tileMap.containers[0])
     this.layerObjects = this.addLayer()
-    this.layerObjects.addChild(this.ship.ship)
-    this.addLayer(this.menuManager.menuManager.container)
-    this.addLayer(this.menuManager.container)
+    //this.layerObjects.addChild(this.ship.ship)
+
+    this.layerObjects.addChild(this.player.container)
+
+    this.addLayerUI(this.menuManager.menuManager.container)
+    this.addLayerUI(this.menuManager.container)
 
     this.sge.stage.addChild(this.rootContainer)
+    this.rootContainer.scale.set(4)
+    this.sge.stage.addChild(this.rootContainerUI)
     this.sge.stage.addChild(this.splash.container)
+
+    this.rootContainer.scale
 
   }
 
@@ -88,10 +135,20 @@ export class LudumDare40Context {
     this.rootContainer.addChild(container)
     return container
   }
+  addLayerUI(container: PIXI.Container = null) {
+    if(!container) {
+      container = new PIXI.Container()
+    }
+    this.rootContainerUI.addChild(container)
+    return container
+  }
 
   onUpdate() {
     this.splash.update()
     this.ship.update()
+
+    this.player.update()
+
     this.menuManager.update()
   }
 

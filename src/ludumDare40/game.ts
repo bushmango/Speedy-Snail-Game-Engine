@@ -45,6 +45,7 @@ export function preload() {
   sge.preloadSpriteSheets([
     'test-tileset',
     'gui-tileset',
+    'ase-512-16',
   ])
   sge.preloadTiledMaps([
   ])
