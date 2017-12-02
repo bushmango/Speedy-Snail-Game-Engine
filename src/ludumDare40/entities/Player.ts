@@ -246,7 +246,68 @@ export class Player {
     this.subX += this.vx
 
     // Check for contacts
+
+    let x = Math.floor(this.subX / subPix)
+    let y = Math.floor(this.subY / subPix)
+
+    this.setBounds(x - 4, y - 16, x + 4, y)
+
     let tm = this.context.tileMap
+
+    let rs1 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY2 - 1)
+    let rightContact1 = false
+    let rightX = 0
+    if (rs1) {
+      if (!rs1.canMove) {
+        rightContact1 = true
+        rightX = rs1.bx * 16 * 32 - 32 * 4 - 1
+        this.vx = 0
+        this.subX = rightX
+      }
+    }
+    let rs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY1 + 1)
+    let rightContact2 = false
+    rightX = 0
+    if (rs2) {
+      if (!rs2.canMove) {
+        rightContact2 = true
+        rightX = rs2.bx * 16 * 32 - 32 * 4 - 1
+        this.vx = 0
+        this.subX = rightX
+      }
+    }
+
+    let ls1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 - 1)
+    let leftContact1 = false
+    let leftX = 0
+    if (ls1) {
+      if (!ls1.canMove) {
+        leftContact1 = true
+        leftX = (ls1.bx + 1) * 16 * 32 + 32 * 4 + 1
+        this.vx = 0
+        this.subX = leftX
+      }
+    }
+
+    let ls2 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY1 + 1)
+    let leftContact2 = false
+    leftX = 0
+    if (ls2) {
+      if (!ls2.canMove) {
+        leftContact2 = true
+        leftX = (ls2.bx + 1) * 16 * 32 + 32 * 4 + 1
+        this.vx = 0
+        this.subX = leftX
+      }
+    }
+
+    if(rightContact1 || rightContact2 || leftContact1 || leftContact2) {
+      x = Math.floor(this.subX / subPix)
+      y = Math.floor(this.subY / subPix)
+      this.setBounds(x - 4, y - 16, x + 4, y)      
+    }
+
+  
     let gs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 + 1)
     let groundContact1 = false
     let groundY = 0
@@ -265,10 +326,35 @@ export class Player {
       }
     }
 
+    let cs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY1 - 1)
+    let ceilingContact1 = false
+    let cielingY = 0
+    if (cs1) {
+      if (!cs1.canMove) {
+        ceilingContact1 = true
+        cielingY = cs1.by * 16
+      }
+    }
+    let cs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY1 - 1)
+    let ceilingContact2 = false
+    if (cs2) {
+      if (!cs2.canMove) {
+        ceilingContact2 = true
+        cielingY = cs2.by * 16
+      }
+    }
+
     if (this.isFalling) {
       if (groundContact1 || groundContact2) {
-        this.subY = groundY * 32d
+        this.subY = groundY * 32
         this.setStateOnGround()
+      }
+    }
+    if (this.isJumping) {
+      if (ceilingContact1 || ceilingContact2) {
+        //this.subY = groundY * 32
+        this.setStateFalling()
+        if (this.vy < 0) { this.vy = 0 }
       }
     }
 
@@ -285,8 +371,8 @@ export class Player {
     }
 
 
-    let x = Math.floor(this.subX / subPix)
-    let y = Math.floor(this.subY / subPix)
+    x = Math.floor(this.subX / subPix)
+    y = Math.floor(this.subY / subPix)
 
     this.setBounds(x - 4, y - 16, x + 4, y)
 
