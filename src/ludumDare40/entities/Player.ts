@@ -18,10 +18,10 @@ export class Player {
 
   hats = new HatStack()
 
-  onGround = true
+  onGround = false
   isJumping = false
-  isFalling = false
-  isFastFalling = false
+  isFalling = true
+  isFastFalling = true
   jumpFrames = 0
   fallFrames = 0
 
@@ -228,8 +228,9 @@ export class Player {
     this.subY += this.vy
     this.subX += this.vx
 
-    if (this.subY >= 0) {
-      this.subY = 0
+    let floor = 64*32*16  // Maximum lowest point
+    if (this.subY >= floor ) {
+      this.subY = floor
       this.onGround = true
       this.isFalling = false
       this.isFastFalling = false

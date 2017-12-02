@@ -22,13 +22,17 @@ import { ParticleManager } from 'ludumDare40/entities/ParticleManager';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 
 import * as collisions from './entities/collisions'
+import * as mapLoader from 'ludumDare40/map/MapLoader';
+import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
+import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 
 const turn = Math.PI * 2
 
 export class LudumDare40Context {
 
   sge: SimpleGameEngine
-  tileMap: TileMap<IGridSpot>
+  tileMap: TileMap<ILD40GridSpot>
+  mapMeta: IMapMedatada
   menuManager = new MenuManager()
 
   splash: SplashScreen
@@ -70,10 +74,20 @@ export class LudumDare40Context {
     this.particles.init(this.sge)
 
     // Add layers
-    //this.addLayer(this.tileMap.containers[0])
+    this.addLayer(this.tileMap.containers[mapLoader.Layer_Background])
+    this.addLayer(this.tileMap.containers[mapLoader.Layer_BackgroundDecor])
+
+    this.addLayer(this.tileMap.containers[mapLoader.Layer_Wall])
+
     this.layerObjects = this.addLayer()
+
+    this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
+    this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
+
     this.layerParticles = this.addLayer()
     this.layerParticles.addChild(this.particles.container)
+
+
     this.layerBounds = this.addLayer()
 
     this.boundsDrawer.init(this)
@@ -88,9 +102,6 @@ export class LudumDare40Context {
     this.player.init(_sge)
     this.layerObjects.addChild(this.player.container)
 
-    this.player.moveTo(200, 200)
-
-
     this.blobs.init(this)
     for (let i = 0; i < 3; i++) {
       this.blobs.createAt(130 + i * 40, 0)
@@ -101,6 +112,11 @@ export class LudumDare40Context {
     this.rootContainer.position.set(0, 400)
     this.sge.stage.addChild(this.rootContainerUI)
     this.sge.stage.addChild(this.splash.container)
+
+    // Set player to spawn
+    let spawn = this.mapMeta.spawns[0]
+    this.player.moveTo(spawn.bx * 16 + 8, spawn.by * 16 + 14)
+    
 
     this.rootContainer.scale
 
@@ -160,6 +176,12 @@ export class LudumDare40Context {
       }
     })
 
+    // camera
+    let { width, height } = this.sge.getViewSize()
+    let x = (-this.player.boundsX1 * this.rootContainer.scale.x)
+    let y = (-this.player.boundsY1 * this.rootContainer.scale.y)
+    this.rootContainer.position.set(x + width / 2, y + height / 2)
+
 
     // this.particles.emitBlobParts(this.blobs[0].body.texture.frame, this.player.subX / 32, this.player.subY / 32)
 
@@ -170,28 +192,38 @@ export class LudumDare40Context {
 
 
   initTileMap() {
-    let defaultTextureName = 'test-tileset'
+    let defaultTextureName = 'ase-512-16'
     let tileData: ITileData[] = []
     tileData.push({
       name: 'default',
       textureName: defaultTextureName,
       tx: 0,
-      ty: 2,
+      ty: 0,
     })
-    tileData.push({
-      name: 'wall-1',
-      textureName: defaultTextureName,
-      tx: 2,
-      ty: 4,
-    })
-    this.tileMap = new TileMap<IGridSpot>(this.sge, 32, tileData, 1, null)
-    this.tileMap.resize(20, 20)
 
-    tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 10, 10)
-    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 8, 8)
-    let layer = this.tileMap.containers[0]
-    layer.x = 350
-    layer.y = 200
+    this.tileMap = new TileMap(
+      this.sge,
+      16,
+      tileData,
+      mapLoader.Num_Layers,
+      (sprites, bx, by) => {
+        let gridSpot: ILD40GridSpot = {
+          sprites,
+          bx,
+          by,
+          canMove: true,
+        }
+        return gridSpot
+      })
+
+    this.mapMeta = mapLoader.createMetaData()
+    let mapJson = this.sge.getJson('map-test')
+    let { width, height } = mapJson
+    this.tileMap.resize(width, height)
+
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
+
+    mapLoader.load(this.tileMap, this.mapMeta, mapJson, {})
 
 
   }

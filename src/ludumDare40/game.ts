@@ -47,7 +47,9 @@ export function preload() {
     'gui-tileset',
     'ase-512-16',
   ])
+ 
   sge.preloadTiledMaps([
+    'map-test',
   ])
   sge.preloadPackedSprites([
   ])
