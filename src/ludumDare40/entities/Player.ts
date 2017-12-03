@@ -47,11 +47,36 @@ export class Player {
 
   update() {
 
+
+
     // controls
     this.bounds.width = 8
     this.bounds.height = 16
     this.controller.update(this.context.sge.keyboard, this.bounds)
     this.bounds.update(this.context)
+
+    // Attack with hats!
+    let kb = this.context.sge.keyboard
+    if (kb.justPressed(KeyCodes.space)) {
+      console.log('throw a hat!')
+
+      if (this.hats.hats.length > 0) {
+        let protoHat = this.hats.removeBottomHat()
+
+        let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 16 - 8)
+        hat.body.texture.frame = protoHat.texture.frame
+        hat.bounds.maxVy = 16
+        let speed = 1000
+        if (!this.bounds.facingRight) {
+          speed = -speed
+        }
+        hat.bounds.vx = speed
+
+      }
+
+
+
+    }
 
     this.container.position.set(this.bounds.x, this.bounds.y)
 

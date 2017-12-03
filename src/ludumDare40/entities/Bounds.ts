@@ -82,7 +82,7 @@ export class PlayerController {
     }
 
     if (bounds.onGround) {
-      if (kb.justPressed(KeyCodes.space)) {
+      if (kb.justPressed(KeyCodes.w) || kb.justPressed(KeyCodes.arrowUp)) {
         bounds.isJumping = true
         bounds.onGround = false
         //this.vy = -8
@@ -93,7 +93,7 @@ export class PlayerController {
     else if (bounds.isJumping) {
       bounds.jumpFrames++
 
-      if (kb.justReleased(KeyCodes.space)) {
+      if (kb.justReleased(KeyCodes.w) || kb.justReleased(KeyCodes.arrowUp)) {
 
         bounds.setStateFalling()
 
@@ -230,8 +230,8 @@ export class Bounds {
     if (this.vx < -this.maxVx) {
       this.vx = -this.maxVx
     }
-    if (this.vy > this.maxVx) {
-      this.vy = this.maxVx
+    if (this.vy > this.maxVy) {
+      this.vy = this.maxVy
     }
     if (this.vy < -this.maxVy) {
       this.vy = -this.maxVy

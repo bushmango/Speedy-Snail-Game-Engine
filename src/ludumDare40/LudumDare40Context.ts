@@ -18,6 +18,7 @@ import { SplashScreen } from 'engine/misc/SplashScreen';
 
 import { Player } from 'ludumDare40/entities/Player'
 import { Blob, BlobManager } from 'ludumDare40/entities/Blob'
+import { Hat, HatManager } from 'ludumDare40/entities/Hat'
 import { ParticleManager } from 'ludumDare40/entities/ParticleManager';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 
@@ -27,6 +28,9 @@ import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
 import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 
 const turn = Math.PI * 2
+
+let drawBounds = false
+let drawMarkers = false
 
 export class LudumDare40Context {
 
@@ -51,6 +55,7 @@ export class LudumDare40Context {
   boundsDrawer = new BoundsDrawer()
 
   blobs = new BlobManager()
+  hats = new HatManager()
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -74,6 +79,12 @@ export class LudumDare40Context {
 
     this.particles.init(this.sge)
 
+    this.blobs.init(this)
+    this.hats.init(this)
+
+    this.player = new Player()
+    this.player.init(this)
+
     // Add layers
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Background])
     this.addLayer(this.tileMap.containers[mapLoader.Layer_BackgroundDecor])
@@ -84,14 +95,13 @@ export class LudumDare40Context {
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
     this.layerMarkers = this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
-    this.layerMarkers.visible = false 
+    this.layerMarkers.visible = drawMarkers
 
     this.layerParticles = this.addLayer()
     this.layerParticles.addChild(this.particles.container)
 
-
     this.layerBounds = this.addLayer()
-    this.layerBounds.visible = false
+    this.layerBounds.visible = drawBounds
 
     this.boundsDrawer.init(this)
     this.layerBounds.addChild(this.boundsDrawer.container)
@@ -101,11 +111,10 @@ export class LudumDare40Context {
     this.addLayerUI(this.menuManager.menuManager.container)
     this.addLayerUI(this.menuManager.container)
 
-    this.player = new Player()
-    this.player.init(this)
+
     this.layerObjects.addChild(this.player.container)
 
-    this.blobs.init(this)
+
     // for (let i = 0; i < 3; i++) {
     //   this.blobs.createAt(130 + i * 40, 0)
     // }
@@ -123,6 +132,9 @@ export class LudumDare40Context {
     // Spawn blobs
     _.forEach(this.mapMeta.blobs, (c) => {
       this.blobs.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+    })
+    _.forEach(this.mapMeta.hats, (c) => {
+      this.hats.createAt(c.bx * 16 + 8, c.by * 16 + 8)
     })
 
     this.rootContainer.scale
@@ -153,10 +165,14 @@ export class LudumDare40Context {
     this.player.update()
 
     this.blobs.update()
+    this.hats.update()
 
     // Draw bounds
-    this.boundsDrawer.draw(this.player.bounds)
-    this.blobs.drawBounds(this.boundsDrawer)
+    if (drawBounds) {
+      this.boundsDrawer.draw(this.player.bounds)
+      this.blobs.drawBounds(this.boundsDrawer)
+      this.hats.drawBounds(this.boundsDrawer)
+    }
 
     // Check collisions
     _.forEach(this.blobs.items, (c) => {
@@ -171,11 +187,35 @@ export class LudumDare40Context {
 
           if (!b.isReadyToBeDestroyed) {
             b.destroy()
-            _.forEach(b.hats.hats, (c) => {
-              p.hats.addHat()
-            })
+            // _.forEach(b.hats.hats, (c) => {
+            //   p.hats.addHat()
+            // })
           }
 
+        }
+
+      }
+    })
+
+    let p = this.player
+    _.forEach(this.hats.items, (hat) => {
+
+      _.forEach(this.blobs.items, (blob) => {
+        if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
+          if (!blob.isReadyToBeDestroyed) {
+            blob.destroy()
+          }
+        }
+      })
+
+      if (collisions.isRectOverlap(p.bounds, hat.bounds)) {
+
+        if (hat.frame > 30) // Don't pick up a fresh hat
+        {
+          if (!hat.isReadyToBeDestroyed) {
+            p.hats.addHat(hat.body.texture.frame)
+            hat.destroy()
+          }
         }
 
       }

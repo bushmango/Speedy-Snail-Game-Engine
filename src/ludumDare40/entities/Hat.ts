@@ -11,22 +11,25 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 import { Bounds } from './Bounds';
 
-const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
+const hatFrames = spriteCreator.create16_frameHRun(2, 1, 5)
 
-export class BlobManager {
+export class HatManager {
 
   context: LudumDare40Context
 
-  items: Blob[] = []
+  items: Hat[] = []
 
   init(context: LudumDare40Context) {
     this.context = context
   }
 
   createAt(x, y) {
-    let item = new Blob()
+    let item = new Hat()
     item.init(this.context)
     item.moveTo(x, y)
+
+    item.body.texture.frame = _.sample(hatFrames)
+
     this.items.push(item)
     this.context.layerObjects.addChild(item.container)
     return item
@@ -60,16 +63,14 @@ export class BlobManager {
 
 }
 
-export class Blob {
+export class Hat {
 
   context: LudumDare40Context
   container = new PIXI.Container()
 
   body: PIXI.Sprite
-  hats = new HatStack()
 
   frame = 0
-  frameIdx = 0
 
   bounds = new Bounds()
 
@@ -78,33 +79,17 @@ export class Blob {
   init(cx: LudumDare40Context) {
     this.context = cx
 
-    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 4, 1)
-    this.body.anchor.set(0.5, 1)
-
-    this.hats.init(this.context.sge)
-
-    this.frameIdx = _.random(0, 1, false)
+    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 2, 1)
+    this.body.anchor.set(0.5, 11/16 )
 
     this.container.addChild(this.body)
-    this.container.addChild(this.hats.container)
 
   }
 
   destroy() {
     if (this.isReadyToBeDestroyed) { return }
+    // this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y)
     this.isReadyToBeDestroyed = true
-
-    this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y - 4)
-
-    _.forEach(this.hats.hats, (c) => {
-      let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8)
-      hat.body.texture.frame = c.texture.frame
-      hat.bounds.vx = _.random(-5, 50)
-      hat.bounds.vy = _.random(-300, -50)
-    })
-
-
-    
   }
 
 
@@ -115,24 +100,12 @@ export class Blob {
 
     this.frame++
 
-    if (this.frame % 16 === 0) {
-      this.frameIdx++
-      this.frameIdx = this.frameIdx % blobFrames.length
-      this.body.texture.frame = blobFrames[this.frameIdx]
-    }
-
     this.bounds.update(this.context)
 
     this.container.position.set(this.bounds.x, this.bounds.y)
 
     this.body.scale.set(this.bounds.facingRight ? 1 : -1, 1)
 
-    this.hats.x = 0
-    this.hats.y = -9 + (this.frameIdx === 0 ? 0 : 1)
-    this.hats.facingRight = this.bounds.facingRight
-    this.hats.update()
-
-    // this.context.particles.emitBlobParts(this.body.texture.frame, x, y)
   }
 
   moveTo(x, y) {
