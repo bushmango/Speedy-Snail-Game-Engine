@@ -43,6 +43,7 @@ export class LudumDare40Context {
   layerObjects: PIXI.Container
   layerParticles: PIXI.Container
   layerBounds: PIXI.Container
+  layerMarkers: PIXI.Container
 
   player: Player
 
@@ -82,7 +83,8 @@ export class LudumDare40Context {
     this.layerObjects = this.addLayer()
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
-    this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
+    this.layerMarkers = this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
+    this.layerMarkers.visible = false wd
 
     this.layerParticles = this.addLayer()
     this.layerParticles.addChild(this.particles.container)
@@ -103,9 +105,9 @@ export class LudumDare40Context {
     this.layerObjects.addChild(this.player.container)
 
     this.blobs.init(this)
-    for (let i = 0; i < 3; i++) {
-      this.blobs.createAt(130 + i * 40, 0)
-    }
+    // for (let i = 0; i < 3; i++) {
+    //   this.blobs.createAt(130 + i * 40, 0)
+    // }
 
     this.sge.stage.addChild(this.rootContainer)
     this.rootContainer.scale.set(4)
@@ -114,9 +116,13 @@ export class LudumDare40Context {
     this.sge.stage.addChild(this.splash.container)
 
     // Set player to spawn
-    let spawn = this.mapMeta.spawns[0]
+    let spawn = this.mapMeta.spawn
     this.player.moveTo(spawn.bx * 16 + 8, spawn.by * 16 + 14)
-    
+
+    // Spawn blobs
+    _.forEach(this.mapMeta.blobs, (c) => {
+      this.blobs.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+    })
 
     this.rootContainer.scale
 

@@ -28,11 +28,13 @@ export interface ISpawnLocation {
   by: number,
 }
 export interface IMapMedatada {
-  spawns: ISpawnLocation[]
+  spawn: ISpawnLocation,
+  blobs: ISpawnLocation[],
 }
 export function createMetaData() {
   let md: IMapMedatada = {
-    spawns: []
+    spawn: null,
+    blobs: [],
   }
   return md
 }
@@ -292,8 +294,17 @@ function loadMarkerLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data
     if (t > 1) {
       // Add spawns
       if (isExact(t, 1, 2)) {
-        console.log('marker hit', t)
-        addSpawn(mapMeta, gs)
+        console.log('marker hit spawn', t)
+        mapMeta.spawn = {
+          bx: gs.bx,
+          by: gs.by,
+        }
+      } else if (isExact(t, 4, 1)) {
+        console.log('marker hit blob', t)
+        mapMeta.blobs.push({
+          bx: gs.bx,
+          by: gs.by,
+        })
       }
       else {
         console.warn('marker UNKNOWN', t)
@@ -301,12 +312,5 @@ function loadMarkerLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data
 
     }
 
-  })
-}
-
-function addSpawn(mapMeta: IMapMedatada, gs: IGridSpot) {
-  mapMeta.spawns.push({
-    bx: gs.bx,
-    by: gs.by,
   })
 }
