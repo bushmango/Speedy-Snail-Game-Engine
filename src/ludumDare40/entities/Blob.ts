@@ -96,8 +96,8 @@ export class Blob {
 
     this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y - 4)
 
-    _.forEach(this.hats.hats, (c) => {
-      let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8)
+    _.forEach(this.hats.hats, (c, cIdx) => {
+      let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8 - cIdx * 3)
       hat.body.texture.frame = c.texture.frame
       hat.bounds.vx = _.random(-5, 50)
       hat.bounds.vy = _.random(-300, -50)

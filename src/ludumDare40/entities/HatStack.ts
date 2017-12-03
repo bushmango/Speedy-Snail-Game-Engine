@@ -23,9 +23,9 @@ export class HatStack {
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    for (let i = 0; i < 3; i++) {
-      this.addHat()
-    }
+    //dfor (let i = 0; i < 3; i++) {
+    //this.addHat()
+    //}
 
   }
   update() {

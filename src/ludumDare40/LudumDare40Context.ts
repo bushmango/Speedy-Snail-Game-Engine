@@ -200,21 +200,29 @@ export class LudumDare40Context {
     let p = this.player
     _.forEach(this.hats.items, (hat) => {
 
+      let processed = false
       _.forEach(this.blobs.items, (blob) => {
+        if(processed) { return }
+
         if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
           if (!blob.isReadyToBeDestroyed) {
-            blob.destroy()
+            // blob.destroy()
+
+            blob.hats.addHat(hat.body.texture.frame)
+            hat.destroy()
+            processed = true
           }
         }
       })
 
-      if (collisions.isRectOverlap(p.bounds, hat.bounds)) {
+      if (!processed && collisions.isRectOverlap(p.bounds, hat.bounds)) {
 
         if (hat.frame > 30) // Don't pick up a fresh hat
         {
           if (!hat.isReadyToBeDestroyed) {
             p.hats.addHat(hat.body.texture.frame)
             hat.destroy()
+            processed = true
           }
         }
 
@@ -263,24 +271,32 @@ export class LudumDare40Context {
     )
 
     let numPieces = 10
-    let inOrder = true
+    let maxRandos = 7
+    let inOrder = false
 
     this.mapMeta = mapLoader.createMetaData()
     //let mapJson = this.sge.getJson('map-start')
     //let { width, height } = mapJson
     let width = 20
     let height = 20
-    this.tileMap.resize(width * numPieces + 2, height + 2)
+    this.tileMap.resize(width * numPieces + 2, height + 4)
 
     // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
     mapLoader.load(20 * 0, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
-    for (let i = 1; i < 9; i++) {
-      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (((i - 1) % 7) + 1)), {})
+    for (let i = 1; i < (numPieces - 1); i++) {
+
+      let mapNum = ((i - 1) % maxRandos) + 1
+      if (inOrder) {
+
+      } else {
+        mapNum = _.random(1, mapNum + 1, false)
+      }
+      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})  
     }
     mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 1, width * numPieces, 1)
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 4 - 1, width * numPieces, 1)
 
 
   }

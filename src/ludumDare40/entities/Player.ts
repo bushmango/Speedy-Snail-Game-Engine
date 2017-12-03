@@ -8,7 +8,8 @@ const turn = Math.PI * 2
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack';
 import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { Bounds, PlayerController } from 'ludumDare40/entities/Bounds';
+import { Bounds } from 'ludumDare40/entities/Bounds';
+import { PlayerController } from 'ludumDare40/entities/PlayerController';
 
 export class Player {
 
@@ -34,6 +35,9 @@ export class Player {
     this.head = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, 2)
     this.head.anchor.set(0.5, 1)
 
+    this.bounds.airDrag = 0
+    this.bounds.groundDrag = 0
+
     this.hats.init(this.context.sge)
 
     this.container.addChild(this.body)
@@ -42,6 +46,9 @@ export class Player {
 
     for (let i = 0; i < 10; i++) {
       this.addFollower()
+    }
+    for (let i = 0; i < 10; i++) {
+      this.hats.addHat()
     }
 
   }
