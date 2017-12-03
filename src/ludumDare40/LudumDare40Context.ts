@@ -91,6 +91,7 @@ export class LudumDare40Context {
 
 
     this.layerBounds = this.addLayer()
+    this.layerBounds.visible = false
 
     this.boundsDrawer.init(this)
     this.layerBounds.addChild(this.boundsDrawer.container)
@@ -154,7 +155,7 @@ export class LudumDare40Context {
     this.blobs.update()
 
     // Draw bounds
-    this.boundsDrawer.draw(this.player)
+    this.boundsDrawer.draw(this.player.bounds)
     this.blobs.drawBounds(this.boundsDrawer)
 
     // Check collisions
@@ -163,8 +164,8 @@ export class LudumDare40Context {
       let p = this.player
       let b = c
 
-      if (collisions.isRectOverlap(p, b.bounds)) {
-        if (p.boundsY2 < b.bounds.boundsY2 && p.vy > 0) {
+      if (collisions.isRectOverlap(p.bounds, b.bounds)) {
+        if (p.bounds.boundsY2 < b.bounds.boundsY2 && p.bounds.vy > 0) {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
 
@@ -182,8 +183,8 @@ export class LudumDare40Context {
 
     // camera
     let { width, height } = this.sge.getViewSize()
-    let x = (-this.player.boundsX1 * this.rootContainer.scale.x)
-    let y = (-this.player.boundsY1 * this.rootContainer.scale.y)
+    let x = (-this.player.bounds.boundsX1 * this.rootContainer.scale.x)
+    let y = (-this.player.bounds.boundsY1 * this.rootContainer.scale.y)
     this.rootContainer.position.set(x + width / 2, y + height / 2)
 
 

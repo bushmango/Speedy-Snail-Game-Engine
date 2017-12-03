@@ -8,6 +8,7 @@ const turn = Math.PI * 2
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack';
 import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
+import { Bounds, PlayerController } from 'ludumDare40/entities/Bounds';
 
 export class Player {
 
@@ -19,33 +20,9 @@ export class Player {
 
   hats = new HatStack()
 
-  onGround = false
-  isJumping = false
-  isFalling = true
-  isFastFalling = true
-  jumpFrames = 0
-  fallFrames = 0
+  bounds = new Bounds()
+  controller = new PlayerController()
 
-  isMovingRight = false
-  isMovingLeft = false
-  movingFrames = 0
-
-  vx = 0
-  vy = 0
-  subX = 0 * 32
-  subY = 0 * 32
-  accelX = 0
-  accelY = 0
-
-  maxVx = 64
-  maxVy = 64
-
-  boundsX1 = 0
-  boundsX2 = 0
-  boundsY1 = 0
-  boundsY2 = 0
-
-  facingRight = true
 
   init(cx: LudumDare40Context) {
     this.context = cx
@@ -64,328 +41,28 @@ export class Player {
   }
 
   moveTo(x, y) {
-    this.subX = x * 32
-    this.subY = y * 32
+    this.bounds.moveTo(x, y)
   }
 
-  setBounds(x1, y1, x2, y2) {
-    this.boundsX1 = x1
-    this.boundsX2 = x2
-    this.boundsY1 = y1
-    this.boundsY2 = y2
-  }
-
-
-  setStateFalling() {
-    this.onGround = false
-    this.isJumping = false
-    this.isFalling = true
-    this.isFastFalling = true
-  }
-  setStateOnGround() {
-    this.onGround = true
-    this.isFalling = false
-    this.isFastFalling = false
-    this.isJumping = false
-    this.fallFrames = 0
-    this.vy = 0
-    this.accelY = 0
-  }
 
   update() {
 
     // controls
-    let kb = this.context.sge.keyboard
+    this.bounds.width = 8
+    this.bounds.height = 16
+    this.controller.update(this.context.sge.keyboard, this.bounds)
+    this.bounds.update(this.context)
 
-    let subPix = 32
-
-    if (kb.isPressed(KeyCodes.arrowRight) || kb.isPressed(KeyCodes.d)) {
-      this.movingFrames++
-      this.isMovingRight = true
-      this.isMovingLeft = false
-      this.facingRight = true
-    } else if (kb.isPressed(KeyCodes.arrowLeft) || kb.isPressed(KeyCodes.a)) {
-      this.movingFrames++
-      this.isMovingLeft = true
-      this.isMovingRight = false
-      this.facingRight = false
-    } else {
-      this.movingFrames = 0
-      this.isMovingLeft = false
-      this.isMovingRight = false
-    }
-
-    if (this.isMovingLeft || this.isMovingRight) {
-
-      let dir = this.isMovingLeft ? -1 : 1
-
-      if (this.vx * dir < 0) {
-        this.accelX = 8 * dir
-      } else if (this.vx * dir < 16) {
-        this.accelX = 4 * dir
-      } else if (this.vx * dir < 32) {
-        this.accelX = 2 * dir
-      } else if (this.vx * dir < this.maxVx) {
-        this.accelX = 1 * dir
-      }
-
-    } else {
-
-      let xDrag = 1
-      let speed = this.vx > 0 ? this.vx : -this.vx
-      if (speed > 16) {
-        xDrag = 4
-      } else if (speed > 8) {
-        xDrag = 2
-      } else {
-        xDrag = 1
-      }
-      if (!this.onGround) {
-        xDrag = xDrag / 2
-        if (xDrag < 1) {
-          xDrag = 1
-        }
-      }
-
-      if (this.vx > 0) {
-        this.accelX = -xDrag
-        if (this.accelX < -this.vx) {
-          this.accelX = -this.vx
-        }
-      } else if (this.vx < 0) {
-        this.accelX = xDrag
-        if (this.accelX > -this.vx) {
-          this.accelX = -this.vx
-        }
-      } else {
-        this.accelX = 0
-      }
-
-    }
-
-    if (this.onGround) {
-      if (kb.justPressed(KeyCodes.space)) {
-        this.isJumping = true
-        this.onGround = false
-        //this.vy = -8
-        this.accelY = -8
-        this.jumpFrames = 0
-      }
-    }
-    else if (this.isJumping) {
-      this.jumpFrames++
-
-      if (kb.justReleased(KeyCodes.space)) {
-
-        this.setStateFalling()
-
-        //this.accelY = 8
-        //this.vy = 8
-      } else {
-        if (this.jumpFrames < 4) {
-          this.accelY = -32
-        } else if (this.jumpFrames < 8) {
-          this.accelY = -16
-        } else if (this.jumpFrames < 10) {
-          this.accelY = -2
-        } else if (this.jumpFrames < 28) {
-          this.accelY = -1
-        } else {
-          this.setStateFalling()
-        }
-      }
-    } else if (this.isFalling) {
-
-      if (kb.isUp(KeyCodes.space)) {
-        this.isFastFalling = true
-      }
-
-      this.fallFrames++
-
-      if (this.isFastFalling) {
-        if (this.fallFrames < 8) {
-          this.accelY = 8
-        } else if (this.fallFrames < 16) {
-          this.accelY = 14
-        } else if (this.fallFrames < 32) {
-          this.accelY = 16
-        } else {
-          this.accelY = 20
-        }
-      }
-      else {
-        if (this.fallFrames < 8) {
-          this.accelY = 4
-        } else if (this.fallFrames < 16) {
-          this.accelY = 8
-        } else if (this.fallFrames < 32) {
-          this.accelY = 12
-        } else {
-          this.accelY = 16
-        }
-      }
-    }
-
-    this.vy += this.accelY
-    this.vx += this.accelX
-
-    if (this.vx > this.maxVx) {
-      this.vx = this.maxVx
-    }
-    if (this.vx < -this.maxVx) {
-      this.vx = -this.maxVx
-    }
-    if (this.vy > this.maxVx) {
-      this.vy = this.maxVx
-    }
-    if (this.vy < -this.maxVy) {
-      this.vy = -this.maxVy
-    }
-
-    this.subY += this.vy
-    this.subX += this.vx
-
-    // Check for contacts
-
-    let x = Math.floor(this.subX / subPix)
-    let y = Math.floor(this.subY / subPix)
-
-    this.setBounds(x - 4, y - 16, x + 4, y)
-
-    let tm = this.context.tileMap
-
-    let rs1 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY2 - 1)
-    let rightContact1 = false
-    let rightX = 0
-    if (rs1) {
-      if (!rs1.canMove) {
-        rightContact1 = true
-        rightX = rs1.bx * 16 * 32 - 32 * 4 - 1
-        this.vx = 0
-        this.subX = rightX
-      }
-    }
-    let rs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY1 + 1)
-    let rightContact2 = false
-    rightX = 0
-    if (rs2) {
-      if (!rs2.canMove) {
-        rightContact2 = true
-        rightX = rs2.bx * 16 * 32 - 32 * 4 - 1
-        this.vx = 0
-        this.subX = rightX
-      }
-    }
-
-    let ls1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 - 1)
-    let leftContact1 = false
-    let leftX = 0
-    if (ls1) {
-      if (!ls1.canMove) {
-        leftContact1 = true
-        leftX = (ls1.bx + 1) * 16 * 32 + 32 * 4 + 1
-        this.vx = 0
-        this.subX = leftX
-      }
-    }
-
-    let ls2 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY1 + 1)
-    let leftContact2 = false
-    leftX = 0
-    if (ls2) {
-      if (!ls2.canMove) {
-        leftContact2 = true
-        leftX = (ls2.bx + 1) * 16 * 32 + 32 * 4 + 1
-        this.vx = 0
-        this.subX = leftX
-      }
-    }
-
-    if(rightContact1 || rightContact2 || leftContact1 || leftContact2) {
-      x = Math.floor(this.subX / subPix)
-      y = Math.floor(this.subY / subPix)
-      this.setBounds(x - 4, y - 16, x + 4, y)      
-    }
-
-  
-    let gs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 + 1)
-    let groundContact1 = false
-    let groundY = 0
-    if (gs1) {
-      if (!gs1.canMove) {
-        groundContact1 = true
-        groundY = gs1.by * 16
-      }
-    }
-    let gs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY2 + 1)
-    let groundContact2 = false
-    if (gs2) {
-      if (!gs2.canMove) {
-        groundContact2 = true
-        groundY = gs1.by * 16
-      }
-    }
-
-    let cs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY1 - 1)
-    let ceilingContact1 = false
-    let cielingY = 0
-    if (cs1) {
-      if (!cs1.canMove) {
-        ceilingContact1 = true
-        cielingY = cs1.by * 16
-      }
-    }
-    let cs2 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY1 - 1)
-    let ceilingContact2 = false
-    if (cs2) {
-      if (!cs2.canMove) {
-        ceilingContact2 = true
-        cielingY = cs2.by * 16
-      }
-    }
-
-    if (this.isFalling) {
-      if (groundContact1 || groundContact2) {
-        this.subY = groundY * 32
-        this.setStateOnGround()
-      }
-    }
-    if (this.isJumping) {
-      if (ceilingContact1 || ceilingContact2) {
-        //this.subY = groundY * 32
-        this.setStateFalling()
-        if (this.vy < 0) { this.vy = 0 }
-      }
-    }
-
-    if (this.onGround) {
-      if (!groundContact1 && !groundContact2) {
-        this.setStateFalling()
-      }
-    }
-
-    let floor = 64 * 32 * 16  // Maximum lowest point
-    if (this.subY >= floor) {
-      this.subY = floor
-      this.setStateOnGround()
-    }
-
-
-    x = Math.floor(this.subX / subPix)
-    y = Math.floor(this.subY / subPix)
-
-    this.setBounds(x - 4, y - 16, x + 4, y)
-
-    this.container.position.set(x, y)
+    this.container.position.set(this.bounds.x, this.bounds.y)
 
     this.body.position.set(0, 0)
     this.head.position.set(0, 0 - 16)
 
-    this.head.scale.set(this.facingRight ? 1 : -1, 1)
+    this.head.scale.set(this.bounds.facingRight ? 1 : -1, 1)
 
     this.hats.x = 0
     this.hats.y = -16 - 8
-    this.hats.facingRight = this.facingRight
+    this.hats.facingRight = this.bounds.facingRight
     this.hats.update()
 
   }
