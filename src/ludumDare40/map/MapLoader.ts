@@ -162,10 +162,43 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
     if (isExact(t, 6, 6)) {
       gs.hatCountHide = 20
     }
+    if (isExact(t, 6, 7)) {
+      gs.hatCountHide = 30
+    }
+    if (isExact(t, 6, 8)) {
+      gs.hatCountHide = 40
+    }
+    if (isExact(t, 6, 9)) {
+      gs.hatCountHide = 50
+    }
 
-    if (isExact(t, 7, 4)) {
-      gs.hatCountShow = 10
+    if (isExact(t, 7, 3)) {
+      gs.fatal = true
     } 
+    if (isExact(t, 7, 4)) {
+      gs.hatCountShow = 1
+      gs.fatal = true
+    } 
+    if (isExact(t, 7, 5)) {
+      gs.hatCountShow = 10
+      gs.fatal = true
+    } 
+    if (isExact(t, 7, 6)) {
+      gs.hatCountShow = 20
+      gs.fatal = true
+    }
+    if (isExact(t, 7, 7)) {
+      gs.hatCountShow = 30
+      gs.fatal = true
+    }
+    if (isExact(t, 7, 8)) {
+      gs.hatCountShow = 40
+      gs.fatal = true
+    }
+    if (isExact(t, 7, 9)) {
+      gs.hatCountShow = 50
+      gs.fatal = true
+    }
 
   })
 }

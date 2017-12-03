@@ -284,8 +284,8 @@ export class LudumDare40Context {
     )
 
     let numPieces = 10
-    let maxRandos = 7
-    let inOrder = false
+    let maxRandos = 8
+    let inOrder = true
 
     this.mapMeta = mapLoader.createMetaData()
     //let mapJson = this.sge.getJson('map-start')
@@ -309,7 +309,7 @@ export class LudumDare40Context {
     }
     mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 4 - 1, width * numPieces, 1,
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 4 - 1, width * numPieces, 1,
      (gs: ILD40GridSpot) => {
       gs.canMove = false
       gs.fatal = true
