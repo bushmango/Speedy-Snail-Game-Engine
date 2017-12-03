@@ -14,11 +14,14 @@ export function strokeRect(tm: TileMap<IGridSpot>, layer, tileIndex, x: number, 
 
 }
 
-export function fillRect(tm: TileMap<IGridSpot>, layer, tileIndex, x: number, y: number, w: number, h: number, ) {
+export function fillRect(tm: TileMap<IGridSpot>, layer, tileIndex, x: number, y: number, w: number, h: number, cb: (gs) => void = null) {
 
   for (let i = 0; i < w; i++) {
     for (let j = 0; j < h; j++) {
       tm.setTileAt(layer, x + i, y + j, tileIndex)
+      if(cb) {
+        cb(tm.getTileAt( x + i, y + j))
+      }
     }
   }
 

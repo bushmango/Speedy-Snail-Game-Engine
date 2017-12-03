@@ -152,6 +152,18 @@ function loadBackgroundDecorLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMet
 function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
   loadBasicLayer(json, x, y, tm, Layer_Wall, data, null, (gs, t) => {
     gs.canMove = (t <= 1)
+
+    if (isExact(t, 6, 4)) {
+      gs.hatCountHide = 10
+    } 
+    if (isExact(t, 6, 5)) {
+      gs.hatCountHide = 20
+    } 
+
+    if (isExact(t, 7, 4)) {
+      gs.hatCountShow = 10
+    } 
+
   })
 }
 

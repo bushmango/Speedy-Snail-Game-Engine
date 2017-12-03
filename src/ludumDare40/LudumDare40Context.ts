@@ -28,6 +28,7 @@ import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
 import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
+import { MapScanner } from 'ludumDare40/game/MapScanner';
 
 const turn = Math.PI * 2
 
@@ -37,8 +38,11 @@ let drawMarkers = false
 export class LudumDare40Context {
 
   sge: SimpleGameEngine
+  
   tileMap: TileMap<ILD40GridSpot>
   mapMeta: IMapMedatada
+  mapScanner = new MapScanner()
+
   menuManager = new MenuManager()
 
   splash: SplashScreen
@@ -162,6 +166,8 @@ export class LudumDare40Context {
 
   onUpdate() {
 
+    this.mapScanner.update(this)
+
     this.boundsDrawer.clear()
 
     this.splash.update()
@@ -269,6 +275,9 @@ export class LudumDare40Context {
           bx,
           by,
           canMove: true,
+          hatCountHide: 0,
+          hatCountShow: 0,
+          fatal: false,
         }
         return gridSpot
       }
@@ -300,7 +309,11 @@ export class LudumDare40Context {
     }
     mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 4 - 1, width * numPieces, 1)
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 4 - 1, width * numPieces, 1,
+     (gs: ILD40GridSpot) => {
+      gs.canMove = false
+      gs.fatal = true
+    })
 
 
   }
