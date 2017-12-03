@@ -100,7 +100,7 @@ export function addTex(y, x, tm: TileMap<ILD40GridSpot>) {
   }
 }
 
-export function load(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, json, levelMetadata) {
+export function load(x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, json, levelMetadata) {
   console.log('load map', json)
 
   _.forEach(json.layers, (layer: { name: string, data: any }) => {
@@ -108,22 +108,22 @@ export function load(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, json, le
     console.log('processing layer', layer.name, layer)
 
     if (layer.name === "Background") {
-      loadBackgroundLayer(tm, mapMeta, layer.data)
+      loadBackgroundLayer(json, x, y, tm, mapMeta, layer.data)
     }
     if (layer.name === "Background-Decor") {
-      loadBackgroundDecorLayer(tm, mapMeta, layer.data)
+      loadBackgroundDecorLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
     if (layer.name === "Wall") {
-      loadWallLayer(tm, mapMeta, layer.data)
+      loadWallLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
     if (layer.name === "Decor") {
-      loadDecorLayer(tm, mapMeta, layer.data)
+      loadDecorLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
     if (layer.name === "Marker") {
-      loadMarkerLayer(tm, mapMeta, layer.data)
+      loadMarkerLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
   })
@@ -132,16 +132,16 @@ export function load(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, json, le
 
 
 
-function loadBackgroundLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(tm, Layer_Background, data, (t) => {
+function loadBackgroundLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+  loadBasicLayer(json, x, y, tm, Layer_Background, data, (t) => {
     return t
   },
     (gs, t) => {
 
     })
 }
-function loadBackgroundDecorLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(tm, Layer_BackgroundDecor, data, (t) => {
+function loadBackgroundDecorLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+  loadBasicLayer(json, x, y, tm, Layer_BackgroundDecor, data, (t) => {
     return t
   },
     (gs, t) => {
@@ -149,20 +149,20 @@ function loadBackgroundDecorLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedat
     })
 }
 
-function loadWallLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(tm, Layer_Wall, data, null, (gs, t) => {
+function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+  loadBasicLayer(json, x, y, tm, Layer_Wall, data, null, (gs, t) => {
     gs.canMove = (t <= 1)
   })
 }
 
-function loadDecorLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(tm, Layer_Decor, data, null, (gs, t) => {
+function loadDecorLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+  loadBasicLayer(json, x, y, tm, Layer_Decor, data, null, (gs, t) => {
 
   })
 }
 
-function loadMarkerLayer(tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(tm, Layer_Marker, data, null, (gs, t, x, y) => {
+function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+  loadBasicLayer(json, x, y, tm, Layer_Marker, data, null, (gs, t, x, y) => {
 
     if (t > 1) {
       // Add spawns

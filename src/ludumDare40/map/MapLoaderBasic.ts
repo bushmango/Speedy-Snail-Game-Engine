@@ -18,6 +18,8 @@ const FlippedAntiDiagonallyFlag = 0x20000000
 const MinFlag = 0x10000000
 
 export function loadBasicLayer(
+  json, 
+  xDest, yDest, 
   tm: TileMap<ILD40GridSpot>,
   layer,
   data: any,
@@ -25,13 +27,19 @@ export function loadBasicLayer(
   cb: (gs: ILD40GridSpot, t: number, x: number, y: number) => any,
   clearEmpty: boolean = true) {
 
-  for (let j = 0; j < tm.blockHeight; j++) {
-    for (let i = 0; i < tm.blockWidth; i++) {
+  let { width, height } = json
 
-      let idx = j * tm.blockWidth + i
-      let d = tm.data[idx]
+  for (let j = 0; j < height; j++) {
+    for (let i = 0; i < width; i++) {
 
-      let t = data[idx] - 1
+      let ix = i + xDest
+      let jy = j + yDest
+
+      let idxDest = (jy) * tm.blockWidth + (ix)
+      let idxSrc =  (j) * width + (i)
+      let d = tm.data[idxDest]
+
+      let t = data[idxSrc] - 1
 
       // .. beep boop
       if (t > 1) {
@@ -117,7 +125,7 @@ export function loadBasicLayer(
           tm.addTile(newTile)
         }
 
-        let gs = tm.setTileAtEx(layer, i, j, texKey, flipX, flipY, rot)
+        let gs = tm.setTileAtEx(layer, ix, jy, texKey, flipX, flipY, rot)
 
         if (cb) {
           cb(gs, t, x, y)
@@ -126,7 +134,7 @@ export function loadBasicLayer(
       } else {
 
         if (clearEmpty) {
-          let gs = tm.clearTileAt(layer, i, j)
+          let gs = tm.clearTileAt(layer, ix, jy)
 
           if (cb) {
             cb(gs, t, 0, 0)

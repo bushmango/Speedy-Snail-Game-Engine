@@ -49,7 +49,15 @@ export function preload() {
   ])
  
   sge.preloadTiledMaps([
-    'map-test',
+    'map-start',
+    'map-01-001',
+    'map-01-002',
+    'map-01-003',
+    'map-01-004',
+    'map-01-005',
+    'map-01-006',
+    'map-01-007',
+    'map-end',
   ])
   sge.preloadPackedSprites([
   ])

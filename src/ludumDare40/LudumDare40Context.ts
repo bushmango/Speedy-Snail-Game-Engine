@@ -259,16 +259,28 @@ export class LudumDare40Context {
           canMove: true,
         }
         return gridSpot
-      })
+      }
+    )
+
+    let numPieces = 10
+    let inOrder = true
 
     this.mapMeta = mapLoader.createMetaData()
-    let mapJson = this.sge.getJson('map-test')
-    let { width, height } = mapJson
-    this.tileMap.resize(width, height)
+    //let mapJson = this.sge.getJson('map-start')
+    //let { width, height } = mapJson
+    let width = 20
+    let height = 20
+    this.tileMap.resize(width * numPieces + 2, height + 2)
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
+    // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
-    mapLoader.load(this.tileMap, this.mapMeta, mapJson, {})
+    mapLoader.load(20 * 0, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
+    for (let i = 1; i < 9; i++) {
+      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (((i - 1) % 7) + 1)), {})
+    }
+    mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_6_3', 0, height + 1, width * numPieces, 1)
 
 
   }
