@@ -23,6 +23,8 @@ export class Player {
   bounds = new Bounds()
   controller = new PlayerController()
 
+  pastPositions = []
+  followers: PIXI.Sprite[] = []
 
   init(cx: LudumDare40Context) {
     this.context = cx
@@ -38,15 +40,29 @@ export class Player {
     this.container.addChild(this.head)
     this.container.addChild(this.hats.container)
 
+    for (let i = 0; i < 10; i++) {
+      this.addFollower()
+    }
+
   }
 
   moveTo(x, y) {
     this.bounds.moveTo(x, y)
   }
 
+  addFollower() {
+
+    let x = _.random(3, 6 + 1, false)
+
+    let item = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, x)
+    item.anchor.set(0.5, 1)
+
+    this.followers.push(item)
+    this.container.addChild(item)
+  }
+
 
   update() {
-
 
 
     // controls
@@ -54,6 +70,21 @@ export class Player {
     this.bounds.height = 16
     this.controller.update(this.context.sge.keyboard, this.bounds)
     this.bounds.update(this.context)
+
+    this.pastPositions.unshift([this.bounds.x, this.bounds.y, this.bounds.facingRight])
+    if(this.pastPositions.length > 300) {
+      this.pastPositions.pop()
+    }
+    for(let idxFollower = 0; idxFollower < this.followers.length; idxFollower++) {
+      let f = this.followers[idxFollower]
+      let adj = idxFollower * 5 + 5
+      if(this.pastPositions.length > adj) {
+        let pp = this.pastPositions[adj]
+        f.position.set(pp[0] - this.bounds.x, pp[1] - this.bounds.y)
+        f.scale.x = pp[2] ? 1 : -1
+      }
+     
+    }
 
     // Attack with hats!
     let kb = this.context.sge.keyboard
