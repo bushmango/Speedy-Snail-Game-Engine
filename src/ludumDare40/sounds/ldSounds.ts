@@ -3,6 +3,7 @@ import * as soundsGeneric from 'engine/sounds/soundGeneric'
 import * as pubSub from 'engine/common/pubSub'
 
 let soundTest = false
+const musicDir = '/public/ludumDare40/music/'
 
 export function load(sge: SimpleGameEngine) {
   soundsGeneric.load(sge.getJson('audioSprite'), () => {
@@ -19,11 +20,12 @@ export function load(sge: SimpleGameEngine) {
 }
 
 export function playMusic1() {
-  soundsGeneric.playMusic('/public/ludumDare40/music/music')
+  soundsGeneric.playMusic(musicDir + 'theme1')
 }
 
 export function playLoaded() {
   // soundsGeneric.play('pickup001')
+  soundsGeneric.play('smash001')
 }
 
 export function playPickup() {
@@ -32,6 +34,13 @@ export function playPickup() {
 
 export function playExplode() {
   soundsGeneric.play('hurt001')
+}
+
+export function playSmash(){
+  soundsGeneric.play('smash001')
+}
+export function playThrowHat() {
+  soundsGeneric.play('hatthrow001')
 }
 
 // Links to other systems

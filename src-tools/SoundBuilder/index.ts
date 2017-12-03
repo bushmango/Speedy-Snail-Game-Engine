@@ -27,8 +27,14 @@ process.argv.forEach((val, index, array) => {
 // let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
 // let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
 
-let watchPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\ludumDare40\\sounds\\sprite1\\`
-let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare40\\sounds\\`
+let folder = 'ludumDare40'
+let watchPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\sounds\\sprite1\\`
+let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\sounds\\`
+
+let watchPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\music\\`
+let outPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\music\\`
+
+
 
 let verbose = false
 
@@ -36,6 +42,7 @@ let mode = 'sprite'
 
 let ffmpegPath = 'C:/dev/tools/ffmpeg-3.3.3-win64-static/bin/ffmpeg.exe'
 let watchGlob = watchPath + '*.wav'
+let watchGlobMusic = watchPathMusic + '*.wav'
 
 function run() {
 
@@ -49,9 +56,11 @@ function run() {
     .parse(process.argv);
 
   // Stuff that is always done
-  let glob = watchGlob
-  watch(glob)
-  console.log('Watching for: ', glob)
+  watch(watchGlob)
+  console.log('Watching sounds : ', watchGlob)
+
+  watchMusic(watchGlobMusic)
+  console.log('Watching music : ', watchGlobMusic)
 }
 
 function watch(glob: string) {
@@ -64,20 +73,37 @@ function watch(glob: string) {
   let log = console.log.bind(console)
   // Add event listeners.
   watcher
-    .on('add', loc => onWatchEvent(loc, 'added'))
-    .on('change', loc => onWatchEvent(loc, 'changed'))
+    .on('add', loc => onWatchEvent(loc, 'added', false))
+    .on('change', loc => onWatchEvent(loc, 'changed', false))
 }
+
+function watchMusic(glob: string) {
+  // Initialize watcher.
+  let watcher = chokidar.watch(glob, {
+    persistent: true
+  })
+
+  // Something to use when events are received.
+  let log = console.log.bind(console)
+  // Add event listeners.
+  watcher
+    .on('add', loc => onWatchEvent(loc, 'added', true))
+    .on('change', loc => onWatchEvent(loc, 'changed', true))
+}
+
 
 const exec = require('child_process').exec;
 const path = require('path');
-function onWatchEvent(loc, type) {
+function onWatchEvent(loc, type, isMusic) {
 
   console.log(type, loc)
-  if (mode === 'convert') {
+  if (mode === 'convert' || isMusic) {
     let originalFilePath = loc
     let originalFilePathWithoutExtension = loc.slice(0, -path.extname(loc).length)
     let fileName = path.basename(originalFilePathWithoutExtension)
-    let filePath = path.join(outPath, fileName)
+
+    let filePath = path.join(isMusic ? outPathMusic : outPath, fileName)
+
     // let args1 = `-y -i "${originalFilePath}" -acodec libmp3lame "${filePath}.mp3"`
     let args1 = `-y -i "${originalFilePath}" -c:a aac -b:a 160k "${filePath}.aac"`
     let args2 = `-y -i "${originalFilePath}" -acodec libvorbis -aq 4 "${filePath}.ogg"`
@@ -85,7 +111,7 @@ function onWatchEvent(loc, type) {
     runCommand(ffmpegPath, args1, 'to aac', filePath)
     runCommand(ffmpegPath, args2, 'to ogg', filePath)
   }
-  if (mode === 'sprite') {
+  if (mode === 'sprite' && !isMusic) {
     _throttled_createSprite()
   }
 }
@@ -143,10 +169,10 @@ function createSprite() {
 
       // console.log(JSON.stringify(obj, null, 2))
       obj.urls = [
-        "public/sounds/audioSprite.ogg",
-        "public/sounds/audioSprite.m4a",
-        "public/sounds/audioSprite.mp3",
-        "public/sounds/audioSprite.ac3",
+        `public/${folder}/sounds/audioSprite.ogg`,
+        `public/${folder}/sounds/audioSprite.m4a`,
+        `public/${folder}/sounds/audioSprite.mp3`,
+        `public/${folder}/sounds/audioSprite.ac3`,
       ]
       if (verbose) {
         console.log(JSON.stringify(obj, null, 2))

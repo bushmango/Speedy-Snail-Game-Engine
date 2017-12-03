@@ -27,6 +27,8 @@ import * as mapLoader from 'ludumDare40/map/MapLoader';
 import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
 import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 
+import * as sounds from 'ludumDare40/sounds/ldSounds'
+
 const turn = Math.PI * 2
 
 let drawBounds = false
@@ -40,6 +42,8 @@ export class LudumDare40Context {
   menuManager = new MenuManager()
 
   splash: SplashScreen
+
+  sounds = sounds
 
   rootContainer: PIXI.Container = new PIXI.Container()
   rootContainerUI: PIXI.Container = new PIXI.Container()
@@ -290,7 +294,7 @@ export class LudumDare40Context {
       if (inOrder) {
 
       } else {
-        mapNum = _.random(1, mapNum + 1, false)
+        mapNum = _.random(1, mapNum, false)
       }
       mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})  
     }

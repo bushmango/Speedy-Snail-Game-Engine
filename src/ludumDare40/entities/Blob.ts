@@ -96,6 +96,8 @@ export class Blob {
 
     this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y - 4)
 
+    this.context.sounds.playSmash()
+
     _.forEach(this.hats.hats, (c, cIdx) => {
       let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8 - cIdx * 3)
       hat.body.texture.frame = c.texture.frame

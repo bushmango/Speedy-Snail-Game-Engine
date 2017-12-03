@@ -96,10 +96,14 @@ export class Player {
     // Attack with hats!
     let kb = this.context.sge.keyboard
     if (kb.justPressed(KeyCodes.space)) {
-      console.log('throw a hat!')
+    
+
+      this.context.sounds.playThrowHat()  
 
       if (this.hats.hats.length > 0) {
         let protoHat = this.hats.removeBottomHat()
+
+        console.log('throw a hat!')
 
         let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 16 - 8)
         hat.body.texture.frame = protoHat.texture.frame

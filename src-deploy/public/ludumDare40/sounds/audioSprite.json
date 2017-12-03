@@ -1,33 +1,37 @@
 {
   "urls": [
-    "public/sounds/audioSprite.ogg",
-    "public/sounds/audioSprite.m4a",
-    "public/sounds/audioSprite.mp3",
-    "public/sounds/audioSprite.ac3"
+    "public/ludumDare40/sounds/audioSprite.ogg",
+    "public/ludumDare40/sounds/audioSprite.m4a",
+    "public/ludumDare40/sounds/audioSprite.mp3",
+    "public/ludumDare40/sounds/audioSprite.ac3"
   ],
   "sprite": {
-    "hurt001": [
+    "hatthrow001": [
       0,
-      167.00680272108846
+      388.91156462585036
+    ],
+    "hurt001": [
+      2000,
+      167.0068027210885
     ],
     "jump001": [
-      2000,
+      4000,
       283.56009070294783
     ],
     "pickup001": [
-      4000,
+      6000,
       382.1541950113376
     ],
     "pickup002": [
-      6000,
+      8000,
       444.4671201814057
     ],
     "pickup003": [
-      8000,
+      10000,
       594.8979591836743
     ],
     "smash001": [
-      10000,
+      12000,
       258.6848072562358
     ]
   }
