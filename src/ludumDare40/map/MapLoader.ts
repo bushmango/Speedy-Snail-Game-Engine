@@ -154,11 +154,14 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
     gs.canMove = (t <= 1)
 
     if (isExact(t, 6, 4)) {
-      gs.hatCountHide = 10
+      gs.hatCountHide = 1
     } 
     if (isExact(t, 6, 5)) {
-      gs.hatCountHide = 20
+      gs.hatCountHide = 10
     } 
+    if (isExact(t, 6, 6)) {
+      gs.hatCountHide = 20
+    }
 
     if (isExact(t, 7, 4)) {
       gs.hatCountShow = 10

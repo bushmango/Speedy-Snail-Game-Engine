@@ -244,6 +244,8 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     assert.exists(gs, `gs does not exist ${bx}:${by}`)
 
     let tile = this.tileData[tileIndex]
+    assert.exists(tile, `tile does not exist ${bx}:${by}:${tileIndex}`)
+
     let blockSize = this.blockSize
 
     let sprite = gs.sprites[layer]
