@@ -84,7 +84,7 @@ export class LudumDare40Context {
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
     this.layerMarkers = this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
-    this.layerMarkers.visible = false wd
+    this.layerMarkers.visible = false 
 
     this.layerParticles = this.addLayer()
     this.layerParticles.addChild(this.particles.container)
@@ -163,8 +163,8 @@ export class LudumDare40Context {
       let p = this.player
       let b = c
 
-      if (collisions.isRectOverlap(p, b)) {
-        if (p.boundsY2 < b.boundsY2 && p.vy > 0) {
+      if (collisions.isRectOverlap(p, b.bounds)) {
+        if (p.boundsY2 < b.bounds.boundsY2 && p.vy > 0) {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
 
@@ -174,8 +174,6 @@ export class LudumDare40Context {
               p.hats.addHat()
             })
           }
-
-
 
         }
 

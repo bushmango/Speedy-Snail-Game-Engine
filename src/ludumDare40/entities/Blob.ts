@@ -9,6 +9,7 @@ import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
 import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
+import { Bounds } from './Bounds';
 
 const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
 
@@ -40,7 +41,7 @@ export class BlobManager {
 
   destroyMarked() {
     let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
-  
+
     if (removed.length > 0) {
 
       _.forEach(removed, (c) => {
@@ -53,7 +54,7 @@ export class BlobManager {
 
   drawBounds(boundsDrawer: BoundsDrawer) {
     _.forEach(this.items, (c) => {
-      boundsDrawer.draw(c)
+      boundsDrawer.draw(c.bounds)
     })
   }
 
@@ -70,17 +71,9 @@ export class Blob {
   frame = 0
   frameIdx = 0
 
-  subX = 0 * 16
-  subY = 0 * 16
-
-  facingRight = true
+  bounds = new Bounds()
 
   isReadyToBeDestroyed = false
-
-  boundsX1 = 0
-  boundsX2 = 0
-  boundsY1 = 0
-  boundsY2 = 0
 
   init(cx: LudumDare40Context) {
     this.context = cx
@@ -99,18 +92,11 @@ export class Blob {
 
   destroy() {
     if (this.isReadyToBeDestroyed) { return }
-    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
-    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
-    this.context.particles.emitBlobParts(this.body.texture.frame, (this.boundsX1 + this.boundsX2)/2, (this.boundsY1 + this.boundsY2)/2)
+    this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y)
     this.isReadyToBeDestroyed = true
   }
 
-  setBounds(x1, y1, x2, y2) {
-    this.boundsX1 = x1
-    this.boundsX2 = x2
-    this.boundsY1 = y1
-    this.boundsY2 = y2
-  }
+
 
   update() {
 
@@ -124,26 +110,22 @@ export class Blob {
       this.body.texture.frame = blobFrames[this.frameIdx]
     }
 
-    let subPix = 32
-    let x = Math.floor(this.subX / subPix)
-    let y = Math.floor(this.subY / subPix)
+    this.bounds.update(this.context)
 
-    this.setBounds(x - 3, y - 8, x + 3, y)
+    this.container.position.set(this.bounds.x, this.bounds.y)
 
-    this.container.position.set(x, y)
-    this.body.scale.set(this.facingRight ? 1 : -1, 1)
+    this.body.scale.set(this.bounds.facingRight ? 1 : -1, 1)
 
     this.hats.x = 0
     this.hats.y = -9 + (this.frameIdx === 0 ? 0 : 1)
-    this.hats.facingRight = this.facingRight
+    this.hats.facingRight = this.bounds.facingRight
     this.hats.update()
 
     // this.context.particles.emitBlobParts(this.body.texture.frame, x, y)
   }
 
   moveTo(x, y) {
-    this.subX = x * 32
-    this.subY = y * 32
+    this.bounds.moveTo(x, y)
   }
 
 }

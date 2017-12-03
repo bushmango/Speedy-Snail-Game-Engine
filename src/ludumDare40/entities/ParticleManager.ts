@@ -73,7 +73,7 @@ export class ParticleManager {
   }
 
 
-  emitBlobParts(frame: PIXI.Rectangle, x, y) {
+  emitBlobParts(x, y) {
     // Split frameRect
     //let particles = splitFrameIntoParticles(frame, 4)
     let blobGreenFrames = create16_frameHRun(4, 3, 2)
