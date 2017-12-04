@@ -33,6 +33,7 @@ import { KeyCodes } from 'engine/input/Keyboard';
 import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
 import { ButtonManager, ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
 import { TextsManager } from 'ludumDare40/entities/Texts';
+import { BossHeadManager } from 'ludumDare40/entities/Boss';
 
 const turn = Math.PI * 2
 
@@ -71,6 +72,7 @@ export class LudumDare40Context {
   hatCounters = new HatCounterManager()
   buttons = new ButtonManager()
   texts = new TextsManager()
+  bossHeads = new BossHeadManager()
 
   pressedBossButton = false
   pressedMidButton = false
@@ -101,6 +103,7 @@ export class LudumDare40Context {
     this.hatCounters.init(this)
     this.buttons.init(this)
     this.texts.init(this)
+    this.bossHeads.init(this)
 
     this.player = new Player()
     this.player.init(this)
@@ -198,6 +201,7 @@ export class LudumDare40Context {
     this.hatCounters.update()
     this.buttons.update()
     this.texts.update()
+    this.bossHeads.update()
 
     // Draw bounds
     if (drawBounds) {
@@ -209,7 +213,6 @@ export class LudumDare40Context {
     // Check collisions
     let p = this.player
     _.forEach(this.blobs.items, (c) => {
-
 
       let b = c
 
@@ -245,6 +248,48 @@ export class LudumDare40Context {
       }
     })
 
+    this.defeatedBoss = this.bossHeads.items.length === 0
+    
+    _.forEach(this.bossHeads.items, (c) => {
+
+      let b = c
+
+      if (collisions.isRectOverlap(p.bounds, b.bounds)) {
+        if (p.bounds.boundsY2 < b.bounds.boundsY2 && p.bounds.vy > 0) {
+          // Stomp
+          //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
+
+          p.bounds.subY = b.bounds.boundsY1 * 32 - 32 - 16
+          p.bounds.vy = 0
+          p.bounds.accelY = 0
+          p.bounds.jump()
+          p.bounds.recalcBounds()
+
+          b.bounds.setStateFalling()
+
+          if (b.hats.hats.length > 0) {
+            let hat = b.hats.removeTopHat()
+            b.popHat(hat, b.hats.hats.length)
+          }
+          else {
+            if (!b.isReadyToBeDestroyed) {
+              b.destroy()
+
+
+
+              // _.forEach(b.hats.hats, (c) => {
+              //   p.hats.addHat()
+              // })
+            }
+          }
+
+        } else {
+          p.die()
+        }
+
+      }
+    })
+
     _.forEach(this.buttons.items, (c) => {
 
       let b = c
@@ -258,6 +303,18 @@ export class LudumDare40Context {
             if (b.buttonType === ButtonBoss) {
               sounds.playMusicBoss()
               this.pressedBossButton = true
+
+              let numHeads = 1 + Math.floor(this.getPlayerHatCount() / 10)
+              if (numHeads > 10) { numHeads = 10 }
+              for (let idxHead = 0; idxHead < numHeads; idxHead++) {
+                let head = this.bossHeads.createAt(b.bounds.x + 150 - idxHead * 12, p.bounds.y)
+                let numHats = _.random(0, 3, false)
+                for (let idxHat = 0; idxHat < numHats; idxHat++) {
+                  head.hats.addHat()
+                }
+              }
+
+
             } else if (b.buttonType === ButtonWin) {
               sounds.playMusicWin()
             } else if (b.buttonType === ButtonMid) {
@@ -354,6 +411,7 @@ export class LudumDare40Context {
       let btn = this.texts.createAt(c.bx * 16 + 8, c.by * 16 + 8)
       btn.text.text = c.data.text
     })
+    this.bossHeads.clear()
   }
 
   resetTileMap() {
