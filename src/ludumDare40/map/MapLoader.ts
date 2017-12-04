@@ -15,6 +15,7 @@ const tilesetHeight = 512
 const defaultTextureName = 'public/ludumdare40/images/ase-512-16.png'
 
 import { loadBasicLayer } from './MapLoaderBasic'
+import { ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
 
 export {
   Layer_Background,
@@ -207,6 +208,15 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
       gs.fatal = true
     }
 
+    if (isExact(t, 4, 7)) {
+      gs.hideBossButtonPressed = true
+      gs.canMove = false
+
+    } if (isExact(t, 4, 9)) {
+      gs.hideBossDefeated = true
+      gs.canMove = false
+    }
+
     if (isExact(t, 14, 5)) {
       console.log('hit hat c', t)
       mapMeta.hatCounters.push({
@@ -253,14 +263,22 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
         mapMeta.buttons.push({
           bx: gs.bx,
           by: gs.by,
-          data: {buttonType: 0},
+          data: { buttonType: ButtonBoss },
         })
       } else if (isExact(t, 5, 8)) {
         console.log('marker hit button 2', t)
         mapMeta.buttons.push({
           bx: gs.bx,
           by: gs.by,
-          data: {buttonType: 1},
+          data: { buttonType: ButtonWin },
+        })
+      }
+      else if (isExact(t, 5, 10)) {
+        console.log('marker hit button 3', t)
+        mapMeta.buttons.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { buttonType: ButtonMid },
         })
       }
       else if (isExact(t, 15, 5)) {
@@ -268,35 +286,35 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
-          data: {text: 'wasd or arrows to move and jump'},
+          data: { text: 'wasd or arrows to move and jump' },
         })
       } else if (isExact(t, 15, 6)) {
         console.log('marker hit text', t)
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
-          data: {text: 'collect hats to change blocks'},
+          data: { text: 'collect hats to change blocks' },
         })
       } else if (isExact(t, 15, 7)) {
         console.log('marker hit text', t)
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
-          data: {text: 'Press button to WIN'},
+          data: { text: 'Press button to WIN' },
         })
       } else if (isExact(t, 15, 8)) {
         console.log('space throws hats', t)
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
-          data: {text: 'space throws hats'},
+          data: { text: 'space throws hats' },
         })
       } else if (isExact(t, 15, 9)) {
         console.log('space throws hats', t)
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
-          data: {text: 'warning: more hats, more problems'},
+          data: { text: 'warning: more hats, more problems' },
         })
       }
       else {

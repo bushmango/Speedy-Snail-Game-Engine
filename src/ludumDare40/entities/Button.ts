@@ -13,7 +13,11 @@ import { Bounds } from './Bounds';
 
 const buttonFramesRed = spriteCreator.create16_frameHRun(5, 6, 2)
 const buttonFramesGreen = spriteCreator.create16_frameHRun(5, 8, 2)
+const buttonFramesBlue = spriteCreator.create16_frameHRun(5, 10, 2)
 
+export const ButtonWin = 0
+export const ButtonMid = 2
+export const ButtonBoss = 1
 
 export class ButtonManager {
 
@@ -76,7 +80,7 @@ export class ButtonObj {
   container = new PIXI.Container()
 
   body: PIXI.Sprite
- 
+
   isPressed = false
 
   framesSincePressed = 0
@@ -93,7 +97,7 @@ export class ButtonObj {
     this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 4, 1)
     this.body.anchor.set(0.5, 1)
 
-     this.container.addChild(this.body)
+    this.container.addChild(this.body)
 
   }
 
@@ -101,25 +105,27 @@ export class ButtonObj {
     if (this.isReadyToBeDestroyed) { return }
     this.isReadyToBeDestroyed = true
 
-     this.context.sounds.playSmash()
+    this.context.sounds.playSmash()
 
   }
   update() {
 
     if (this.isReadyToBeDestroyed) { return }
 
-    if(this.isPressed) {
+    if (this.isPressed) {
       this.framesSincePressed++
-      if(this.framesSincePressed > 180) {
+      if (this.framesSincePressed > 180) {
         this.isPressed = false
         this.framesSincePressed = 0
       }
     }
 
-    if(this.buttonType === 0) {
+    if (this.buttonType === ButtonBoss) {
       this.body.texture.frame = buttonFramesRed[this.isPressed ? 1 : 0]
-    } else {
+    } else if (this.buttonType === ButtonWin) {
       this.body.texture.frame = buttonFramesGreen[this.isPressed ? 1 : 0]
+    } else if (this.buttonType === ButtonMid) {
+      this.body.texture.frame = buttonFramesBlue[this.isPressed ? 1 : 0]
     }
 
 

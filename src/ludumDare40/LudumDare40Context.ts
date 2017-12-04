@@ -31,7 +31,7 @@ import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MapScanner } from 'ludumDare40/game/MapScanner';
 import { KeyCodes } from 'engine/input/Keyboard';
 import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
-import { ButtonManager } from 'ludumDare40/entities/Button';
+import { ButtonManager, ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
 import { TextsManager } from 'ludumDare40/entities/Texts';
 
 const turn = Math.PI * 2
@@ -71,6 +71,10 @@ export class LudumDare40Context {
   hatCounters = new HatCounterManager()
   buttons = new ButtonManager()
   texts = new TextsManager()
+
+  pressedBossButton = false
+  pressedMidButton = false
+  defeatedBoss = false
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -214,7 +218,7 @@ export class LudumDare40Context {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
 
-         
+
           p.bounds.subY = b.bounds.boundsY1 * 32 - 32 - 16
           p.bounds.vy = 0
           p.bounds.accelY = 0
@@ -251,10 +255,13 @@ export class LudumDare40Context {
           if (!b.isPressed) {
             b.isPressed = true
 
-            if (b.buttonType === 0) {
+            if (b.buttonType === ButtonBoss) {
               sounds.playMusicBoss()
-            } else {
+              this.pressedBossButton = true
+            } else if (b.buttonType === ButtonWin) {
               sounds.playMusicWin()
+            } else if (b.buttonType === ButtonMid) {
+              sounds.playMusicDungeon()
             }
           }
 
@@ -311,7 +318,9 @@ export class LudumDare40Context {
 
   reset() {
 
-
+    this.pressedBossButton = false
+    this.pressedMidButton = false
+    this.defeatedBoss = false
 
     this.resetTileMap()
 
@@ -373,6 +382,8 @@ export class LudumDare40Context {
             hatCountHide: 0,
             hatCountShow: 0,
             fatal: false,
+            hideBossDefeated: false,
+            hideBossButtonPressed: false,
           }
           return gridSpot
         }
@@ -380,10 +391,27 @@ export class LudumDare40Context {
 
     }
 
-    let numPieces = 12
-    let maxRandos = 9
+
+    let pieces = [
+      'map-01-001',
+      'map-01-002',
+      'map-01-003',
+      'map-01-004',
+      'map-01-005',
+      'map-01-006',
+      'map-01-007',
+      'map-01-008',
+      'map-01-009',
+    ]
+
+    let numPieces = pieces.length + 4
+    let maxRandos = pieces.length
     let inOrder = true
-    let exact = 9
+    let exact = 'map-boss'
+
+    if (!inOrder) {
+      pieces = _.shuffle(pieces)
+    }
 
     this.mapMeta = mapLoader.createMetaData()
     //let mapJson = this.sge.getJson('map-start')
@@ -395,23 +423,45 @@ export class LudumDare40Context {
 
     // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
-    mapLoader.load(acutalWidth * 0, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
-    for (let i = 1; i < (numPieces - 1); i++) {
+    let idxPiece = 0
+    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
+    idxPiece++
 
-      let mapNum = ((i - 1) % maxRandos) + 1
-      let randY = _.random(-2, 2)
-      if (inOrder) {
+    let mid = Math.ceil(maxRandos / 2)
 
-      } else {
-        mapNum = _.random(1, mapNum, false)
-      }
+    while (pieces.length > numPieces / 2) {
+
+      let map = pieces.shift()
       if (exact) {
-        mapNum = exact
+        map = exact
       }
+      let randY = _.random(-2, 2)
 
-      mapLoader.load((acutalWidth) * i, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
+      mapLoader.load(acutalWidth * idxPiece, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson(map), {})
+      idxPiece++
     }
-    mapLoader.load((acutalWidth) * (numPieces - 1), 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+
+    // Mid
+    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-mid'), {})
+    idxPiece++
+
+    while (pieces.length > 0) {
+
+      let map = pieces.shift()
+      if (exact) {
+        map = exact
+      }
+      let randY = _.random(-2, 2)
+
+      mapLoader.load(acutalWidth * idxPiece, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson(map), {})
+      idxPiece++
+    }
+
+    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-boss'), {})
+    idxPiece++
+
+    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+    idxPiece++
 
     tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 6 - 1, (acutalWidth) * numPieces + 1, 1,
       (gs: ILD40GridSpot) => {

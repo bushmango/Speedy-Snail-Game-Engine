@@ -94,7 +94,7 @@ export class PlayerController {
     else if (bounds.isJumping) {
       bounds.jumpFrames++
 
-      if (!isDying && (bounds.jumpFrames > 10) && (kb.isUp(KeyCodes.w) && kb.isUp(KeyCodes.arrowUp))) {
+      if (!isDying && (bounds.jumpFrames > 6) && (kb.isUp(KeyCodes.w) && kb.isUp(KeyCodes.arrowUp))) {
 
         bounds.setStateFalling()
 
