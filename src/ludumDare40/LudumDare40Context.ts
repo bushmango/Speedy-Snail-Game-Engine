@@ -168,7 +168,7 @@ export class LudumDare40Context {
     this.splash.update()
 
     this.player.update()
-    if(this.player.isDying && this.player.dyingFrames > 120) {
+    if(this.player.isDying && this.player.dyingFrames > 90) {
       this.reset()
     }
 
