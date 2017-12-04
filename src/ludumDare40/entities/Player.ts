@@ -74,7 +74,10 @@ export class Player {
 
   addFollower() {
 
-    let x = _.random(3, 6 + 1, false)
+    // let x = _.random(3, 5, false)
+
+    let entries = [3, 5]
+    let x = _.sample(entries)
 
     let item = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, x)
     item.anchor.set(0.5, 1)
@@ -130,10 +133,8 @@ export class Player {
     let kb = this.context.sge.keyboard
     if (kb.justPressed(KeyCodes.space)) {
 
-
-      this.context.sounds.playThrowHat()
-
       if (this.hats.hats.length > 0) {
+        this.context.sounds.playThrowHat()
         let protoHat = this.hats.removeBottomHat()
 
         console.log('throw a hat!')

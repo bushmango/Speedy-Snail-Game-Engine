@@ -107,13 +107,21 @@ export class Blob {
     this.context.sounds.playSmash()
 
     _.forEach(this.hats.hats, (c, cIdx) => {
-      let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8 - cIdx * 3)
-      hat.body.texture.frame = c.texture.frame
-      hat.bounds.vx = _.random(-5, 50)
-      hat.bounds.vy = _.random(-300, -50)
+      this.popHat(c, cIdx)
     })
 
   }
+
+  popHat(c, cIdx) {
+    let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8 - cIdx * 3)
+    hat.body.texture.frame = c.texture.frame
+    hat.bounds.vx = _.random(15, 64)
+    if (_.random(0, 1) === 1) {
+      hat.bounds.vx *= -1
+    }
+    hat.bounds.vy = _.random(-300, -50)
+  }
+
   update() {
 
     if (this.isReadyToBeDestroyed) { return }

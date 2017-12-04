@@ -58,6 +58,7 @@ export function preload() {
     'map-01-006',
     'map-01-007',
     'map-01-008',
+    'map-01-009',
     'map-end',
   ])
   sge.preloadPackedSprites([

@@ -284,12 +284,19 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           by: gs.by,
           data: {text: 'Press button to WIN'},
         })
-      } else if (isExact(t, 15, 7)) {
+      } else if (isExact(t, 15, 8)) {
         console.log('space throws hats', t)
         mapMeta.texts.push({
           bx: gs.bx,
           by: gs.by,
           data: {text: 'space throws hats'},
+        })
+      } else if (isExact(t, 15, 9)) {
+        console.log('space throws hats', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {text: 'warning: more hats, more problems'},
         })
       }
       else {

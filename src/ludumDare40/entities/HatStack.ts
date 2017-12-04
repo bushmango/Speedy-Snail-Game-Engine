@@ -75,6 +75,11 @@ export class HatStack {
     let hat = this.hats.shift()
     this.container.removeChild(hat)
     return hat
+  } 
+   removeTopHat() {
+    let hat = this.hats.pop()
+    this.container.removeChild(hat)
+    return hat
   }
 
 }

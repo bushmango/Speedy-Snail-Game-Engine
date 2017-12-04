@@ -301,7 +301,7 @@ export class Bounds {
       }
     } 
 
-    let floor = 28 * 32 * 16  // Maximum lowest point
+    let floor = 64 * 32 * 16  // Maximum lowest point
     if (this.subY >= floor) {
       this.subY = floor
       this.setStateOnGround()

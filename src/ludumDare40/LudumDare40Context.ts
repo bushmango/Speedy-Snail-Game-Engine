@@ -185,7 +185,7 @@ export class LudumDare40Context {
     this.splash.update()
 
     this.player.update()
-    if (this.player.isDying && this.player.dyingFrames > 90) {
+    if (this.player.isDying && this.player.dyingFrames > 180) {
       this.reset()
     }
 
@@ -214,11 +214,24 @@ export class LudumDare40Context {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
 
-          if (!b.isReadyToBeDestroyed) {
-            b.destroy()
-            // _.forEach(b.hats.hats, (c) => {
-            //   p.hats.addHat()
-            // })
+         
+          p.bounds.subY = b.bounds.boundsY1 * 32 - 32 - 16
+          p.bounds.vy = 0
+          p.bounds.accelY = 0
+          p.bounds.jump()
+          p.bounds.recalcBounds()
+
+          if (b.hats.hats.length > 0) {
+            let hat = b.hats.removeTopHat()
+            b.popHat(hat, b.hats.hats.length)
+          }
+          else {
+            if (!b.isReadyToBeDestroyed) {
+              b.destroy()
+              // _.forEach(b.hats.hats, (c) => {
+              //   p.hats.addHat()
+              // })
+            }
           }
 
         } else {
@@ -298,7 +311,7 @@ export class LudumDare40Context {
 
   reset() {
 
-   
+
 
     this.resetTileMap()
 
@@ -326,8 +339,8 @@ export class LudumDare40Context {
     _.forEach(this.mapMeta.buttons, (c) => {
       let btn = this.buttons.createAt(c.bx * 16 + 8, c.by * 16 + 8)
       btn.buttonType = c.data.buttonType
-    }) 
-     this.texts.clear()
+    })
+    this.texts.clear()
     _.forEach(this.mapMeta.texts, (c) => {
       let btn = this.texts.createAt(c.bx * 16 + 8, c.by * 16 + 8)
       btn.text.text = c.data.text
@@ -367,9 +380,10 @@ export class LudumDare40Context {
 
     }
 
-    let numPieces = 2
-    let maxRandos = 8
+    let numPieces = 12
+    let maxRandos = 9
     let inOrder = true
+    let exact = 9
 
     this.mapMeta = mapLoader.createMetaData()
     //let mapJson = this.sge.getJson('map-start')
@@ -391,6 +405,10 @@ export class LudumDare40Context {
       } else {
         mapNum = _.random(1, mapNum, false)
       }
+      if (exact) {
+        mapNum = exact
+      }
+
       mapLoader.load((acutalWidth) * i, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
     }
     mapLoader.load((acutalWidth) * (numPieces - 1), 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
