@@ -17,13 +17,14 @@ export enum KeyCodes {
   w = 87,
   a = 65,
   s = 83,
-  d = 68,
+  d = 68,  
   space = 32,
   enter = 13,
   arrowUp = 38,
   arrowDown = 40,
   arrowLeft = 37,
   arrowRight = 39,
+  r = 82,
 }
 
 export class Keyboard {

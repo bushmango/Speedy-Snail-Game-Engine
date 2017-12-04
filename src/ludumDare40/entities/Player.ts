@@ -11,6 +11,9 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { Bounds } from 'ludumDare40/entities/Bounds';
 import { PlayerController } from 'ludumDare40/entities/PlayerController';
 
+let headDead = spriteCreator.create16_frame(0, 6)
+let headGood = spriteCreator.create16_frame(1, 2)
+
 export class Player {
 
   context: LudumDare40Context
@@ -18,6 +21,9 @@ export class Player {
 
   body: PIXI.Sprite
   head: PIXI.Sprite
+
+  isDying = false
+  dyingFrames = 0
 
   hats = new HatStack()
 
@@ -53,6 +59,13 @@ export class Player {
 
   }
 
+  reset() {
+    this.bounds.reset()
+    this.hats.clear()
+    this.pastPositions = []
+    this.isDying = false
+  }
+
   moveTo(x, y) {
     this.bounds.moveTo(x, y)
   }
@@ -68,37 +81,51 @@ export class Player {
     this.container.addChild(item)
   }
 
+  die() {
+    if (!this.isDying) {
+      this.isDying = true
+      this.dyingFrames = 0
+      this.bounds.reset()
+      this.bounds.isGhost = true
+      this.bounds.jump()
+    }
+  }
 
   update() {
 
 
     // controls
     this.bounds.width = 8
-    this.bounds.height = 16
-    this.controller.update(this.context.sge.keyboard, this.bounds)
+    this.bounds.height = 14
+    //if (!this.isDying) {
+    this.controller.update(this.context.sge.keyboard, this.bounds, this.isDying)
+    //}
     this.bounds.update(this.context)
 
+
     this.pastPositions.unshift([this.bounds.x, this.bounds.y, this.bounds.facingRight])
-    if(this.pastPositions.length > 300) {
+    if (this.pastPositions.length > 300) {
       this.pastPositions.pop()
     }
-    for(let idxFollower = 0; idxFollower < this.followers.length; idxFollower++) {
+    for (let idxFollower = 0; idxFollower < this.followers.length; idxFollower++) {
       let f = this.followers[idxFollower]
       let adj = idxFollower * 5 + 5
-      if(this.pastPositions.length > adj) {
+      if (this.pastPositions.length > adj) {
         let pp = this.pastPositions[adj]
         f.position.set(pp[0] - this.bounds.x, pp[1] - this.bounds.y)
         f.scale.x = pp[2] ? 1 : -1
+      } else {
+        f.position.set(0, 0)
       }
-     
+
     }
 
     // Attack with hats!
     let kb = this.context.sge.keyboard
     if (kb.justPressed(KeyCodes.space)) {
-    
 
-      this.context.sounds.playThrowHat()  
+
+      this.context.sounds.playThrowHat()
 
       if (this.hats.hats.length > 0) {
         let protoHat = this.hats.removeBottomHat()
@@ -125,7 +152,18 @@ export class Player {
     this.body.position.set(0, 0)
     this.head.position.set(0, 0 - 16)
 
-    this.head.scale.set(this.bounds.facingRight ? 1 : -1, 1)
+    this.head.scale.x = this.bounds.facingRight ? 1 : -1
+
+    if (this.bounds.isTouchingFatal) {
+      if (!this.isDying) {
+        this.die()
+      }
+    }
+    if (this.isDying) {
+      this.dyingFrames++
+    }
+
+    this.head.texture.frame = this.isDying ? headDead : headGood
 
     this.hats.x = 0
     this.hats.y = -16 - 8

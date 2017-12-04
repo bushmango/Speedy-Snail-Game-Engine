@@ -29,6 +29,7 @@ import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MapScanner } from 'ludumDare40/game/MapScanner';
+import { KeyCodes } from 'engine/input/Keyboard';
 
 const turn = Math.PI * 2
 
@@ -38,8 +39,8 @@ let drawMarkers = false
 export class LudumDare40Context {
 
   sge: SimpleGameEngine
-  
-  tileMap: TileMap<ILD40GridSpot>
+
+  tileMap: TileMap<ILD40GridSpot> = null
   mapMeta: IMapMedatada
   mapScanner = new MapScanner()
 
@@ -52,10 +53,10 @@ export class LudumDare40Context {
   rootContainer: PIXI.Container = new PIXI.Container()
   rootContainerUI: PIXI.Container = new PIXI.Container()
 
-  layerObjects: PIXI.Container
-  layerParticles: PIXI.Container
-  layerBounds: PIXI.Container
-  layerMarkers: PIXI.Container
+  layerObjects: PIXI.Container = new PIXI.Container()
+  layerParticles: PIXI.Container = new PIXI.Container()
+  layerBounds: PIXI.Container = new PIXI.Container()
+  layerMarkers: PIXI.Container // = new PIXI.Container()
 
   player: Player
 
@@ -72,8 +73,6 @@ export class LudumDare40Context {
     // Force color property
     let r: any = _sge.renderer
     r.backgroundColor = 0xFF333333
-
-    this.initTileMap()
 
     this.menuManager.init(this.sge)
 
@@ -93,22 +92,24 @@ export class LudumDare40Context {
     this.player = new Player()
     this.player.init(this)
 
+    this.reset()
+
     // Add layers
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Background])
     this.addLayer(this.tileMap.containers[mapLoader.Layer_BackgroundDecor])
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Wall])
 
-    this.layerObjects = this.addLayer()
+    this.addLayer(this.layerObjects)
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
     this.layerMarkers = this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
     this.layerMarkers.visible = drawMarkers
 
-    this.layerParticles = this.addLayer()
+    this.addLayer(this.layerParticles)
     this.layerParticles.addChild(this.particles.container)
 
-    this.layerBounds = this.addLayer()
+    this.addLayer(this.layerBounds)
     this.layerBounds.visible = drawBounds
 
     this.boundsDrawer.init(this)
@@ -133,17 +134,7 @@ export class LudumDare40Context {
     this.sge.stage.addChild(this.rootContainerUI)
     this.sge.stage.addChild(this.splash.container)
 
-    // Set player to spawn
-    let spawn = this.mapMeta.spawn
-    this.player.moveTo(spawn.bx * 16 + 8, spawn.by * 16 + 14)
 
-    // Spawn blobs
-    _.forEach(this.mapMeta.blobs, (c) => {
-      this.blobs.createAt(c.bx * 16 + 8, c.by * 16 + 8)
-    })
-    _.forEach(this.mapMeta.hats, (c) => {
-      this.hats.createAt(c.bx * 16 + 8, c.by * 16 + 8)
-    })
 
     this.rootContainer.scale
 
@@ -166,6 +157,10 @@ export class LudumDare40Context {
 
   onUpdate() {
 
+    if (this.sge.keyboard.justPressed(KeyCodes.r)) {
+      this.reset()
+    }
+
     this.mapScanner.update(this)
 
     this.boundsDrawer.clear()
@@ -173,6 +168,9 @@ export class LudumDare40Context {
     this.splash.update()
 
     this.player.update()
+    if(this.player.isDying && this.player.dyingFrames > 120) {
+      this.reset()
+    }
 
     this.blobs.update()
     this.hats.update()
@@ -202,6 +200,8 @@ export class LudumDare40Context {
             // })
           }
 
+        } else {          
+          p.die()
         }
 
       }
@@ -212,7 +212,7 @@ export class LudumDare40Context {
 
       let processed = false
       _.forEach(this.blobs.items, (blob) => {
-        if(processed) { return }
+        if (processed) { return }
 
         if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
           if (!blob.isReadyToBeDestroyed) {
@@ -254,34 +254,60 @@ export class LudumDare40Context {
   }
 
 
-  initTileMap() {
-    let defaultTextureName = 'ase-512-16'
-    let tileData: ITileData[] = []
-    tileData.push({
-      name: 'default',
-      textureName: defaultTextureName,
-      tx: 0,
-      ty: 0,
+  reset() {
+    this.resetTileMap()
+
+    // Set player to spawn
+    let spawn = this.mapMeta.spawn
+
+
+    this.player.reset()
+    this.player.moveTo(spawn.bx * 16 + 8, spawn.by * 16 + 14)
+
+    // Spawn blobs
+    this.blobs.clear()
+    _.forEach(this.mapMeta.blobs, (c) => {
+      this.blobs.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+    })
+    this.hats.clear()
+    _.forEach(this.mapMeta.hats, (c) => {
+      this.hats.createAt(c.bx * 16 + 8, c.by * 16 + 8)
     })
 
-    this.tileMap = new TileMap(
-      this.sge,
-      16,
-      tileData,
-      mapLoader.Num_Layers,
-      (sprites, bx, by) => {
-        let gridSpot: ILD40GridSpot = {
-          sprites,
-          bx,
-          by,
-          canMove: true,
-          hatCountHide: 0,
-          hatCountShow: 0,
-          fatal: false,
+  }
+
+  resetTileMap() {
+    if (this.tileMap === null) {
+
+      let defaultTextureName = 'ase-512-16'
+      let tileData: ITileData[] = []
+      tileData.push({
+        name: 'default',
+        textureName: defaultTextureName,
+        tx: 0,
+        ty: 0,
+      })
+
+      this.tileMap = new TileMap(
+        this.sge,
+        16,
+        tileData,
+        mapLoader.Num_Layers,
+        (sprites, bx, by) => {
+          let gridSpot: ILD40GridSpot = {
+            sprites,
+            bx,
+            by,
+            canMove: true,
+            hatCountHide: 0,
+            hatCountShow: 0,
+            fatal: false,
+          }
+          return gridSpot
         }
-        return gridSpot
-      }
-    )
+      )
+
+    }
 
     let numPieces = 10
     let maxRandos = 8
@@ -305,15 +331,15 @@ export class LudumDare40Context {
       } else {
         mapNum = _.random(1, mapNum, false)
       }
-      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})  
+      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
     }
     mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
     tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 4 - 1, width * numPieces, 1,
-     (gs: ILD40GridSpot) => {
-      gs.canMove = false
-      gs.fatal = true
-    })
+      (gs: ILD40GridSpot) => {
+        gs.canMove = false
+        gs.fatal = true
+      })
 
 
   }

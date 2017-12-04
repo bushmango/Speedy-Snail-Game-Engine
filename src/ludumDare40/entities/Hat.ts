@@ -55,6 +55,14 @@ export class HatManager {
     }
   }
 
+  clear() {
+    _.forEach(this.items, (c) => {
+      c.isReadyToBeDestroyed = true
+      this.context.layerObjects.removeChild(c.container)
+    })
+    this.items = []
+  }
+
   drawBounds(boundsDrawer: BoundsDrawer) {
     _.forEach(this.items, (c) => {
       boundsDrawer.draw(c.bounds)
@@ -80,7 +88,7 @@ export class Hat {
     this.context = cx
 
     this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 2, 1)
-    this.body.anchor.set(0.5, 11/16 )
+    this.body.anchor.set(0.5, 11 / 16)
 
     this.container.addChild(this.body)
 

@@ -44,6 +44,13 @@ export class HatStack {
     })
   }
 
+  clear() {
+   _.forEach(this.hats, (c) => {
+     this.container.removeChild(c)     
+   })
+   this.hats = []
+  }
+
   addHat(frame = null) {
     let hatTilts = [turn / 64, turn / 32, turn / 16, 0, 0, 0, -turn / 16, -turn / 32, -turn / 64]
     let hatData = _.sample(hats)

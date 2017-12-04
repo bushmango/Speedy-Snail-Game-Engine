@@ -17,3 +17,8 @@ export function create16_frameHRun(y, x, num) {
   }
   return rects
 }
+
+export function create16_frame(y, x) {
+  const blockSize = 16
+  return new PIXI.Rectangle(blockSize * x, blockSize * (y), blockSize, blockSize)
+}

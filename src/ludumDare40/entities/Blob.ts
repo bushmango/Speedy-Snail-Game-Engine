@@ -52,6 +52,14 @@ export class BlobManager {
     }
   }
 
+  clear() {
+    _.forEach(this.items, (c) => {
+      c.isReadyToBeDestroyed = true
+      this.context.layerObjects.removeChild(c.container)
+    })
+    this.items = []
+  }
+
   drawBounds(boundsDrawer: BoundsDrawer) {
     _.forEach(this.items, (c) => {
       boundsDrawer.draw(c.bounds)
@@ -105,12 +113,7 @@ export class Blob {
       hat.bounds.vy = _.random(-300, -50)
     })
 
-
-    
   }
-
-
-
   update() {
 
     if (this.isReadyToBeDestroyed) { return }

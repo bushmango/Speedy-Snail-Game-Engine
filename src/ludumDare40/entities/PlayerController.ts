@@ -15,8 +15,9 @@ const subPix = 32
 
 export class PlayerController {
   
-    update(kb: Keyboard, bounds: Bounds) {
+    update(kb: Keyboard, bounds: Bounds, isDying) {
   
+      
       if (kb.isPressed(KeyCodes.arrowRight) || kb.isPressed(KeyCodes.d)) {
         bounds.movingFrames++
         bounds.isMovingRight = true
@@ -93,7 +94,7 @@ export class PlayerController {
       else if (bounds.isJumping) {
         bounds.jumpFrames++
   
-        if (kb.justReleased(KeyCodes.w) || kb.justReleased(KeyCodes.arrowUp)) {
+        if (!isDying && (kb.justReleased(KeyCodes.w) || kb.justReleased(KeyCodes.arrowUp))) {
   
           bounds.setStateFalling()
   
@@ -114,7 +115,7 @@ export class PlayerController {
         }
       } else if (bounds.isFalling) {
   
-        if (kb.isUp(KeyCodes.space)) {
+        if (!isDying && kb.isUp(KeyCodes.space)) {
           bounds.isFastFalling = true
         }
       }
