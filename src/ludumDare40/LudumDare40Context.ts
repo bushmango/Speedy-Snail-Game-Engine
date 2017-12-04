@@ -30,6 +30,7 @@ import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
 import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MapScanner } from 'ludumDare40/game/MapScanner';
 import { KeyCodes } from 'engine/input/Keyboard';
+import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
 
 const turn = Math.PI * 2
 
@@ -65,6 +66,7 @@ export class LudumDare40Context {
 
   blobs = new BlobManager()
   hats = new HatManager()
+  hatCounters = new HatCounterManager()
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -88,6 +90,7 @@ export class LudumDare40Context {
 
     this.blobs.init(this)
     this.hats.init(this)
+    this.hatCounters.init(this)
 
     this.player = new Player()
     this.player.init(this)
@@ -139,7 +142,9 @@ export class LudumDare40Context {
     this.rootContainer.scale
 
   }
-
+  getPlayerHatCount() {
+    return this.player.hats.hats.length
+  }
   addLayer(container: PIXI.Container = null) {
     if (!container) {
       container = new PIXI.Container()
@@ -180,6 +185,7 @@ export class LudumDare40Context {
 
     this.blobs.update()
     this.hats.update()
+    this.hatCounters.update()
 
     // Draw bounds
     if (drawBounds) {
@@ -279,7 +285,10 @@ export class LudumDare40Context {
     _.forEach(this.mapMeta.hats, (c) => {
       this.hats.createAt(c.bx * 16 + 8, c.by * 16 + 8)
     })
-
+    this.hatCounters.clear()
+    _.forEach(this.mapMeta.hatCounters, (c) => {
+      this.hatCounters.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+    })
   }
 
   resetTileMap() {
@@ -315,7 +324,7 @@ export class LudumDare40Context {
 
     }
 
-    let numPieces = 10
+    let numPieces = 2
     let maxRandos = 8
     let inOrder = true
 

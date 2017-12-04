@@ -33,12 +33,14 @@ export interface IMapMedatada {
   spawn: ISpawnLocation,
   blobs: ISpawnLocation[],
   hats: ISpawnLocation[],
+  hatCounters: ISpawnLocation[],
 }
 export function createMetaData() {
   let md: IMapMedatada = {
     spawn: null,
     blobs: [],
     hats: [],
+    hatCounters: [],
   }
   return md
 }
@@ -198,6 +200,14 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
     if (isExact(t, 7, 9)) {
       gs.hatCountShow = 50
       gs.fatal = true
+    }
+
+    if (isExact(t, 14, 5)) {
+      console.log('hit hat c', t)
+      mapMeta.hatCounters.push({
+        bx: gs.bx,
+        by: gs.by,
+      })
     }
 
   })
