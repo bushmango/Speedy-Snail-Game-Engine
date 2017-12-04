@@ -28,12 +28,15 @@ export {
 export interface ISpawnLocation {
   bx: number,
   by: number,
+  data?: any,
 }
 export interface IMapMedatada {
   spawn: ISpawnLocation,
   blobs: ISpawnLocation[],
   hats: ISpawnLocation[],
   hatCounters: ISpawnLocation[],
+  buttons: ISpawnLocation[],
+  texts: ISpawnLocation[],
 }
 export function createMetaData() {
   let md: IMapMedatada = {
@@ -41,6 +44,8 @@ export function createMetaData() {
     blobs: [],
     hats: [],
     hatCounters: [],
+    buttons: [],
+    texts: [],
   }
   return md
 }
@@ -157,10 +162,10 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
 
     if (isExact(t, 6, 4)) {
       gs.hatCountHide = 1
-    } 
+    }
     if (isExact(t, 6, 5)) {
       gs.hatCountHide = 10
-    } 
+    }
     if (isExact(t, 6, 6)) {
       gs.hatCountHide = 20
     }
@@ -176,15 +181,15 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
 
     if (isExact(t, 7, 3)) {
       gs.fatal = true
-    } 
+    }
     if (isExact(t, 7, 4)) {
       gs.hatCountShow = 1
       gs.fatal = true
-    } 
+    }
     if (isExact(t, 7, 5)) {
       gs.hatCountShow = 10
       gs.fatal = true
-    } 
+    }
     if (isExact(t, 7, 6)) {
       gs.hatCountShow = 20
       gs.fatal = true
@@ -242,6 +247,49 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
         mapMeta.hats.push({
           bx: gs.bx,
           by: gs.by,
+        })
+      } else if (isExact(t, 5, 6)) {
+        console.log('marker hit button1', t)
+        mapMeta.buttons.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {buttonType: 0},
+        })
+      } else if (isExact(t, 5, 8)) {
+        console.log('marker hit button 2', t)
+        mapMeta.buttons.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {buttonType: 1},
+        })
+      }
+      else if (isExact(t, 15, 5)) {
+        console.log('marker hit text', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {text: 'wasd or arrows to move and jump'},
+        })
+      } else if (isExact(t, 15, 6)) {
+        console.log('marker hit text', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {text: 'collect hats to change blocks'},
+        })
+      } else if (isExact(t, 15, 7)) {
+        console.log('marker hit text', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {text: 'Press button to WIN'},
+        })
+      } else if (isExact(t, 15, 7)) {
+        console.log('space throws hats', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: {text: 'space throws hats'},
         })
       }
       else {

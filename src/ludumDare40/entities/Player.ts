@@ -11,6 +11,8 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { Bounds } from 'ludumDare40/entities/Bounds';
 import { PlayerController } from 'ludumDare40/entities/PlayerController';
 
+import * as sounds from 'ludumDare40/sounds/ldSounds'
+
 let headDead = spriteCreator.create16_frame(0, 6)
 let headGood = spriteCreator.create16_frame(1, 2)
 
@@ -83,11 +85,15 @@ export class Player {
 
   die() {
     if (!this.isDying) {
+
+      sounds.playMusicDie()
+
       this.isDying = true
       this.dyingFrames = 0
       this.bounds.reset()
       this.bounds.isGhost = true
       this.bounds.jump()
+      
     }
   }
 

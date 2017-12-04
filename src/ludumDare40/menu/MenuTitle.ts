@@ -1,6 +1,6 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-
+import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MenuInputControl } from 'engine/input/MenuInputControl'
 import { MenuGeneric } from 'engine/menus/MenuGeneric'
 
@@ -20,8 +20,11 @@ export class MenuTitle {
 
     this.menu.init(sge, this.container, 'Ludum Dare 40 Menu')
 
+    sounds.playMusicMenu()
+
     this.menu.addButtonSimple('Start Game').onClick = () => {
       this.menu.changeModeTo('game')
+      sounds.playMusic1()
     }
 
     this.menu.addButtonSimple('Sound Options').onClick = () => {

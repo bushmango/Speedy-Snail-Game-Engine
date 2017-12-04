@@ -31,6 +31,8 @@ import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MapScanner } from 'ludumDare40/game/MapScanner';
 import { KeyCodes } from 'engine/input/Keyboard';
 import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
+import { ButtonManager } from 'ludumDare40/entities/Button';
+import { TextsManager } from 'ludumDare40/entities/Texts';
 
 const turn = Math.PI * 2
 
@@ -67,6 +69,8 @@ export class LudumDare40Context {
   blobs = new BlobManager()
   hats = new HatManager()
   hatCounters = new HatCounterManager()
+  buttons = new ButtonManager()
+  texts = new TextsManager()
 
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
@@ -91,6 +95,8 @@ export class LudumDare40Context {
     this.blobs.init(this)
     this.hats.init(this)
     this.hatCounters.init(this)
+    this.buttons.init(this)
+    this.texts.init(this)
 
     this.player = new Player()
     this.player.init(this)
@@ -186,6 +192,8 @@ export class LudumDare40Context {
     this.blobs.update()
     this.hats.update()
     this.hatCounters.update()
+    this.buttons.update()
+    this.texts.update()
 
     // Draw bounds
     if (drawBounds) {
@@ -195,9 +203,10 @@ export class LudumDare40Context {
     }
 
     // Check collisions
+    let p = this.player
     _.forEach(this.blobs.items, (c) => {
 
-      let p = this.player
+
       let b = c
 
       if (collisions.isRectOverlap(p.bounds, b.bounds)) {
@@ -219,7 +228,28 @@ export class LudumDare40Context {
       }
     })
 
-    let p = this.player
+    _.forEach(this.buttons.items, (c) => {
+
+      let b = c
+
+      if (collisions.isRectOverlap(p.bounds, b.bounds)) {
+        if (p.bounds.boundsY2 < b.bounds.boundsY2 && p.bounds.vy > 0) {
+          // Stomp
+          if (!b.isPressed) {
+            b.isPressed = true
+
+            if (b.buttonType === 0) {
+              sounds.playMusicBoss()
+            } else {
+              sounds.playMusicWin()
+            }
+          }
+
+        }
+
+      }
+    })
+
     _.forEach(this.hats.items, (hat) => {
 
       let processed = false
@@ -267,6 +297,9 @@ export class LudumDare40Context {
 
 
   reset() {
+
+   
+
     this.resetTileMap()
 
     // Set player to spawn
@@ -288,6 +321,16 @@ export class LudumDare40Context {
     this.hatCounters.clear()
     _.forEach(this.mapMeta.hatCounters, (c) => {
       this.hatCounters.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+    })
+    this.buttons.clear()
+    _.forEach(this.mapMeta.buttons, (c) => {
+      let btn = this.buttons.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+      btn.buttonType = c.data.buttonType
+    }) 
+     this.texts.clear()
+    _.forEach(this.mapMeta.texts, (c) => {
+      let btn = this.texts.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+      btn.text.text = c.data.text
     })
   }
 
@@ -333,11 +376,12 @@ export class LudumDare40Context {
     //let { width, height } = mapJson
     let width = 20
     let height = 20
-    this.tileMap.resize((width + 2) * numPieces + 2, height + 6)
+    let acutalWidth = width + 1
+    this.tileMap.resize((acutalWidth) * numPieces + 2, height + 6)
 
     // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
-    mapLoader.load(20 * 0, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
+    mapLoader.load(acutalWidth * 0, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
     for (let i = 1; i < (numPieces - 1); i++) {
 
       let mapNum = ((i - 1) % maxRandos) + 1
@@ -347,11 +391,11 @@ export class LudumDare40Context {
       } else {
         mapNum = _.random(1, mapNum, false)
       }
-      mapLoader.load((20 + 2) * i, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
+      mapLoader.load((acutalWidth) * i, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
     }
-    mapLoader.load((20 + 2) * (numPieces - 1), 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+    mapLoader.load((acutalWidth) * (numPieces - 1), 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 6 - 1, (width + 1) * numPieces + 1, 1,
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 6 - 1, (acutalWidth) * numPieces + 1, 1,
       (gs: ILD40GridSpot) => {
         gs.canMove = false
         gs.fatal = true

@@ -22,7 +22,7 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
   soundSprite.mute(settingsGeneric.getSettings().muteSound)
 }
 
-export function playMusic(song) {
+export function playMusic(song, loop = true, cb: () => void = null) {
   if (musicSprite) {
     musicSprite.stop()
     musicSprite = null
@@ -30,11 +30,11 @@ export function playMusic(song) {
   musicSprite = new howler.Howl({
     src: [song + '.ogg', song + 'mp3'],
     autoplay: true,
-    loop: true,
+    loop: loop,
     volume: 0.75,
   })
 
-  if(settingsGeneric.getSettings().muteMusic) {
+  if (settingsGeneric.getSettings().muteMusic) {
     musicSprite.mute(true)
   }
   //musicSprite.once('load', () => {
@@ -43,12 +43,17 @@ export function playMusic(song) {
   musicSprite.on('loaderror', (id, err) => {
     console.log('howl', 'loaderror', id, err)
   })
+  if (cb) {
+    musicSprite.on('end', () => {
+      cb()
+    })
+  }
 }
 
 export function play(soundKey) {
-  if (!devMute && ! settingsGeneric.getSettings().muteSound) {
+  if (!devMute && !settingsGeneric.getSettings().muteSound) {
     soundSprite.play(soundKey)
   }
-  
+
 }
 
