@@ -497,7 +497,7 @@ export class LudumDare40Context {
     let numPieces = pieces1.length + 4 + pieces2.length
     let maxRandos = pieces1.length + pieces2.length
     let inOrder = true
-    let exact = 'map-mid'
+    let exact = null // 'map-mid'
 
     if (!inOrder) {
       pieces1 = _.shuffle(pieces1)
