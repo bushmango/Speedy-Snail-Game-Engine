@@ -249,7 +249,7 @@ export class LudumDare40Context {
     })
 
     this.defeatedBoss = this.bossHeads.items.length === 0
-    
+
     _.forEach(this.bossHeads.items, (c) => {
 
       let b = c
@@ -319,6 +319,7 @@ export class LudumDare40Context {
               sounds.playMusicWin()
             } else if (b.buttonType === ButtonMid) {
               sounds.playMusicDungeon()
+              this.pressedMidButton = true
             }
           }
 
@@ -442,6 +443,7 @@ export class LudumDare40Context {
             fatal: false,
             hideBossDefeated: false,
             hideBossButtonPressed: false,
+            hideMidButtonPressed: false,
           }
           return gridSpot
         }
@@ -450,25 +452,29 @@ export class LudumDare40Context {
     }
 
 
-    let pieces = [
+    let pieces1 = [
       'map-01-001',
       'map-01-002',
       'map-01-003',
       'map-01-004',
       'map-01-005',
+    ]
+    
+    let pieces2 = [
       'map-01-006',
       'map-01-007',
       'map-01-008',
       'map-01-009',
     ]
 
-    let numPieces = pieces.length + 4
-    let maxRandos = pieces.length
+    let numPieces = pieces1.length + 4 + pieces2.length
+    let maxRandos = pieces1.length + pieces2.length
     let inOrder = true
-    let exact = 'map-boss'
+    let exact = 'map-mid'
 
     if (!inOrder) {
-      pieces = _.shuffle(pieces)
+      pieces1 = _.shuffle(pieces1)
+      pieces2 = _.shuffle(pieces2)
     }
 
     this.mapMeta = mapLoader.createMetaData()
@@ -487,9 +493,9 @@ export class LudumDare40Context {
 
     let mid = Math.ceil(maxRandos / 2)
 
-    while (pieces.length > numPieces / 2) {
+    while (pieces1.length > 0) {
 
-      let map = pieces.shift()
+      let map = pieces1.shift()
       if (exact) {
         map = exact
       }
@@ -503,9 +509,9 @@ export class LudumDare40Context {
     mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-mid'), {})
     idxPiece++
 
-    while (pieces.length > 0) {
+    while (pieces2.length > 0) {
 
-      let map = pieces.shift()
+      let map = pieces2.shift()
       if (exact) {
         map = exact
       }

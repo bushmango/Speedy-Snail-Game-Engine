@@ -47,6 +47,10 @@ export class MapScanner {
             gs.canMove = context.defeatedBoss
             gs.sprites[mapLoader.Layer_Wall].alpha = !gs.canMove ? 1 : hidden
           }
+          if (gs.hideMidButtonPressed) {
+            gs.canMove = context.pressedMidButton
+            gs.sprites[mapLoader.Layer_Wall].alpha = !gs.canMove ? 1 : hidden
+          }
 
           if (gs.hatCountHide) {
             if (gs.hatCountHide <= numHats) {

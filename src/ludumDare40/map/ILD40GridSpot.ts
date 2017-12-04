@@ -7,4 +7,5 @@ export interface ILD40GridSpot extends IGridSpot {
 
   hideBossDefeated: boolean,
   hideBossButtonPressed: boolean,
+  hideMidButtonPressed: boolean,
 }

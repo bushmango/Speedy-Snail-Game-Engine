@@ -215,6 +215,9 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
     } if (isExact(t, 4, 9)) {
       gs.hideBossDefeated = true
       gs.canMove = false
+    } if (isExact(t, 4, 11)) {
+      gs.hideMidButtonPressed = true
+      gs.canMove = false
     }
 
     if (isExact(t, 14, 5)) {
