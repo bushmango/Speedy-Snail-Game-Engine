@@ -10,6 +10,8 @@ export class MapScanner {
   scanY = 0
   update(context: LudumDare40Context) {
 
+    let hidden = 0.15
+
     this.frames++
     let numHats = context.player.hats.hats.length
     if (!this.isScanning) {
@@ -34,7 +36,7 @@ export class MapScanner {
           if (gs.hatCountHide) {
             if (gs.hatCountHide <= numHats) {
               gs.canMove = true
-              gs.sprites[mapLoader.Layer_Wall].alpha = 0.25
+              gs.sprites[mapLoader.Layer_Wall].alpha = hidden
             } else {
               gs.canMove = false
               gs.sprites[mapLoader.Layer_Wall].alpha = 1
@@ -46,7 +48,7 @@ export class MapScanner {
               gs.sprites[mapLoader.Layer_Wall].alpha = 1
             } else {
               gs.canMove = true
-              gs.sprites[mapLoader.Layer_Wall].alpha = 0.25
+              gs.sprites[mapLoader.Layer_Wall].alpha = hidden
             }
           }
         }

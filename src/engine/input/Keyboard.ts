@@ -25,6 +25,7 @@ export enum KeyCodes {
   arrowLeft = 37,
   arrowRight = 39,
   r = 82,
+  h = 72,
 }
 
 export class Keyboard {

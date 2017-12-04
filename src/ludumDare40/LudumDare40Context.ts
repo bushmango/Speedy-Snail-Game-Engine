@@ -161,6 +161,12 @@ export class LudumDare40Context {
       this.reset()
     }
 
+    if (this.sge.keyboard.justPressed(KeyCodes.h)) {
+      for (let i = 0; i < 10; i++) {
+        this.player.hats.addHat()
+      }
+    }
+
     this.mapScanner.update(this)
 
     this.boundsDrawer.clear()
@@ -168,7 +174,7 @@ export class LudumDare40Context {
     this.splash.update()
 
     this.player.update()
-    if(this.player.isDying && this.player.dyingFrames > 90) {
+    if (this.player.isDying && this.player.dyingFrames > 90) {
       this.reset()
     }
 
@@ -200,7 +206,7 @@ export class LudumDare40Context {
             // })
           }
 
-        } else {          
+        } else {
           p.die()
         }
 
@@ -318,24 +324,25 @@ export class LudumDare40Context {
     //let { width, height } = mapJson
     let width = 20
     let height = 20
-    this.tileMap.resize(width * numPieces + 2, height + 4)
+    this.tileMap.resize((width + 2) * numPieces + 2, height + 6)
 
     // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
-    mapLoader.load(20 * 0, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
+    mapLoader.load(20 * 0, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
     for (let i = 1; i < (numPieces - 1); i++) {
 
       let mapNum = ((i - 1) % maxRandos) + 1
+      let randY = _.random(-2, 2)
       if (inOrder) {
 
       } else {
         mapNum = _.random(1, mapNum, false)
       }
-      mapLoader.load(20 * i, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
+      mapLoader.load((20 + 2) * i, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson('map-01-00' + (mapNum)), {})
     }
-    mapLoader.load(20 * 9, 0, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+    mapLoader.load((20 + 2) * (numPieces - 1), 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 4 - 1, width * numPieces, 1,
+    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 6 - 1, (width + 1) * numPieces + 1, 1,
       (gs: ILD40GridSpot) => {
         gs.canMove = false
         gs.fatal = true
