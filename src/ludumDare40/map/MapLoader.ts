@@ -38,6 +38,7 @@ export interface IMapMedatada {
   hatCounters: ISpawnLocation[],
   buttons: ISpawnLocation[],
   texts: ISpawnLocation[],
+  decors: ISpawnLocation[],
 }
 export function createMetaData() {
   let md: IMapMedatada = {
@@ -47,6 +48,7 @@ export function createMetaData() {
     hatCounters: [],
     buttons: [],
     texts: [],
+    decors: [],
   }
   return md
 }
@@ -318,6 +320,32 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           bx: gs.bx,
           by: gs.by,
           data: { text: 'warning: more hats, more problems' },
+        })
+      } else if (isExact(t, 15, 10)) {
+        console.log('space throws hats', t)
+        mapMeta.texts.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { text: 'good job! halfway there!' },
+        })
+      }else if (isExact(t, 2, 13)) {
+        mapMeta.decors.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { idx: 0 },
+        })
+      }else if (isExact(t, 3, 13)) {
+        mapMeta.decors.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { idx: 1 },
+        })
+      }
+      else if (isExact(t, 4, 13)) {
+        mapMeta.decors.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { idx: 2 },
         })
       }
       else {

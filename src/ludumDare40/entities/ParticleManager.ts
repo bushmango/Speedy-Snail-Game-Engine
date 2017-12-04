@@ -49,7 +49,7 @@ export class ParticleManager {
   sge: SimpleGameEngine
   container: PIXI.Container
   particleEmitterBlob: ParticleEmitter
-
+  particleEmitterDecor: ParticleEmitter
   emitters: ParticleEmitter[] = []
 
   init(sge: SimpleGameEngine) {
@@ -57,10 +57,10 @@ export class ParticleManager {
     this.container = new PIXI.Container()
 
     //let particlesShip = splitSpriteIntoParticles(26, 9, 4)
- 
-    
-    this.particleEmitterBlob = this.addEmitter()
 
+
+    this.particleEmitterBlob = this.addEmitter()
+    this.particleEmitterDecor = this.addEmitter()
   }
 
 
@@ -72,7 +72,26 @@ export class ParticleManager {
     return emitter
   }
 
-
+  emitDecorParts(frame, x, y) {
+    // Split frameRect
+    let particles = splitFrameIntoParticles(frame, 4)
+    //let blobGreenFrames = create16_frameHRun(4, 3, 2)
+    this.particleEmitterBlob.emit(
+      x,
+      y,
+      {
+        numMin: 4,
+        numMax: 8,
+        vMax: 20 / 60,
+        ay: 0.02,
+        rMin: -Math.PI * 2 / 60,
+        rMax: Math.PI * 2 / 60,
+        framesMin: 60,
+        framesMax: 180,
+        rects: particles,
+      }
+    )
+  }
   emitBlobParts(x, y) {
     // Split frameRect
     //let particles = splitFrameIntoParticles(frame, 4)

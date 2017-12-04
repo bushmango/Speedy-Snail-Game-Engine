@@ -25,7 +25,7 @@ import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 import * as collisions from './entities/collisions'
 import * as mapLoader from 'ludumDare40/map/MapLoader';
 import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
-import { Layer_Background, IMapMedatada } from 'ludumDare40/map/MapLoader';
+import { Layer_Background, IMapMedatada, Layer_Decor } from 'ludumDare40/map/MapLoader';
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
 import { MapScanner } from 'ludumDare40/game/MapScanner';
@@ -34,6 +34,7 @@ import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
 import { ButtonManager, ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
 import { TextsManager } from 'ludumDare40/entities/Texts';
 import { BossHeadManager } from 'ludumDare40/entities/Boss';
+import { DecorManager } from 'ludumDare40/entities/Decor';
 
 const turn = Math.PI * 2
 
@@ -57,6 +58,7 @@ export class LudumDare40Context {
   rootContainer: PIXI.Container = new PIXI.Container()
   rootContainerUI: PIXI.Container = new PIXI.Container()
 
+  layerDecor: PIXI.Container = new PIXI.Container()
   layerObjects: PIXI.Container = new PIXI.Container()
   layerParticles: PIXI.Container = new PIXI.Container()
   layerBounds: PIXI.Container = new PIXI.Container()
@@ -73,6 +75,7 @@ export class LudumDare40Context {
   buttons = new ButtonManager()
   texts = new TextsManager()
   bossHeads = new BossHeadManager()
+  decors = new DecorManager()
 
   pressedBossButton = false
   pressedMidButton = false
@@ -104,6 +107,7 @@ export class LudumDare40Context {
     this.buttons.init(this)
     this.texts.init(this)
     this.bossHeads.init(this)
+    this.decors.init(this)
 
     this.player = new Player()
     this.player.init(this)
@@ -116,6 +120,7 @@ export class LudumDare40Context {
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Wall])
 
+    this.addLayer(this.layerDecor)
     this.addLayer(this.layerObjects)
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
@@ -202,6 +207,7 @@ export class LudumDare40Context {
     this.buttons.update()
     this.texts.update()
     this.bossHeads.update()
+    this.decors.update()
 
     // Draw bounds
     if (drawBounds) {
@@ -220,7 +226,6 @@ export class LudumDare40Context {
         if (p.bounds.boundsY2 < b.bounds.boundsY2 && p.bounds.vy > 0) {
           // Stomp
           //this.particles.emitBlobParts(b.body.texture.frame, (b.boundsX1 + b.boundsX2) / 2, b.boundsY2)
-
 
           p.bounds.subY = b.bounds.boundsY1 * 32 - 32 - 16
           p.bounds.vy = 0
@@ -287,6 +292,22 @@ export class LudumDare40Context {
           p.die()
         }
 
+      }
+    })
+
+    _.forEach(this.decors.items, (c) => {
+
+      let b = c
+
+      if (collisions.isRectOverlap(p.bounds, b.bounds)) {
+        if (!c.isReadyToBeDestroyed) {
+          // blob.destroy()
+          let hat = this.hats.createAt(c.bounds.x, c.bounds.y - 16)
+          hat.bounds.vy = _.random(-64, 0)
+          hat.bounds.vx = _.random(-64, 64)
+          c.destroy()
+
+        }
       }
     })
 
@@ -413,6 +434,12 @@ export class LudumDare40Context {
       btn.text.text = c.data.text
     })
     this.bossHeads.clear()
+
+    this.decors.clear()
+    _.forEach(this.mapMeta.decors, (c) => {
+      let btn = this.decors.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+      btn.objIndex = c.data.idx
+    })
   }
 
   resetTileMap() {
@@ -459,7 +486,7 @@ export class LudumDare40Context {
       'map-01-004',
       'map-01-005',
     ]
-    
+
     let pieces2 = [
       'map-01-006',
       'map-01-007',
