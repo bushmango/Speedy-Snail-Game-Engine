@@ -41,6 +41,9 @@ export class HatStack {
     _.forEach(this.hats, (c, cIdx) => {
       c.position.set(0 + (this.facingRight ? 1 : -1), 0 - 3 * cIdx)
       c.scale.set(this.facingRight ? 1 : -1, 1)
+      if(cIdx === 0) {
+        c.rotation = 0
+      }
     })
   }
 

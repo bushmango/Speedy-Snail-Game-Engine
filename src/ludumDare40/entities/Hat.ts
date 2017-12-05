@@ -11,7 +11,12 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 import { Bounds } from './Bounds';
 
-const hatFrames = spriteCreator.create16_frameHRun(2, 1, 5)
+const hatFrames1 = spriteCreator.create16_frameHRun(2, 1, 5)
+const hatFrames2 = spriteCreator.create16_frameHRun(3, 1, 5)
+
+let hatFrames = []
+_.forEach(hatFrames1, (c) => { hatFrames.push(c) })
+_.forEach(hatFrames2, (c) => { hatFrames.push(c) })
 
 export class HatManager {
 
