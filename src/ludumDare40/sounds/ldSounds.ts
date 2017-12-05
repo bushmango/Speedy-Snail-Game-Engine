@@ -1,3 +1,4 @@
+import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as soundsGeneric from 'engine/sounds/soundGeneric'
 import * as pubSub from 'engine/common/pubSub'
@@ -47,8 +48,14 @@ export function playLoaded() {
   soundsGeneric.play('smash001')
 }
 
+export function playMetal() {
+  // soundsGeneric.play('pickup001')
+  soundsGeneric.play('invinc001')
+}
+
 export function playPickup() {
-  soundsGeneric.play('pickup001')
+  let pickup = ['pickup002', 'pickup003'] // pickup001
+  soundsGeneric.play(_.sample(pickup))
 }
 
 export function playExplode() {

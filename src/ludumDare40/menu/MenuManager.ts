@@ -9,6 +9,9 @@ import { MenuSoundOptions } from './MenuSoundOptions'
 
 import { KeyCodes } from 'engine/input/Keyboard'
 
+import * as ldSounds from 'ludumDare40/sounds/ldSounds'
+
+
 export class MenuManager {
 
   sge: SimpleGameEngine
@@ -72,6 +75,7 @@ export class MenuManager {
 
     if (this.sge.keyboard.justPressed(KeyCodes.escape)) {
       this.menuManager.changeMode('title')
+      ldSounds.playMusicMenu()
     }
 
     this.menuManager.update()

@@ -236,6 +236,7 @@ export class LudumDare40Context {
           if (b.hats.hats.length > 0) {
             let hat = b.hats.removeTopHat()
             b.popHat(hat, b.hats.hats.length)
+            this.sounds.playSmash()
           }
           else {
             if (!b.isReadyToBeDestroyed) {
@@ -275,12 +276,16 @@ export class LudumDare40Context {
           if (b.hats.hats.length > 0) {
             let hat = b.hats.removeTopHat()
             b.popHat(hat, b.hats.hats.length)
+            this.sounds.playSmash()
           }
           else {
             if (!b.isReadyToBeDestroyed) {
               b.destroy()
+              this.sounds.playSmash()
 
-
+              if(this.bossHeads.items.length <= 1) {
+                this.sounds.playMusicDungeon()
+              }
 
               // _.forEach(b.hats.hats, (c) => {
               //   p.hats.addHat()
@@ -321,11 +326,13 @@ export class LudumDare40Context {
           if (!b.isPressed) {
             b.isPressed = true
 
+            this.sounds.playMetal()
+
             if (b.buttonType === ButtonBoss) {
               sounds.playMusicBoss()
               this.pressedBossButton = true
 
-              let numHeads = 1 + Math.floor(this.getPlayerHatCount() / 10)
+              let numHeads = 1 + Math.floor(this.getPlayerHatCount() / 7)
               if (numHeads > 10) { numHeads = 10 }
               for (let idxHead = 0; idxHead < numHeads; idxHead++) {
                 let head = this.bossHeads.createAt(b.bounds.x + 150 - idxHead * 12, p.bounds.y)
@@ -371,6 +378,9 @@ export class LudumDare40Context {
         if (hat.frame > 30) // Don't pick up a fresh hat
         {
           if (!hat.isReadyToBeDestroyed) {
+
+            this.sounds.playPickup()
+
             p.hats.addHat(hat.body.texture.frame)
             hat.destroy()
             processed = true
@@ -483,18 +493,18 @@ export class LudumDare40Context {
       'map-01-001',
       'map-01-002',
       'map-01-003',
-      'map-01-004',
+      'map-01-008',
       'map-01-005',
     ]
 
     let pieces2 = [
       'map-01-006',
       'map-01-007',
-      'map-01-008',
+      'map-01-004',
       'map-01-009',
     ]
 
-    let numPieces = pieces1.length + 4 + pieces2.length
+    let numPieces = pieces1.length + 5 + pieces2.length
     let maxRandos = pieces1.length + pieces2.length
     let inOrder = true
     let exact = null // 'map-mid'
@@ -534,6 +544,9 @@ export class LudumDare40Context {
 
     // Mid
     mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-mid'), {})
+    idxPiece++
+
+    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-boss'), {})
     idxPiece++
 
     while (pieces2.length > 0) {
