@@ -15,6 +15,7 @@ const decorFrames = [
   spriteCreator.create16_frameHRun(2, 13, 3),
   spriteCreator.create16_frameHRun(3, 13, 3),
   spriteCreator.create16_frameHRun(4, 13, 1),
+  spriteCreator.create16_frameHRun(1, 13, 4),
 ]
 
 export class DecorManager {
@@ -119,12 +120,10 @@ export class Decor {
 
     if (this.frame % 16 === 0) {
       this.frameIdx++
-
-      let frames = decorFrames[this.objIndex]
-
-      this.frameIdx = this.frameIdx % frames.length
-      this.body.texture.frame = frames[this.frameIdx]
     }
+    let frames = decorFrames[this.objIndex]
+    this.frameIdx = this.frameIdx % frames.length
+    this.body.texture.frame = frames[this.frameIdx]
 
     this.bounds.update(this.context)
 

@@ -227,6 +227,15 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
       mapMeta.hatCounters.push({
         bx: gs.bx,
         by: gs.by,
+        data: { type: 'hat' }
+      })
+    }
+    if (isExact(t, 15, 4)) {
+      console.log('hit hat c', t)
+      mapMeta.hatCounters.push({
+        bx: gs.bx,
+        by: gs.by,
+        data: { type: 'lava' }
       })
     }
 
@@ -328,13 +337,13 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           by: gs.by,
           data: { text: 'good job! halfway there!' },
         })
-      }else if (isExact(t, 2, 13)) {
+      } else if (isExact(t, 2, 13)) {
         mapMeta.decors.push({
           bx: gs.bx,
           by: gs.by,
           data: { idx: 0 },
         })
-      }else if (isExact(t, 3, 13)) {
+      } else if (isExact(t, 3, 13)) {
         mapMeta.decors.push({
           bx: gs.bx,
           by: gs.by,
@@ -346,6 +355,12 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           bx: gs.bx,
           by: gs.by,
           data: { idx: 2 },
+        })
+      } else if (isExact(t, 1, 13)) {
+        mapMeta.decors.push({
+          bx: gs.bx,
+          by: gs.by,
+          data: { idx: 3 },
         })
       }
       else {

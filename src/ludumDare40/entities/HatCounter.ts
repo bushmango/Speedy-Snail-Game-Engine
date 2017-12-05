@@ -68,7 +68,7 @@ export class HatCounter {
   text: PIXI.extras.BitmapText
 
   isReadyToBeDestroyed = false
-
+  type = 'hat'
   init(cx: LudumDare40Context) {
     this.context = cx
 
@@ -87,9 +87,15 @@ export class HatCounter {
 
     if (this.isReadyToBeDestroyed) { return }
 
-    this.text.text = '' + this.context.getPlayerHatCount()
-
+    if (this.type === 'hat') {
+      this.text.text = '' + this.context.getPlayerHatCount()
+    }
+    else {
+      this.text.text = '' + this.context.getPlayerLavaCount()
+    }
   }
+
+
 
   moveTo(x, y) {
     this.container.x = x

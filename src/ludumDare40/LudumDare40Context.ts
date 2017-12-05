@@ -163,6 +163,9 @@ export class LudumDare40Context {
   getPlayerHatCount() {
     return this.player.hats.hats.length
   }
+  getPlayerLavaCount() {
+    return this.player.followers.length - 1
+  }
   addLayer(container: PIXI.Container = null) {
     if (!container) {
       container = new PIXI.Container()
@@ -283,7 +286,7 @@ export class LudumDare40Context {
               b.destroy()
               this.sounds.playSmash()
 
-              if(this.bossHeads.items.length <= 1) {
+              if (this.bossHeads.items.length <= 1) {
                 this.sounds.playMusicDungeon()
               }
 
@@ -311,6 +314,18 @@ export class LudumDare40Context {
           hat.bounds.vy = _.random(-64, 0)
           hat.bounds.vx = _.random(-64, 64)
           c.destroy()
+
+          // lava lamp
+          if(c.objIndex === 3) {
+            hat = this.hats.createAt(c.bounds.x, c.bounds.y - 16)
+            hat.bounds.vy = _.random(-64, 0)
+            hat.bounds.vx = _.random(-64, 64)
+            hat = this.hats.createAt(c.bounds.x, c.bounds.y - 16)
+            hat.bounds.vy = _.random(-64, 0)
+            hat.bounds.vx = _.random(-64, 64)
+
+            p.addFollower()
+          }
 
         }
       }
@@ -431,7 +446,8 @@ export class LudumDare40Context {
     })
     this.hatCounters.clear()
     _.forEach(this.mapMeta.hatCounters, (c) => {
-      this.hatCounters.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+      let hc = this.hatCounters.createAt(c.bx * 16 + 8, c.by * 16 + 8)
+      hc.type = c.data.type
     })
     this.buttons.clear()
     _.forEach(this.mapMeta.buttons, (c) => {
@@ -506,7 +522,7 @@ export class LudumDare40Context {
 
     let numPieces = pieces1.length + 5 + pieces2.length
     let maxRandos = pieces1.length + pieces2.length
-    let inOrder = true
+    let inOrder = false
     let exact = null // 'map-mid'
 
     if (!inOrder) {
@@ -536,7 +552,7 @@ export class LudumDare40Context {
       if (exact) {
         map = exact
       }
-      let randY = _.random(-2, 2)
+      let randY = _.random(-2, 1)
 
       mapLoader.load(acutalWidth * idxPiece, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson(map), {})
       idxPiece++
