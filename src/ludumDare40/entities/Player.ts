@@ -90,6 +90,13 @@ export class Player {
     this.followers.push(item)
     this.container.addChild(item)
   }
+  clearFollowers() {
+    _.forEach(this.followers, (c) => {
+      this.container.removeChild(c)
+    })
+    this.followers = []
+    this.addFollower()
+  }
 
   die() {
     if (!this.isDying) {
@@ -113,7 +120,9 @@ export class Player {
     this.bounds.width = 8
     this.bounds.height = 14
     //if (!this.isDying) {
-    this.controller.update(this.context.sge.keyboard, this.bounds, this.isDying)
+    if (this.context.menuManager.getMode() === 'game') {
+      this.controller.update(this.context.sge.keyboard, this.bounds, this.isDying)
+    }
     //}
     this.bounds.update(this.context)
 

@@ -10,6 +10,7 @@ import { MenuSoundOptions } from './MenuSoundOptions'
 import { KeyCodes } from 'engine/input/Keyboard'
 
 import * as ldSounds from 'ludumDare40/sounds/ldSounds'
+import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 
 
 export class MenuManager {
@@ -37,15 +38,7 @@ export class MenuManager {
 
     this.container = new PIXI.Container()
     this.container.visible = false
-
-    let texture = this.sge.getTexture("test-tileset")
-    let size = 32
-    let rectangle = new PIXI.Rectangle(size * 3, size * 2, size, size)
-    texture.frame = rectangle
-    this.currentItemIndicator = new PIXI.Sprite(texture)
-    this.currentItemIndicator.anchor.set(0.5, 0.5)
-
-    this.container.addChild(this.currentItemIndicator)
+    
 
     this.menuManager = new MenuManagerGeneric()
     this.menuManager.init(sge, 'ludum-dare-settings-v001')
@@ -54,6 +47,12 @@ export class MenuManager {
     this.menuAbout = this.addMenu(new MenuAbout())
     this.menuGame = this.addMenu(new MenuGame())
     this.menuSoundOptions = this.addMenu(new MenuSoundOptions())
+
+    this.currentItemIndicator = spriteCreator.create16_sprite(sge, 'ase-512-16', 2, 2)
+    this.currentItemIndicator.anchor.set(0.5, 9/16)
+    this.currentItemIndicator.scale.set(4)
+    this.container.addChild(this.currentItemIndicator)
+
 
     this.menuManager.loadSettings()
 
@@ -80,7 +79,8 @@ export class MenuManager {
 
     this.menuManager.update()
 
-    this.currentItemIndicator.visible = this.menuManager.getMode() !== 'game'
+    this.container.visible = this.menuManager.getMode() !== 'game'
+    this.currentItemIndicator.visible = true // this.menuManager.getMode() !== 'game'
     this.currentItemIndicator.x = this.menuManager.currentItemX
     this.currentItemIndicator.y = this.menuManager.currentItemY
   }

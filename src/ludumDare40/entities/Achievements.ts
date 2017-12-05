@@ -34,7 +34,7 @@ export class AchievementsManager {
     if (!this.keys[key]) {
       let { x, y } = this.context.player.bounds
 
-      let encourage = ['Good job!', 'Go you!', 'You are the best!', 'Wow!',  'Have a free hat!']
+      let encourage = ['Good job!', 'Go you!', 'You are the best!', 'Wow!', 'Have a free hat!']
 
       x += _.random(-20, 20)
       y += _.random(-20, 20)
@@ -51,21 +51,22 @@ export class AchievementsManager {
   update(context: LudumDare40Context) {
 
     // Check for achievements
-    let { x, y } = context.player.bounds
-    let kb = context.sge.keyboard
-    if (kb.justPressed(KeyCodes.d) || kb.justPressed(KeyCodes.arrowRight)) {
-      this.addAchievement('Moved!')
+    if (this.context.menuManager.getMode() === 'game') {
+      let { x, y } = context.player.bounds
+      let kb = context.sge.keyboard
+      if (kb.justPressed(KeyCodes.d) || kb.justPressed(KeyCodes.arrowRight)) {
+        this.addAchievement('Moved!')
+      }
+      if (kb.justPressed(KeyCodes.w) || kb.justPressed(KeyCodes.arrowUp)) {
+        this.addAchievement('You can jump!')
+      }
+      if (kb.justPressed(KeyCodes.a) || kb.justPressed(KeyCodes.arrowLeft)) {
+        this.addAchievement('Moved the wrong way!')
+      }
+      if (kb.justPressed(KeyCodes.s) || kb.justPressed(KeyCodes.arrowDown)) {
+        this.addAchievement('Tried to duck, but could not!')
+      }
     }
-    if (kb.justPressed(KeyCodes.w) || kb.justPressed(KeyCodes.arrowUp)) {
-      this.addAchievement('You can jump!')
-    }
-    if (kb.justPressed(KeyCodes.a) || kb.justPressed(KeyCodes.arrowLeft)) {
-      this.addAchievement('Moved the wrong way!')
-    }
-    if (kb.justPressed(KeyCodes.s) || kb.justPressed(KeyCodes.arrowDown)) {
-      this.addAchievement('Tried to duck, but could not!')
-    }
-
     _.forEach(this.items, (c) => {
       c.update()
     })

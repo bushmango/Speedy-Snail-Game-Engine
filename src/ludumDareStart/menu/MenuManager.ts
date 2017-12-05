@@ -9,6 +9,8 @@ import { MenuSoundOptions } from './MenuSoundOptions'
 
 import { KeyCodes } from 'engine/input/Keyboard'
 
+import * as spriteCreator from 'ludumDare40/util/spriteCreator'
+
 export class MenuManager {
 
   sge: SimpleGameEngine
@@ -35,12 +37,9 @@ export class MenuManager {
     this.container = new PIXI.Container()
     this.container.visible = false
 
-    let texture = this.sge.getTexture("test-tileset")
-    let size = 32
-    let rectangle = new PIXI.Rectangle(size * 3, size * 2, size, size)
-    texture.frame = rectangle
-    this.currentItemIndicator = new PIXI.Sprite(texture)
+    this.currentItemIndicator = spriteCreator.create16_sprite(sge, 'ase-512-16', 2, 2)
     this.currentItemIndicator.anchor.set(0.5, 0.5)
+    this.currentItemIndicator.scale.set(4)
 
     this.container.addChild(this.currentItemIndicator)
 
