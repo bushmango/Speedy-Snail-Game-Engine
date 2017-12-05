@@ -25,6 +25,7 @@ export class MenuOptionSimple {
   settingKey: string
 
   onClick: () => void
+  onOver: (btn: MenuOptionSimple) => any
 
   init(sge: SimpleGameEngine, text, settingKey: string, options: IOption[]) {
 
@@ -38,6 +39,19 @@ export class MenuOptionSimple {
     this.button.init(sge, text)
     this.intiialText = text
     this.container.addChild(this.button.container)
+
+    this.container.buttonMode = true
+    this.container.interactive = true
+    this.container.on('mouseover', () => {
+      if (this.onOver) {
+        this.onOver(this)
+      }
+    })
+    // this.container.on('mouseover', () => {
+    //   if (this.state > 0 && this.onOver) {
+    //     this.onOver(this)
+    //   }
+    // })
 
     this.button.onClick = () => {
       console.log('change option', settingKey)

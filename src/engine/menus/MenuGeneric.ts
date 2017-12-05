@@ -71,6 +71,11 @@ export class MenuGeneric {
   addOptionSimple(text: string, settingKey: string, options) {
     let button = new MenuOptionSimple()
     button.init(this.sge, text, settingKey, options)
+
+    button.onOver = (btn) => {
+      this.activeButtonIndex = _.findIndex(this.menuButtons, (c) => c === btn)
+    }
+
     this.menuButtons.push(button)
     this.container.addChild(button.container)
     return button
