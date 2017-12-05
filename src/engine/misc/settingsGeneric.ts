@@ -13,6 +13,10 @@ let settings = {
   menuMode: 'title',
   muteMusic: false,
   muteSound: false,
+
+  stevie: 'Stevie B.',
+  casey: 'Casey B.',
+  brenden: 'Brenden B.',
 }
 
 let loaded = false

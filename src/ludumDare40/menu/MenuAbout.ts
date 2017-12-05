@@ -10,7 +10,7 @@ export class MenuAbout {
   container: PIXI.Container
 
   menu: MenuGeneric = new MenuGeneric()
-  
+
   modeName = 'about'
 
   init(sge: SimpleGameEngine) {
@@ -23,6 +23,26 @@ export class MenuAbout {
     this.menu.addButtonSimple('Back').onClick = () => {
       this.menu.changeModeTo('title')
     }
+
+    this.menu.addButtonSimple('Made in 72 hours').onClick = () => {
+
+    }
+    this.menu.addButtonSimple('For Ludum Dare 40 (ldjam.com)').onClick = () => {
+
+    }
+    this.menu.addOptionSimple('Art / programming / design / levelsdw', 'stevie',
+      [
+        { label: 'Stevie B.', value: 'Stevie B.' },
+      ]
+    )
+    this.menu.addOptionSimple('Design / testing / levels', 'brenden', [
+      { label: 'Brenden B.', value: 'Brenden B.' },
+    ]
+    )
+    this.menu.addOptionSimple('Music / Sfx / Design', 'casey', [
+      { label: 'Casey B.', value: 'Casey B.' },
+    ]
+    )
 
     this.update(null)
   }

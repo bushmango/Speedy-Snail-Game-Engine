@@ -16,6 +16,11 @@ import * as sounds from 'ludumDare40/sounds/ldSounds'
 let headDead = spriteCreator.create16_frame(0, 6)
 let headGood = spriteCreator.create16_frame(1, 2)
 
+let frameFall = spriteCreator.create16_frame(1, 0)
+let frameNormal = spriteCreator.create16_frame(1, 1)
+let frameJump = spriteCreator.create16_frame(2, 0)
+
+
 export class Player {
 
   context: LudumDare40Context
@@ -52,7 +57,7 @@ export class Player {
     this.container.addChild(this.head)
     this.container.addChild(this.hats.container)
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 1; i++) {
       this.addFollower()
     }
     // for (let i = 0; i < 20; i++) {
@@ -96,7 +101,7 @@ export class Player {
       this.bounds.reset()
       this.bounds.isGhost = true
       this.bounds.jump()
-      
+
     }
   }
 
@@ -157,6 +162,18 @@ export class Player {
     this.container.position.set(this.bounds.x, this.bounds.y)
 
     this.body.position.set(0, 0)
+
+    if (this.bounds.isFalling) {
+      this.body.texture.frame = frameFall
+    } else {
+      if (this.bounds.isJumping) {
+        this.body.texture.frame = frameJump
+      } else {
+        this.body.texture.frame = frameNormal
+      }
+
+    }
+
     this.head.position.set(0, 0 - 16)
 
     this.head.scale.x = this.bounds.facingRight ? 1 : -1
