@@ -81,6 +81,8 @@ export class LudumDare40Context {
   pressedMidButton = false
   defeatedBoss = false
 
+  hatCount = 0
+
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
 
@@ -161,7 +163,7 @@ export class LudumDare40Context {
 
   }
   getPlayerHatCount() {
-    return this.player.hats.hats.length
+    return this.hatCount
   }
   getPlayerLavaCount() {
     return this.player.followers.length - 1
@@ -182,6 +184,8 @@ export class LudumDare40Context {
   }
 
   onUpdate() {
+
+    this.hatCount = this.player.hats.hats.length
 
     if (this.sge.keyboard.justPressed(KeyCodes.r)) {
       this.reset()
@@ -242,11 +246,19 @@ export class LudumDare40Context {
             this.sounds.playSmash()
           }
           else {
-            if (!b.isReadyToBeDestroyed) {
-              b.destroy()
-              // _.forEach(b.hats.hats, (c) => {
-              //   p.hats.addHat()
-              // })
+
+            if (b.mode === 1) {
+              this.sounds.playMetal()
+            } else if (b.mode === 2) {
+              p.die()
+            } else {
+
+              if (!b.isReadyToBeDestroyed) {
+                b.destroy()
+                // _.forEach(b.hats.hats, (c) => {
+                //   p.hats.addHat()
+                // })
+              }
             }
           }
 
@@ -316,7 +328,7 @@ export class LudumDare40Context {
           c.destroy()
 
           // lava lamp
-          if(c.objIndex === 3) {
+          if (c.objIndex === 3) {
             hat = this.hats.createAt(c.bounds.x, c.bounds.y - 16)
             hat.bounds.vy = _.random(-64, 0)
             hat.bounds.vx = _.random(-64, 64)

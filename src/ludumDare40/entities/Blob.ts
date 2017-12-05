@@ -11,7 +11,12 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 import { Bounds } from './Bounds';
 
-const blobFrames = spriteCreator.create16_frameHRun(4, 1, 2)
+const blobFrames = [
+  spriteCreator.create16_frameHRun(4, 1, 2),
+  spriteCreator.create16_frameHRun(4, 16, 2),
+  spriteCreator.create16_frameHRun(5, 16, 2),
+  spriteCreator.create16_frameHRun(3, 16, 2),
+]
 
 export class BlobManager {
 
@@ -79,9 +84,14 @@ export class Blob {
   frame = 0
   frameIdx = 0
 
+  jumpFrameCounter = 0
+
   bounds = new Bounds()
 
   isReadyToBeDestroyed = false
+
+  mode = 0
+
 
   init(cx: LudumDare40Context) {
     this.context = cx
@@ -126,12 +136,46 @@ export class Blob {
 
     if (this.isReadyToBeDestroyed) { return }
 
+    let numHats = this.context.getPlayerHatCount()
+
     this.frame++
 
     if (this.frame % 16 === 0) {
+
+      this.mode = 0
+      if (numHats > 20) {
+        this.mode = 3
+      }
+      if (numHats > 30) {
+        this.mode = 1
+      }
+      if (numHats > 40) {
+        this.mode = 2
+      }
+
       this.frameIdx++
-      this.frameIdx = this.frameIdx % blobFrames.length
-      this.body.texture.frame = blobFrames[this.frameIdx]
+      this.frameIdx = this.frameIdx % blobFrames[this.mode].length
+
+      this.body.texture.frame = blobFrames[this.mode][this.frameIdx]
+
+    }
+
+    if (this.bounds.isJumping) {
+      this.bounds.jumpFrames++
+    }
+    if (this.bounds.jumpFrames > 90) {
+      this.bounds.setStateFalling()
+      this.bounds.jumpFrames = 0
+    }
+
+    if (numHats > 20) {
+      if (this.bounds.onGround) {
+        this.jumpFrameCounter--
+        if (this.jumpFrameCounter <= 0) {
+          this.jumpFrameCounter = _.random(60, 120)
+          this.bounds.jump()
+        }
+      }
     }
 
     this.bounds.update(this.context)
@@ -139,6 +183,8 @@ export class Blob {
     this.container.position.set(this.bounds.x, this.bounds.y)
 
     this.body.scale.set(this.bounds.facingRight ? 1 : -1, 1)
+
+
 
     this.hats.x = 0
     this.hats.y = -9 + (this.frameIdx === 0 ? 0 : 1)
