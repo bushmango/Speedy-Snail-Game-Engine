@@ -47,7 +47,10 @@ export function playLoaded() {
   // soundsGeneric.play('pickup001')
   soundsGeneric.play('smash001')
 }
-
+export function playJump() {
+  // soundsGeneric.play('pickup001')
+  soundsGeneric.play('jump001')
+}
 export function playMetal() {
   // soundsGeneric.play('pickup001')
   soundsGeneric.play('invinc001')

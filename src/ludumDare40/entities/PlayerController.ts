@@ -12,6 +12,8 @@ import { Bounds } from 'ludumDare40/entities/Bounds';
 
 const subPix = 32
 
+import * as sounds from 'ludumDare40/sounds/ldSounds'
+
 
 export class PlayerController {
 
@@ -86,6 +88,8 @@ export class PlayerController {
       if (kb.justPressed(KeyCodes.w) || kb.justPressed(KeyCodes.arrowUp)) {
         bounds.isJumping = true
         bounds.onGround = false
+        sounds.playJump()
+        
         //this.vy = -8
         bounds.accelY = -8
         bounds.jumpFrames = 0
