@@ -30,7 +30,7 @@ let context = new LudumDare40Context()
 
 export function preload() {
 
-  settingsGeneric.load('ludum-dare-40-v002')
+  settingsGeneric.load('ludum-dare-40-v003')
 
   sge.preloadAudioSprites([
     'audioSprite',
