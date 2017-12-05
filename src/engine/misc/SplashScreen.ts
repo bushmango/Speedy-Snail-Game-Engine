@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine';
 
-const isActive = false
+const isActive = true
 
 export class SplashScreen {
 

@@ -35,6 +35,7 @@ import { ButtonManager, ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/ent
 import { TextsManager } from 'ludumDare40/entities/Texts';
 import { BossHeadManager } from 'ludumDare40/entities/Boss';
 import { DecorManager } from 'ludumDare40/entities/Decor';
+import { AchievementsManager } from 'ludumDare40/entities/Achievements';
 
 const turn = Math.PI * 2
 
@@ -76,6 +77,7 @@ export class LudumDare40Context {
   texts = new TextsManager()
   bossHeads = new BossHeadManager()
   decors = new DecorManager()
+  achievements = new AchievementsManager()
 
   pressedBossButton = false
   pressedMidButton = false
@@ -110,6 +112,7 @@ export class LudumDare40Context {
     this.texts.init(this)
     this.bossHeads.init(this)
     this.decors.init(this)
+    this.achievements.init(this)
 
     this.player = new Player()
     this.player.init(this)
@@ -187,6 +190,25 @@ export class LudumDare40Context {
 
     this.hatCount = this.player.hats.hats.length
 
+    if(this.hatCount >= 100) {
+      this.achievements.addAchievement('100 Hat Hatfessional')
+    }
+    else if(this.hatCount >= 50) {
+      this.achievements.addAchievement('50 Hat Hatsterminator')
+    }
+    else if(this.hatCount >= 40) {
+      this.achievements.addAchievement('40 Hat Hatiator')
+    }
+    else if(this.hatCount >= 30) {
+      this.achievements.addAchievement('30 Hat Hatformer')
+    }
+    else if(this.hatCount >= 20) {
+      this.achievements.addAchievement('20 Hat Novice')
+    }
+    else if(this.hatCount >= 10) {
+      this.achievements.addAchievement('10 Hat Newbie')
+    }
+
     if (this.sge.keyboard.justPressed(KeyCodes.r)) {
       this.reset()
     }
@@ -198,6 +220,8 @@ export class LudumDare40Context {
     }
 
     this.mapScanner.update(this)
+
+   
 
     this.boundsDrawer.clear()
 
@@ -215,6 +239,7 @@ export class LudumDare40Context {
     this.texts.update()
     this.bossHeads.update()
     this.decors.update()
+    this.achievements.update(this)
 
     // Draw bounds
     if (drawBounds) {
@@ -241,6 +266,7 @@ export class LudumDare40Context {
           p.bounds.recalcBounds()
 
           if (b.hats.hats.length > 0) {
+            this.achievements.addAchievement('THERE CAN ONLY BE ONE Hatmaster')
             let hat = b.hats.removeTopHat()
             b.popHat(hat, b.hats.hats.length)
             this.sounds.playSmash()
@@ -296,6 +322,7 @@ export class LudumDare40Context {
           else {
             if (!b.isReadyToBeDestroyed) {
               b.destroy()
+              this.achievements.addAchievement('Like a boss!')
               this.sounds.playSmash()
 
               if (this.bossHeads.items.length <= 1) {
@@ -337,6 +364,10 @@ export class LudumDare40Context {
             hat.bounds.vx = _.random(-64, 64)
 
             p.addFollower()
+
+            this.achievements.addAchievement('Lava lamp hunter!')
+          } else {
+            this.achievements.addAchievement('Take that environment!')
           }
 
         }
@@ -354,10 +385,13 @@ export class LudumDare40Context {
             b.isPressed = true
 
             this.sounds.playMetal()
+            this.achievements.addAchievement('Button pusher!')
 
             if (b.buttonType === ButtonBoss) {
               sounds.playMusicBoss()
               this.pressedBossButton = true
+
+              this.achievements.addAchievement('Time to hat-tack! Amirite?')
 
               let numHeads = 1 + Math.floor(this.getPlayerHatCount() / 7)
               if (numHeads > 10) { numHeads = 10 }
@@ -371,8 +405,12 @@ export class LudumDare40Context {
 
 
             } else if (b.buttonType === ButtonWin) {
+
+              this.achievements.addAchievement('You won!')
+
               sounds.playMusicWin()
             } else if (b.buttonType === ButtonMid) {
+              this.achievements.addAchievement('Halfway champion!')
               sounds.playMusicDungeon()
               this.pressedMidButton = true
             }
@@ -386,26 +424,25 @@ export class LudumDare40Context {
     _.forEach(this.hats.items, (hat) => {
 
       let processed = false
-      _.forEach(this.blobs.items, (blob) => {
-        if (processed) { return }
+      if (hat.frame > 30) // Don't pick up a fresh hat
+      {
+        _.forEach(this.blobs.items, (blob) => {
+          if (processed) { return }
 
-        if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
-          if (!blob.isReadyToBeDestroyed) {
-            // blob.destroy()
-
-            blob.hats.addHat(hat.body.texture.frame)
-            hat.destroy()
-            processed = true
+          if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
+            if (!blob.isReadyToBeDestroyed) {
+              // blob.destroy()          
+              blob.hats.addHat(hat.body.texture.frame)
+              hat.destroy()
+              processed = true
+            }
           }
-        }
-      })
+        })
 
-      if (!processed && collisions.isRectOverlap(p.bounds, hat.bounds)) {
+        if (!processed && collisions.isRectOverlap(p.bounds, hat.bounds)) {
 
-        if (hat.frame > 30) // Don't pick up a fresh hat
-        {
           if (!hat.isReadyToBeDestroyed) {
-
+            this.achievements.addAchievement('Your baldness: cured!')
             this.sounds.playPickup()
 
             p.hats.addHat(hat.body.texture.frame)
@@ -478,6 +515,7 @@ export class LudumDare40Context {
       let btn = this.decors.createAt(c.bx * 16 + 8, c.by * 16 + 8)
       btn.objIndex = c.data.idx
     })
+    this.achievements.clear()
   }
 
   resetTileMap() {

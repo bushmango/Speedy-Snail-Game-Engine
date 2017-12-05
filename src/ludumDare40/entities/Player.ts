@@ -94,6 +94,7 @@ export class Player {
   die() {
     if (!this.isDying) {
 
+      this.context.achievements.addAchievement('You died!')
       sounds.playMusicDie()
 
       this.isDying = true
@@ -141,6 +142,8 @@ export class Player {
       if (this.hats.hats.length > 0) {
         this.context.sounds.playThrowHat()
         let protoHat = this.hats.removeBottomHat()
+
+        this.context.achievements.addAchievement('Hats off to you!')
 
         console.log('throw a hat!')
 

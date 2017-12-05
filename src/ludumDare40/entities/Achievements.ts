@@ -11,18 +11,18 @@ import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
 import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
 import { Bounds } from './Bounds';
 
-export class TextsManager {
+export class AchievementsManager {
 
   context: LudumDare40Context
 
-  items: TextObj[] = []
+  items: Achievement[] = []
 
   init(context: LudumDare40Context) {
     this.context = context
   }
 
   createAt(x, y) {
-    let item = new TextObj()
+    let item = new Achievement()
     item.init(this.context)
     item.moveTo(x, y)
     this.items.push(item)
@@ -30,7 +30,42 @@ export class TextsManager {
     return item
   }
 
-  update() {
+  addAchievement(key) {
+    if (!this.keys[key]) {
+      let { x, y } = this.context.player.bounds
+
+      let encourage = ['Good job!', 'Go you!', 'You are the best!', 'Wow!',  'Have a free hat!']
+
+      x += _.random(-20, 20)
+      y += _.random(-20, 20)
+      let a = this.createAt(x, y)
+      a.text.text = 'Achievement! ' + key + ' ' + _.sample(encourage)
+      this.keys[key] = key
+      let hat = this.context.hats.createAt(x, y - 48)
+      hat.bounds.vx = _.random(-64, 64)
+      //this.context.player.addFollower()
+    }
+  }
+  keys: any = {}
+
+  update(context: LudumDare40Context) {
+
+    // Check for achievements
+    let { x, y } = context.player.bounds
+    let kb = context.sge.keyboard
+    if (kb.justPressed(KeyCodes.d) || kb.justPressed(KeyCodes.arrowRight)) {
+      this.addAchievement('Moved!')
+    }
+    if (kb.justPressed(KeyCodes.w) || kb.justPressed(KeyCodes.arrowUp)) {
+      this.addAchievement('You can jump!')
+    }
+    if (kb.justPressed(KeyCodes.a) || kb.justPressed(KeyCodes.arrowLeft)) {
+      this.addAchievement('Moved the wrong way!')
+    }
+    if (kb.justPressed(KeyCodes.s) || kb.justPressed(KeyCodes.arrowDown)) {
+      this.addAchievement('Tried to duck, but could not!')
+    }
+
     _.forEach(this.items, (c) => {
       c.update()
     })
@@ -51,6 +86,7 @@ export class TextsManager {
   }
 
   clear() {
+    this.keys = {}
     _.forEach(this.items, (c) => {
       c.isReadyToBeDestroyed = true
       this.context.layerObjects.removeChild(c.container)
@@ -60,7 +96,7 @@ export class TextsManager {
 
 }
 
-export class TextObj {
+export class Achievement {
 
   context: LudumDare40Context
   container = new PIXI.Container()
@@ -87,7 +123,7 @@ export class TextObj {
 
     if (this.isReadyToBeDestroyed) { return }
 
-    
+
 
   }
 
