@@ -19,14 +19,14 @@ const { TextureCache } = PIXI.utils
 
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-import { LudumDareStartContext } from 'ludumDareStart/LudumDareStartContext';
+import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
-import * as ldSounds from 'ludumDareStart/sounds/ldSounds'
+import * as ldSounds from 'ludumDare41/sounds/ldSounds'
 
 let sge = new SimpleGameEngine()
 
-let context = new LudumDareStartContext()
+let context = new LudumDare41Context()
 
 export function preload() {
 
@@ -58,7 +58,7 @@ export function preload() {
 let pixiMode = 'unknown'
 export function run() {
 
-  console.log('Running ludum dare start sample')
+  console.log('Running ludum dare 41 by Stevie Bushman')
 
   sge.init()
   sge.createRenderer()
@@ -67,7 +67,7 @@ export function run() {
 
   preload()
   sge.preload(
-    '/public/ludumDareStart',
+    '/public/ludumDare41',
     () => {
       onLoaded()
     },
