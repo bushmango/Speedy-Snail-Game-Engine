@@ -9,7 +9,11 @@ const ninjaFrames = [
   spriteCreator.create8_frameHRun(3, 2, 1),
   spriteCreator.create8_frameHRun(3, 3, 1),
 ]
-
+const ninjaFramesDead = [
+  spriteCreator.create8_frameHRun(3, 3 + 1, 1),
+  spriteCreator.create8_frameHRun(3, 3 + 2, 1),
+  spriteCreator.create8_frameHRun(3, 3 + 3, 1),
+]
 export class NinjaManager {
 
   context: LudumDare41Context
@@ -68,6 +72,7 @@ export class Ninja {
   animationIndex = 0
   facingRight = false
   isBot = false
+  isAlive = true
   isReadyToBeDestroyed = false
   bx: number = 0
   by: number = 0
@@ -97,8 +102,16 @@ export class Ninja {
     if (this.isReadyToBeDestroyed) { return }
 
     this.frameIdx++
-    this.frameIdx = this.frameIdx % ninjaFrames[this.animationIndex].length
-    this.body.texture.frame = ninjaFrames[this.animationIndex][this.frameIdx]
+    let frameSource = ninjaFrames
+    if (this.isAlive) {
+      //console.log('ninja is alive', this.id, this.isAlive)
+      frameSource = ninjaFrames
+    } else {
+      // console.log('ninja is dead', this.id, this.isAlive)
+      frameSource = ninjaFramesDead
+    }
+    this.frameIdx = this.frameIdx % frameSource[this.animationIndex].length
+    this.body.texture.frame = frameSource[this.animationIndex][this.frameIdx]
 
     let scale = 1
     this.body.scale.set(this.facingRight ? -scale : scale, scale)

@@ -48,7 +48,7 @@ export class CommandRunnerClient {
     let ninja = this.context.ninjas.createAt(message.x, message.y)
     ninja.id = message.id
     ninja.isBot = message.isBot
-
+    ninja.isAlive = true
     if (ninja.isBot) {
       ninja.animationIndex = 0
     } else if (ninja.id === this.context.localServer.localPlayer.id) {
@@ -79,9 +79,13 @@ export class CommandRunnerClient {
         else if (c.destroyTree) {
           this.context.gameMap.setTile(c.x, c.y, 0)
         }
-        else if (c.move) {
+         else if (c.lava) {
+          console.debug('lavad', ninja.id)
           ninja.moveTo(c.x, c.y)
-        } else if (c.lava) {
+          // debugger
+          ninja.isAlive = false
+        }
+        else if (c.move) {
           ninja.moveTo(c.x, c.y)
         }
 

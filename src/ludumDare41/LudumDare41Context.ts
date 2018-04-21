@@ -23,7 +23,6 @@ const showSplashScreen = false
 
 export class LudumDare41Context {
 
-
   sge: SimpleGameEngine
 
   menuManager = new MenuManager()

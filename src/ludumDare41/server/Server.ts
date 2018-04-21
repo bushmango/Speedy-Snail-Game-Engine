@@ -420,13 +420,14 @@ export class Server {
         let gs = this.getMapSafe(c.x, c.y)
         if (gs.t === 3) {
           c.isAlive = false
+          moves.push({
+            id: c.id,
+            x: c.x,
+            y: c.y,
+            lava: true,
+          })
         }
-        moves.push({
-          id: c.id,
-          x: c.x,
-          y: c.y,
-          lava: true,
-        })
+
       }
     })
     if (moves.length > 0) {
