@@ -25,6 +25,7 @@ export interface IMessage {
   moves?: IMove[],
   tileSpawns?: ITileSpawn[],
   isBot?: boolean,
+  isAlive?: boolean,
 }
 
 export interface IClientMesssage {

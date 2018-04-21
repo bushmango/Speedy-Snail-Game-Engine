@@ -31,6 +31,10 @@ export class CommandRunnerClient {
     }
   }
 
+  welcome = (message: IMessage) => {
+    this.context.playerId = message.id
+  }
+
   resetMap = async (message: IMessage) => {
     this.context.ninjas.clear()
     this.context.gameMap.reset()
@@ -49,7 +53,7 @@ export class CommandRunnerClient {
     let ninja = this.context.ninjas.createAt(message.x, message.y)
     ninja.id = message.id
     ninja.isBot = message.isBot
-    ninja.isAlive = true
+    ninja.isAlive = message.isAlive
     if (ninja.isBot) {
       ninja.animationIndex = 0
     } else if (ninja.id === this.context.playerId) {
@@ -102,8 +106,6 @@ export class CommandRunnerClient {
     this.context.gameMap.setLava(message.x, message.y)
   }
 
-  welcome = (message: IMessage) => {
-    this.context.playerId = message.id
-  }
+ 
 
 }

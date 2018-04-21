@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
-import { IMessage, IClientMesssage, IMove } from './IMessage'
+import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
 import { ICard, ICardAndDir, standardDeck } from './CardInfo'
 
@@ -202,8 +202,8 @@ export class Server {
   }
   findOpenSpace() {
     for (let i = 0; i < this.mapHeight * this.mapWidth * 4; i++) {
-      let x = _.random(2, this.mapWidth - 4, false)
-      let y = _.random(2, this.mapHeight - 4, false)
+      let x = _.random(1, this.mapWidth - 2, false)
+      let y = _.random(1, this.mapHeight - 2, false)
 
       let gs = this.getMap(x, y)
       if (gs.t === 0) {
@@ -233,6 +233,7 @@ export class Server {
     }
 
     let tileSpawns = []
+    this.setTileSpawn(tileSpawns, 1, 1, 1)
     for (let i = 0; i < this.mapWidth; i++) {
       this.setTileSpawn(tileSpawns, i, 0, 1)
       this.setTileSpawn(tileSpawns, this.mapWidth - i - 1, this.mapHeight - 1, 1)
@@ -272,7 +273,7 @@ export class Server {
     log('spawnPlayers')
 
     // add bots
-    let numBots = 10
+    let numBots = 100 - this.players.length
     for (let i = 0; i < numBots; i++) {
       this.addPlayer(true)
     }
@@ -293,6 +294,7 @@ export class Server {
           x: c.x,
           y: c.y,
           isBot: c.isBot,
+          isAlive: c.isAlive,
         })
       } else {
         logError('no space for player')
@@ -301,6 +303,37 @@ export class Server {
     })
 
     await this.wait()
+  }
+
+  sendMapTo = (player: IPlayer) => {
+    // Send map
+    let tileSpawns = [] as ITileSpawn[]
+    _.forEach(this.map, c => {
+      if (c.t !== 0) {
+        tileSpawns.push({
+          x: c.x,
+          y: c.y,
+          t: c.t
+        })
+      }
+    })
+    this.sendToPlayer(player,
+      {
+        command: 'resetMap',
+        tileSpawns: tileSpawns,
+      })
+    // Send player spawns
+    _.forEach(this.players, c => {
+      this.sendToPlayer(player,
+        {
+          command: 'spawn',
+          id: c.id,
+          x: c.x,
+          y: c.y,
+          isBot: c.isBot,
+          isAlive: c.isAlive,
+        })
+    })
   }
 
   dealCards = async () => {
@@ -422,8 +455,10 @@ export class Server {
   checkVictory = async () => {
     log('checkVictory')
 
-    let alivePlayers = _.some(this.players, c => c.isAlive && !c.isBot)
-    if (!alivePlayers) {
+    let aliveHumans = _.reduce(this.players, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
+    let aliveBots = _.reduce(this.players, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
+    log(aliveHumans, 'humans', aliveBots, 'bots')
+    if (!aliveHumans) {
       // Kill everything
       log('no more alive humans')
       _.forEach(this.players, c => {

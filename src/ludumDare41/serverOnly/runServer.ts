@@ -58,6 +58,9 @@ httpServ.listen(portWs, function () {
       id: player.id,
     })
 
+    // Send map
+    server.sendMapTo(player)
+
     socket.on('disconnect', () => {
       console.log('W>', 'user d/c');
       // Kill this player
