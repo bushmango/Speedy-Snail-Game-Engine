@@ -6,6 +6,12 @@ export interface IMove {
   y: number,
 }
 
+export interface ITileSpawn {
+  x: number,
+  y: number,
+  t: number,
+}
+
 export interface IMessage {
   command: string,
   id?: number,
@@ -13,6 +19,7 @@ export interface IMessage {
   y?: number,
   cards?: ICard[],
   moves?: IMove[],
+  tileSpawns?: ITileSpawn[],
 }
 
 export interface IClientMesssage {

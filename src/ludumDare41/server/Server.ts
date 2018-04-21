@@ -5,6 +5,14 @@ const delay = ms => new Promise(res => setTimeout(res, ms))
 import { IMessage, IClientMesssage } from './IMessage'
 
 import { ICard, ICardAndDir, standardDeck } from './CardInfo'
+import { logError } from 'ludumDare41/server/CommandRunnerClient';
+
+export interface IMapSpot {
+  x: number
+  y: number
+  t: number
+  player: IPlayer
+}
 
 export interface IPlayer {
   id: number,
@@ -33,6 +41,15 @@ export class Server {
   turnTimer = 3000
 
   nextPlayerId = 100
+
+  lavaX = 1
+  lavaY = 1
+  mapWidth = 22
+  mapHeight = 22
+  map = [] as IMapSpot[]
+  getMap(x, y) {
+    return this.map[x + y * this.mapWidth]
+  }
 
   gameState = 'wait'
   onLocalMessage: (message: IMessage) => void = null
@@ -78,6 +95,7 @@ export class Server {
       await this.spawnPlayers()
 
       while (_.some(this.players, c => c.isAlive)) {
+        await this.addLava()
         await this.dealCards()
         await this.waitForCards()
         await this.resolveDodges()
@@ -87,6 +105,7 @@ export class Server {
       }
     }
   }
+
 
   sendToAllPlayers(message: IMessage) {
     if (this.onLocalMessage) {
@@ -123,10 +142,98 @@ export class Server {
     }
   }
 
+  setTileSpawn(tileSpawns, x, y, t) {
+    tileSpawns.push({
+      x: x,
+      y: y,
+      t: t,
+    })
+    let gs = this.getMap(x, y)
+    gs.t = t
+  }
+
+  setRandomTileSpawn(tileSpawns, t) {
+    let space = this.findOpenSpace()
+    if (space) {
+      tileSpawns.push({
+        x: space.x,
+        y: space.y,
+        t: t,
+      })
+      let gs = this.getMap(space.x, space.y)
+      gs.t = t
+    }
+  }
+
+  findRandomSpace() {
+    let x = _.random(2, this.mapWidth - 4, false)
+    let y = _.random(2, this.mapHeight - 4, false)
+    return { x, y }
+  }
+  findOpenSpace() {
+    for (let i = 0; i < this.mapHeight * this.mapWidth * 4; i++) {
+      let x = _.random(2, this.mapWidth - 4, false)
+      let y = _.random(2, this.mapHeight - 4, false)
+
+      let gs = this.getMap(x, y)
+      if (gs.t === 0) {
+        return { x, y }
+      }
+    }
+
+    return null
+  }
+
   spawnMap = async () => {
     log('spawnMap')
+    this.lavaX = 1
+    this.lavaY = 1
+
+    this.map = []
+    for (let y = 0; y < this.mapHeight; y++) {
+      for (let x = 0; x < this.mapWidth; x++) {
+        let gs: IMapSpot = {
+          x,
+          y,
+          player: null,
+          t: 0
+        }
+        this.map.push(gs)
+      }
+    }
+
+    let tileSpawns = []
+    for (let i = 0; i < this.mapWidth; i++) {
+      this.setTileSpawn(tileSpawns, i, 0, 1)
+      this.setTileSpawn(tileSpawns, this.mapWidth - i - 1, this.mapHeight - 1, 1)
+    }
+    for (let i = 1; i < this.mapHeight - 1; i++) {
+      this.setTileSpawn(tileSpawns, 0, i, 1)
+      this.setTileSpawn(tileSpawns, this.mapWidth - 1, this.mapHeight - i - 1, 1)
+    }
+
+
+
+    let numLava = _.random(5, 25, false)
+    for (let i = 0; i < numLava; i++) {
+      this.setRandomTileSpawn(tileSpawns, 3)
+    }
+    let numRocks = _.random(5, 25, false)
+    for (let i = 0; i < numRocks; i++) {
+      this.setRandomTileSpawn(tileSpawns, 1)
+    }
+    let numTrees = _.random(5, 50, false)
+    for (let i = 0; i < numTrees; i++) {
+      this.setRandomTileSpawn(tileSpawns, 2)
+    }
+    let numTreasure = _.random(5, 10, false)
+    for (let i = 0; i < numTreasure; i++) {
+      this.setRandomTileSpawn(tileSpawns, 4)
+    }
+
     this.sendToAllPlayers({
-      command: 'resetMap'
+      command: 'resetMap',
+      tileSpawns: tileSpawns,
     })
     await this.wait()
   }
@@ -134,16 +241,23 @@ export class Server {
   spawnPlayers = async () => {
     log('spawnPlayers')
     _.forEach(this.players, c => {
-      c.isAlive = true
-      c.x = _.random(1, 20, false)
-      c.y = _.random(1, 20, false)
 
-      this.sendToAllPlayers({
-        command: 'spawn',
-        id: c.id,
-        x: c.x,
-        y: c.y,
-      })
+      let space = this.findOpenSpace()
+      if (space) {
+
+        c.isAlive = true
+        c.x = space.x
+        c.y = space.y
+
+        this.sendToAllPlayers({
+          command: 'spawn',
+          id: c.id,
+          x: c.x,
+          y: c.y,
+        })
+      } else {
+        logError('no space for player')
+      }
 
     })
 
@@ -282,6 +396,30 @@ export class Server {
 
   checkVictory = async () => {
     log('checkVictory')
+    await this.wait()
+  }
+
+  addLava = async () => {
+    log('addLava')
+
+    this.sendToAllPlayers({
+      command: 'lava',
+      x: this.lavaX,
+      y: this.lavaY,
+    })
+
+    // Advance lava
+    this.lavaX++
+    if (this.lavaX > this.mapWidth - 2) {
+      this.lavaX = 1
+      this.lavaY++
+      if (this.lavaY > this.mapHeight - 2) {
+        this.lavaY = 1
+      }
+    }
+
+
+
     await this.wait()
   }
 

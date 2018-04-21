@@ -28,8 +28,16 @@ export class CommandRunnerClient {
     }
   }
 
-  resetMap = (message: IMessage) => {
+  resetMap = async (message: IMessage) => {
     this.context.ninjas.clear()
+    this.context.gameMap.reset()
+    for (let i = 0; i < message.tileSpawns.length; i++) {
+      let c = message.tileSpawns[i]
+      this.context.gameMap.setTile(c.x, c.y, c.t)
+      await delay(25)
+    }
+
+    _.forEach(message.tileSpawns)
   }
   spawn = (message: IMessage) => {
     let ninja = this.context.ninjas.createAt(message.x, message.y)
@@ -56,6 +64,10 @@ export class CommandRunnerClient {
       }
     }
 
+  }
+
+  lava = (message: IMessage) => {
+    this.context.gameMap.setLava(message.x, message.y)
   }
 
 }

@@ -7,11 +7,7 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { GamepadTester } from 'engine/gamepad/GamepadTester'
 import { InputControl } from 'engine/gamepad/InputControl'
 
-import { TileMap, ITileData, IGridSpot } from 'engine/tiles/TileMap'
 import { ParticleEmitter } from 'engine/particles/ParticleEmitter'
-
-import * as tileMapFiller from 'engine/tiles/tileMapFiller'
-// import * as tileMapLoader from 'snakeBattle/tiles/tileMapLoader'
 
 import { MenuManager } from 'ludumDareStart/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen'
@@ -21,6 +17,7 @@ import { Server } from 'ludumDare41/server/Server';
 import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient';
 import { ICard } from 'ludumDare41/server/CardInfo';
 import { IClientMesssage } from 'ludumDare41/server/IMessage';
+import { GameMap } from 'ludumDare41/entities/GameMap'
 
 const showSplashScreen = false
 
@@ -28,7 +25,7 @@ export class LudumDare41Context {
 
 
   sge: SimpleGameEngine
-  tileMap: TileMap<IGridSpot>
+
   menuManager = new MenuManager()
   splash: SplashScreen
 
@@ -37,6 +34,7 @@ export class LudumDare41Context {
   layerObjects: PIXI.Container
   layerCards: PIXI.Container
 
+  gameMap = new GameMap()
   ninjas = new NinjaManager()
   cards = new CardManager()
 
@@ -58,8 +56,6 @@ export class LudumDare41Context {
 
     this.rootContainer = new PIXI.Container()
 
-    this.initTileMap()
-
     this.menuManager.init(this.sge)
 
     if (showSplashScreen) {
@@ -70,15 +66,16 @@ export class LudumDare41Context {
       })
     }
 
-    // Add layers
+    this.gameMap.init(this)
 
-    this.addLayer(this.tileMap.containers[0])
+    // Add layers    
+    this.addLayer(this.gameMap.tileMap.containers[0])
     this.layerObjects = this.addLayer()
     this.layerCards = this.addLayer()
     this.addLayer(this.menuManager.menuManager.container)
     this.addLayer(this.menuManager.container)
 
-    this.setLayerSettings(this.tileMap.containers[0])
+    this.setLayerSettings(this.gameMap.tileMap.containers[0])
     this.setLayerSettings(this.layerObjects)
 
     this.ninjas.init(this)
@@ -142,39 +139,12 @@ export class LudumDare41Context {
     if (showSplashScreen) {
       this.splash.update()
     }
+    this.gameMap.update()
     this.ninjas.update()
     this.cards.update()
     this.menuManager.update()
   }
 
-  initTileMap() {
-    let defaultTextureName = 'ase-512-8'
-    let tileData: ITileData[] = []
-    tileData.push({
-      name: 'default',
-      textureName: defaultTextureName,
-      tx: 1,
-      ty: 2,
-    })
-    tileData.push({
-      name: 'wall-1',
-      textureName: defaultTextureName,
-      tx: 2,
-      ty: 2,
-    })
-    tileData.push({
-      name: 'tree-1',
-      textureName: defaultTextureName,
-      tx: 3,
-      ty: 2,
-    })
-    this.tileMap = new TileMap<IGridSpot>(this.sge, 8, tileData, 1, null)
-    this.tileMap.resize(22, 22)
 
-    tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 22, 22)
-    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 22 - 2, 22 - 2)
-
-
-  }
 }
 
