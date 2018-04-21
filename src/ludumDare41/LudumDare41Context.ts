@@ -15,32 +15,9 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 
 import { MenuManager } from 'ludumDareStart/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen';
+import { Ninja, NinjaManager } from 'ludumDare41/entities/Ninja';
 
-
-const turn = Math.PI * 2
-
-export class Ship {
-  sge: SimpleGameEngine
-  ship: PIXI.Sprite
-
-  init(_sge: SimpleGameEngine) {
-    this.sge = _sge
-
-    let texture = this.sge.getTexture("ase-512-8")
-    let size = 8
-    let rectangle = new Rectangle(size * 3, size * 2, size, size)
-    texture.frame = rectangle
-    this.ship = new Sprite(texture)
-    this.ship.x = 32 + 300
-    this.ship.y = 32 + 300
-    this.ship.anchor.set(0.5, 0.5)
-
-  }
-  update() {
-    this.ship.rotation += turn / (60 * 4)
-  }
-
-}
+const showSplashScreen = false
 
 export class LudumDare41Context {
 
@@ -52,37 +29,59 @@ export class LudumDare41Context {
 
   rootContainer: PIXI.Container
   layerObjects: PIXI.Container
-  ship: Ship
+
+  ninjas = new NinjaManager()
+
   onLoaded(_sge: SimpleGameEngine) {
     this.sge = _sge
 
     this.rootContainer = new PIXI.Container()
 
     this.initTileMap()
-    this.initShip()
 
     this.menuManager.init(this.sge)
 
-    this.rootContainer.visible = false
-    this.splash = new SplashScreen()
-    this.splash.init(this.sge, 'prariesnailgames', () => {
-      this.rootContainer.visible = true
-    })
+    if (showSplashScreen) {
+      this.rootContainer.visible = false
+      this.splash = new SplashScreen()
+      this.splash.init(this.sge, 'prariesnailgames', () => {
+        this.rootContainer.visible = true
+      })
+    }
 
     // Add layers
+
     this.addLayer(this.tileMap.containers[0])
     this.layerObjects = this.addLayer()
-    this.layerObjects.addChild(this.ship.ship)
     this.addLayer(this.menuManager.menuManager.container)
     this.addLayer(this.menuManager.container)
 
+    let scale = 4
+    let mx = 50
+    let my = 50
+    let layer = this.tileMap.containers[0]
+    layer.position.set(mx, my)
+    layer.scale.set(scale)
+    this.layerObjects.position.set(mx, my)
+    this.layerObjects.scale.set(scale)
+
+    this.ninjas.init(this)
+    // this.addLayer(this.ninjas.container)
+    this.ninjas.createAt(0, 0)
+    this.ninjas.createAt(2, 0)
+    this.ninjas.createAt(0, 3)
+    this.ninjas.createAt(3, 3)
+
+
     this.sge.stage.addChild(this.rootContainer)
-    this.sge.stage.addChild(this.splash.container)
+    if (showSplashScreen) {
+      this.sge.stage.addChild(this.splash.container)
+    }
 
   }
 
   addLayer(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainer.addChild(container)
@@ -90,14 +89,11 @@ export class LudumDare41Context {
   }
 
   onUpdate() {
-    this.splash.update()
-    this.ship.update()
+    if (showSplashScreen) {
+      this.splash.update()
+    }
+    this.ninjas.update()
     this.menuManager.update()
-  }
-
-  initShip() {
-    this.ship = new Ship()
-    this.ship.init(this.sge)
   }
 
   initTileMap() {
@@ -123,13 +119,9 @@ export class LudumDare41Context {
     })
     this.tileMap = new TileMap<IGridSpot>(this.sge, 8, tileData, 1, null)
     this.tileMap.resize(22, 22)
-    this.tileMap.setScale(4)
 
     tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 22, 22)
-    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 22-2, 22-2)
-    let layer = this.tileMap.containers[0]
-    layer.x = 50
-    layer.y = 30
+    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 22 - 2, 22 - 2)
 
 
   }
