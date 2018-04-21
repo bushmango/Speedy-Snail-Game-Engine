@@ -11,7 +11,7 @@ export function logWarn(...message) {
 export function logError(...message) {
   console.error('S>', ...message)
 }
-
+const delay = ms => new Promise(res => setTimeout(res, ms))
 
 export class CommandRunnerClient {
   context: LudumDare41Context
@@ -41,19 +41,20 @@ export class CommandRunnerClient {
     this.context.cards.setHand(message.cards)
 
   }
-  moves = (message: IMessage) => {
+  moves = async (message: IMessage) => {
     log('moves', message.moves)
 
-    _.forEach(message.moves, c => {
+    for (let i = 0; i < message.moves.length; i++) {
+      let c = message.moves[i]
       let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
 
       if (ninja) {
         ninja.moveTo(c.x, c.y)
+        await delay(100)
       } else {
         logError('cant find ninja', c.id)
       }
-
-    })
+    }
 
   }
 
