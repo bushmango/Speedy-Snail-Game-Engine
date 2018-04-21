@@ -4,14 +4,14 @@ const delay = ms => new Promise(res => setTimeout(res, ms))
 
 import { IMessage, IClientMesssage } from './IMessage'
 
-import { ICard, standardDeck } from './CardInfo'
+import { ICard, ICardAndDir, standardDeck } from './CardInfo'
 
 export interface IPlayer {
   id: number,
   hand: ICard[],
   deck: ICard[],
   discard: ICard[],
-  chosenCards: ICard[],
+  chosenCards: ICardAndDir[],
   isAlive: boolean,
   x: number
   y: number
@@ -23,7 +23,6 @@ export function log(...message) {
 export function logWarn(...message) {
   console.warn('S>', ...message)
 }
-
 
 export class Server {
 
@@ -110,7 +109,10 @@ export class Server {
 
         let card = _.find(this.localPlayer.hand, c => c.name === clientMessage.cardName)
         if (card) {
-          this.localPlayer.chosenCards = [card]
+          this.localPlayer.chosenCards = [{
+            card,
+            dir: clientMessage.direction,
+          }]
         } else {
           logWarn('dont have card', clientMessage.cardName)
         }
@@ -220,17 +222,49 @@ export class Server {
     _.forEach(this.players, c => {
 
       if (c.chosenCards.length > 0) {
-        let card = c.chosenCards[0]
+        let cardAndDir = c.chosenCards[0]
 
-        if (card.type === 'move') {
+        if (cardAndDir.card.type === 'move') {
 
-          c.y -= 1
+          _.forEach(cardAndDir.card.actions, action => {
 
-          moves.push({
-            id: c.id,
-            x: c.x,
-            y: c.y,
+            if (action.type === 'move') {
+
+              let xo = 0
+              let yo = 0
+
+              switch (cardAndDir.dir) {
+                case 0:
+                  yo = -1
+                  break
+                case 1:
+                  xo = 1
+                  break
+                case 2:
+                  yo = 1
+                  break
+                case 3:
+                  xo = -1
+                  break
+                default:
+                  logWarn('invalid dir', cardAndDir.dir)
+                  break
+              }
+
+              c.y += yo
+              c.x += xo
+
+              moves.push({
+                id: c.id,
+                x: c.x,
+                y: c.y,
+              })
+
+
+            }
           })
+
+
 
         }
 

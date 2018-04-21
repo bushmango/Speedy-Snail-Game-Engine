@@ -125,7 +125,6 @@ export class Card {
     })
     this.rotRight.on('mouseup', () => {
       this.rotRight.rotation = Math.PI / 16
-      this.rotation += Math.PI / 2
       this.setDir(this.dir + 1)
     })
 
@@ -144,20 +143,23 @@ export class Card {
     })
     this.rotLeft.on('mouseup', () => {
       this.rotLeft.rotation = -Math.PI / 16
-      this.rotation += -Math.PI / 2
+
       this.setDir(this.dir - 1)
     })
-
 
     this.container.addChild(this.body)
     this.container.addChild(this.card)
     this.container.addChild(this.rotLeft)
     this.container.addChild(this.rotRight)
+
+    this.setDir(_.random(0, 4, false))
+
   }
 
   setDir(dir) {
     while (dir < 0) { dir += 4 }
-    while (dir > 4) { dir -= 4 }
+    while (dir >= 4) { dir -= 4 }
+    this.rotation = Math.PI / 2 * dir
     this.dir = dir
   }
 
