@@ -1,0 +1,37 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"downlevelIteration": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"importHelpers": true,
+		"allowSyntheticDefaultImports": true,
+		"sourceMap": true,
+		"noEmit": false,
+		"noImplicitAny": false,
+		"removeComments": false,
+		"preserveConstEnums": true,
+		"experimentalDecorators": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"pretty": true,
+		"outDir": "./lib/",
+		"baseUrl": ".",
+		"paths": {
+			"*": [
+				"src/*"
+			]
+		}
+	},
+	"include": [
+		"./src/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	],
+	"awesomeTypescriptLoaderOptions": {
+		"transpileOnly": true,
+		"useTranspileModule": true
+	}
+}

@@ -1,4 +1,5 @@
-import { _ } from './importsLodashsServer'
+// import { _ } from './importsLodashsServer'
+import * as _ from 'lodash'
 
 export interface ICardAction {
   type: 'move'
@@ -78,6 +79,6 @@ addCards(standardDeck, 'Walk', 3)
 addCards(standardDeck, 'Run', 2)
 addCards(standardDeck, 'Sprint', 1)
 
-console.log('standard deck', standardDeck)
+// console.log('standard deck', standardDeck)
 
 export { standardDeck }

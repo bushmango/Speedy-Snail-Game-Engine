@@ -1,11 +1,11 @@
-import { _ } from './importsLodashsServer'
+// import { _ } from './importsLodashsServer'
+import * as _ from 'lodash'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
 import { IMessage, IClientMesssage, IMove } from './IMessage'
 
 import { ICard, ICardAndDir, standardDeck } from './CardInfo'
-import { logError } from 'ludumDare41/server/CommandRunnerClient';
 
 export interface IMapSpot {
   x: number
@@ -24,6 +24,7 @@ export interface IPlayer {
   x: number
   y: number
   isBot: boolean
+  socket: any
 }
 
 export function log(...message) {
@@ -31,6 +32,9 @@ export function log(...message) {
 }
 export function logWarn(...message) {
   console.warn('S>', ...message)
+}
+export function logError(...message) {
+  console.error('S>', ...message)
 }
 
 export class Server {
@@ -59,6 +63,8 @@ export class Server {
   }
   gameState = 'wait'
   onLocalMessage: (message: IMessage) => void = null
+  onSendToAllPlayers: (message: IMessage) => void = null
+  onSendToPlayer: (player: IPlayer, message: IMessage) => void = null
   localPlayer: IPlayer = null
 
   init = (isLocal) => {
@@ -67,7 +73,7 @@ export class Server {
     this.tick()
   }
 
-  addPlayer(isBot: boolean) {
+  addPlayer(isBot: boolean, socket: any = null) {
     // this.numPlayers++
     let player: IPlayer = {
       id: this.nextPlayerId++,
@@ -79,8 +85,9 @@ export class Server {
       x: -1,
       y: -1,
       isBot,
+      socket,
     }
-    log('player deck', player.deck)
+    // log('player deck', player.deck)
     this.players.push(player)
     return player
   }
@@ -102,6 +109,7 @@ export class Server {
       await this.spawnPlayers()
 
       while (_.some(this.players, c => c.isAlive)) {
+        log('some alive players')
         await this.addLava()
         await this.dealCards()
         await this.waitForCards()
@@ -118,34 +126,49 @@ export class Server {
     if (this.onLocalMessage) {
       this.onLocalMessage(message)
     }
+    if (this.onSendToAllPlayers) {
+      this.onSendToAllPlayers(message)
+    }
     // TODO: send via sockets or somesuch
   }
   sendToPlayer(player: IPlayer, message: IMessage) {
+    if (player.isBot) { return }
+
     if (this.onLocalMessage) {
       if (player === this.localPlayer) {
         this.onLocalMessage(message)
       }
     }
+    if (this.onSendToPlayer) {
+      this.onSendToPlayer(player, message)
+    }
     // TODO: send via sockets or somesuch
   }
   receiveLocal(clientMessage: IClientMesssage) {
     if (this.localPlayer) {
+      this.receive(this.localPlayer, clientMessage)
+    }
+  }
+  receive(player: IPlayer, clientMessage: IClientMesssage) {
+    if (!player) {
+      logWarn('player is null')
+      return
+    }
+    if (clientMessage.command === 'play') {
 
-      if (clientMessage.command === 'play') {
-
-        let card = _.find(this.localPlayer.hand, c => c.name === clientMessage.cardName)
-        if (card) {
-          this.localPlayer.chosenCards = [{
-            card,
-            dir: clientMessage.direction,
-          }]
-        } else {
-          logWarn('dont have card', clientMessage.cardName)
-        }
-
+      let card = _.find(player.hand, c => c.name === clientMessage.cardName)
+      if (card) {
+        player.chosenCards = [{
+          card,
+          dir: clientMessage.direction,
+        }]
+        log('card chosen', player.id)
       } else {
-        logWarn('unknown client message', clientMessage.command)
+        logWarn('dont have card', clientMessage.cardName)
       }
+
+    } else {
+      logWarn('unknown client message', clientMessage.command)
     }
   }
 
@@ -325,10 +348,20 @@ export class Server {
     for (let iTicks = 0; iTicks < numTicks; iTicks++) {
       await this.waitFor(this.turnTimer / numTicks)
       log('.')
+
       if (this.localPlayer && this.localPlayer.chosenCards.length > 0) {
-        log('cards chosen!')
+        log('cards chosen (local)!')
         break
+      } else {
+        let doWait = _.some(this.players, c => c.isAlive && !c.isBot && c.chosenCards.length === 0)
+        if (!doWait) {
+          log('cards chosen (server)!')
+          break
+        }
       }
+
+
+
     }
     log('timeup!')
   }
@@ -388,6 +421,17 @@ export class Server {
 
   checkVictory = async () => {
     log('checkVictory')
+
+    let alivePlayers = _.some(this.players, c => c.isAlive && !c.isBot)
+    if (!alivePlayers) {
+      // Kill everything
+      log('no more alive humans')
+      _.forEach(this.players, c => {
+        c.isAlive = false
+      }
+      )
+    }
+
     await this.wait()
   }
 

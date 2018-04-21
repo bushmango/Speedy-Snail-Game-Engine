@@ -20,6 +20,9 @@ import { IClientMesssage } from 'ludumDare41/server/IMessage';
 import { GameMap } from 'ludumDare41/entities/GameMap'
 
 const showSplashScreen = false
+const useLocalServer = false
+
+import io from 'socket.io-client';
 
 export class LudumDare41Context {
 
@@ -36,6 +39,9 @@ export class LudumDare41Context {
   gameMap = new GameMap()
   ninjas = new NinjaManager()
   cards = new CardManager()
+
+  socket: any
+  playerId: number
 
   commandRunner = new CommandRunnerClient()
   localServer = new Server()
@@ -88,7 +94,7 @@ export class LudumDare41Context {
 
     let cardSize = 4 * 8 * 3
     let cx = this.mx + cardSize / 2
-    let cy = this.my + 22 * 8 * this.scale + cardSize / 2 + 2 + 12*this.scale
+    let cy = this.my + 22 * 8 * this.scale + cardSize / 2 + 2 + 12 * this.scale
     this.layerCards.position.set(cx, cy)
     this.layerCards.scale.set(4)
 
@@ -103,12 +109,27 @@ export class LudumDare41Context {
 
     // Setup local server
     this.commandRunner.init(this)
-    this.localServer.onLocalMessage = (message) => {
-      this.commandRunner.run(message)
+
+    if (useLocalServer) {
+      this.localServer.onLocalMessage = (message) => {
+        this.commandRunner.run(message)
+      }
+      this.localServer.init(true)
+      let player = this.localServer.addPlayer(false)
+      this.localServer.localPlayer = player
+    } else {
+      this.socket = io('http://localhost:4002');
+      this.socket.on('connect', () => {
+        console.log('W>', 'connected')
+      });
+      this.socket.on('event', (message) => {
+        console.log('W>', 'event', message)
+        this.commandRunner.run(message)
+      });
+      this.socket.on('disconnect', () => {
+        console.log('W>', 'disconnect')
+      });
     }
-    this.localServer.init(true)
-    let player = this.localServer.addPlayer(false)
-    this.localServer.localPlayer = player
 
   }
 
@@ -121,9 +142,13 @@ export class LudumDare41Context {
   }
 
   sendCommandToServer(clientMessage: IClientMesssage) {
-    // TODO: actually send to server
-    console.log('send command', clientMessage)
-    this.localServer.receiveLocal(clientMessage)
+    if (useLocalServer) {
+      // TODO: actually send to server
+      console.log('send command', clientMessage)
+      this.localServer.receiveLocal(clientMessage)
+    } else {
+      this.socket.emit('event', clientMessage)
+    }
   }
 
   addLayer(container: PIXI.Container = null) {

@@ -1,4 +1,5 @@
-import { _ } from './importsLodashsServer'
+//import { _ } from './importsLodashsServer'
+import * as _ from 'lodash'
 import { IMessage } from './IMessage'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
 
@@ -51,7 +52,7 @@ export class CommandRunnerClient {
     ninja.isAlive = true
     if (ninja.isBot) {
       ninja.animationIndex = 0
-    } else if (ninja.id === this.context.localServer.localPlayer.id) {
+    } else if (ninja.id === this.context.playerId) {
       ninja.animationIndex = 2
     } else {
       ninja.animationIndex = 1
@@ -99,6 +100,10 @@ export class CommandRunnerClient {
 
   lava = (message: IMessage) => {
     this.context.gameMap.setLava(message.x, message.y)
+  }
+
+  welcome = (message: IMessage) => {
+    this.context.playerId = message.id
   }
 
 }

@@ -8,6 +8,7 @@
     "start-old": "tsc ./src-build/webpack-dev.ts && webpack --watch --progress --config ./src-build/webpack-dev.js",
     "start": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "dev": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
+    "start-server-ld41": "ts-node-dev --respawn --project tsconfig.server.json src/ludumDare41/serverOnly/runServer.ts",
     "build-dev": "tsc ./src-build/webpack-dev.ts && webpack --config ./src-build/webpack-dev.js",
     "build-prod": "tsc ./src-build/webpack-prod.ts && webpack --config ./src-build/webpack-prod.js"
   },
@@ -15,8 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/lodash": "^4.14.82",
+    "@types/node": "^9.6.6",
     "@types/pixi.js": "^4.5.7",
+    "@types/socket.io": "^1.4.33",
     "clean-webpack-plugin": "^0.1.17",
+    "express": "^4.16.3",
     "freezer-js": "^0.13.0",
     "gamepad-micro": "^0.2.1",
     "hard-source-webpack-plugin": "^0.4.11",
@@ -28,6 +32,8 @@
     "numeral": "^2.0.6",
     "pixi-keyboard": "^0.9.4",
     "pixi.js": "^4.6.0",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0",
     "ts-loader": "^3.1.1",
     "tslib": "^1.8.0",
     "typescript": "^2.6.1",
