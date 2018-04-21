@@ -4,12 +4,17 @@ import * as spriteCreator from 'ludumDare41/util/spriteCreator'
 import { KeyCodes } from 'engine/input/Keyboard'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 
-const ninjaFrames = [
-  spriteCreator.create8_frameHRun(3, 1, 1),
-  spriteCreator.create8_frameHRun(3, 2, 1),
-]
+import { ICard } from './../server/CardInfo'
 
 export class CardManager {
+
+  setHand(cards: ICard[]) {
+    for (let i = 0; i < cards.length; i++) {
+      let ci = cards[i]
+      let c = this.items[i]
+      c.setCard(ci)
+    }
+  }
 
   context: LudumDare41Context
 
@@ -60,6 +65,7 @@ export class Card {
   container = new PIXI.Container()
 
   body: PIXI.Sprite
+  card: PIXI.Sprite
 
   rotLeft: PIXI.Sprite
   rotRight: PIXI.Sprite
@@ -73,7 +79,9 @@ export class Card {
     this.body = spriteCreator.create_loose_sprite(this.context.sge, 'ase-512-8', 8 * 6, 8 * 1, 8 * 3, 8 * 3)
     this.body.anchor.set(0.5, 0.5)
 
-    
+    this.card = spriteCreator.create_loose_sprite2(this.context.sge, 'ase-512-8', spriteCreator.create_card_frame(0))
+    this.card.anchor.set(0.5, 0.5)
+
     let alphaHidden = 0.1
     let alphaShown = 1
     this.rotLeft = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 4)
@@ -89,54 +97,59 @@ export class Card {
     this.container.interactive = true
     this.container.buttonMode = true
     this.container.on('mouseover', () => {
-      this.rotLeft.alpha = alphaShown      
-      this.rotRight.alpha = alphaShown      
+      this.rotLeft.alpha = alphaShown
+      this.rotRight.alpha = alphaShown
     })
     this.container.on('mouseout', () => {
-      this.rotLeft.alpha = alphaHidden    
-      this.rotRight.alpha = alphaHidden        
+      this.rotLeft.alpha = alphaHidden
+      this.rotRight.alpha = alphaHidden
     })
 
     this.rotRight.buttonMode = true
     this.rotRight.interactive = true
     this.rotRight.on('mouseover', () => {
-      this.rotRight.rotation = Math.PI/16      
-      this.rotLeft.alpha = alphaShown    
+      this.rotRight.rotation = Math.PI / 16
+      this.rotLeft.alpha = alphaShown
       this.rotRight.alpha = alphaShown
     })
     this.rotRight.on('mouseout', () => {
       this.rotRight.rotation = 0
     })
     this.rotRight.on('mousedown', () => {
-      this.rotRight.rotation = Math.PI/8      
+      this.rotRight.rotation = Math.PI / 8
     })
     this.rotRight.on('mouseup', () => {
-      this.rotRight.rotation = Math.PI/16      
-      this.rotation += Math.PI/2
+      this.rotRight.rotation = Math.PI / 16
+      this.rotation += Math.PI / 2
     })
 
     this.rotLeft.buttonMode = true
     this.rotLeft.interactive = true
     this.rotLeft.on('mouseover', () => {
-      this.rotLeft.rotation = -Math.PI/16  
-      this.rotLeft.alpha = alphaShown    
+      this.rotLeft.rotation = -Math.PI / 16
+      this.rotLeft.alpha = alphaShown
       this.rotRight.alpha = alphaShown
     })
     this.rotLeft.on('mouseout', () => {
       this.rotLeft.rotation = 0
     })
     this.rotLeft.on('mousedown', () => {
-      this.rotLeft.rotation = -Math.PI/8      
+      this.rotLeft.rotation = -Math.PI / 8
     })
     this.rotLeft.on('mouseup', () => {
-      this.rotLeft.rotation = -Math.PI/16      
-      this.rotation += -Math.PI/2
+      this.rotLeft.rotation = -Math.PI / 16
+      this.rotation += -Math.PI / 2
     })
 
 
     this.container.addChild(this.body)
+    this.container.addChild(this.card)
     this.container.addChild(this.rotLeft)
     this.container.addChild(this.rotRight)
+  }
+
+  setCard(cardInfo: ICard) {
+    this.card.texture.frame = spriteCreator.create_card_frame(cardInfo.frame)
   }
 
   destroy() {
@@ -152,7 +165,8 @@ export class Card {
 
     if (this.isReadyToBeDestroyed) { return }
 
-    this.body.rotation =  this.rotation
+    this.body.rotation = this.rotation
+    this.card.rotation = this.rotation
 
   }
 

@@ -17,6 +17,8 @@ import { MenuManager } from 'ludumDareStart/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen'
 import { Ninja, NinjaManager } from 'ludumDare41/entities/Ninja'
 import { Card, CardManager } from 'ludumDare41/entities/Card'
+import { Server } from 'ludumDare41/server/Server';
+import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient';
 
 const showSplashScreen = false
 
@@ -25,7 +27,6 @@ export class LudumDare41Context {
   sge: SimpleGameEngine
   tileMap: TileMap<IGridSpot>
   menuManager = new MenuManager()
-
   splash: SplashScreen
 
   rootContainer: PIXI.Container
@@ -35,6 +36,9 @@ export class LudumDare41Context {
 
   ninjas = new NinjaManager()
   cards = new CardManager()
+
+  commandRunner = new CommandRunnerClient()
+  localServer = new Server()
 
   scale = 3
   mx = 50
@@ -83,9 +87,9 @@ export class LudumDare41Context {
 
     this.cards.init(this)
 
-    let cardSize = 4*8*3
-    let cx = this.mx + cardSize/2
-    let cy = this.my + 22 * 8 * this.scale + cardSize/2 + 2
+    let cardSize = 4 * 8 * 3
+    let cx = this.mx + cardSize / 2
+    let cy = this.my + 22 * 8 * this.scale + cardSize / 2 + 2
     this.layerCards.position.set(cx, cy)
     this.layerCards.scale.set(4)
 
@@ -97,6 +101,15 @@ export class LudumDare41Context {
     if (showSplashScreen) {
       this.sge.stage.addChild(this.splash.container)
     }
+
+    // Setup local server
+    this.commandRunner.init(this)
+    this.localServer.onLocalMessage = (message) => {
+      this.commandRunner.run(message)
+    }
+    this.localServer.init(true)
+    let player = this.localServer.addPlayer()
+    this.localServer.localPlayer = player
 
   }
 

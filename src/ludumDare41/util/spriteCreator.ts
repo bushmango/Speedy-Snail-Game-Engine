@@ -16,6 +16,18 @@ export function create_loose_sprite(sge: SimpleGameEngine, textureKey, y, x, w, 
   sprite.texture.frame = rectangle
   return sprite
 }
+export function create_loose_sprite2(sge: SimpleGameEngine, textureKey, rectangle: PIXI.Rectangle) {
+  let texture = sge.getTexture(textureKey)
+  let sprite = new PIXI.Sprite(new PIXI.Texture(texture.baseTexture))
+  sprite.texture.frame = rectangle
+  return sprite
+}
+
+
+export function create_card_frame(x) {
+  let rectangle = new PIXI.Rectangle(8*4 + x*8*2, 7*8, 8*2, 8*2)
+  return rectangle
+}
 
 
 export function create8_frameHRun(y, x, num) {
