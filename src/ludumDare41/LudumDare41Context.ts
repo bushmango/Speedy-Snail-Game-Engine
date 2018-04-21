@@ -19,10 +19,13 @@ import { Ninja, NinjaManager } from 'ludumDare41/entities/Ninja'
 import { Card, CardManager } from 'ludumDare41/entities/Card'
 import { Server } from 'ludumDare41/server/Server';
 import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient';
+import { ICard } from 'ludumDare41/server/CardInfo';
+import { IClientMesssage } from 'ludumDare41/server/IMessage';
 
 const showSplashScreen = false
 
 export class LudumDare41Context {
+
 
   sge: SimpleGameEngine
   tileMap: TileMap<IGridSpot>
@@ -111,6 +114,20 @@ export class LudumDare41Context {
     let player = this.localServer.addPlayer()
     this.localServer.localPlayer = player
 
+  }
+
+  onChoseCard = (cardInfo: ICard, dir: number) => {
+    this.sendCommandToServer({
+      command: 'play',
+      cardName: cardInfo.name,
+      direction: dir,
+    })
+  }
+
+  sendCommandToServer(clientMessage: IClientMesssage) {
+    // TODO: actually send to server
+    console.log('send command', clientMessage)
+    this.localServer.receiveLocal(clientMessage)
   }
 
   addLayer(container: PIXI.Container = null) {

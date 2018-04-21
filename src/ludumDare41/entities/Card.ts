@@ -66,12 +66,14 @@ export class Card {
 
   body: PIXI.Sprite
   card: PIXI.Sprite
+  cardInfo: ICard
 
   rotLeft: PIXI.Sprite
   rotRight: PIXI.Sprite
 
   isReadyToBeDestroyed = false
   rotation = 0
+  dir = 0
 
   init(cx: LudumDare41Context) {
     this.context = cx
@@ -104,6 +106,9 @@ export class Card {
       this.rotLeft.alpha = alphaHidden
       this.rotRight.alpha = alphaHidden
     })
+    this.container.on('mousedown', () => {
+      this.onClick()
+    })
 
     this.rotRight.buttonMode = true
     this.rotRight.interactive = true
@@ -121,6 +126,7 @@ export class Card {
     this.rotRight.on('mouseup', () => {
       this.rotRight.rotation = Math.PI / 16
       this.rotation += Math.PI / 2
+      this.setDir(this.dir + 1)
     })
 
     this.rotLeft.buttonMode = true
@@ -139,6 +145,7 @@ export class Card {
     this.rotLeft.on('mouseup', () => {
       this.rotLeft.rotation = -Math.PI / 16
       this.rotation += -Math.PI / 2
+      this.setDir(this.dir - 1)
     })
 
 
@@ -148,8 +155,19 @@ export class Card {
     this.container.addChild(this.rotRight)
   }
 
+  setDir(dir) {
+    while (dir < 0) { dir += 4 }
+    while (dir > 4) { dir -= 4 }
+    this.dir = dir
+  }
+
+  onClick = () => {
+    this.context.onChoseCard(this.cardInfo, this.dir)
+  }
+
   setCard(cardInfo: ICard) {
     this.card.texture.frame = spriteCreator.create_card_frame(cardInfo.frame)
+    this.cardInfo = cardInfo
   }
 
   destroy() {

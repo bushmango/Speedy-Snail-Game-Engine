@@ -6,3 +6,9 @@ export interface IMessage {
   y?: number,
   cards?: ICard[],
 }
+
+export interface IClientMesssage {
+  command: string,
+  cardName?: string,
+  direction?: number,
+}

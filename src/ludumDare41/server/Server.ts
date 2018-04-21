@@ -2,7 +2,7 @@ import { _ } from './importsLodashsServer'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
-import { IMessage } from './IMessage'
+import { IMessage, IClientMesssage } from './IMessage'
 
 import { ICard, standardDeck } from './CardInfo'
 
@@ -10,11 +10,17 @@ export interface IPlayer {
   hand: ICard[],
   deck: ICard[],
   discard: ICard[],
+  chosenCards: ICard[],
+  isAlive: boolean
 }
 
 export function log(...message) {
   console.log('S>', ...message)
 }
+export function logWarn(...message) {
+  console.warn('S>', ...message)
+}
+
 
 export class Server {
 
@@ -22,6 +28,7 @@ export class Server {
 
   continueRunning = true
   tickDelay = 100
+  turnTimer = 3000
 
   gameState = 'wait'
   onLocalMessage: (message: IMessage) => void = null
@@ -39,6 +46,8 @@ export class Server {
       hand: [],
       deck: _.cloneDeep(standardDeck),
       discard: [],
+      chosenCards: [],
+      isAlive: false,
     }
     log('player deck', player.deck)
     this.players.push(player)
@@ -46,6 +55,7 @@ export class Server {
   }
 
   wait = async () => await delay(this.tickDelay)
+  waitFor = async (ms) => await delay(ms)
 
   tick = async () => {
 
@@ -59,12 +69,15 @@ export class Server {
 
       await this.spawnMap()
       await this.spawnPlayers()
-      await this.dealCards()
-      await this.waitForCards()
-      await this.resolveDodges()
-      await this.resoveAttacks()
-      await this.resolveMoves()
-      await this.checkVictory()
+
+      while (_.some(this.players, c => c.isAlive)) {
+        await this.dealCards()
+        await this.waitForCards()
+        await this.resolveDodges()
+        await this.resoveAttacks()
+        await this.resolveMoves()
+        await this.checkVictory()
+      }
     }
   }
 
@@ -82,6 +95,23 @@ export class Server {
     }
     // TODO: send via sockets or somesuch
   }
+  receiveLocal(clientMessage: IClientMesssage) {
+    if (this.localPlayer) {
+
+      if (clientMessage.command === 'play') {
+
+        let card = _.find(this.localPlayer.hand, c => c.name === clientMessage.cardName)
+        if (card) {
+          this.localPlayer.chosenCards = [card]
+        } else {
+          logWarn('dont have card', clientMessage.cardName)
+        }
+
+      } else {
+        logWarn('unknown client message', clientMessage.command)
+      }
+    }
+  }
 
   spawnMap = async () => {
     log('spawnMap')
@@ -93,6 +123,9 @@ export class Server {
 
   spawnPlayers = async () => {
     log('spawnPlayers')
+    _.forEach(this.players, c => {
+      c.isAlive = true
+    })
     this.sendToAllPlayers({
       command: 'spawn',
       x: _.random(1, 20, false),
@@ -107,12 +140,13 @@ export class Server {
     _.forEach(this.players, c => {
 
       // Discard hand
+      c.chosenCards = []
       _.forEach(c.hand, d => {
         c.discard.push(d)
       })
       c.hand = []
 
-      let numCards = 5
+      let numCards = 6
       for (let iCard = 0; iCard < numCards; iCard++) {
         // Shuffle in new cards?
         if (c.deck.length === 0) {
@@ -140,7 +174,17 @@ export class Server {
 
   waitForCards = async () => {
     log('waitForCards')
-    await this.wait()
+
+    let numTicks = 10
+    for (let iTicks = 0; iTicks < numTicks; iTicks++) {
+      await this.waitFor(this.turnTimer / numTicks)
+      log('.')
+      if (this.localPlayer && this.localPlayer.chosenCards.length > 0) {
+        log('cards chosen!')
+        break
+      }
+    }
+    log('timeup!')
   }
 
   resolveDodges = async () => {
