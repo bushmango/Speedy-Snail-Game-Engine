@@ -2,7 +2,7 @@ import { _ } from './importsLodashsServer'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
-import { IMessage, IClientMesssage } from './IMessage'
+import { IMessage, IClientMesssage, IMove } from './IMessage'
 
 import { ICard, ICardAndDir, standardDeck } from './CardInfo'
 import { logError } from 'ludumDare41/server/CommandRunnerClient';
@@ -50,7 +50,12 @@ export class Server {
   getMap(x, y) {
     return this.map[x + y * this.mapWidth]
   }
-
+  getMapSafe(x, y) {
+    if (x < 0 || x >= this.mapWidth || y < 0 || y >= this.mapHeight) {
+      return null
+    }
+    return this.map[x + y * this.mapWidth]
+  }
   gameState = 'wait'
   onLocalMessage: (message: IMessage) => void = null
   localPlayer: IPlayer = null
@@ -332,15 +337,18 @@ export class Server {
 
     // sort by x/y position
     // process one at a time
-    let moves = []
+    let moves = [] as IMove[]
     _.forEach(this.players, c => {
 
       if (c.chosenCards.length > 0) {
         let cardAndDir = c.chosenCards[0]
+        let card = cardAndDir.card
+        let dir = cardAndDir.dir
 
-        if (cardAndDir.card.type === 'move') {
+        if (card.type === 'move') {
 
-          _.forEach(cardAndDir.card.actions, action => {
+          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+            let action = card.actions[iCardCaction]
 
             if (action.type === 'move') {
 
@@ -365,18 +373,51 @@ export class Server {
                   break
               }
 
-              c.y += yo
-              c.x += xo
+              // can we move here?
 
-              moves.push({
-                id: c.id,
-                x: c.x,
-                y: c.y,
-              })
-
-
+              let gs = this.getMapSafe(c.x + xo, c.y + yo)
+              if (!gs || gs.t == 1 || gs.t == 2) {
+                moves.push({
+                  id: c.id,
+                  bounce: true,
+                })
+                if (gs.t == 2) {
+                  moves.push({
+                    id: c.id,
+                    destroyTree: true,
+                    x: c.x + xo,
+                    y: c.y + yo,
+                  })
+                  gs.t = 0
+                }
+                break
+              }
+              else if (gs.t == 3) {
+                // Lava'd
+                c.y += yo
+                c.x += xo
+                moves.push({
+                  id: c.id,
+                  lava: true,
+                  x: c.x,
+                  y: c.y,
+                })
+                c.isAlive = false
+                break
+              }
+              else {
+                c.y += yo
+                c.x += xo
+                moves.push({
+                  id: c.id,
+                  move: true,
+                  x: c.x,
+                  y: c.y,
+                })
+                // continue
+              }
             }
-          })
+          }
 
 
 

@@ -13,6 +13,8 @@ export function logError(...message) {
 }
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
+const fastSpawn = true
+
 export class CommandRunnerClient {
   context: LudumDare41Context
   init(context: LudumDare41Context) {
@@ -34,7 +36,10 @@ export class CommandRunnerClient {
     for (let i = 0; i < message.tileSpawns.length; i++) {
       let c = message.tileSpawns[i]
       this.context.gameMap.setTile(c.x, c.y, c.t)
-      await delay(25)
+
+      if (!fastSpawn) {
+        await delay(25)
+      }
     }
 
     _.forEach(message.tileSpawns)
@@ -57,7 +62,19 @@ export class CommandRunnerClient {
       let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
 
       if (ninja) {
-        ninja.moveTo(c.x, c.y)
+
+        if (c.bounce) {
+
+        }
+        else if(c.destroyTree) {
+          this.context.gameMap.setTile(c.x, c.y, 0)
+        }
+        else if (c.move) {
+          ninja.moveTo(c.x, c.y)
+        } else if (c.lava) {
+          ninja.moveTo(c.x, c.y)
+        }
+
         await delay(100)
       } else {
         logError('cant find ninja', c.id)

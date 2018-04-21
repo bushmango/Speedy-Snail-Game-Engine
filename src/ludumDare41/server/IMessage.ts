@@ -2,8 +2,12 @@ import { ICard } from './CardInfo'
 
 export interface IMove {
   id: number,
-  x: number,
-  y: number,
+  x?: number,
+  y?: number,
+  move?: boolean,
+  bounce?: boolean,
+  lava?: boolean,
+  destroyTree?: boolean,
 }
 
 export interface ITileSpawn {

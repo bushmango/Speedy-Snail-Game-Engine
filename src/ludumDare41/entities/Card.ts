@@ -170,6 +170,7 @@ export class Card {
   setCard(cardInfo: ICard) {
     this.card.texture.frame = spriteCreator.create_card_frame(cardInfo.frame)
     this.cardInfo = cardInfo
+    this.setDir(_.random(0, 4, false))
   }
 
   destroy() {
