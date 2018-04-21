@@ -59,6 +59,8 @@ export class Ninja {
   context: LudumDare41Context
   container = new PIXI.Container()
 
+  id: number = -1
+
   body: PIXI.Sprite
   frame = 0
   frameIdx = 0
@@ -100,7 +102,7 @@ export class Ninja {
   }
 
   moveTo(x, y) {
-    this.body.position.set(8 * x + 8/2, 8 * y + 8)
+    this.body.position.set(8 * x + 8 / 2, 8 * y + 8)
   }
 
 }

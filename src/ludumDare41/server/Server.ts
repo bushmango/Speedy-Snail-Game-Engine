@@ -7,11 +7,14 @@ import { IMessage, IClientMesssage } from './IMessage'
 import { ICard, standardDeck } from './CardInfo'
 
 export interface IPlayer {
+  id: number,
   hand: ICard[],
   deck: ICard[],
   discard: ICard[],
   chosenCards: ICard[],
-  isAlive: boolean
+  isAlive: boolean,
+  x: number
+  y: number
 }
 
 export function log(...message) {
@@ -30,6 +33,8 @@ export class Server {
   tickDelay = 100
   turnTimer = 3000
 
+  nextPlayerId = 100
+
   gameState = 'wait'
   onLocalMessage: (message: IMessage) => void = null
   localPlayer: IPlayer = null
@@ -43,11 +48,14 @@ export class Server {
   addPlayer() {
     // this.numPlayers++
     let player: IPlayer = {
+      id: this.nextPlayerId++,
       hand: [],
       deck: _.cloneDeep(standardDeck),
       discard: [],
       chosenCards: [],
       isAlive: false,
+      x: -1,
+      y: -1,
     }
     log('player deck', player.deck)
     this.players.push(player)
@@ -125,12 +133,18 @@ export class Server {
     log('spawnPlayers')
     _.forEach(this.players, c => {
       c.isAlive = true
+      c.x = _.random(1, 20, false)
+      c.y = _.random(1, 20, false)
+
+      this.sendToAllPlayers({
+        command: 'spawn',
+        id: c.id,
+        x: c.x,
+        y: c.y,
+      })
+
     })
-    this.sendToAllPlayers({
-      command: 'spawn',
-      x: _.random(1, 20, false),
-      y: _.random(1, 20, false),
-    })
+
     await this.wait()
   }
 
@@ -199,6 +213,36 @@ export class Server {
 
   resolveMoves = async () => {
     log('resolveMoves')
+
+    // sort by x/y position
+    // process one at a time
+    let moves = []
+    _.forEach(this.players, c => {
+
+      if (c.chosenCards.length > 0) {
+        let card = c.chosenCards[0]
+
+        if (card.type === 'move') {
+
+          c.y -= 1
+
+          moves.push({
+            id: c.id,
+            x: c.x,
+            y: c.y,
+          })
+
+        }
+
+      }
+
+    })
+
+    this.sendToAllPlayers({
+      command: 'moves',
+      moves: moves,
+    })
+
     await this.wait()
   }
 
@@ -208,3 +252,4 @@ export class Server {
   }
 
 }
+
