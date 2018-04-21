@@ -9,6 +9,15 @@ export function create8_sprite(sge: SimpleGameEngine, textureKey, y, x) {
   return sprite
 }
 
+export function create_loose_sprite(sge: SimpleGameEngine, textureKey, y, x, w, h) {
+  let texture = sge.getTexture(textureKey)
+  let sprite = new PIXI.Sprite(new PIXI.Texture(texture.baseTexture))
+  let rectangle = new PIXI.Rectangle(x, y, w, h)
+  sprite.texture.frame = rectangle
+  return sprite
+}
+
+
 export function create8_frameHRun(y, x, num) {
   const blockSize = 8
   let rects = []
