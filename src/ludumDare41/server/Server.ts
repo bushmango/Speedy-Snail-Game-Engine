@@ -351,7 +351,7 @@ export class Server {
     let moves = [] as IMove[]
     _.forEach(this.players, c => {
 
-      if (c.chosenCards.length > 0) {
+      if (c.isAlive && c.chosenCards.length > 0) {
         let cardAndDir = c.chosenCards[0]
         let card = cardAndDir.card
         let dir = cardAndDir.dir
@@ -361,79 +361,19 @@ export class Server {
           for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
             let action = card.actions[iCardCaction]
 
-            if (action.type === 'move') {
+            if (c.isAlive && action.type === 'move') {
 
-              let xo = 0
-              let yo = 0
-
-              switch (cardAndDir.dir) {
-                case 0:
-                  yo = -1
-                  break
-                case 1:
-                  xo = 1
-                  break
-                case 2:
-                  yo = 1
-                  break
-                case 3:
-                  xo = -1
-                  break
-                default:
-                  logWarn('invalid dir', cardAndDir.dir)
-                  break
-              }
+              let { xo, yo } = this.convertDirToOffsets(dir)
 
               // can we move here?
+              if (!this.tryMovePlayer(moves, c, xo, yo)) {
+                break
+              }
 
-              let gs = this.getMapSafe(c.x + xo, c.y + yo)
-              if (!gs || gs.t == 1 || gs.t == 2) {
-                moves.push({
-                  id: c.id,
-                  bounce: true,
-                })
-                if (gs.t == 2) {
-                  moves.push({
-                    id: c.id,
-                    destroyTree: true,
-                    x: c.x + xo,
-                    y: c.y + yo,
-                  })
-                  gs.t = 0
-                }
-                break
-              }
-              else if (gs.t == 3) {
-                // Lava'd
-                c.y += yo
-                c.x += xo
-                moves.push({
-                  id: c.id,
-                  lava: true,
-                  x: c.x,
-                  y: c.y,
-                })
-                c.isAlive = false
-                break
-              }
-              else {
-                c.y += yo
-                c.x += xo
-                moves.push({
-                  id: c.id,
-                  move: true,
-                  x: c.x,
-                  y: c.y,
-                })
-                // continue
-              }
+              // continue
             }
           }
-
-
-
         }
-
       }
 
     })
@@ -499,5 +439,91 @@ export class Server {
     await this.wait()
   }
 
-}
+  convertDirToOffsets(dir) {
+    let xo = 0
+    let yo = 0
 
+    switch (dir) {
+      case 0:
+        yo = -1
+        break
+      case 1:
+        xo = 1
+        break
+      case 2:
+        yo = 1
+        break
+      case 3:
+        xo = -1
+        break
+      default:
+        logWarn('invalid dir', dir)
+        break
+    }
+    return { xo, yo }
+  }
+
+  tryMovePlayer(moves: IMove[], player: IPlayer, xo: number, yo: number) {
+
+    let xp = player.x + xo
+    let yp = player.y + yo
+    let gs = this.getMapSafe(xp, yp)
+
+    if (!gs || gs.t == 1 || gs.t == 2) {
+      moves.push({
+        id: player.id,
+        bounce: true,
+      })
+      if (gs.t == 2) {
+        moves.push({
+          id: player.id,
+          destroyTree: true,
+          x: xp,
+          y: yp,
+        })
+        gs.t = 0
+      }
+      return false
+    }
+
+    if (gs.t == 3) {
+      // Lava'd
+      player.x = xp
+      player.y = yp
+      moves.push({
+        id: player.id,
+        lava: true,
+        x: player.x,
+        y: player.y,
+      })
+      player.isAlive = false
+      return true
+    }
+
+
+    // Is there another player here?
+    let isValid = true
+    for (let iOtherPlayer = 0; iOtherPlayer < this.players.length; iOtherPlayer++) {
+      let otherPlayer = this.players[iOtherPlayer]
+      if (otherPlayer.x === xp && otherPlayer.y == yp) {
+        // Uh oh, another player is here
+        if (!this.tryMovePlayer(moves, otherPlayer, xo, yo)) {
+          isValid = false
+        }
+      }
+    }
+
+    if (isValid) {
+      player.x = xp
+      player.y = yp
+      moves.push({
+        id: player.id,
+        move: true,
+        x: player.x,
+        y: player.y,
+      })
+    }
+    return isValid
+
+  }
+}

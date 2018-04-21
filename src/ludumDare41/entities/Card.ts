@@ -88,25 +88,27 @@ export class Card {
     let alphaShown = 1
     this.rotLeft = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 4)
     this.rotLeft.anchor.set(0.5, 0.5)
-    this.rotLeft.position.set(-8 + 1, -8 + 1)
+    this.rotLeft.position.set(-8 + 1, -8*2 + 1 - 2)
     this.rotLeft.alpha = alphaHidden
 
     this.rotRight = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 5)
     this.rotRight.anchor.set(0.5, 0.5)
-    this.rotRight.position.set(8 - 1, -8 + 1)
+    this.rotRight.position.set(8 - 1, -8*2 + 1 - 2)
     this.rotRight.alpha = alphaHidden
 
     this.container.interactive = true
-    this.container.buttonMode = true
     this.container.on('mouseover', () => {
-      this.rotLeft.alpha = alphaShown
-      this.rotRight.alpha = alphaShown
+      // this.rotLeft.alpha = alphaShown
+      // this.rotRight.alpha = alphaShown
     })
     this.container.on('mouseout', () => {
-      this.rotLeft.alpha = alphaHidden
-      this.rotRight.alpha = alphaHidden
+      // this.rotLeft.alpha = alphaHidden
+      // this.rotRight.alpha = alphaHidden
     })
-    this.container.on('mousedown', () => {
+
+    this.body.interactive = true
+    this.body.buttonMode = true
+    this.body.on('mousedown', () => {
       this.onClick()
     })
 
@@ -114,11 +116,12 @@ export class Card {
     this.rotRight.interactive = true
     this.rotRight.on('mouseover', () => {
       this.rotRight.rotation = Math.PI / 16
-      this.rotLeft.alpha = alphaShown
+      // this.rotLeft.alpha = alphaShown
       this.rotRight.alpha = alphaShown
     })
     this.rotRight.on('mouseout', () => {
       this.rotRight.rotation = 0
+      this.rotRight.alpha = alphaHidden
     })
     this.rotRight.on('mousedown', () => {
       this.rotRight.rotation = Math.PI / 8
@@ -133,10 +136,11 @@ export class Card {
     this.rotLeft.on('mouseover', () => {
       this.rotLeft.rotation = -Math.PI / 16
       this.rotLeft.alpha = alphaShown
-      this.rotRight.alpha = alphaShown
+      // this.rotRight.alpha = alphaShown
     })
     this.rotLeft.on('mouseout', () => {
       this.rotLeft.rotation = 0
+      this.rotLeft.alpha = alphaHidden
     })
     this.rotLeft.on('mousedown', () => {
       this.rotLeft.rotation = -Math.PI / 8

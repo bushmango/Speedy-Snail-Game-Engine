@@ -89,7 +89,7 @@ export class LudumDare41Context {
 
     let cardSize = 4 * 8 * 3
     let cx = this.mx + cardSize / 2
-    let cy = this.my + 22 * 8 * this.scale + cardSize / 2 + 2
+    let cy = this.my + 22 * 8 * this.scale + cardSize / 2 + 2 + 12*this.scale
     this.layerCards.position.set(cx, cy)
     this.layerCards.scale.set(4)
 
