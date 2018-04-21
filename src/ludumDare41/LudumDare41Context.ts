@@ -26,8 +26,8 @@ export class Ship {
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    let texture = this.sge.getTexture("test-tileset")
-    let size = 32
+    let texture = this.sge.getTexture("ase-512-8")
+    let size = 8
     let rectangle = new Rectangle(size * 3, size * 2, size, size)
     texture.frame = rectangle
     this.ship = new Sprite(texture)
@@ -101,28 +101,35 @@ export class LudumDare41Context {
   }
 
   initTileMap() {
-    let defaultTextureName = 'test-tileset'
+    let defaultTextureName = 'ase-512-8'
     let tileData: ITileData[] = []
     tileData.push({
       name: 'default',
       textureName: defaultTextureName,
-      tx: 0,
+      tx: 1,
       ty: 2,
     })
     tileData.push({
       name: 'wall-1',
       textureName: defaultTextureName,
       tx: 2,
-      ty: 4,
+      ty: 2,
     })
-    this.tileMap = new TileMap<IGridSpot>(this.sge, 32, tileData, 1, null)
-    this.tileMap.resize(20, 20)
+    tileData.push({
+      name: 'tree-1',
+      textureName: defaultTextureName,
+      tx: 3,
+      ty: 2,
+    })
+    this.tileMap = new TileMap<IGridSpot>(this.sge, 8, tileData, 1, null)
+    this.tileMap.resize(22, 22)
+    this.tileMap.setScale(4)
 
-    tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 10, 10)
-    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 8, 8)
+    tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 22, 22)
+    tileMapFiller.fillRect(this.tileMap, 0, 'default', 1, 1, 22-2, 22-2)
     let layer = this.tileMap.containers[0]
-    layer.x = 350
-    layer.y = 200
+    layer.x = 50
+    layer.y = 30
 
 
   }
