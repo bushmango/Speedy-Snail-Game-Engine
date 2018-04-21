@@ -47,6 +47,16 @@ export class CommandRunnerClient {
   spawn = (message: IMessage) => {
     let ninja = this.context.ninjas.createAt(message.x, message.y)
     ninja.id = message.id
+    ninja.isBot = message.isBot
+
+    if (ninja.isBot) {
+      ninja.animationIndex = 0
+    } else if (ninja.id === this.context.localServer.localPlayer.id) {
+      ninja.animationIndex = 2
+    } else {
+      ninja.animationIndex = 1
+    }
+
   }
   dealt = (message: IMessage) => {
     // console.log('cards', message.cards)
@@ -66,7 +76,7 @@ export class CommandRunnerClient {
         if (c.bounce) {
 
         }
-        else if(c.destroyTree) {
+        else if (c.destroyTree) {
           this.context.gameMap.setTile(c.x, c.y, 0)
         }
         else if (c.move) {

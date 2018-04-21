@@ -23,6 +23,7 @@ export interface IPlayer {
   isAlive: boolean,
   x: number
   y: number
+  isBot: boolean
 }
 
 export function log(...message) {
@@ -66,7 +67,7 @@ export class Server {
     this.tick()
   }
 
-  addPlayer() {
+  addPlayer(isBot: boolean) {
     // this.numPlayers++
     let player: IPlayer = {
       id: this.nextPlayerId++,
@@ -77,6 +78,7 @@ export class Server {
       isAlive: false,
       x: -1,
       y: -1,
+      isBot,
     }
     log('player deck', player.deck)
     this.players.push(player)
@@ -245,6 +247,14 @@ export class Server {
 
   spawnPlayers = async () => {
     log('spawnPlayers')
+
+    // add bots
+    let numBots = 10
+    for (let i = 0; i < numBots; i++) {
+      this.addPlayer(true)
+    }
+
+
     _.forEach(this.players, c => {
 
       let space = this.findOpenSpace()
@@ -259,6 +269,7 @@ export class Server {
           id: c.id,
           x: c.x,
           y: c.y,
+          isBot: c.isBot,
         })
       } else {
         logError('no space for player')
@@ -296,7 +307,7 @@ export class Server {
         }
       }
 
-      log('player', c)
+      // log('player', c)
 
       this.sendToPlayer(c, {
         command: 'dealt',
@@ -443,6 +454,10 @@ export class Server {
   addLava = async () => {
     log('addLava')
 
+
+    let gs = this.getMap(this.lavaX, this.lavaY)
+    gs.t = 3
+    // if(gs.pl)
     this.sendToAllPlayers({
       command: 'lava',
       x: this.lavaX,
@@ -459,7 +474,27 @@ export class Server {
       }
     }
 
-
+    let moves = [] as IMove[]
+    _.forEach(this.players, c => {
+      if (c.isAlive) {
+        let gs = this.getMapSafe(c.x, c.y)
+        if (gs.t === 3) {
+          c.isAlive = false
+        }
+        moves.push({
+          id: c.id,
+          x: c.x,
+          y: c.y,
+          lava: true,
+        })
+      }
+    })
+    if (moves.length > 0) {
+      this.sendToAllPlayers({
+        command: 'moves',
+        moves: moves,
+      })
+    }
 
     await this.wait()
   }

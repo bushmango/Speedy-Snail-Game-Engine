@@ -24,6 +24,7 @@ export interface IMessage {
   cards?: ICard[],
   moves?: IMove[],
   tileSpawns?: ITileSpawn[],
+  isBot?: boolean,
 }
 
 export interface IClientMesssage {

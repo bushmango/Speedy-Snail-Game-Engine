@@ -7,6 +7,7 @@ import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 const ninjaFrames = [
   spriteCreator.create8_frameHRun(3, 1, 1),
   spriteCreator.create8_frameHRun(3, 2, 1),
+  spriteCreator.create8_frameHRun(3, 3, 1),
 ]
 
 export class NinjaManager {
@@ -66,8 +67,10 @@ export class Ninja {
   frameIdx = 0
   animationIndex = 0
   facingRight = false
-
+  isBot = false
   isReadyToBeDestroyed = false
+  bx: number = 0
+  by: number = 0
 
   init(cx: LudumDare41Context) {
     this.context = cx
@@ -98,10 +101,18 @@ export class Ninja {
     this.body.texture.frame = ninjaFrames[this.animationIndex][this.frameIdx]
 
     let scale = 1
-    this.body.scale.set(this.facingRight ? scale : -scale, scale)
+    this.body.scale.set(this.facingRight ? -scale : scale, scale)
   }
 
   moveTo(x, y) {
+
+    if (x > this.bx) {
+      this.facingRight = true
+    } else if (x < this.bx) {
+      this.facingRight = false
+    }
+    this.bx = x
+    this.by = y
     this.body.position.set(8 * x + 8 / 2, 8 * y + 8)
   }
 

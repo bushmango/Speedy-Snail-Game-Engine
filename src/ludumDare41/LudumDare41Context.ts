@@ -108,7 +108,7 @@ export class LudumDare41Context {
       this.commandRunner.run(message)
     }
     this.localServer.init(true)
-    let player = this.localServer.addPlayer()
+    let player = this.localServer.addPlayer(false)
     this.localServer.localPlayer = player
 
   }
