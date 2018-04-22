@@ -37,7 +37,9 @@ export class CommandRunnerClient {
 
   resetMap = async (message: IMessage) => {
     this.context.ninjas.clear()
+    this.context.bullets.clear()
     this.context.gameMap.reset()
+    
     for (let i = 0; i < message.tileSpawns.length; i++) {
       let c = message.tileSpawns[i]
       this.context.gameMap.setTile(c.x, c.y, c.t)
@@ -62,6 +64,12 @@ export class CommandRunnerClient {
     this.context.cards.setHand(message.cards)
 
   }
+
+  spawnBullet = (message: IMessage) => {
+    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir)
+    bullet.id = message.id
+  }
+
   moves = async (message: IMessage) => {
     log('moves', message.moves)
 
