@@ -25,6 +25,7 @@ export interface IPlayer {
   y: number
   isBot: boolean
   socket: any
+  noInputCounter: number
 }
 
 export function log(...message) {
@@ -86,6 +87,7 @@ export class Server {
       y: -1,
       isBot,
       socket,
+      noInputCounter: 0
     }
     // log('player deck', player.deck)
     this.players.push(player)
@@ -116,7 +118,15 @@ export class Server {
         await this.resolveDodges()
         await this.resoveAttacks()
         await this.resolveMoves()
-        await this.checkVictory()
+        let numAlive = await this.checkVictory()
+        if (numAlive === 0) {
+          // no one wins?
+          break
+        }
+        if (numAlive === 1) {
+          // chicken dinner!
+          break
+        }
       }
     }
   }
@@ -338,7 +348,7 @@ export class Server {
 
   dealCards = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Dealing',
     })
     log('dealCards')
@@ -380,7 +390,7 @@ export class Server {
 
   waitForCards = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Pick your move',
     })
     log('waitForCards')
@@ -398,6 +408,12 @@ export class Server {
 
     let numTicks = 10
     for (let iTicks = 0; iTicks < numTicks; iTicks++) {
+
+      this.sendToAllPlayers({
+        command: 'mode',
+        message: `Pick your move ${iTicks + 1}/${numTicks}`,
+      })
+
       await this.waitFor(this.turnTimer / numTicks)
       log('.')
 
@@ -411,16 +427,23 @@ export class Server {
           break
         }
       }
-
-
-
     }
+
+    _.forEach(this.players, c => {
+      if (c.isAlive && !c.isBot && c.chosenCards.length === 0) {
+        //afk
+        c.noInputCounter++
+      } else {
+        c.noInputCounter = 0
+      }
+    })
+
     log('timeup!')
   }
 
   resolveDodges = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Dodging',
     })
     log('resolveDodges')
@@ -429,7 +452,7 @@ export class Server {
 
   resoveAttacks = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Attacking',
     })
     log('resoveAttacks')
@@ -438,7 +461,7 @@ export class Server {
 
   resolveMoves = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Moving',
     })
     log('resolveMoves')
@@ -505,23 +528,39 @@ export class Server {
     }
 
     await this.wait()
+
+    return aliveHumans + aliveBots
+  }
+
+  _addLavaAt(x, y) {
+    let gs = this.getMap(x, y)
+    if (gs.t !== 3) {
+      gs.t = 3
+      // if(gs.pl)
+      this.sendToAllPlayers({
+        command: 'lava',
+        x: x,
+        y: y,
+      })
+    }
   }
 
   addLava = async () => {
     this.sendToAllPlayers({
-      command:'mode',
+      command: 'mode',
       message: 'Increasing heat',
     })
     log('addLava')
 
 
-    let gs = this.getMap(this.lavaX, this.lavaY)
-    gs.t = 3
-    // if(gs.pl)
-    this.sendToAllPlayers({
-      command: 'lava',
-      x: this.lavaX,
-      y: this.lavaY,
+    
+    this._addLavaAt(this.lavaX, this.lavaY)
+
+    // Kill afk
+    _.forEach(this.players, c => {
+      if (c.isAlive && c.noInputCounter >= 3) {
+        this._addLavaAt(c.x, c.y)
+      }
     })
 
     // Advance lava
@@ -534,11 +573,12 @@ export class Server {
       }
     }
 
-    let moves = [] as IMove[]
+    // Check for lava deaths
+    let moves = [] as IMove[]    
     _.forEach(this.players, c => {
       if (c.isAlive) {
         let gs = this.getMapSafe(c.x, c.y)
-        if (gs.t === 3) {
+        if (gs && gs.t === 3) {
           c.isAlive = false
           moves.push({
             id: c.id,
@@ -547,9 +587,8 @@ export class Server {
             lava: true,
           })
         }
-
       }
-    })
+    })    
     if (moves.length > 0) {
       this.sendToAllPlayers({
         command: 'moves',
