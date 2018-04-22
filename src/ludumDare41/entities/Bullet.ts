@@ -29,6 +29,7 @@ export class Bullet {
   body: PIXI.Sprite
   frame = 0
   dir = 0
+  rotation = 0
 
   bx: number = 0
   by: number = 0
@@ -48,6 +49,18 @@ export class Bullet {
 
   update() {
     if (this.isReadyToBeDestroyed) { return }
+
+    this.frame++
+
+    let fx = Math.floor(this.frame/10)
+
+    if(fx % 2 === 0) {
+      this.rotation = Math.PI/4
+    } else {
+      this.rotation = 0
+    }
+    this.body.rotation = this.rotation
+
 
     // this.frame++
     // if (this.frame > 10) {
