@@ -26,24 +26,24 @@ export class CardManager {
 
   discardHand(): any {
     _.forEach(this.items, (c, cIdx) => {
-      c.discardCard(cIdx)
+      c.discardCard()
     })
   }
   lockHand(): any {
     _.forEach(this.items, (c, cIdx) => {
-      c.lockCard(cIdx)
+      c.lockCard()
     })
   }
   setHand(cards: ICard[]) {
     for (let i = 0; i < cards.length; i++) {
       let ci = cards[i]
       let c = this.items[i]
-      c.setCard(i, ci)
+      c.setCard(ci)
     }
   }
   clearHand() {
     _.forEach(this.items, (c, cIdx) => {
-      c.clearCard(cIdx)
+      c.clearCard()
     })
   }
 
@@ -57,7 +57,7 @@ export class CardManager {
 
   createAt(x, y) {
     let item = new Card()
-    item.init(this.context)
+    item.init(this.context, this.items.length)
     item.moveTo(x, y)
     this.items.push(item)
     this.context.layerCards.addChild(item.container)
@@ -111,8 +111,9 @@ export class Card {
   rotation = 0
   dir = 0
 
-  init(cx: LudumDare41Context) {
+  init(cx: LudumDare41Context, idx) {
     this.context = cx
+    this.cardIdx = idx
 
     this.body = spriteCreator.create_loose_sprite(this.context.sge, 'ase-512-8', 8 * 6, 8 * 1, 8 * 3, 8 * 3)
     this.body.anchor.set(0.5, 0.5)
@@ -124,12 +125,12 @@ export class Card {
     let alphaShown = 1
     this.rotLeft = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 4)
     this.rotLeft.anchor.set(0.5, 0.5)
-    this.rotLeft.position.set(-8 + 1, -8 * 2 + 1 - 2)
+    this.rotLeft.position.set(-8 + 1 + (idx * (8 * 3 + 2)), -8 * 2 + 1 - 2)
     this.rotLeft.alpha = alphaHidden
 
     this.rotRight = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 5)
     this.rotRight.anchor.set(0.5, 0.5)
-    this.rotRight.position.set(8 - 1, -8 * 2 + 1 - 2)
+    this.rotRight.position.set(8 - 1 + (idx * (8 * 3 + 2)), -8 * 2 + 1 - 2)
     this.rotRight.alpha = alphaHidden
 
     this.container.interactive = true
@@ -231,52 +232,81 @@ export class Card {
     }
   }
 
-  setCard(idx, cardInfo: ICard) {
+  setCard(cardInfo: ICard) {
     this.cardInfo = cardInfo
+    this.slideIn()
     this.flipToFront()
   }
-  clearCard(idx) {
+  clearCard() {
     // this.setCard(idx, null)
   }
 
-  lockCard(idx) {
+  lockCard() {
     if (!this.isSelected) {
       // this.body.texture.frame = cardBackFrames[2]
       this.flipToBack()
     }
   }
-  discardCard(idx) {
+  discardCard() {
     // this.body.texture.frame = cardBackFrames[2]
     this.flipToBack()
+    this.slideOut()
   }
 
-  animMode = ''
+  cardIdx = 0
+  animModeflip = ''
+  animModeSlide = ''
   flipScale = 1
   flipFrame = 0
+  slideFrame = 0
   backSideUp = true
 
   flipToBack() {
-    if (this.animMode !== 'flip-to-back') {
-      this.animMode = 'flip-to-back'
+    if (this.animModeflip !== 'flip-to-back') {
+      this.animModeflip = 'flip-to-back'
       this.flipFrame = 0
       this.updateAnim()
     }
   }
   flipToFront() {
-    if (this.animMode !== 'flip-to-front') {
-      this.animMode = 'flip-to-front'
+    if (this.animModeflip !== 'flip-to-front') {
+      this.animModeflip = 'flip-to-front'
       this.flipFrame = 0
       this.updateAnim()
     }
   }
+  slideIn() {
+    if (this.animModeSlide !== 'slide-in') {
+      this.animModeSlide = 'slide-in'
+      this.slideFrame = 0
+      this.updateAnim()
+    }
+  }
+  slideOut() {
+    if (this.animModeSlide !== 'slide-out') {
+      this.animModeSlide = 'slide-out'
+      this.slideFrame = 0
+      this.updateAnim()
+    }
+  }
+
+  slideX = 0
+  slideY = 0
 
   updateAnim() {
 
-    let len = 30
+    let len = 20 + this.cardIdx * 2
     let halfLen = len / 2
+    let finalPos = (8 * 3 + 2) * this.cardIdx
+    if (this.animModeSlide === 'slide-in') {
+      let frame = this.slideFrame
+      this.slideX = lerpBounded(0, finalPos, frame / len)
+    } else if (this.animModeSlide === 'slide-out') {
+      let frame = this.slideFrame
+      this.slideX = lerpBounded(finalPos, 0, frame / len)
+    }
 
-    if (this.animMode === 'flip-to-back') {
-
+    if (this.animModeflip === 'flip-to-back') {
       let frame = this.flipFrame
       if (frame < halfLen) {
         this.flipScale = lerpBounded(1, 0, frame / halfLen)
@@ -286,11 +316,8 @@ export class Card {
         this.flipScale = lerpBounded(0, 1, frame / halfLen)
         this.backSideUp = true
       }
-      this.flipFrame++
-    } else if (this.animMode === 'flip-to-front') {
-
+    } else if (this.animModeflip === 'flip-to-front') {
       let frame = this.flipFrame
-
       if (frame === halfLen) {
         // Perfect time to rotate
         this.setDir(_.random(0, 4, false))
@@ -315,10 +342,12 @@ export class Card {
         this.flipScale = lerpBounded(0, 1, frame / halfLen)
         this.backSideUp = false
       }
-      this.flipFrame++
     } else {
       this.flipScale = 1
     }
+
+    this.flipFrame++
+    this.slideFrame++
 
     if (this.backSideUp) {
       this.body.texture.frame = cardBackFrames[2]
@@ -333,6 +362,7 @@ export class Card {
     }
 
     this.flipContainer.scale.set(this.flipScale, 1)
+    this.flipContainer.position.set(this.slideX, this.flipContainer.position.y)
   }
 
 

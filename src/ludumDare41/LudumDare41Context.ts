@@ -88,10 +88,10 @@ export class LudumDare41Context {
 
     this.ninjas.init(this)
     // this.addLayer(this.ninjas.container)
-    this.ninjas.createAt(0, 0)
-    this.ninjas.createAt(2, 0)
-    this.ninjas.createAt(0, 3)
-    this.ninjas.createAt(3, 3)
+    // this.ninjas.createAt(0, 0)
+    // this.ninjas.createAt(2, 0)
+    // this.ninjas.createAt(0, 3)
+    // this.ninjas.createAt(3, 3)
 
     this.cards.init(this)
 
@@ -102,7 +102,8 @@ export class LudumDare41Context {
     this.layerCards.scale.set(4)
 
     for (let i = 0; i < 6; i++) {
-      this.cards.createAt((8 * 3 + 2) * i, 0)
+      //this.cards.createAt((8 * 3 + 2) * i, 0)
+      this.cards.createAt((8 * 3 + 2) * 0, 0)
     }
 
     this.sge.stage.addChild(this.rootContainer)

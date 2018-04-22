@@ -393,7 +393,7 @@ export class Server {
       })
     })
 
-    await this.wait()
+    await this.waitFor(500 + 100)
   }
 
   waitForCards = async () => {
@@ -562,8 +562,6 @@ export class Server {
     })
     log('addLava')
 
-
-
     this._addLavaAt(this.lavaX, this.lavaY)
 
     // Kill afk
@@ -606,7 +604,7 @@ export class Server {
       })
     }
 
-    await this.wait()
+    await this.waitFor(500 + 100)
   }
 
   convertDirToOffsets(dir) {
