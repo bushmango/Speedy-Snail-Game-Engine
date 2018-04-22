@@ -246,7 +246,7 @@ export class Server {
 
     let tileSpawns = []
 
-    for (let i = 0; i < this.lavaPerTurn; i++) {
+    for (let i = 1; i < this.lavaPerTurn + 1; i++) {
       this.setTileSpawn(tileSpawns, i, 1, 1)
     }
     for (let i = 0; i < this.mapWidth; i++) {
@@ -767,7 +767,7 @@ export class Server {
     let isValid = true
     for (let iOtherPlayer = 0; iOtherPlayer < this.players.length; iOtherPlayer++) {
       let otherPlayer = this.players[iOtherPlayer]
-      if (otherPlayer.x === xp && otherPlayer.y == yp) {
+      if (otherPlayer.isAlive && otherPlayer.x === xp && otherPlayer.y == yp) {
         // Uh oh, another player is here
         if (!this.tryMovePlayer(moves, otherPlayer, xo, yo)) {
           isValid = false
