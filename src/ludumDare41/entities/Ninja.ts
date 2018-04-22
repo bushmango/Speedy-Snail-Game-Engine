@@ -14,6 +14,13 @@ const ninjaFramesDead = [
   spriteCreator.create8_frameHRun(3, 3 + 2, 1),
   spriteCreator.create8_frameHRun(3, 3 + 3, 1),
 ]
+
+const ninjaFramesHelper = [
+  [],
+  spriteCreator.create8_frameHRun(4, 2, 2),
+  spriteCreator.create8_frameHRun(4, 4, 2),
+]
+
 export class NinjaManager {
 
   context: LudumDare41Context
@@ -67,12 +74,14 @@ export class Ninja {
   id: number = -1
 
   body: PIXI.Sprite
+  helper: PIXI.Sprite
   frame = 0
   frameIdx = 0
   animationIndex = 0
   facingRight = false
   isBot = false
   isAlive = true
+  isPlayer = false
   isReadyToBeDestroyed = false
   bx: number = 0
   by: number = 0
@@ -82,9 +91,15 @@ export class Ninja {
 
     this.body = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 3, 1)
     this.body.anchor.set(0.5, 1)
+
+    this.helper = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 3, 1)
+    this.helper.anchor.set(0.5, 1)
+    this.helper.visible = false
+
     this.frameIdx = 0
     this.animationIndex = _.random(0, 1, false)
     this.facingRight = _.random(0, 1, false) === 0
+    this.container.addChild(this.helper)
     this.container.addChild(this.body)
   }
 
@@ -97,11 +112,22 @@ export class Ninja {
 
   }
 
+  helperFrame = 0
   update() {
 
     if (this.isReadyToBeDestroyed) { return }
 
     this.frameIdx++
+    this.helperFrame++
+
+    if (this.isBot) {
+      this.animationIndex = 0
+    } else if (this.isPlayer) {
+      this.animationIndex = 2
+    } else {
+      this.animationIndex = 1
+    }
+
     let frameSource = ninjaFrames
     if (this.isAlive) {
       //console.log('ninja is alive', this.id, this.isAlive)
@@ -115,6 +141,14 @@ export class Ninja {
 
     let scale = 1
     this.body.scale.set(this.facingRight ? -scale : scale, scale)
+
+    if (!this.isBot) {
+      this.helper.texture.frame = ninjaFramesHelper[this.animationIndex][Math.floor(this.helperFrame / 15) % 2]
+      this.helper.visible = true
+    }
+
+
+
   }
 
   moveTo(x, y) {
@@ -127,6 +161,8 @@ export class Ninja {
     this.bx = x
     this.by = y
     this.body.position.set(8 * x + 8 / 2, 8 * y + 8)
+    this.helper.position.set(8 * x + 8 / 2, 8 * y + 8)
+
   }
 
 }

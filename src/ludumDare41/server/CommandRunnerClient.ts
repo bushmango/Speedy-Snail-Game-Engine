@@ -54,14 +54,7 @@ export class CommandRunnerClient {
     ninja.id = message.id
     ninja.isBot = message.isBot
     ninja.isAlive = message.isAlive
-    if (ninja.isBot) {
-      ninja.animationIndex = 0
-    } else if (ninja.id === this.context.playerId) {
-      ninja.animationIndex = 2
-    } else {
-      ninja.animationIndex = 1
-    }
-
+    ninja.isPlayer = (ninja.id === this.context.playerId)
   }
   dealt = (message: IMessage) => {
     // console.log('cards', message.cards)

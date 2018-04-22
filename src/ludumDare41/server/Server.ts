@@ -51,6 +51,7 @@ export class Server {
 
   lavaX = 1
   lavaY = 1
+  lavaPerTurn = (22 - 2) / 2
   mapWidth = 22
   mapHeight = 22
   map = [] as IMapSpot[]
@@ -244,7 +245,10 @@ export class Server {
     }
 
     let tileSpawns = []
-    this.setTileSpawn(tileSpawns, 1, 1, 1)
+
+    for (let i = 0; i < this.lavaPerTurn; i++) {
+      this.setTileSpawn(tileSpawns, i, 1, 1)
+    }
     for (let i = 0; i < this.mapWidth; i++) {
       this.setTileSpawn(tileSpawns, i, 0, 1)
       this.setTileSpawn(tileSpawns, this.mapWidth - i - 1, this.mapHeight - 1, 1)
@@ -542,7 +546,7 @@ export class Server {
     return aliveHumans + aliveBots
   }
 
-  _addLavaAt(x, y) {
+  _addLavaAt = async (x, y) => {
     let gs = this.getMap(x, y)
     if (gs.t !== 3) {
       gs.t = 3
@@ -553,6 +557,7 @@ export class Server {
         y: y,
       })
     }
+    await this.waitFor(50)
   }
 
   addLava = async () => {
@@ -563,8 +568,6 @@ export class Server {
     })
     log('addLava')
 
-    this._addLavaAt(this.lavaX, this.lavaY)
-
     // Kill afk
     _.forEach(this.players, c => {
       if (c.isAlive && c.noInputCounter >= 3) {
@@ -573,12 +576,15 @@ export class Server {
     })
 
     // Advance lava
-    this.lavaX++
-    if (this.lavaX > this.mapWidth - 2) {
-      this.lavaX = 1
-      this.lavaY++
-      if (this.lavaY > this.mapHeight - 2) {
-        this.lavaY = 1
+    for (let i = 0; i < this.lavaPerTurn; i++) {
+      await this._addLavaAt(this.lavaX, this.lavaY)
+      this.lavaX++
+      if (this.lavaX > this.mapWidth - 2) {
+        this.lavaX = 1
+        this.lavaY++
+        if (this.lavaY > this.mapHeight - 2) {
+          this.lavaY = 1
+        }
       }
     }
 

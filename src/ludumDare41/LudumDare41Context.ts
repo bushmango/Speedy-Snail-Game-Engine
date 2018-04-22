@@ -22,7 +22,7 @@ import { ModeBar } from 'ludumDare41/ui/ModeBar2';
 import io from 'socket.io-client';
 
 const showSplashScreen = false
-const useLocalServer = false
+const useLocalServer = true
 //const testServerAddress = 'http://localhost:4002'
 const testServerAddress = 'http://192.168.0.113:4002'
 
@@ -125,6 +125,7 @@ export class LudumDare41Context {
       this.localServer.init(true)
       let player = this.localServer.addPlayer(false)
       this.localServer.localPlayer = player
+      this.playerId = player.id
     } else {
       this.socket = io(testServerAddress);
       this.socket.on('connect', () => {
