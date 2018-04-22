@@ -84,7 +84,10 @@ function buildConfig(mode, options, settings) {
                 'src',
                 'node_modules',
             ],
-            plugins: []
+            plugins: [
+            // Not currently needed or working
+            // new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
+            ]
         },
         plugins: plugins,
         module: {
