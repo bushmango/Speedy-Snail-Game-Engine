@@ -67,6 +67,7 @@ httpServ.listen(portWs, function () {
       _.forEach(server.players, c => {
         if (c.socket === socket) {
           c.isAlive = false
+          c.isBot = true
           c.socket = null
         }
       })

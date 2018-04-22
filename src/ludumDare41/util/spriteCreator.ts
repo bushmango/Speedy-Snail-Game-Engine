@@ -29,6 +29,11 @@ export function create_card_frame(x) {
   return rectangle
 }
 
+export function create_cardBack_frame(y) {
+  let rectangle = new PIXI.Rectangle(8*1, 6*8 + y*8*3, 8*3, 8*3)
+  return rectangle
+}
+
 
 export function create8_frameHRun(y, x, num) {
   const blockSize = 8

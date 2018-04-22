@@ -5,7 +5,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms))
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
-import { ICard, ICardAndDir, standardDeck } from './CardInfo'
+import { ICard, ICardAndDir, standardDeck, deadHand } from './CardInfo'
 
 export interface IMapSpot {
   x: number
@@ -362,19 +362,27 @@ export class Server {
       })
       c.hand = []
 
-      let numCards = 6
-      for (let iCard = 0; iCard < numCards; iCard++) {
-        // Shuffle in new cards?
-        if (c.deck.length === 0) {
-          c.deck = c.discard
-          c.discard = []
+      if (c.isAlive) {
+        let numCards = 6
+        for (let iCard = 0; iCard < numCards; iCard++) {
+          // Shuffle in new cards?
+          if (c.deck.length === 0) {
+            c.deck = c.discard
+            c.discard = []
+          }
+          // Get a card and add it to our hand
+          let card = _.sample(c.deck)
+          if (card) {
+            c.hand.push(card)
+            _.pull(c.deck, card)
+          }
         }
-        // Get a card and add it to our hand
-        let card = _.sample(c.deck)
-        if (card) {
-          c.hand.push(card)
-          _.pull(c.deck, card)
-        }
+      } else {
+        // Dead
+        this.sendToPlayer(c, {
+          command: 'dealt',
+          cards: _.cloneDeep(deadHand)
+        })
       }
 
       // log('player', c)
@@ -445,6 +453,7 @@ export class Server {
     this.sendToAllPlayers({
       command: 'mode',
       message: 'Dodging',
+      lockHand: true,
     })
     log('resolveDodges')
     await this.wait()
@@ -549,11 +558,12 @@ export class Server {
     this.sendToAllPlayers({
       command: 'mode',
       message: 'Increasing heat',
+      discardHand: true,
     })
     log('addLava')
 
 
-    
+
     this._addLavaAt(this.lavaX, this.lavaY)
 
     // Kill afk
@@ -574,7 +584,7 @@ export class Server {
     }
 
     // Check for lava deaths
-    let moves = [] as IMove[]    
+    let moves = [] as IMove[]
     _.forEach(this.players, c => {
       if (c.isAlive) {
         let gs = this.getMapSafe(c.x, c.y)
@@ -588,7 +598,7 @@ export class Server {
           })
         }
       }
-    })    
+    })
     if (moves.length > 0) {
       this.sendToAllPlayers({
         command: 'moves',

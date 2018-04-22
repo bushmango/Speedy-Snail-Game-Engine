@@ -20,7 +20,7 @@ import { IClientMesssage } from 'ludumDare41/server/IMessage';
 import { GameMap } from 'ludumDare41/entities/GameMap'
 
 const showSplashScreen = false
-const useLocalServer = false
+const useLocalServer = true
 
 import io from 'socket.io-client';
 

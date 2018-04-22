@@ -113,6 +113,15 @@ export class CommandRunnerClient {
     let text = `${aliveHumans} humans + ${aliveBots} bots`
     this.context.textMode.text = message.message
     this.context.textAlive.text = text
+
+    // special actions
+    if(message.lockHand) {
+      this.context.cards.lockHand()
+    }
+    if(message.discardHand) {
+      this.context.cards.discardHand()
+    }
+
   }
 
 

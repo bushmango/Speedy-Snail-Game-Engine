@@ -5,7 +5,7 @@ export interface ICardAction {
   type: 'move'
 }
 
-export interface ICardAndDir{
+export interface ICardAndDir {
   card: ICard,
   dir: number,
 }
@@ -21,6 +21,12 @@ export const cards: ICard[] = [
     name: 'Null',
     type: 'move',
     frame: 0,
+    actions: []
+  },
+  {
+    name: 'Dead',
+    type: 'move',
+    frame: 4,
     actions: []
   },
   {
@@ -64,6 +70,8 @@ export const cards: ICard[] = [
   }
 ]
 
+const nullCard = _.find(cards, c => c.name === 'Null')
+
 const standardDeck: ICard[] = []
 function addCards(deck, name, num = 1) {
   let card = _.find(cards, c => c.name === name)
@@ -79,6 +87,8 @@ addCards(standardDeck, 'Walk', 3)
 addCards(standardDeck, 'Run', 2)
 addCards(standardDeck, 'Sprint', 1)
 
+const deadHand: ICard[] = []
+addCards(deadHand, 'Dead', 6)
 // console.log('standard deck', standardDeck)
 
-export { standardDeck }
+export { standardDeck, nullCard, deadHand }

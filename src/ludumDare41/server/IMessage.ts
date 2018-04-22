@@ -13,6 +13,8 @@ export interface IMessage {
   isBot?: boolean,
   isAlive?: boolean,
   message?: string,
+  lockHand?: boolean,
+  discardHand?: boolean,
 }
 
 export interface IMove {
