@@ -18,11 +18,14 @@ import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient';
 import { ICard } from 'ludumDare41/server/CardInfo';
 import { IClientMesssage } from 'ludumDare41/server/IMessage';
 import { GameMap } from 'ludumDare41/entities/GameMap'
+import { ModeBar } from 'ludumDare41/ui/ModeBar2';
+import io from 'socket.io-client';
 
 const showSplashScreen = false
-const useLocalServer = true
+const useLocalServer = false
+//const testServerAddress = 'http://localhost:4002'
+const testServerAddress = 'http://192.168.0.113:4002'
 
-import io from 'socket.io-client';
 
 export class LudumDare41Context {
 
@@ -39,6 +42,7 @@ export class LudumDare41Context {
   gameMap = new GameMap()
   ninjas = new NinjaManager()
   cards = new CardManager()
+  modeBar = new ModeBar()
 
   socket: any
   playerId: number
@@ -122,7 +126,7 @@ export class LudumDare41Context {
       let player = this.localServer.addPlayer(false)
       this.localServer.localPlayer = player
     } else {
-      this.socket = io('http://localhost:4002');
+      this.socket = io(testServerAddress);
       this.socket.on('connect', () => {
         console.log('W>', 'connected')
       });
@@ -146,6 +150,9 @@ export class LudumDare41Context {
     this.rootContainer.addChild(this.textAlive)
     this.textAlive.position.set(500, 20)
     this.textAlive.scale.set(2)
+
+    this.modeBar.init(this)
+    this.rootContainer.addChild(this.modeBar.container)
 
   }
 
@@ -183,6 +190,7 @@ export class LudumDare41Context {
     this.ninjas.update()
     this.cards.update()
     this.menuManager.update()
+    this.modeBar.update()
   }
 
 

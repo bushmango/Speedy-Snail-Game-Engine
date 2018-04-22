@@ -1,7 +1,5 @@
 import { ICard } from './CardInfo'
 
-
-
 export interface IMessage {
   command: string,
   id?: number,
@@ -15,6 +13,7 @@ export interface IMessage {
   message?: string,
   lockHand?: boolean,
   discardHand?: boolean,
+  percent?: number,
 }
 
 export interface IMove {

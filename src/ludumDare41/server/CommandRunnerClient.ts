@@ -111,8 +111,11 @@ export class CommandRunnerClient {
     let aliveHumans = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
     let aliveBots = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
     let text = `${aliveHumans} humans + ${aliveBots} bots`
-    this.context.textMode.text = message.message
+    
+    this.context.textMode.text = '' //message.message
     this.context.textAlive.text = text
+
+    this.context.modeBar.setMode(message.message, message.percent)
 
     // special actions
     if(message.lockHand) {

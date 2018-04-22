@@ -2,6 +2,7 @@
 import * as _ from 'lodash'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
+const fastServer = false
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
@@ -43,7 +44,7 @@ export class Server {
   players: IPlayer[] = []
 
   continueRunning = true
-  tickDelay = 100
+  tickDelay = 750
   turnTimer = 3000
 
   nextPlayerId = 100
@@ -70,7 +71,7 @@ export class Server {
 
   init = (isLocal) => {
     log('starting server')
-    this.tickDelay = isLocal ? 100 : 250
+    this.tickDelay = fastServer ? 100 : 1000 //isLocal ? 500 : 500
     this.tick()
   }
 
@@ -393,7 +394,7 @@ export class Server {
       })
     })
 
-    await this.waitFor(500 + 100)
+    await this.wait()
   }
 
   waitForCards = async () => {
@@ -419,7 +420,7 @@ export class Server {
 
       this.sendToAllPlayers({
         command: 'mode',
-        message: `Pick your move ${iTicks + 1}/${numTicks}`,
+        percent: (iTicks + 1) / numTicks,
       })
 
       await this.waitFor(this.turnTimer / numTicks)
@@ -514,7 +515,7 @@ export class Server {
       moves: moves,
     })
 
-    let waitMs = 10 * moves.length
+    let waitMs = 12 * moves.length
     console.log('wait for ', moves.length, waitMs)
     await this.waitFor(waitMs)
 
@@ -604,7 +605,7 @@ export class Server {
       })
     }
 
-    await this.waitFor(500 + 100)
+    await this.wait()
   }
 
   convertDirToOffsets(dir) {

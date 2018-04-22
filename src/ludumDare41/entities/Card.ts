@@ -6,21 +6,13 @@ import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 
 import { ICard, nullCard } from './../server/CardInfo'
 
+import { lerpBounded } from '../util/tween'
+
 const cardBackFrames = [
   spriteCreator.create_cardBack_frame(0),
   spriteCreator.create_cardBack_frame(1),
   spriteCreator.create_cardBack_frame(2),
 ]
-
-function lerp(v0, v1, t) {
-  return v0 * (1 - t) + v1 * t
-}
-
-function lerpBounded(v0, v1, t) {
-  if (t < 0) { t = 0 }
-  if (t > 1) { t = 1 }
-  return v0 * (1 - t) + v1 * t
-}
 
 export class CardManager {
 
