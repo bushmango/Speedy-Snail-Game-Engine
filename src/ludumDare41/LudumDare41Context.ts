@@ -50,6 +50,9 @@ export class LudumDare41Context {
   mx = 50
   my = 50
 
+  textMode: PIXI.extras.BitmapText
+  textAlive: PIXI.extras.BitmapText
+
   setLayerSettings(layer: PIXI.Container) {
 
     layer.position.set(this.mx, this.my)
@@ -130,6 +133,18 @@ export class LudumDare41Context {
         console.log('W>', 'disconnect')
       });
     }
+
+    this.textMode = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
+    this.textMode.anchor = new PIXI.Point(0, 0)
+    this.rootContainer.addChild(this.textMode)
+    this.textMode.position.set(100, 20)
+    this.textMode.scale.set(4)
+
+    this.textAlive = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
+    this.textAlive.anchor = new PIXI.Point(0, 0)
+    this.rootContainer.addChild(this.textAlive)
+    this.textAlive.position.set(500, 20)
+    this.textAlive.scale.set(2)
 
   }
 

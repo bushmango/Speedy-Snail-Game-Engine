@@ -337,6 +337,10 @@ export class Server {
   }
 
   dealCards = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Dealing',
+    })
     log('dealCards')
 
     _.forEach(this.players, c => {
@@ -375,7 +379,22 @@ export class Server {
   }
 
   waitForCards = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Pick your move',
+    })
     log('waitForCards')
+
+    // calculate moves for vots
+    _.forEach(this.players, c => {
+      if (!c.isBot || !c.isAlive) {
+        return
+      }
+      c.chosenCards = [{
+        card: c.hand[0],
+        dir: _.random(0, 4 - 1, false)
+      }]
+    })
 
     let numTicks = 10
     for (let iTicks = 0; iTicks < numTicks; iTicks++) {
@@ -400,17 +419,31 @@ export class Server {
   }
 
   resolveDodges = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Dodging',
+    })
     log('resolveDodges')
     await this.wait()
   }
 
   resoveAttacks = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Attacking',
+    })
     log('resoveAttacks')
     await this.wait()
   }
 
   resolveMoves = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Moving',
+    })
     log('resolveMoves')
+
+    this.players = _.sortBy(this.players, c => c.x + c.y * this.mapWidth)
 
     // sort by x/y position
     // process one at a time
@@ -449,6 +482,10 @@ export class Server {
       moves: moves,
     })
 
+    let waitMs = 10 * moves.length
+    console.log('wait for ', moves.length, waitMs)
+    await this.waitFor(waitMs)
+
     await this.wait()
   }
 
@@ -471,6 +508,10 @@ export class Server {
   }
 
   addLava = async () => {
+    this.sendToAllPlayers({
+      command:'mode',
+      message: 'Increasing heat',
+    })
     log('addLava')
 
 

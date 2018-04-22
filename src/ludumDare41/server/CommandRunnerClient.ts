@@ -84,7 +84,7 @@ export class CommandRunnerClient {
         else if (c.destroyTree) {
           this.context.gameMap.setTile(c.x, c.y, 0)
         }
-         else if (c.lava) {
+        else if (c.lava) {
           console.debug('lavad', ninja.id)
           ninja.moveTo(c.x, c.y)
           // debugger
@@ -94,7 +94,7 @@ export class CommandRunnerClient {
           ninja.moveTo(c.x, c.y)
         }
 
-        await delay(100)
+        await delay(10)
       } else {
         logError('cant find ninja', c.id)
       }
@@ -106,6 +106,15 @@ export class CommandRunnerClient {
     this.context.gameMap.setLava(message.x, message.y)
   }
 
- 
+  mode = (message: IMessage) => {
+
+    let aliveHumans = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
+    let aliveBots = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
+    let text = `${aliveHumans} humans + ${aliveBots} bots`
+    this.context.textMode.text = message.message
+    this.context.textAlive.text = text
+  }
+
+
 
 }

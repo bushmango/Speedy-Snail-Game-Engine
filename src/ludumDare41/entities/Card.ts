@@ -64,6 +64,9 @@ export class Card {
   context: LudumDare41Context
   container = new PIXI.Container()
 
+  textName: PIXI.extras.BitmapText
+  textSpeed: PIXI.extras.BitmapText
+
   body: PIXI.Sprite
   card: PIXI.Sprite
   cardInfo: ICard
@@ -88,12 +91,12 @@ export class Card {
     let alphaShown = 1
     this.rotLeft = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 4)
     this.rotLeft.anchor.set(0.5, 0.5)
-    this.rotLeft.position.set(-8 + 1, -8*2 + 1 - 2)
+    this.rotLeft.position.set(-8 + 1, -8 * 2 + 1 - 2)
     this.rotLeft.alpha = alphaHidden
 
     this.rotRight = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 5)
     this.rotRight.anchor.set(0.5, 0.5)
-    this.rotRight.position.set(8 - 1, -8*2 + 1 - 2)
+    this.rotRight.position.set(8 - 1, -8 * 2 + 1 - 2)
     this.rotRight.alpha = alphaHidden
 
     this.container.interactive = true
@@ -158,6 +161,18 @@ export class Card {
 
     this.setDir(_.random(0, 4, false))
 
+    this.textName = new PIXI.extras.BitmapText(`Null`, { font: '8px defaultfont', align: 'left' })
+    this.textName.anchor = new PIXI.Point(0, 0)
+    this.body.addChild(this.textName)
+    this.textName.position.set(-11, 6)
+    this.textName.scale.set(0.66)
+
+    this.textSpeed = new PIXI.extras.BitmapText(`Fast`, { font: '8px defaultfont', align: 'left' })
+    this.textSpeed.anchor = new PIXI.Point(0, 0)
+    this.body.addChild(this.textSpeed)
+    this.textSpeed.position.set(-8, -11)
+    this.textSpeed.scale.set(0.50)
+
   }
 
   setDir(dir) {
@@ -174,6 +189,14 @@ export class Card {
   setCard(cardInfo: ICard) {
     this.card.texture.frame = spriteCreator.create_card_frame(cardInfo.frame)
     this.cardInfo = cardInfo
+    this.textName.text = cardInfo.name
+
+    let speed = '-'
+    if (this.cardInfo.type === 'move') {
+      // speed = 'Slow'
+    }
+    speed = this.cardInfo.type
+    this.textSpeed.text = speed
     this.setDir(_.random(0, 4, false))
   }
 
