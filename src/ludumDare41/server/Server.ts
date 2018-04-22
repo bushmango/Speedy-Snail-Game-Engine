@@ -71,7 +71,7 @@ export class Server {
 
   init = (isLocal) => {
     log('starting server')
-    this.tickDelay = fastServer ? 100 : 1000 //isLocal ? 500 : 500
+    this.tickDelay = fastServer ? 100 : 500 //isLocal ? 500 : 500
     this.tick()
   }
 

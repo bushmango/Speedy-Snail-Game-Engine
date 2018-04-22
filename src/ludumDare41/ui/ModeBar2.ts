@@ -35,9 +35,9 @@ export class ModeBar {
 
   updateAnim() {
 
-    let len = 45
+    let len = 30
     let finalPos = (8 * 22 * 4 + 10)
-    let pos = tween.bound(0, finalPos, this.frame / len, tween.quartInOut)
+    let pos = tween.bound(finalPos + 200, finalPos, this.frame / len, tween.quartInOut)
     this.container.position.set(0, pos)
     // let len = 30 + this.cardIdx * 2
     // let halfLen = len / 2
