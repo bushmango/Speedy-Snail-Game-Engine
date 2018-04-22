@@ -525,6 +525,23 @@ export class Server {
           for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
             let action = card.actions[iCardCaction]
 
+            if (c.isAlive && action.type === 'shoot') {
+              let correctedDir = dir
+              if (action.dir) {
+                correctedDir += action.dir
+              }
+
+              let { xo, yo } = this.convertDirToOffsets(correctedDir)
+              let xp = c.x + xo
+              let yp = c.y + yo
+
+              let gs = this.getMapSafe(xp, yp)
+              if (gs) {
+                this._addBullet(xp, yp, correctedDir)
+              }
+
+            }
+
             if (c.isAlive && action.type === 'attack') {
 
               let correctedDir = dir
@@ -746,7 +763,7 @@ export class Server {
         })
         c.isAlive = false
       }
-      
+
     })
 
     if (moves.length > 0) {

@@ -24,7 +24,7 @@ import { EffectManager } from 'ludumDare41/entities/Effect';
 import { BulletManager } from 'ludumDare41/entities/Bullet';
 
 const showSplashScreen = false
-const useLocalServer = true
+const useLocalServer = false
 //const testServerAddress = 'http://localhost:4002'
 const testServerAddress = 'http://192.168.0.113:4002'
 
