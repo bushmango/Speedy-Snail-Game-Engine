@@ -2,11 +2,11 @@
 import * as _ from 'lodash'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
-const fastServer = false
+const fastServer = true
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
-import { ICard, ICardAndDir, standardDeck, deadHand } from './CardInfo'
+import { ICard, ICardAndDir, standardDeck, deadHand, zombieHand } from './CardInfo'
 
 export interface IMapSpot {
   x: number
@@ -45,7 +45,7 @@ export class Server {
 
   continueRunning = true
   tickDelay = 750
-  turnTimer = 3000
+  turnTimer = 5000
 
   nextPlayerId = 100
 
@@ -360,42 +360,48 @@ export class Server {
 
     _.forEach(this.players, c => {
 
-      // Discard hand
-      c.chosenCards = []
-      _.forEach(c.hand, d => {
-        c.discard.push(d)
-      })
-      c.hand = []
-
-      if (c.isAlive) {
-        let numCards = 6
-        for (let iCard = 0; iCard < numCards; iCard++) {
-          // Shuffle in new cards?
-          if (c.deck.length === 0) {
-            c.deck = c.discard
-            c.discard = []
-          }
-          // Get a card and add it to our hand
-          let card = _.sample(c.deck)
-          if (card) {
-            c.hand.push(card)
-            _.pull(c.deck, card)
-          }
-        }
-      } else {
-        // Dead
-        this.sendToPlayer(c, {
-          command: 'dealt',
-          cards: _.cloneDeep(deadHand)
-        })
+      if (c.isBot) {
+        c.hand = zombieHand
       }
 
-      // log('player', c)
+      if (!c.isBot) {
+        // Discard hand
+        c.chosenCards = []
+        _.forEach(c.hand, d => {
+          c.discard.push(d)
+        })
+        c.hand = []
 
-      this.sendToPlayer(c, {
-        command: 'dealt',
-        cards: _.cloneDeep(c.hand)
-      })
+        if (c.isAlive) {
+          let numCards = 6
+          for (let iCard = 0; iCard < numCards; iCard++) {
+            // Shuffle in new cards?
+            if (c.deck.length === 0) {
+              c.deck = c.discard
+              c.discard = []
+            }
+            // Get a card and add it to our hand
+            let card = _.sample(c.deck)
+            if (card) {
+              c.hand.push(card)
+              _.pull(c.deck, card)
+            }
+          }
+        } else {
+          // Dead
+          this.sendToPlayer(c, {
+            command: 'dealt',
+            cards: _.cloneDeep(deadHand)
+          })
+        }
+
+        // log('player', c)
+
+        this.sendToPlayer(c, {
+          command: 'dealt',
+          cards: _.cloneDeep(c.hand)
+        })
+      }
     })
 
     await this.wait()
@@ -461,7 +467,7 @@ export class Server {
       lockHand: true,
     })
     log('resolveDodges')
-    await this.wait()
+    // await this.wait()
   }
 
   resoveAttacks = async () => {
@@ -470,6 +476,84 @@ export class Server {
       message: 'Attacking',
     })
     log('resoveAttacks')
+
+    let moves = [] as IMove[]
+    _.forEach(this.players, c => {
+      if (c.isAlive && c.chosenCards.length > 0) {
+
+        let cardAndDir = c.chosenCards[0]
+        let card = cardAndDir.card
+        let dir = cardAndDir.dir
+
+        if (card.type === 'attack') {
+          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+            let action = card.actions[iCardCaction]
+
+            if (c.isAlive && action.type === 'attack') {
+
+              let correctedDir = dir
+              if (action.dir) {
+                correctedDir += action.dir
+              }
+
+              let { xo, yo } = this.convertDirToOffsets(correctedDir)
+              let xp = c.x + xo
+              let yp = c.y + yo
+
+              let gs = this.getMapSafe(xp, yp)
+              if (gs) {
+                moves.push({
+                  x: gs.x,
+                  y: gs.y,
+                  attack: true,
+                })
+
+                if (gs.t === 2) {
+                  // Tree
+                  gs.t = 0
+                  moves.push({
+                    x: gs.x,
+                    y: gs.y,
+                    changeTile: true,
+                    t: 0,
+                  })
+                }
+
+                // Anyone here
+                _.forEach(this.players, d => {
+                  if (d.isAlive) {
+                    // Hurt here
+                    if (d.x === gs.x && d.y === gs.y) {
+                      d.isAlive = false
+                      moves.push({
+                        id: d.id,
+                        x: gs.x,
+                        y: gs.y,
+                        kill: true,
+                      })
+                    }
+                  }
+                })
+              }
+
+
+              // continue
+            }
+          }
+        }
+      }
+    })
+
+
+    this.sendToAllPlayers({
+      command: 'moves',
+      moves: moves,
+    })
+
+    // let waitMs = 12 * moves.length
+    // console.log('wait for ', moves.length, waitMs)
+    // await this.waitFor(waitMs)
+
     await this.wait()
   }
 
@@ -617,6 +701,9 @@ export class Server {
   convertDirToOffsets(dir) {
     let xo = 0
     let yo = 0
+
+    if (dir < 0) { dir += 4 }
+    if (dir >= 4) { dir -= 4 }
 
     switch (dir) {
       case 0:

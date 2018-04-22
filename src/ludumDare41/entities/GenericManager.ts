@@ -14,19 +14,21 @@ export interface IEntity {
 export class GenericManager<T extends IEntity> {
 
   context: LudumDare41Context
+  layer: PIXI.Container
 
   items: T[] = []
 
-  init(context: LudumDare41Context) {
+  init(context: LudumDare41Context, layer: PIXI.Container) {
     this.context = context
+    this.layer = layer
   }
 
-  createAt(c: new () => T, x, y) {
+  _createAt(c: new () => T, x, y) {
     let item = new c()
     item.init(this.context)
     // item.moveTo(x, y)
     this.items.push(item)
-    this.context.layerObjects.addChild(item.container)
+    this.layer.addChild(item.container)
     return item
   }
 
@@ -41,7 +43,7 @@ export class GenericManager<T extends IEntity> {
     let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
     if (removed.length > 0) {
       _.forEach(removed, (c) => {
-        this.context.layerObjects.removeChild(c.container)
+        this.layer.removeChild(c.container)
       })
       console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
     }
@@ -50,7 +52,7 @@ export class GenericManager<T extends IEntity> {
   clear() {
     _.forEach(this.items, (c) => {
       c.isReadyToBeDestroyed = true
-      this.context.layerObjects.removeChild(c.container)
+      this.layer.removeChild(c.container)
     })
     this.items = []
   }

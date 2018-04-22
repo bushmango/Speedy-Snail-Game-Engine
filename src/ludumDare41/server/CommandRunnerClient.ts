@@ -69,27 +69,42 @@ export class CommandRunnerClient {
       let c = message.moves[i]
       let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
 
-      if (ninja) {
+      if (c.bounce) {
 
-        if (c.bounce) {
-
+      }
+      else if (c.kill) {
+        if (ninja) {
+          ninja.isAlive = false
         }
-        else if (c.destroyTree) {
-          this.context.gameMap.setTile(c.x, c.y, 0)
-        }
-        else if (c.lava) {
-          console.debug('lavad', ninja.id)
+        await delay(10)
+      }
+      else if (c.attack) {
+        // Add anim
+        //await delay(10)
+        this.context.effects.createAt(c.x, c.y)
+      }
+      else if (c.changeTile) {
+        this.context.gameMap.setTile(c.x, c.y, c.t)
+        await delay(10)
+      }
+      else if (c.destroyTree) {
+        this.context.gameMap.setTile(c.x, c.y, 0)
+        await delay(10)
+      }
+      else if (c.lava) {
+        console.debug('lavad', ninja.id)
+        if (ninja) {
           ninja.moveTo(c.x, c.y)
           // debugger
           ninja.isAlive = false
         }
-        else if (c.move) {
+        await delay(10)
+      }
+      else if (c.move) {
+        if (ninja) {
           ninja.moveTo(c.x, c.y)
         }
-
         await delay(10)
-      } else {
-        logError('cant find ninja', c.id)
       }
     }
 
@@ -104,17 +119,17 @@ export class CommandRunnerClient {
     let aliveHumans = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
     let aliveBots = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
     let text = `${aliveHumans} humans + ${aliveBots} bots`
-    
+
     this.context.textMode.text = '' //message.message
     this.context.textAlive.text = text
 
     this.context.modeBar.setMode(message.message, message.percent)
 
     // special actions
-    if(message.lockHand) {
+    if (message.lockHand) {
       this.context.cards.lockHand()
     }
-    if(message.discardHand) {
+    if (message.discardHand) {
       this.context.cards.discardHand()
     }
 

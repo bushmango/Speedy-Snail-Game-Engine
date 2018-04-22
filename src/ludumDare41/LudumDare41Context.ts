@@ -20,6 +20,7 @@ import { IClientMesssage } from 'ludumDare41/server/IMessage';
 import { GameMap } from 'ludumDare41/entities/GameMap'
 import { ModeBar } from 'ludumDare41/ui/ModeBar2';
 import io from 'socket.io-client';
+import { EffectManager } from 'ludumDare41/entities/Effect';
 
 const showSplashScreen = false
 const useLocalServer = true
@@ -37,12 +38,14 @@ export class LudumDare41Context {
   rootContainer: PIXI.Container
 
   layerObjects: PIXI.Container
+  layerEffects: PIXI.Container
   layerCards: PIXI.Container
 
   gameMap = new GameMap()
   ninjas = new NinjaManager()
   cards = new CardManager()
   modeBar = new ModeBar()
+  effects = new EffectManager()
 
   socket: any
   playerId: number
@@ -83,12 +86,21 @@ export class LudumDare41Context {
     // Add layers    
     this.addLayer(this.gameMap.tileMap.containers[0])
     this.layerObjects = this.addLayer()
+    this.layerEffects = this.addLayer()
     this.layerCards = this.addLayer()
     this.addLayer(this.menuManager.menuManager.container)
     this.addLayer(this.menuManager.container)
 
     this.setLayerSettings(this.gameMap.tileMap.containers[0])
     this.setLayerSettings(this.layerObjects)
+    this.setLayerSettings(this.layerEffects)
+
+    this.effects.init(this, this.layerEffects)
+
+    for (let i = 0; i < 10; i++) {
+      this.effects.createAt(i, i)
+    }
+
 
     this.ninjas.init(this)
     // this.addLayer(this.ninjas.container)
@@ -192,6 +204,7 @@ export class LudumDare41Context {
     this.cards.update()
     this.menuManager.update()
     this.modeBar.update()
+    this.effects.update()
   }
 
 

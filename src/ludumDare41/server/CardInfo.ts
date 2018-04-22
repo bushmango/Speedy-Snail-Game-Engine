@@ -2,7 +2,8 @@
 import * as _ from 'lodash'
 
 export interface ICardAction {
-  type: 'move'
+  type: 'move' | 'attack'
+  dir?: number
 }
 
 export interface ICardAndDir {
@@ -67,7 +68,36 @@ export const cards: ICard[] = [
         type: 'move',
       }
     ]
-  }
+  },
+  {
+    name: 'Punch',
+    type: 'attack',
+    frame: 5,
+    actions: [
+      {
+        type: 'attack',
+      }
+    ]
+  },
+  {
+    name: 'Swipe',
+    type: 'attack',
+    frame: 6,
+    actions: [
+      {
+        type: 'attack',
+      },
+      {
+        type: 'attack',
+        dir: -1,
+      },
+      {
+        type: 'attack',
+        dir: +1,
+      }
+    ]
+  },
+
 ]
 
 const nullCard = _.find(cards, c => c.name === 'Null')
@@ -87,8 +117,15 @@ addCards(standardDeck, 'Walk', 3)
 addCards(standardDeck, 'Run', 2)
 addCards(standardDeck, 'Sprint', 1)
 
+addCards(standardDeck, 'Punch', 2)
+addCards(standardDeck, 'Swipe', 2)
+
 const deadHand: ICard[] = []
 addCards(deadHand, 'Dead', 6)
+
+const zombieHand: ICard[] = []
+addCards(zombieHand, 'Walk', 6)
+
 // console.log('standard deck', standardDeck)
 
-export { standardDeck, nullCard, deadHand }
+export { standardDeck, nullCard, deadHand, zombieHand }

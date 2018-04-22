@@ -17,13 +17,17 @@ export interface IMessage {
 }
 
 export interface IMove {
-  id: number,
+  id?: number,
   x?: number,
   y?: number,
   move?: boolean,
   bounce?: boolean,
   lava?: boolean,
   destroyTree?: boolean,
+  kill?: boolean,
+  attack?: boolean,
+  changeTile?: boolean,
+  t?: number,
 }
 
 export interface ITileSpawn {
