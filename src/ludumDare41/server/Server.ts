@@ -29,6 +29,14 @@ export interface IPlayer {
   noInputCounter: number
 }
 
+export interface IBullet {
+  id: number,
+  x: number
+  y: number
+  dir: number
+  isAlive: boolean,
+}
+
 export function log(...message) {
   console.log('S>', ...message)
 }
@@ -42,6 +50,7 @@ export function logError(...message) {
 export class Server {
 
   players: IPlayer[] = []
+  bullets: IBullet[] = []
 
   continueRunning = true
   tickDelay = 750
@@ -282,6 +291,18 @@ export class Server {
       command: 'resetMap',
       tileSpawns: tileSpawns,
     })
+
+    // Add some test bullets
+    this.bullets = []
+    let numBullets = 5
+    for (let i = 0; i < numBullets; i++) {
+      let space = this.findOpenSpace()
+      if (space) {
+        this._addBullet(space.x, space.y, _.random(0, 4 - 1, false))
+      }
+    }
+
+
     await this.wait()
   }
 
@@ -349,6 +370,20 @@ export class Server {
           isBot: c.isBot,
           isAlive: c.isAlive,
         })
+    })
+
+    // Send bullet spawns
+    _.forEach(this.bullets, c => {
+      if (c.isAlive) {
+        this.sendToPlayer(player,
+          {
+            command: 'spawnBullet',
+            id: c.id,
+            x: c.x,
+            y: c.y,
+            dir: c.dir,
+          })
+      }
     })
   }
 
@@ -622,19 +657,125 @@ export class Server {
     // Testing
     let { x, y } = this.findOpenSpace()
 
-    this._addBullet(x, y, _.random(0, 4 - 1, false))
+    // this._addBullet(x, y, _.random(0, 4 - 1, false))
+
+    let moves = [] as IMove[]
+
+    _.forEach(this.bullets, c => {
+
+      log('bullet', c)
+
+      let killBullet = false
+      if (c.isAlive) {
+        // Search for player
+        _.forEach(this.players, d => {
+          if (d.isAlive) {
+            if (c.x === d.x && c.y === d.y) {
+              killBullet = true
+              moves.push({
+                id: d.id,
+                kill: true,
+                x: c.x,
+                y: c.y,
+              })
+            }
+          }
+        })
+      }
+
+      if (c.isAlive && !killBullet) {
+        // Try to move this bullet
+
+        let { xo, yo } = this.convertDirToOffsets(c.dir)
+        let xp = c.x + xo
+        let yp = c.y + yo
+
+        let gs = this.getMapSafe(xp, yp)
+
+        if (gs) {
+          c.x = xp
+          c.y = yp
+          moves.push({
+            bullet: true,
+            id: c.id,
+            x: c.x,
+            y: c.y,
+          })
+
+          if (gs.t === 2) {
+            // Tree
+            killBullet = true
+            moves.push({
+              changeTile: true,
+              x: c.x,
+              y: c.y,
+              t: 0,
+            })
+          }
+          else if (gs.t === 1) {
+            // Stone
+            killBullet = true
+          } else {
+            // Search for player
+            _.forEach(this.players, d => {
+              if (d.isAlive) {
+                if (c.x === d.x && c.y === d.y) {
+                  killBullet = true
+                  moves.push({
+                    id: d.id,
+                    kill: true,
+                    x: c.x,
+                    y: c.y,
+                  })
+                }
+              }
+            })
+          }
+
+        } else {
+          killBullet = true
+        }
+      }
+
+      if (killBullet) {
+        // Invalid move
+        moves.push({
+          bullet: true,
+          kill: true,
+          id: c.id,
+        })
+        c.isAlive = false
+      }
+      
+    })
+
+    if (moves.length > 0) {
+      this.sendToAllPlayers({
+        command: 'moves',
+        moves: moves,
+      })
+    }
 
     await this.wait()
   }
 
   _addBullet = (x, y, dir) => {
-    this.sendToAllPlayers({
-      command: 'spawnBullet',
+    let bullet: IBullet = {
       id: this.nextPlayerId++,
       x: x,
       y: y,
       dir: dir,
+      isAlive: true,
+    }
+    this.bullets.push(bullet)
+    this.sendToAllPlayers({
+      command: 'spawnBullet',
+      id: bullet.id,
+      x: bullet.x,
+      y: bullet.y,
+      dir: bullet.dir,
     })
+
   }
 
 

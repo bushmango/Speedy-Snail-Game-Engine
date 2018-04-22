@@ -28,6 +28,7 @@ export interface IMove {
   kill?: boolean,
   attack?: boolean,
   changeTile?: boolean,
+  bullet?: boolean
   t?: number,
 }
 

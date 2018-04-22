@@ -39,7 +39,7 @@ export class CommandRunnerClient {
     this.context.ninjas.clear()
     this.context.bullets.clear()
     this.context.gameMap.reset()
-    
+
     for (let i = 0; i < message.tileSpawns.length; i++) {
       let c = message.tileSpawns[i]
       this.context.gameMap.setTile(c.x, c.y, c.t)
@@ -79,6 +79,18 @@ export class CommandRunnerClient {
 
       if (c.bounce) {
 
+      }
+      else if (c.bullet) {
+        let bullet = _.find(this.context.bullets.items, d => d.id === c.id)
+        if (bullet) {
+          if (c.kill) {            
+            bullet.isReadyToBeDestroyed = true
+          } else {
+            bullet.moveTo(c.x, c.y)
+          }
+        } else {
+          console.warn('cant find bullet', c.id)
+        }
       }
       else if (c.kill) {
         if (ninja) {
