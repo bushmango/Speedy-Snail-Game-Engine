@@ -120,6 +120,7 @@ export class Server {
         await this.resolveDodges()
         await this.resoveAttacks()
         await this.resolveMoves()
+        await this.resolveBullets()
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
           // no one wins?
@@ -609,6 +610,33 @@ export class Server {
 
     await this.wait()
   }
+
+  resolveBullets = async () => {
+    log('resolveBullets')
+    this.sendToAllPlayers({
+      command: 'mode',
+      message: 'Bullets',
+      discardHand: true,
+    })
+
+    // Testing
+    let { x, y } = this.findOpenSpace()
+
+    this._addBullet(x, y, _.random(0, 4 - 1, false))
+
+    await this.wait()
+  }
+
+  _addBullet = (x, y, dir) => {
+    this.sendToAllPlayers({
+      command: 'spawnBullet',
+      id: this.nextPlayerId++,
+      x: x,
+      y: y,
+      dir: dir,
+    })
+  }
+
 
   checkVictory = async () => {
     log('checkVictory')

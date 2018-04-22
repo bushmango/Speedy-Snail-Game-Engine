@@ -5,6 +5,7 @@ export interface IMessage {
   id?: number,
   x?: number,
   y?: number,
+  dir?: number,
   cards?: ICard[],
   moves?: IMove[],
   tileSpawns?: ITileSpawn[],

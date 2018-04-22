@@ -21,6 +21,7 @@ import { GameMap } from 'ludumDare41/entities/GameMap'
 import { ModeBar } from 'ludumDare41/ui/ModeBar2';
 import io from 'socket.io-client';
 import { EffectManager } from 'ludumDare41/entities/Effect';
+import { BulletManager } from 'ludumDare41/entities/Bullet';
 
 const showSplashScreen = false
 const useLocalServer = true
@@ -40,12 +41,14 @@ export class LudumDare41Context {
   layerObjects: PIXI.Container
   layerEffects: PIXI.Container
   layerCards: PIXI.Container
+  layerBullets: PIXI.Container
 
   gameMap = new GameMap()
   ninjas = new NinjaManager()
   cards = new CardManager()
   modeBar = new ModeBar()
   effects = new EffectManager()
+  bullets = new BulletManager()
 
   socket: any
   playerId: number
@@ -86,6 +89,7 @@ export class LudumDare41Context {
     // Add layers    
     this.addLayer(this.gameMap.tileMap.containers[0])
     this.layerObjects = this.addLayer()
+    this.layerBullets = this.addLayer()
     this.layerEffects = this.addLayer()
     this.layerCards = this.addLayer()
     this.addLayer(this.menuManager.menuManager.container)
@@ -93,14 +97,16 @@ export class LudumDare41Context {
 
     this.setLayerSettings(this.gameMap.tileMap.containers[0])
     this.setLayerSettings(this.layerObjects)
+    this.setLayerSettings(this.layerBullets)
     this.setLayerSettings(this.layerEffects)
 
     this.effects.init(this, this.layerEffects)
+    this.bullets.init(this, this.layerBullets)
 
     for (let i = 0; i < 10; i++) {
-      this.effects.createAt(i, i)
+      // this.effects.createAt(i, i)
+      this.bullets.createAt(i, i, 0)
     }
-
 
     this.ninjas.init(this)
     // this.addLayer(this.ninjas.container)
@@ -201,6 +207,7 @@ export class LudumDare41Context {
     }
     this.gameMap.update()
     this.ninjas.update()
+    this.bullets.update()
     this.cards.update()
     this.menuManager.update()
     this.modeBar.update()
