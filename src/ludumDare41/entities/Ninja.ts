@@ -4,16 +4,33 @@ import * as spriteCreator from 'ludumDare41/util/spriteCreator'
 import { KeyCodes } from 'engine/input/Keyboard'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 
-const ninjaFrames = [
-  spriteCreator.create8_frameHRun(3, 1, 1),
-  spriteCreator.create8_frameHRun(3, 2, 1),
-  spriteCreator.create8_frameHRun(3, 3, 1),
+const zombieSet = [
+  [spriteCreator.create8_frame(3, 8)],
+  [spriteCreator.create8_frame(4, 8)],
 ]
-const ninjaFramesDead = [
-  spriteCreator.create8_frameHRun(3, 3 + 1, 1),
-  spriteCreator.create8_frameHRun(3, 3 + 2, 1),
-  spriteCreator.create8_frameHRun(3, 3 + 3, 1),
+const playerHumanSet = [
+  [spriteCreator.create8_frame(3, 10)],
+  [spriteCreator.create8_frame(4, 10)],
 ]
+const enemyHumanSet = [
+  [spriteCreator.create8_frame(3, 11)],
+  [spriteCreator.create8_frame(4, 11)],
+]
+const ninjaSet = [
+  [spriteCreator.create8_frame(3, 9)],
+  [spriteCreator.create8_frame(4, 9)],
+]
+
+// const ninjaFrames = [
+//   spriteCreator.create8_frameHRun(3, 1, 1),
+//   spriteCreator.create8_frameHRun(3, 2, 1),
+//   spriteCreator.create8_frameHRun(3, 3, 1),
+// ]
+// const ninjaFramesDead = [
+//   spriteCreator.create8_frameHRun(3, 3 + 1, 1),
+//   spriteCreator.create8_frameHRun(3, 3 + 2, 1),
+//   spriteCreator.create8_frameHRun(3, 3 + 3, 1),
+// ]
 
 const ninjaFramesHelper = [
   [],
@@ -128,16 +145,27 @@ export class Ninja {
       this.animationIndex = 1
     }
 
-    let frameSource = ninjaFrames
-    if (this.isAlive) {
-      //console.log('ninja is alive', this.id, this.isAlive)
-      frameSource = ninjaFrames
+    // what set are we
+    let set = zombieSet
+    if (this.isBot) {
+      set = zombieSet
     } else {
-      // console.log('ninja is dead', this.id, this.isAlive)
-      frameSource = ninjaFramesDead
+      if (this.isPlayer) {
+        set = playerHumanSet
+      } else {
+        set = enemyHumanSet
+      }
     }
-    this.frameIdx = this.frameIdx % frameSource[this.animationIndex].length
-    this.body.texture.frame = frameSource[this.animationIndex][this.frameIdx]
+
+    if(this.isAlive) {
+      this.frameIdx = this.frameIdx % set[0].length
+      this.body.texture.frame = set[0][this.frameIdx]
+    } else {
+      this.frameIdx = this.frameIdx % set[1].length
+      this.body.texture.frame = set[1][this.frameIdx]
+    }
+
+
 
     let scale = 1
     this.body.scale.set(this.facingRight ? -scale : scale, scale)

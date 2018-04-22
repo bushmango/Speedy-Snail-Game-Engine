@@ -32,6 +32,7 @@ export class ModeBar {
   }
 
   frame = 0
+  mode = ''
 
   updateAnim() {
 
@@ -52,10 +53,15 @@ export class ModeBar {
   setMode(mode: any, percent) {
     this.container.visible = true
     console.log('set mode', mode, percent)
-    if (mode && mode !== this.textName.text) {
+    if (mode && mode !== this.mode) {
+      this.mode = mode
       this.frame = 0
       this.textName.text = mode
       this.updateAnim()
+    } else {
+      if (percent) {
+        this.textName.text = this.mode + ' ' + (Math.floor(10 - (percent * 10)) + 1) + ''
+      }
     }
 
   }
