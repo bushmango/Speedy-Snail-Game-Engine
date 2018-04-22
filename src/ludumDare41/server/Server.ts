@@ -246,7 +246,7 @@ export class Server {
 
     let tileSpawns = []
 
-    for (let i = 0; i < this.lavaPerTurn; i++) {
+    for (let i = 1; i < this.lavaPerTurn + 1; i++) {
       this.setTileSpawn(tileSpawns, i, 1, 1)
     }
     for (let i = 0; i < this.mapWidth; i++) {
