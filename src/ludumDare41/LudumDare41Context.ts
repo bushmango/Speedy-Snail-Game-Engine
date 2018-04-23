@@ -105,7 +105,7 @@ export class LudumDare41Context {
 
     for (let i = 0; i < 10; i++) {
       // this.effects.createAt(i, i)
-      this.bullets.createAt(i, i, 0)
+      // this.bullets.createAt(i, i, 0)
     }
 
     this.ninjas.init(this)

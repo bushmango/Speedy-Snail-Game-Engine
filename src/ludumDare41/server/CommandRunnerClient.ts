@@ -66,7 +66,7 @@ export class CommandRunnerClient {
   }
 
   spawnBullet = (message: IMessage) => {
-    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir)
+    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir, message.idx )
     bullet.id = message.id
   }
 
