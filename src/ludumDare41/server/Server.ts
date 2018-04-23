@@ -95,7 +95,7 @@ export class Server {
       
       _.forEach(_.shuffle(this.players), c => {
         if(c.isBot && c.isAlive) {
-          c.isBot = false
+          c.isBot = isBot
           c.deck = _.cloneDeep(standardDeck),
           c.hand = [],
           c.socket = socket
@@ -110,7 +110,8 @@ export class Server {
         this.sendToAllPlayers({
           command: 'replaceSpawn',
           id: replacement.id,
-          isBot: false,
+          isBot: isBot,
+          isAlive: true,
         })
 
         return replacement
@@ -758,6 +759,7 @@ export class Server {
           if (gs.t === 2) {
             // Tree
             killBullet = true
+            gs.t = 0
             moves.push({
               changeTile: true,
               x: c.x,
@@ -768,8 +770,8 @@ export class Server {
           else if (gs.t === 1) {
             // Stone
             killBullet = true
-
             if (c.idx === 3) {
+              gs.t = 0
               moves.push({
                 changeTile: true,
                 x: c.x,

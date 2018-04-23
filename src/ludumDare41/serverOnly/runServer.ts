@@ -70,6 +70,12 @@ httpServ.listen(portWs, function () {
           c.isBot = true
           c.socket = null
         }
+        server.sendToAllPlayers({
+          command: 'replaceSpawn',
+          id: c.id,
+          isBot: true,
+          isAlive: c.isAlive,
+        })
         // TODO: send to client that they are dead
       })
 

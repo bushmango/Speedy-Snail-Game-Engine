@@ -57,15 +57,14 @@ export class CommandRunnerClient {
     ninja.id = message.id
     ninja.isBot = message.isBot
     ninja.isAlive = message.isAlive
-    ninja.isPlayer = (ninja.id === this.context.playerId)
+   
   }
 
   replaceSpawn = (message: IMessage) => {
-    let ninja = _.find(this.context.ninjas.items, d => d.id === message.id)
+    let ninja = _.find(this.context.ninjas.items, c => c.id === message.id)
     if (ninja) {
       ninja.isBot = message.isBot
-      ninja.isAlive = message.isAlive
-      ninja.isPlayer = (ninja.id === this.context.playerId)
+      ninja.isAlive = message.isAlive     
     }
   }
 

@@ -98,7 +98,7 @@ export class Ninja {
   facingRight = false
   isBot = false
   isAlive = true
-  isPlayer = false
+
   isReadyToBeDestroyed = false
   bx: number = 0
   by: number = 0
@@ -137,9 +137,11 @@ export class Ninja {
     this.frameIdx++
     this.helperFrame++
 
+    let isPlayer = this.id === this.context.playerId
+
     if (this.isBot) {
       this.animationIndex = 0
-    } else if (this.isPlayer) {
+    } else if (isPlayer) {
       this.animationIndex = 2
     } else {
       this.animationIndex = 1
@@ -150,7 +152,7 @@ export class Ninja {
     if (this.isBot) {
       set = zombieSet
     } else {
-      if (this.isPlayer) {
+      if (isPlayer) {
         set = playerHumanSet
       } else {
         set = enemyHumanSet
@@ -173,6 +175,8 @@ export class Ninja {
     if (!this.isBot) {
       this.helper.texture.frame = ninjaFramesHelper[this.animationIndex][Math.floor(this.helperFrame / 15) % 2]
       this.helper.visible = true
+    } else {
+      this.helper.visible = false
     }
 
 
