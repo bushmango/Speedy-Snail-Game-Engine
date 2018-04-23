@@ -30,7 +30,8 @@ export interface IMove {
   attack?: boolean,
   changeTile?: boolean,
   bullet?: boolean
-  t?: number,
+  t?: number,  
+  message?: IMessage,
 }
 
 export interface ITileSpawn {

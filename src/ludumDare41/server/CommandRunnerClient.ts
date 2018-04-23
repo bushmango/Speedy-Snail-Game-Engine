@@ -85,6 +85,10 @@ export class CommandRunnerClient {
     let powerup = this.context.powerups.createAt(message.x, message.y)
     powerup.id = message.id
   }
+  killPowerup = (message: IMessage) => {
+    let powerup = _.find(this.context.powerups.items, d => d.id === message.id)
+    powerup.destroy()
+  }
 
   moves = async (message: IMessage) => {
     log('moves', message.moves)
@@ -93,7 +97,10 @@ export class CommandRunnerClient {
       let c = message.moves[i]
       let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
 
-      if (c.bounce) {
+      if(c.message) {
+        this.run(c.message)
+      }
+      else if (c.bounce) {
 
       }
       else if (c.bullet) {

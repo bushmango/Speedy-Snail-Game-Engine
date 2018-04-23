@@ -834,7 +834,7 @@ export class Server {
         let gs = this.getMapSafe(xp, yp)
 
         if (gs) {
-          
+
           // Move bullet
           c.x = xp
           c.y = yp
@@ -1028,6 +1028,30 @@ export class Server {
     return { xo, yo }
   }
 
+  _checkSpotForPowerup(moves: IMove[], player: IPlayer) {
+    if (!player.isAlive || player.isBot) { return }
+    _.forEach(this.powerups, powerup => {
+      if (powerup.isAlive && powerup.x === player.x && powerup.y === player.y) {
+
+        // There's a powerup here!
+        powerup.isAlive = false
+        moves.push({
+          message: {
+            command: 'killPowerup',
+            id: powerup.id,
+            x: powerup.x,
+            y: powerup.y,
+          }
+        })
+        
+        // TODO: change player deck + appearence
+
+
+        return false
+      }
+    })
+  }
+
   tryMovePlayer(moves: IMove[], player: IPlayer, xo: number, yo: number) {
 
     let xp = player.x + xo
@@ -1087,6 +1111,9 @@ export class Server {
         x: player.x,
         y: player.y,
       })
+
+      this._checkSpotForPowerup(moves, player)
+
     }
     return isValid
 
