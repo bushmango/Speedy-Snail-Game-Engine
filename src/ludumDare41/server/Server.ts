@@ -95,34 +95,47 @@ export class Server {
     this.tick()
   }
 
+  _replacePlayer = (isBot: boolean, socket: any = null) => {
+    let replacement: IPlayer = null
+
+    _.forEach(_.shuffle(this.players), c => {
+      if (c.isBot && c.isAlive) {
+        c.isBot = isBot
+        c.socket = socket
+        c.noInputCounter = 0
+        replacement = c
+        return false
+      }
+    })
+
+    if (replacement) {
+      this.sendToAllPlayers({
+        command: 'replaceSpawn',
+        id: replacement.id,
+        isBot: isBot,
+        isAlive: replacement.isAlive,
+      })
+      return replacement
+    }
+  }
+
+  _changeToBot = (player: IPlayer) => {
+    player.isBot = true
+    player.socket = false
+    this.sendToAllPlayers({
+      command: 'replaceSpawn',
+      id: player.id,
+      isBot: true,
+      isAlive: player.isAlive,
+    })
+  }
+
   addPlayer(isBot: boolean, socket: any = null, tryReplace = false) {
     // this.numPlayers++
 
     if (tryReplace) {
-
-      let replacement: IPlayer = null
-
-      _.forEach(_.shuffle(this.players), c => {
-        if (c.isBot && c.isAlive) {
-          c.isBot = isBot
-          c.deck = _.cloneDeep(standardDeck),
-            c.hand = [],
-            c.socket = socket
-          c.noInputCounter = 0
-          replacement = c
-          return false
-        }
-      })
-
+      let replacement = this._replacePlayer(isBot, socket)
       if (replacement) {
-
-        this.sendToAllPlayers({
-          command: 'replaceSpawn',
-          id: replacement.id,
-          isBot: isBot,
-          isAlive: true,
-        })
-
         return replacement
       }
     }
@@ -168,13 +181,14 @@ export class Server {
         await this.addLava()
         await this.dealCards()
         await this.waitForCards()
-        await this.resolveDodges()
+        //await this.resolveDodges()
+        await this.resolveRespawns()
         await this.resolveMoves(false)
         await this.resoveAttacks()
-        await this.resolveMoves(true)
         await this.resolveBullets()
         await this.resolveBullets()
         await this.resolveBullets()
+        await this.resolveMoves(true)      
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
           // no one wins?
@@ -276,7 +290,7 @@ export class Server {
       if (gs.t === 0 && gs.hasSomething === false) {
 
         if (checkPlayers) {
-          if(_.some(this.players, c => {
+          if (_.some(this.players, c => {
             return (c.x === x && c.y === y)
           })) {
             continue
@@ -336,7 +350,7 @@ export class Server {
     for (let i = 0; i < numTrees; i++) {
       this.setRandomTileSpawn(tileSpawns, 2)
     }
-    let numTreasure = _.random(5, 10, false)
+    let numTreasure = 0 // _.random(5, 10, false)
     for (let i = 0; i < numTreasure; i++) {
       this.setRandomTileSpawn(tileSpawns, 4)
     }
@@ -466,6 +480,13 @@ export class Server {
     })
   }
 
+  _switchDeck = (player, newDeck) => {
+    player.deck = _.cloneDeep(newDeck)
+    player.discard = []
+    player.hand = []
+    player.chosenCards = []
+  }
+
   dealCards = async () => {
     this.sendToAllPlayers({
       command: 'mode',
@@ -479,7 +500,17 @@ export class Server {
         c.hand = zombieHand
       }
 
-      if (!c.isBot) {
+      if (!c.isAlive) {
+        c.hand = deadHand
+        c.deck = deadHand
+        this.sendToPlayer(c, {
+          command: 'dealt',
+          cards: _.cloneDeep(c.hand)
+        })
+      }
+
+      if (!c.isBot && c.isAlive) {
+
         // Discard hand
         c.chosenCards = []
         _.forEach(c.hand, d => {
@@ -487,28 +518,28 @@ export class Server {
         })
         c.hand = []
 
-        if (c.isAlive) {
-          let numCards = 6
-          for (let iCard = 0; iCard < numCards; iCard++) {
-            // Shuffle in new cards?
-            if (c.deck.length === 0) {
-              c.deck = c.discard
-              c.discard = []
-            }
-            // Get a card and add it to our hand
-            let card = _.sample(c.deck)
-            if (card) {
-              c.hand.push(card)
-              _.pull(c.deck, card)
-            }
+        //if (c.isAlive) {
+        let numCards = 6
+        for (let iCard = 0; iCard < numCards; iCard++) {
+          // Shuffle in new cards?
+          if (c.deck.length === 0) {
+            c.deck = c.discard
+            c.discard = []
           }
-        } else {
-          // Dead
-          this.sendToPlayer(c, {
-            command: 'dealt',
-            cards: _.cloneDeep(deadHand)
-          })
+          // Get a card and add it to our hand
+          let card = _.sample(c.deck)
+          if (card) {
+            c.hand.push(card)
+            _.pull(c.deck, card)
+          }
         }
+        // } else {
+        //   // Dead
+        //   this.sendToPlayer(c, {
+        //     command: 'dealt',
+        //     cards: _.cloneDeep(deadHand)
+        //   })
+        // }
 
         // log('player', c)
 
@@ -575,13 +606,60 @@ export class Server {
     log('timeup!')
   }
 
-  resolveDodges = async () => {
+  // resolveDodges = async () => {
+  //   this.sendToAllPlayers({
+  //     command: 'mode',
+  //     // message: 'Dodging',
+  //     lockHand: true,
+  //   })
+  //   log('resolveDodges')
+  //   // await this.wait()
+  // }
+
+  resolveRespawns = async () => {
     this.sendToAllPlayers({
       command: 'mode',
-      // message: 'Dodging',
+      // message: 'Respawning',
       lockHand: true,
     })
-    log('resolveDodges')
+    log('resolveRespawns')
+
+    _.forEach(this.players, c => {
+
+      if (!c.isBot && !c.isAlive && c.chosenCards.length > 0) {
+        let cardAndDir = c.chosenCards[0]
+        let card = cardAndDir.card
+        let dir = cardAndDir.dir
+
+        if (card.type === 'respawn') {
+
+          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+            let action = card.actions[iCardCaction]
+
+            if (action.type === 'respawn') {
+
+              // Find a target
+              if (c.socket) {
+                let replacement = this._replacePlayer(false, c.socket)
+                if (replacement) {
+                  this._changeToBot(c)
+                  this.sendToPlayer(replacement,
+                    {
+                      command: 'welcome',
+                      id: replacement.id,
+                    }
+                  )
+                }
+
+              }
+
+            }
+          }
+        }
+      }
+
+    })
+
     // await this.wait()
   }
 
@@ -1077,10 +1155,7 @@ export class Server {
 
         // TODO: change player deck + appearence
         // Reset player deck
-        player.deck = _.cloneDeep(randomClass.deck)
-        player.discard = []
-        player.hand = []
-        player.chosenCards = []
+        this._switchDeck(player, randomClass.deck)
         moves.push({
           message: {
             command: 'changeClass',

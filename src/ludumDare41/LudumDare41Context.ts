@@ -169,8 +169,8 @@ export class LudumDare41Context {
     this.textMode = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
     this.textMode.anchor = new PIXI.Point(0, 0)
     this.rootContainer.addChild(this.textMode)
-    this.textMode.position.set(100, 20)
-    this.textMode.scale.set(4)
+    this.textMode.position.set(5, 20)
+    this.textMode.scale.set(3)
 
     this.textAlive = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
     this.textAlive.anchor = new PIXI.Point(0, 0)
@@ -221,6 +221,47 @@ export class LudumDare41Context {
     this.modeBar.update()
     this.powerups.update()
     this.effects.update()
+
+    // Update title
+
+    this.textMode.text = 'hello mode!'
+
+    if(this.playerId) {
+      this.textMode.text = 'hello mode!' + this.playerId
+      _.forEach(this.ninjas.items, c => {
+        if(c.id === this.playerId) {
+
+          if(c.isAlive) {
+            this.textMode.text = 'You are the green human! Survive the longest'
+
+            if(c.className && c.className !== 'human') {
+              if(c.className === 'robot') {
+                this.textMode.text = 'You are a killer death robot'
+              }
+              if(c.className === 'wizard') {
+                this.textMode.text = "You're a wizard, Harry!"
+              }
+              if(c.className === 'ninja') {
+                this.textMode.text = "You're a ninja!"
+              }
+              if(c.className === 'cat') {
+                this.textMode.text = "You're a cat!"
+              }
+              if(c.className === 'pirate') {
+                this.textMode.text = "You're a pirate bandit!"
+              }
+            }
+
+          }
+          else {
+            this.textMode.text = 'You are dead! Respawn or wait for the next round'
+          }
+
+        }
+      })
+    }
+
+
   }
 
 }

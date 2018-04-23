@@ -34,6 +34,7 @@ export class CommandRunnerClient {
 
   welcome = (message: IMessage) => {
     this.context.playerId = message.id
+    log('new player id', message.id)
   }
 
   resetMap = async (message: IMessage) => {
@@ -66,6 +67,7 @@ export class CommandRunnerClient {
     if (ninja) {
       ninja.isBot = message.isBot
       ninja.isAlive = message.isAlive
+      ninja.className = 'human'
     }
   }
 
@@ -92,9 +94,9 @@ export class CommandRunnerClient {
 
   changeClass = (message: IMessage) => {
     let ninja = _.find(this.context.ninjas.items, d => d.id === message.id)
-    if(ninja) {
+    if (ninja) {
       ninja.changeClass(message.className)
-    }   
+    }
   }
 
   moves = async (message: IMessage) => {

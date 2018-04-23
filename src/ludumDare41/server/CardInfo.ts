@@ -2,7 +2,7 @@
 import * as _ from 'lodash'
 
 export interface ICardAction {
-  type: 'move' | 'attack' | 'shoot'
+  type: 'move' | 'attack' | 'shoot' | 'respawn'
   dir?: number
   idx?: number
 }
@@ -14,7 +14,7 @@ export interface ICardAndDir {
 
 export interface ICard {
   name: string,
-  type: 'move' | 'dodge' | 'attack',
+  type: 'move' | 'dodge' | 'attack' | 'respawn',
   frame: number
   actions: ICardAction[]
 }
@@ -30,6 +30,16 @@ export const cards: ICard[] = [
     type: 'move',
     frame: 4,
     actions: []
+  },
+  {
+    name: 'Pheonix',
+    type: 'respawn',
+    frame: 11,
+    actions: [
+      {
+        type: 'respawn',
+      }
+    ]
   },
   {
     name: 'Walk',
@@ -222,7 +232,8 @@ addCards(catDeck, 'Sprint', 3)
 addCards(catDeck, 'Swipe', 3)
 
 const deadHand: ICard[] = []
-addCards(deadHand, 'Dead', 6)
+addCards(deadHand, 'Dead', 5)
+addCards(deadHand, 'Pheonix', 1)
 
 const zombieHand: ICard[] = []
 addCards(zombieHand, 'Walk', 6)
