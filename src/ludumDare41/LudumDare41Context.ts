@@ -27,8 +27,8 @@ import { PowerupManager } from 'ludumDare41/entities/Powerup';
 const showSplashScreen = true
 const useLocalServer = false
 //const testServerAddress = 'http://localhost:4002'
-const testServerAddress = 'http://192.168.0.113:4041'
-//const testServerAddress = 'https://ludumdare41.steviebushman.com'
+//const testServerAddress = 'http://192.168.0.113:4041'
+const testServerAddress = 'https://ludumdare41.steviebushman.com'
 
 
 
@@ -64,6 +64,8 @@ export class LudumDare41Context {
   scale = 3
   mx = 50
   my = 50
+
+  isDisconnected = false
 
   textMode: PIXI.extras.BitmapText
   textAlive: PIXI.extras.BitmapText
@@ -166,6 +168,7 @@ export class LudumDare41Context {
       });
       this.socket.on('disconnect', () => {
         console.log('W>', 'disconnect')
+        this.isDisconnected = true
       });
     }
 
@@ -227,43 +230,47 @@ export class LudumDare41Context {
 
     // Update title
 
-    this.textMode.text = 'Trying to connect to server...'
+    if (this.isDisconnected) {
+      this.textMode.text = 'Disconnected from server! Refresh page to try again'
+    } else {
 
-    if (this.playerId) {
-      this.textMode.text = 'Trying to connect to server...' + this.playerId
-      _.forEach(this.ninjas.items, c => {
-        if (c.id === this.playerId) {
+      this.textMode.text = 'Trying to connect to server...'
 
-          if (c.isAlive) {
-            this.textMode.text = 'You are the green human! Survive the longest'
+      if (this.playerId) {
+        this.textMode.text = 'Trying to connect to server...' + this.playerId
+        _.forEach(this.ninjas.items, c => {
+          if (c.id === this.playerId) {
 
-            if (c.className && c.className !== 'human') {
-              if (c.className === 'robot') {
-                this.textMode.text = 'You are a killer death robot'
+            if (c.isAlive) {
+              this.textMode.text = 'You are the green human! Survive the longest'
+
+              if (c.className && c.className !== 'human') {
+                if (c.className === 'robot') {
+                  this.textMode.text = 'You are a killer death robot'
+                }
+                if (c.className === 'wizard') {
+                  this.textMode.text = "You're a wizard, Harry!"
+                }
+                if (c.className === 'ninja') {
+                  this.textMode.text = "You're a ninja!"
+                }
+                if (c.className === 'cat') {
+                  this.textMode.text = "You're a cat!"
+                }
+                if (c.className === 'pirate') {
+                  this.textMode.text = "You're a pirate bandit!"
+                }
               }
-              if (c.className === 'wizard') {
-                this.textMode.text = "You're a wizard, Harry!"
-              }
-              if (c.className === 'ninja') {
-                this.textMode.text = "You're a ninja!"
-              }
-              if (c.className === 'cat') {
-                this.textMode.text = "You're a cat!"
-              }
-              if (c.className === 'pirate') {
-                this.textMode.text = "You're a pirate bandit!"
-              }
+
+            }
+            else {
+              this.textMode.text = 'You are dead! Respawn or wait for the next round'
             }
 
           }
-          else {
-            this.textMode.text = 'You are dead! Respawn or wait for the next round'
-          }
-
-        }
-      })
+        })
+      }
     }
-
 
   }
 

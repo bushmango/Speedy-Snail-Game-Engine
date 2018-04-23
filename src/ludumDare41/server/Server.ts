@@ -2,7 +2,7 @@
 import * as _ from 'lodash'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
-const fastServer = true
+const fastServer = false
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
@@ -189,6 +189,7 @@ export class Server {
         await this.resolveBullets()
         await this.resolveBullets()
         await this.resolveBullets()
+        await this.wait()
         await this.resolveMoves(true)
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
@@ -952,7 +953,7 @@ export class Server {
       })
     }
 
-    await this.wait()
+    // await this.wait()
   }
 
   _addBullet = (x, y, dir, idx) => {

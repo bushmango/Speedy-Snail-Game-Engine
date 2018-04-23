@@ -14,6 +14,8 @@
     "start-prod-server-ld41": "node ./lib/serverOnly/runServer.js",
     "build-prod-ld41": "tsc ./src-build/webpack-prod.ld41.ts && webpack --config ./src-build/webpack-prod.ld41.js",
 
+    "build-ld41": "npm run build-server-ld41 && npm run build-prod-ld41",
+
     "build-dev": "tsc ./src-build/webpack-dev.ts && webpack --config ./src-build/webpack-dev.js",
     "build-prod": "tsc ./src-build/webpack-prod.ts && webpack --config ./src-build/webpack-prod.js"
   },
