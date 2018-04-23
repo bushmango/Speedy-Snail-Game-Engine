@@ -731,6 +731,76 @@ export class Server {
     await this.wait()
   }
 
+  _move_killPlayer(moves: IMove[], player: IPlayer) {
+    player.isAlive = false
+    moves.push({
+      id: player.id,
+      kill: true,
+      x: player.x,
+      y: player.y,
+    })
+  }
+  _move_killTree(moves: IMove[], x, y) {
+    let gs = this.getMapSafe(x, y)
+    if (gs && gs.t === 2) {
+      gs.t = 0
+      moves.push({
+        changeTile: true,
+        x: x,
+        y: y,
+        t: 0,
+      })
+    }
+  }
+  _move_killStone(moves: IMove[], x, y) {
+    let gs = this.getMapSafe(x, y)
+    if (gs && gs.t === 1) {
+      // Dont break outside barrier
+      if (x !== 0 && y !== 0 && x !== this.mapWidth - 1 && y !== this.mapHeight - 1) {
+        gs.t = 0
+        moves.push({
+          changeTile: true,
+          x: x,
+          y: y,
+          t: 0,
+        })
+      }
+    }
+  }
+  _checkBulletSpace = (c: IBullet, moves: IMove[]) => {
+    // Search for player
+    let killBullet = false
+    let gs = this.getMapSafe(c.x, c.y)
+    if (gs) {
+
+      if (gs.t === 2) {
+        // Tree
+        killBullet = true
+        this._move_killTree(moves, c.x, c.y)
+      }
+      else if (gs.t === 1) {
+        // Stone
+        killBullet = true
+        if (c.idx === 3) {
+          this._move_killStone(moves, c.x, c.y)
+        }
+      } else {
+        // Search for player
+        _.forEach(this.players, d => {
+          if (d.isAlive) {
+            if (c.x === d.x && c.y === d.y) {
+              killBullet = true
+              this._move_killPlayer(moves, d)
+              return false
+            }
+          }
+        })
+      }
+    }
+
+    return killBullet
+  }
+
   resolveBullets = async () => {
     log('resolveBullets')
     this.sendToAllPlayers({
@@ -751,27 +821,12 @@ export class Server {
       log('bullet', c)
 
       let killBullet = false
-      if (c.isAlive) {
-        // Search for player
-        _.forEach(this.players, d => {
-          if (d.isAlive) {
-            if (c.x === d.x && c.y === d.y) {
-              killBullet = true
-              d.isAlive = false
-              moves.push({
-                id: d.id,
-                kill: true,
-                x: c.x,
-                y: c.y,
-              })
-            }
-          }
-        })
+      if (c.isAlive && !killBullet) {
+        killBullet = this._checkBulletSpace(c, moves)
       }
 
       if (c.isAlive && !killBullet) {
         // Try to move this bullet
-
         let { xo, yo } = this.convertDirToOffsets(c.dir)
         let xp = c.x + xo
         let yp = c.y + yo
@@ -779,6 +834,8 @@ export class Server {
         let gs = this.getMapSafe(xp, yp)
 
         if (gs) {
+          
+          // Move bullet
           c.x = xp
           c.y = yp
           moves.push({
@@ -788,48 +845,8 @@ export class Server {
             y: c.y,
           })
 
-          if (gs.t === 2) {
-            // Tree
-            killBullet = true
-            gs.t = 0
-            moves.push({
-              changeTile: true,
-              x: c.x,
-              y: c.y,
-              t: 0,
-            })
-          }
-          else if (gs.t === 1) {
-            // Stone
-            killBullet = true
-            if (c.idx === 3 && c.x !== 0 && c.y !== 0 && c.x !== this.mapWidth - 1 && c.y !== this.mapHeight - 1) {
-              gs.t = 0
-              moves.push({
-                changeTile: true,
-                x: c.x,
-                y: c.y,
-                t: 0,
-              })
-            }
-
-          } else {
-            // Search for player
-            _.forEach(this.players, d => {
-              if (d.isAlive) {
-                if (c.x === d.x && c.y === d.y) {
-                  killBullet = true
-                  d.isAlive = false
-                  moves.push({
-                    id: d.id,
-                    kill: true,
-                    x: c.x,
-                    y: c.y,
-                  })
-                }
-              }
-            })
-          }
-
+          // check again
+          killBullet = this._checkBulletSpace(c, moves)
         } else {
           killBullet = true
         }
