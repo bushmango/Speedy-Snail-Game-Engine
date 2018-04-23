@@ -27,8 +27,8 @@ import { PowerupManager } from 'ludumDare41/entities/Powerup';
 const showSplashScreen = false
 const useLocalServer = false
 //const testServerAddress = 'http://localhost:4002'
-//const testServerAddress = 'http://192.168.0.113:4041'
-const testServerAddress = 'https://ludumdare41.steviebushman.com'
+const testServerAddress = 'http://192.168.0.113:4041'
+//const testServerAddress = 'https://ludumdare41.steviebushman.com'
 
 
 

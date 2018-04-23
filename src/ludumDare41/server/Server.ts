@@ -109,6 +109,7 @@ export class Server {
     })
 
     if (replacement) {
+      this._switchDeck(replacement, standardDeck)
       this.sendToAllPlayers({
         command: 'replaceSpawn',
         id: replacement.id,
@@ -188,7 +189,7 @@ export class Server {
         await this.resolveBullets()
         await this.resolveBullets()
         await this.resolveBullets()
-        await this.resolveMoves(true)      
+        await this.resolveMoves(true)
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
           // no one wins?
@@ -500,12 +501,12 @@ export class Server {
         c.hand = zombieHand
       }
 
-      if (!c.isAlive) {
-        c.hand = deadHand
-        c.deck = deadHand
+      if (!c.isBot && !c.isAlive) {
+        c.hand = _.cloneDeep(deadHand)
+        c.deck = c.hand
         this.sendToPlayer(c, {
           command: 'dealt',
-          cards: _.cloneDeep(c.hand)
+          cards: c.hand
         })
       }
 
@@ -533,15 +534,6 @@ export class Server {
             _.pull(c.deck, card)
           }
         }
-        // } else {
-        //   // Dead
-        //   this.sendToPlayer(c, {
-        //     command: 'dealt',
-        //     cards: _.cloneDeep(deadHand)
-        //   })
-        // }
-
-        // log('player', c)
 
         this.sendToPlayer(c, {
           command: 'dealt',
