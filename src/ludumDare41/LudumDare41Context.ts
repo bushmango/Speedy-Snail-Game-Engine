@@ -175,7 +175,7 @@ export class LudumDare41Context {
     this.textAlive = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
     this.textAlive.anchor = new PIXI.Point(0, 0)
     this.rootContainer.addChild(this.textAlive)
-    this.textAlive.position.set(500, 20)
+    this.textAlive.position.set(500, 2)
     this.textAlive.scale.set(2)
 
     this.modeBar.init(this)
