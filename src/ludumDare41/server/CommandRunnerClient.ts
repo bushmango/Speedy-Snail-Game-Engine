@@ -80,6 +80,11 @@ export class CommandRunnerClient {
     bullet.id = message.id
   }
 
+  spawnPowerup = (message: IMessage) => {
+    let powerup = this.context.powerups.createAt(message.x, message.y)
+    powerup.id = message.id
+  }
+
   moves = async (message: IMessage) => {
     log('moves', message.moves)
 

@@ -22,6 +22,7 @@ import { ModeBar } from 'ludumDare41/ui/ModeBar2';
 import io from 'socket.io-client';
 import { EffectManager } from 'ludumDare41/entities/Effect';
 import { BulletManager } from 'ludumDare41/entities/Bullet';
+import { PowerupManager } from 'ludumDare41/entities/Powerup';
 
 const showSplashScreen = false
 const useLocalServer = false
@@ -40,6 +41,7 @@ export class LudumDare41Context {
 
   layerObjects: PIXI.Container
   layerEffects: PIXI.Container
+  layerPowerups: PIXI.Container
   layerCards: PIXI.Container
   layerBullets: PIXI.Container
 
@@ -49,6 +51,7 @@ export class LudumDare41Context {
   modeBar = new ModeBar()
   effects = new EffectManager()
   bullets = new BulletManager()
+  powerups = new PowerupManager()
 
   socket: any
   playerId: number
@@ -89,6 +92,7 @@ export class LudumDare41Context {
     // Add layers    
     this.addLayer(this.gameMap.tileMap.containers[0])
     this.layerObjects = this.addLayer()
+    this.layerPowerups = this.addLayer()
     this.layerBullets = this.addLayer()
     this.layerEffects = this.addLayer()
     this.layerCards = this.addLayer()
@@ -99,6 +103,7 @@ export class LudumDare41Context {
     this.setLayerSettings(this.layerObjects)
     this.setLayerSettings(this.layerBullets)
     this.setLayerSettings(this.layerEffects)
+    this.setLayerSettings(this.layerPowerups)
 
     this.effects.init(this, this.layerEffects)
     this.bullets.init(this, this.layerBullets)
@@ -108,6 +113,7 @@ export class LudumDare41Context {
       // this.bullets.createAt(i, i, 0)
     }
 
+    this.powerups.init(this, this.layerPowerups)
     this.ninjas.init(this)
     // this.addLayer(this.ninjas.container)
     // this.ninjas.createAt(0, 0)
@@ -213,6 +219,7 @@ export class LudumDare41Context {
     this.cards.update()
     this.menuManager.update()
     this.modeBar.update()
+    this.powerups.update()
     this.effects.update()
   }
 

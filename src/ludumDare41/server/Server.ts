@@ -38,6 +38,13 @@ export interface IBullet {
   idx: number,
 }
 
+export interface IPowerup {
+  id: number,
+  x: number
+  y: number
+  isAlive: boolean,
+}
+
 export function log(...message) {
   console.log('S>', ...message)
 }
@@ -52,6 +59,7 @@ export class Server {
 
   players: IPlayer[] = []
   bullets: IBullet[] = []
+  powerups: IPowerup[] = []
 
   continueRunning = true
   tickDelay = 750
@@ -163,6 +171,7 @@ export class Server {
         await this.resolveDodges()
         await this.resolveMoves()
         await this.resoveAttacks()
+        await this.resolveBullets()
         await this.resolveBullets()
         await this.resolveBullets()
         let numAlive = await this.checkVictory()
@@ -337,6 +346,16 @@ export class Server {
       }
     }
 
+    // Add some test powerups
+    this.powerups = []
+    let numPowerups = 10
+    for (let i = 0; i < numPowerups; i++) {
+      let space = this.findOpenSpace()
+      if (space) {
+        this._addPowerup(space.x, space.y)
+      }
+    }
+
 
     await this.wait()
   }
@@ -418,6 +437,19 @@ export class Server {
             y: c.y,
             dir: c.dir,
             idx: c.idx,
+          })
+      }
+    })
+
+    // Send powerup spawns
+    _.forEach(this.powerups, c => {
+      if (c.isAlive) {
+        this.sendToPlayer(player,
+          {
+            command: 'spawnPowerup',
+            id: c.id,
+            x: c.x,
+            y: c.y,
           })
       }
     })
@@ -842,6 +874,23 @@ export class Server {
       y: bullet.y,
       dir: bullet.dir,
       idx: bullet.idx,
+    })
+
+  }
+
+  _addPowerup = (x, y) => {
+    let powerup: IPowerup = {
+      id: this.nextPlayerId++,
+      x: x,
+      y: y,
+      isAlive: true,
+    }
+    this.powerups.push(powerup)
+    this.sendToAllPlayers({
+      command: 'spawnPowerup',
+      id: powerup.id,
+      x: powerup.x,
+      y: powerup.y,
     })
 
   }
