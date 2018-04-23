@@ -9,6 +9,10 @@
     "start": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "dev": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "start-server-ld41": "ts-node-dev --respawn --project tsconfig.server.json src/ludumDare41/serverOnly/runServer.ts",
+
+    "build-server-ld41": "tsc --project tsconfig.server.json",
+    "start-prod-server-ld41": "node ./lib/serverOnly/runServer.js",
+
     "build-dev": "tsc ./src-build/webpack-dev.ts && webpack --config ./src-build/webpack-dev.js",
     "build-prod": "tsc ./src-build/webpack-prod.ts && webpack --config ./src-build/webpack-prod.js"
   },

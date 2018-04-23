@@ -2,8 +2,8 @@ import * as express from 'express'
 import { Server, IPlayer } from '../server/Server'
 import * as _ from 'lodash'
 
-let port = 4001
-let portWs = 4002
+let port = 4041
+// let portWs = 4002
 let title = 'LD41'
 process.title = `${port}:${title}`
 
@@ -21,21 +21,19 @@ app.get('/ping', (req, res) => {
   res.send('pong')
 })
 
-app.listen(port, () => {
-  console.log(`Sockets Server listening on port ${port}!`)
-})
+
 
 import * as socketIo from 'socket.io'
 
 import * as http from 'http'
 import { IMessage } from 'ludumDare41/server/IMessage';
-import { play } from 'engine/sounds/soundGeneric';
-import { Z_VERSION_ERROR } from 'zlib';
+
 var httpServ = new http.Server(app)
 var io = socketIo(httpServ);
 
-httpServ.listen(portWs, function () {
-  console.log(`WebSockets listening on *:${portWs}`);
+httpServ.listen(port, () => {
+  console.log(`Sockets Server listening on port ${port}!`)
+
   let server = new Server()
   server.init(false)
 
@@ -96,4 +94,4 @@ httpServ.listen(portWs, function () {
     });
   });
 
-});
+})

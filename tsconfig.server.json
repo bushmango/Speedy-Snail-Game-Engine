@@ -1,6 +1,13 @@
 {
 	"compilerOptions": {
-		"target": "es6",
+		"target": "es5",
+		"lib": [
+			"DOM",
+			"ES5",
+			"ScriptHost",
+			"ES2015.Promise",
+			"esnext"
+		],
 		"downlevelIteration": true,
 		"moduleResolution": "node",
 		"skipLibCheck": true,
@@ -25,7 +32,7 @@
 		}
 	},
 	"include": [
-		"./src/**/*.ts"
+		"src/ludumDare41/serverOnly/runServer.ts"
 	],
 	"exclude": [
 		"node_modules"

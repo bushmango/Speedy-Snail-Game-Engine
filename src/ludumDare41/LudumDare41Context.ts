@@ -27,7 +27,9 @@ import { PowerupManager } from 'ludumDare41/entities/Powerup';
 const showSplashScreen = false
 const useLocalServer = false
 //const testServerAddress = 'http://localhost:4002'
-const testServerAddress = 'http://192.168.0.113:4002'
+//const testServerAddress = 'http://192.168.0.113:4041'
+const testServerAddress = 'https://ludumdare41.steviebushman.com'
+
 
 
 export class LudumDare41Context {
@@ -151,8 +153,9 @@ export class LudumDare41Context {
       this.localServer.localPlayer = player
       this.playerId = player.id
     } else {
-      this.socket = io.connect(testServerAddress, {
-        reconnection: false
+      this.socket = io(testServerAddress, {
+        reconnection: false,
+        transports: ['websocket'],
       });
       this.socket.on('connect', () => {
         console.log('W>', 'connected')
@@ -224,30 +227,30 @@ export class LudumDare41Context {
 
     // Update title
 
-    this.textMode.text = 'hello mode!'
+    this.textMode.text = 'Trying to connect to server...'
 
-    if(this.playerId) {
-      this.textMode.text = 'hello mode!' + this.playerId
+    if (this.playerId) {
+      this.textMode.text = 'Trying to connect to server...' + this.playerId
       _.forEach(this.ninjas.items, c => {
-        if(c.id === this.playerId) {
+        if (c.id === this.playerId) {
 
-          if(c.isAlive) {
+          if (c.isAlive) {
             this.textMode.text = 'You are the green human! Survive the longest'
 
-            if(c.className && c.className !== 'human') {
-              if(c.className === 'robot') {
+            if (c.className && c.className !== 'human') {
+              if (c.className === 'robot') {
                 this.textMode.text = 'You are a killer death robot'
               }
-              if(c.className === 'wizard') {
+              if (c.className === 'wizard') {
                 this.textMode.text = "You're a wizard, Harry!"
               }
-              if(c.className === 'ninja') {
+              if (c.className === 'ninja') {
                 this.textMode.text = "You're a ninja!"
               }
-              if(c.className === 'cat') {
+              if (c.className === 'cat') {
                 this.textMode.text = "You're a cat!"
               }
-              if(c.className === 'pirate') {
+              if (c.className === 'pirate') {
                 this.textMode.text = "You're a pirate bandit!"
               }
             }
