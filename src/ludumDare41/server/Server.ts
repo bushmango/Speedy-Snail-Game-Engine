@@ -12,7 +12,8 @@ export interface IMapSpot {
   x: number
   y: number
   t: number
-  player: IPlayer
+  //player: IPlayer
+  hasSomething: boolean
 }
 
 export interface IPlayer {
@@ -168,8 +169,9 @@ export class Server {
         await this.dealCards()
         await this.waitForCards()
         await this.resolveDodges()
-        await this.resolveMoves()
+        await this.resolveMoves(false)
         await this.resoveAttacks()
+        await this.resolveMoves(true)
         await this.resolveBullets()
         await this.resolveBullets()
         await this.resolveBullets()
@@ -265,14 +267,23 @@ export class Server {
     let y = _.random(2, this.mapHeight - 4, false)
     return { x, y }
   }
-  findOpenSpace() {
+  findOpenSpace(checkPlayers = false) {
     for (let i = 0; i < this.mapHeight * this.mapWidth * 4; i++) {
       let x = _.random(1, this.mapWidth - 2, false)
       let y = _.random(1, this.mapHeight - 2, false)
 
       let gs = this.getMap(x, y)
-      if (gs.t === 0) {
-        return { x, y }
+      if (gs.t === 0 && gs.hasSomething === false) {
+
+        if (checkPlayers) {
+          if(_.some(this.players, c => {
+            return (c.x === x && c.y === y)
+          })) {
+            continue
+          }
+        }
+
+        return { x, y, gs }
       }
     }
 
@@ -290,7 +301,7 @@ export class Server {
         let gs: IMapSpot = {
           x,
           y,
-          player: null,
+          hasSomething: false,
           t: 0
         }
         this.map.push(gs)
@@ -351,6 +362,7 @@ export class Server {
     for (let i = 0; i < numPowerups; i++) {
       let space = this.findOpenSpace()
       if (space) {
+        space.gs.hasSomething = true
         this._addPowerup(space.x, space.y)
       }
     }
@@ -371,7 +383,7 @@ export class Server {
 
     _.forEach(this.players, c => {
 
-      let space = this.findOpenSpace()
+      let space = this.findOpenSpace(true)
       if (space) {
 
         c.isAlive = true
@@ -566,7 +578,7 @@ export class Server {
   resolveDodges = async () => {
     this.sendToAllPlayers({
       command: 'mode',
-      message: 'Dodging',
+      // message: 'Dodging',
       lockHand: true,
     })
     log('resolveDodges')
@@ -677,10 +689,10 @@ export class Server {
     await this.wait()
   }
 
-  resolveMoves = async () => {
+  resolveMoves = async (forBots: boolean) => {
     this.sendToAllPlayers({
       command: 'mode',
-      message: 'Moving',
+      message: forBots ? 'Zombie moves' : 'Moving',
     })
     log('resolveMoves')
 
@@ -691,7 +703,7 @@ export class Server {
     let moves = [] as IMove[]
     _.forEach(this.players, c => {
 
-      if (c.isAlive && c.chosenCards.length > 0) {
+      if (c.isBot === forBots && c.isAlive && c.chosenCards.length > 0) {
         let cardAndDir = c.chosenCards[0]
         let card = cardAndDir.card
         let dir = cardAndDir.dir
