@@ -65,6 +65,8 @@ export class Bullet {
       } else {
         this.rotation = 0
       }
+    } else {
+      this.rotation = (this.dir / 4) * Math.PI / 2
     }
     this.body.rotation = this.rotation
     this.body.texture.frame = bulletFrames[this.idx][0]
