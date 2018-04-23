@@ -2,6 +2,7 @@
 import * as _ from 'lodash'
 import { IMessage } from './IMessage'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
+import { NinjaManager } from 'ludumDare41/entities/Ninja';
 
 export function log(...message) {
   console.log('S>', ...message)
@@ -58,6 +59,16 @@ export class CommandRunnerClient {
     ninja.isAlive = message.isAlive
     ninja.isPlayer = (ninja.id === this.context.playerId)
   }
+
+  replaceSpawn = (message: IMessage) => {
+    let ninja = _.find(this.context.ninjas.items, d => d.id === message.id)
+    if (ninja) {
+      ninja.isBot = message.isBot
+      ninja.isAlive = message.isAlive
+      ninja.isPlayer = (ninja.id === this.context.playerId)
+    }
+  }
+
   dealt = (message: IMessage) => {
     // console.log('cards', message.cards)
 
@@ -66,7 +77,7 @@ export class CommandRunnerClient {
   }
 
   spawnBullet = (message: IMessage) => {
-    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir, message.idx )
+    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir, message.idx)
     bullet.id = message.id
   }
 
@@ -83,7 +94,7 @@ export class CommandRunnerClient {
       else if (c.bullet) {
         let bullet = _.find(this.context.bullets.items, d => d.id === c.id)
         if (bullet) {
-          if (c.kill) {            
+          if (c.kill) {
             bullet.isReadyToBeDestroyed = true
           } else {
             bullet.moveTo(c.x, c.y)

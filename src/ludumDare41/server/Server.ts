@@ -86,8 +86,38 @@ export class Server {
     this.tick()
   }
 
-  addPlayer(isBot: boolean, socket: any = null) {
+  addPlayer(isBot: boolean, socket: any = null, tryReplace = false) {
     // this.numPlayers++
+
+    if (tryReplace) {
+
+      let replacement: IPlayer = null
+      
+      _.forEach(_.shuffle(this.players), c => {
+        if(c.isBot && c.isAlive) {
+          c.isBot = false
+          c.deck = _.cloneDeep(standardDeck),
+          c.hand = [],
+          c.socket = socket
+          c.noInputCounter = 0
+          replacement = c
+          return false
+        }       
+      })
+
+      if(replacement) {
+
+        this.sendToAllPlayers({
+          command: 'replaceSpawn',
+          id: replacement.id,
+          isBot: false,
+        })
+
+        return replacement
+      }
+    }
+
+    // Need a new player
     let player: IPlayer = {
       id: this.nextPlayerId++,
       hand: [],
@@ -104,6 +134,8 @@ export class Server {
     // log('player deck', player.deck)
     this.players.push(player)
     return player
+
+
   }
 
   wait = async () => await delay(this.tickDelay)
@@ -130,7 +162,7 @@ export class Server {
         await this.resolveDodges()
         await this.resolveMoves()
         await this.resoveAttacks()
-        await this.resolveBullets() 
+        await this.resolveBullets()
         await this.resolveBullets()
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
@@ -384,6 +416,7 @@ export class Server {
             x: c.x,
             y: c.y,
             dir: c.dir,
+            idx: c.idx,
           })
       }
     })
@@ -736,7 +769,7 @@ export class Server {
             // Stone
             killBullet = true
 
-            if(c.idx === 3) {
+            if (c.idx === 3) {
               moves.push({
                 changeTile: true,
                 x: c.x,

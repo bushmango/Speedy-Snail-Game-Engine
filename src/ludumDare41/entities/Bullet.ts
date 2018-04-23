@@ -66,10 +66,23 @@ export class Bullet {
         this.rotation = 0
       }
     } else {
-      this.rotation = (this.dir / 4) * Math.PI / 2
+      this.rotation = (this.dir / 4) * Math.PI * 2 + Math.PI /2
     }
+    let scale = 1
+    if (this.idx === 3) {
+      if (fx % 2 === 0) {
+        scale = -1
+      } else {
+
+      }
+    } 
+
+
     this.body.rotation = this.rotation
-    this.body.texture.frame = bulletFrames[this.idx][0]
+    this.body.scale.set(1, scale)
+    if (this.idx) {
+      this.body.texture.frame = bulletFrames[this.idx][0]
+    }
 
 
     // this.frame++

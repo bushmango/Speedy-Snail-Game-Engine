@@ -145,7 +145,9 @@ export class LudumDare41Context {
       this.localServer.localPlayer = player
       this.playerId = player.id
     } else {
-      this.socket = io(testServerAddress);
+      this.socket = io.connect(testServerAddress, {
+        reconnection: false
+      });
       this.socket.on('connect', () => {
         console.log('W>', 'connected')
       });

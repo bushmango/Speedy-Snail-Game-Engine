@@ -52,7 +52,7 @@ httpServ.listen(portWs, function () {
   io.on('connection', (socket) => {
     console.log('W>', 'user connected');
 
-    let player = server.addPlayer(false, socket)
+    let player = server.addPlayer(false, socket, true)
     socket.emit('event', {
       command: 'welcome',
       id: player.id,
@@ -66,7 +66,7 @@ httpServ.listen(portWs, function () {
       // Kill this player
       _.forEach(server.players, c => {
         if (c.socket === socket) {
-          c.isAlive = false
+          //c.isAlive = false
           c.isBot = true
           c.socket = null
         }
