@@ -35,6 +35,7 @@ export interface IBullet {
   y: number
   dir: number
   isAlive: boolean,
+  idx: number,
 }
 
 export function log(...message) {
@@ -127,8 +128,9 @@ export class Server {
         await this.dealCards()
         await this.waitForCards()
         await this.resolveDodges()
-        await this.resoveAttacks()
         await this.resolveMoves()
+        await this.resoveAttacks()
+        await this.resolveBullets() 
         await this.resolveBullets()
         let numAlive = await this.checkVictory()
         if (numAlive === 0) {
@@ -294,11 +296,11 @@ export class Server {
 
     // Add some test bullets
     this.bullets = []
-    let numBullets = 5
+    let numBullets = 0
     for (let i = 0; i < numBullets; i++) {
       let space = this.findOpenSpace()
       if (space) {
-        this._addBullet(space.x, space.y, _.random(0, 4 - 1, false))
+        // this._addBullet(space.x, space.y, _.random(0, 4 - 1, false))
       }
     }
 
@@ -537,7 +539,7 @@ export class Server {
 
               let gs = this.getMapSafe(xp, yp)
               if (gs) {
-                this._addBullet(xp, yp, correctedDir)
+                this._addBullet(xp, yp, correctedDir, action.idx)
               }
 
             }
@@ -689,6 +691,7 @@ export class Server {
           if (d.isAlive) {
             if (c.x === d.x && c.y === d.y) {
               killBullet = true
+              d.isAlive = false
               moves.push({
                 id: d.id,
                 kill: true,
@@ -732,12 +735,23 @@ export class Server {
           else if (gs.t === 1) {
             // Stone
             killBullet = true
+
+            if(c.idx === 3) {
+              moves.push({
+                changeTile: true,
+                x: c.x,
+                y: c.y,
+                t: 0,
+              })
+            }
+
           } else {
             // Search for player
             _.forEach(this.players, d => {
               if (d.isAlive) {
                 if (c.x === d.x && c.y === d.y) {
                   killBullet = true
+                  d.isAlive = false
                   moves.push({
                     id: d.id,
                     kill: true,
@@ -776,13 +790,14 @@ export class Server {
     await this.wait()
   }
 
-  _addBullet = (x, y, dir) => {
+  _addBullet = (x, y, dir, idx) => {
     let bullet: IBullet = {
       id: this.nextPlayerId++,
       x: x,
       y: y,
       dir: dir,
       isAlive: true,
+      idx: idx,
     }
     this.bullets.push(bullet)
     this.sendToAllPlayers({
@@ -791,6 +806,7 @@ export class Server {
       x: bullet.x,
       y: bullet.y,
       dir: bullet.dir,
+      idx: bullet.idx,
     })
 
   }

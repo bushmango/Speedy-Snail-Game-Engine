@@ -4,6 +4,7 @@ import * as _ from 'lodash'
 export interface ICardAction {
   type: 'move' | 'attack' | 'shoot'
   dir?: number
+  idx?: number
 }
 
 export interface ICardAndDir {
@@ -101,41 +102,47 @@ export const cards: ICard[] = [
   {
     name: 'Shiriken',
     type: 'attack',
-    frame: 6,
+    frame: 7,
     actions: [
       {
         type: 'shoot',
+        idx: 0,
       }
     ]
   },
   {
     name: 'Shoot Gun',
     type: 'attack',
-    frame: 7,
+    frame: 8,
     actions: [
       {
         type: 'attack',
       },
       {
         type: 'shoot',
+        idx: 1,
       }
     ]
   },
   {
     name: 'Fireball',
     type: 'attack',
-    frame: 8,
+    frame: 9,
     actions: [
       {
         type: 'shoot',
+        idx: 2,
       }, {
         type: 'shoot',
+        idx: 2,
         dir: +1,
       }, {
         type: 'shoot',
+        idx: 2,
         dir: +2,
       }, {
         type: 'shoot',
+        idx: 2,
         dir: +3,
       }
     ]
@@ -143,10 +150,11 @@ export const cards: ICard[] = [
   {
     name: 'Rocket',
     type: 'attack',
-    frame: 9,
+    frame: 10,
     actions: [
       {
         type: 'shoot',
+        idx: 3,
       }
     ]
   },

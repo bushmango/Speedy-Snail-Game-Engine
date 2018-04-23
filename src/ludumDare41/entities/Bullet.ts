@@ -5,16 +5,20 @@ import { KeyCodes } from 'engine/input/Keyboard'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 import { GenericManager } from 'ludumDare41/entities/GenericManager';
 
-const effectFrames = [
-  spriteCreator.create8_frameHRun(4, 6, 2),
+const bulletFrames = [
+  [spriteCreator.create8_frame(1, 8)],
+  [spriteCreator.create8_frame(1, 9)],
+  [spriteCreator.create8_frame(1, 10)],
+  [spriteCreator.create8_frame(1, 11)],
 ]
 
 export class BulletManager extends GenericManager<Bullet> {
 
-  createAt(x, y, dir) {
+  createAt(x, y, dir, idx) {
     let item = this._createAt(Bullet, x, y)
     item.moveTo(x, y)
     item.dir = dir
+    item.idx = idx
     return item
   }
 
@@ -30,6 +34,7 @@ export class Bullet {
   frame = 0
   dir = 0
   rotation = 0
+  idx = 0
 
   bx: number = 0
   by: number = 0
@@ -52,14 +57,17 @@ export class Bullet {
 
     this.frame++
 
-    let fx = Math.floor(this.frame/10)
+    let fx = Math.floor(this.frame / 10)
 
-    if(fx % 2 === 0) {
-      this.rotation = Math.PI/4
-    } else {
-      this.rotation = 0
+    if (this.idx === 0 || this.idx === 1) {
+      if (fx % 2 === 0) {
+        this.rotation = Math.PI / 4
+      } else {
+        this.rotation = 0
+      }
     }
     this.body.rotation = this.rotation
+    this.body.texture.frame = bulletFrames[this.idx][0]
 
 
     // this.frame++

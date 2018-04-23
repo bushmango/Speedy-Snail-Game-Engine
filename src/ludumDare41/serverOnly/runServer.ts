@@ -67,7 +67,7 @@ httpServ.listen(portWs, function () {
       _.forEach(server.players, c => {
         if (c.socket === socket) {
           c.isAlive = false
-          c.isBot = false
+          c.isBot = true
           c.socket = null
         }
         // TODO: send to client that they are dead
