@@ -39,6 +39,7 @@ export class CommandRunnerClient {
   resetMap = async (message: IMessage) => {
     this.context.ninjas.clear()
     this.context.bullets.clear()
+    this.context.powerups.clear()
     this.context.gameMap.reset()
 
     for (let i = 0; i < message.tileSpawns.length; i++) {
