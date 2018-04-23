@@ -16,6 +16,7 @@ export interface IMessage {
   discardHand?: boolean,
   percent?: number,
   idx?: number,
+  className?: string,
 }
 
 export interface IMove {

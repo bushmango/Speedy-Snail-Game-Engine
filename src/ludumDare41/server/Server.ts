@@ -6,7 +6,7 @@ const fastServer = true
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
-import { ICard, ICardAndDir, standardDeck, deadHand, zombieHand } from './CardInfo'
+import { ICard, ICardAndDir, standardDeck, deadHand, zombieHand, wizardDeck, pirateDeck, catDeck, robotDeck, ninjaDeck } from './CardInfo'
 
 export interface IMapSpot {
   x: number
@@ -143,7 +143,6 @@ export class Server {
     // log('player deck', player.deck)
     this.players.push(player)
     return player
-
 
   }
 
@@ -1043,9 +1042,41 @@ export class Server {
             y: powerup.y,
           }
         })
-        
-        // TODO: change player deck + appearence
 
+        let classes = [
+          {
+            name: 'wizard',
+            deck: wizardDeck,
+          }, {
+            name: 'pirate',
+            deck: pirateDeck,
+          }, {
+            name: 'cat',
+            deck: catDeck,
+          }, {
+            name: 'robot',
+            deck: robotDeck,
+          }, {
+            name: 'ninja',
+            deck: ninjaDeck,
+          }
+        ]
+        let randomClass = _.sample(classes)
+
+        // TODO: change player deck + appearence
+        // Reset player deck
+        player.deck = _.cloneDeep(randomClass.deck)
+        player.discard = []
+        player.hand = []
+        player.chosenCards = []
+        moves.push({
+          message: {
+            command: 'changeClass',
+            id: player.id,
+            className: randomClass.name,
+
+          }
+        })
 
         return false
       }

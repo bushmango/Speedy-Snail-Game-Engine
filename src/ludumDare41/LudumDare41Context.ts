@@ -223,6 +223,5 @@ export class LudumDare41Context {
     this.effects.update()
   }
 
-
 }
 

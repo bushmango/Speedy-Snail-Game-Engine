@@ -20,6 +20,29 @@ const ninjaSet = [
   [spriteCreator.create8_frame(3, 9)],
   [spriteCreator.create8_frame(4, 9)],
 ]
+const wizardSet = [
+  [spriteCreator.create8_frame(3, 14)],
+  [spriteCreator.create8_frame(4, 14)],
+]
+const catSet = [
+  [spriteCreator.create8_frame(3, 17)],
+  [spriteCreator.create8_frame(4, 17)],
+]
+const pirateSet = [
+  [spriteCreator.create8_frame(3, 15)],
+  [spriteCreator.create8_frame(4, 15)],
+]
+const robotSet = [
+  [spriteCreator.create8_frame(3, 16)],
+  [spriteCreator.create8_frame(4, 16)],
+]
+
+let sets: any = []
+sets['wizard'] = wizardSet
+sets['pirate'] = pirateSet
+sets['cat'] = catSet
+sets['robot'] = robotSet
+sets['ninja'] = ninjaSet
 
 // const ninjaFrames = [
 //   spriteCreator.create8_frameHRun(3, 1, 1),
@@ -102,6 +125,7 @@ export class Ninja {
   isReadyToBeDestroyed = false
   bx: number = 0
   by: number = 0
+  className: string = 'human'
 
   init(cx: LudumDare41Context) {
     this.context = cx
@@ -157,9 +181,17 @@ export class Ninja {
       } else {
         set = enemyHumanSet
       }
+
+      if (this.className !== 'human') {
+        let newSet = sets[this.className]
+        if (newSet) {
+          set = newSet
+        }
+      }
+
     }
 
-    if(this.isAlive) {
+    if (this.isAlive) {
       this.frameIdx = this.frameIdx % set[0].length
       this.body.texture.frame = set[0][this.frameIdx]
     } else {
@@ -181,6 +213,10 @@ export class Ninja {
 
 
 
+  }
+
+  changeClass(className) {
+    this.className = className
   }
 
   moveTo(x, y) {

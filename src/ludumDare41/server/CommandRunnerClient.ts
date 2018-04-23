@@ -58,14 +58,14 @@ export class CommandRunnerClient {
     ninja.id = message.id
     ninja.isBot = message.isBot
     ninja.isAlive = message.isAlive
-   
+
   }
 
   replaceSpawn = (message: IMessage) => {
     let ninja = _.find(this.context.ninjas.items, c => c.id === message.id)
     if (ninja) {
       ninja.isBot = message.isBot
-      ninja.isAlive = message.isAlive     
+      ninja.isAlive = message.isAlive
     }
   }
 
@@ -90,6 +90,13 @@ export class CommandRunnerClient {
     powerup.destroy()
   }
 
+  changeClass = (message: IMessage) => {
+    let ninja = _.find(this.context.ninjas.items, d => d.id === message.id)
+    if(ninja) {
+      ninja.changeClass(message.className)
+    }   
+  }
+
   moves = async (message: IMessage) => {
     log('moves', message.moves)
 
@@ -97,7 +104,7 @@ export class CommandRunnerClient {
       let c = message.moves[i]
       let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
 
-      if(c.message) {
+      if (c.message) {
         this.run(c.message)
       }
       else if (c.bounce) {

@@ -163,7 +163,7 @@ export const cards: ICard[] = [
 
 const nullCard = _.find(cards, c => c.name === 'Null')
 
-const standardDeck: ICard[] = []
+
 function addCards(deck, name, num = 1) {
   let card = _.find(cards, c => c.name === name)
   if (!card) {
@@ -174,17 +174,52 @@ function addCards(deck, name, num = 1) {
   }
 }
 
-addCards(standardDeck, 'Walk', 3)
+const standardDeck: ICard[] = []
+addCards(standardDeck, 'Walk', 4)
 addCards(standardDeck, 'Run', 2)
 addCards(standardDeck, 'Sprint', 1)
-
 addCards(standardDeck, 'Punch', 2)
-addCards(standardDeck, 'Swipe', 2)
 
-addCards(standardDeck, 'Shiriken', 2)
-addCards(standardDeck, 'Shoot Gun', 2)
-addCards(standardDeck, 'Fireball', 2)
-addCards(standardDeck, 'Rocket', 2)
+const testDeck: ICard[] = []
+addCards(testDeck, 'Walk', 3)
+addCards(testDeck, 'Run', 2)
+addCards(testDeck, 'Sprint', 1)
+addCards(testDeck, 'Punch', 2)
+addCards(testDeck, 'Swipe', 2)
+addCards(testDeck, 'Shiriken', 2)
+addCards(testDeck, 'Shoot Gun', 2)
+addCards(testDeck, 'Fireball', 2)
+addCards(testDeck, 'Rocket', 2)
+
+const ninjaDeck: ICard[] = []
+addCards(ninjaDeck, 'Walk', 4)
+addCards(ninjaDeck, 'Run', 2)
+addCards(ninjaDeck, 'Sprint', 1)
+addCards(ninjaDeck, 'Shiriken', 2)
+addCards(ninjaDeck, 'Swipe', 2)
+
+const robotDeck: ICard[] = []
+addCards(robotDeck, 'Walk', 4)
+addCards(robotDeck, 'Run', 2)
+addCards(robotDeck, 'Rocket', 2)
+addCards(robotDeck, 'Swipe', 2)
+
+const wizardDeck: ICard[] = []
+addCards(wizardDeck, 'Walk', 3)
+addCards(wizardDeck, 'Run', 3)
+addCards(wizardDeck, 'Fireball', 3)
+
+const pirateDeck: ICard[] = []
+addCards(pirateDeck, 'Walk', 3)
+addCards(pirateDeck, 'Run', 3)
+addCards(pirateDeck, 'Sprint', 1)
+addCards(pirateDeck, 'Shoot Gun', 4)
+
+const catDeck: ICard[] = []
+addCards(catDeck, 'Walk', 3)
+addCards(catDeck, 'Run', 3)
+addCards(catDeck, 'Sprint', 3)
+addCards(catDeck, 'Swipe', 3)
 
 const deadHand: ICard[] = []
 addCards(deadHand, 'Dead', 6)
@@ -194,4 +229,4 @@ addCards(zombieHand, 'Walk', 6)
 
 // console.log('standard deck', standardDeck)
 
-export { standardDeck, nullCard, deadHand, zombieHand }
+export { standardDeck, nullCard, deadHand, zombieHand, ninjaDeck, robotDeck, wizardDeck, pirateDeck, catDeck }
