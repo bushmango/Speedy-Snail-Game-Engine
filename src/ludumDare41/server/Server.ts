@@ -154,7 +154,7 @@ export class Server {
 
     while (this.continueRunning) {
       log('waiting for players')
-      while (this.players.length === 0) {
+      while (_.every(this.players, c => c.isBot)) {
         await this.wait()
       }
 
