@@ -92,20 +92,20 @@ export class Server {
     if (tryReplace) {
 
       let replacement: IPlayer = null
-      
+
       _.forEach(_.shuffle(this.players), c => {
-        if(c.isBot && c.isAlive) {
+        if (c.isBot && c.isAlive) {
           c.isBot = isBot
           c.deck = _.cloneDeep(standardDeck),
-          c.hand = [],
-          c.socket = socket
+            c.hand = [],
+            c.socket = socket
           c.noInputCounter = 0
           replacement = c
           return false
-        }       
+        }
       })
 
-      if(replacement) {
+      if (replacement) {
 
         this.sendToAllPlayers({
           command: 'replaceSpawn',
@@ -770,7 +770,7 @@ export class Server {
           else if (gs.t === 1) {
             // Stone
             killBullet = true
-            if (c.idx === 3) {
+            if (c.idx === 3 && c.x !== 0 && c.y !== 0 && c.x !== this.mapWidth - 1 && c.y !== this.mapHeight - 1) {
               gs.t = 0
               moves.push({
                 changeTile: true,

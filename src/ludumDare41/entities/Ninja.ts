@@ -137,7 +137,7 @@ export class Ninja {
     this.frameIdx++
     this.helperFrame++
 
-    let isPlayer = this.id === this.context.playerId
+    let isPlayer = (this.id === this.context.playerId)
 
     if (this.isBot) {
       this.animationIndex = 0
