@@ -24,7 +24,7 @@ import { EffectManager } from 'ludumDare41/entities/Effect';
 import { BulletManager } from 'ludumDare41/entities/Bullet';
 import { PowerupManager } from 'ludumDare41/entities/Powerup';
 
-const showSplashScreen = false
+const showSplashScreen = true
 const useLocalServer = false
 //const testServerAddress = 'http://localhost:4002'
 const testServerAddress = 'http://192.168.0.113:4041'
@@ -36,7 +36,7 @@ export class LudumDare41Context {
 
   sge: SimpleGameEngine
 
-  menuManager = new MenuManager()
+  // menuManager = new MenuManager()
   splash: SplashScreen
 
   rootContainer: PIXI.Container
@@ -79,7 +79,7 @@ export class LudumDare41Context {
 
     this.rootContainer = new PIXI.Container()
 
-    this.menuManager.init(this.sge)
+    // this.menuManager.init(this.sge)
 
     if (showSplashScreen) {
       this.rootContainer.visible = false
@@ -98,8 +98,8 @@ export class LudumDare41Context {
     this.layerBullets = this.addLayer()
     this.layerEffects = this.addLayer()
     this.layerCards = this.addLayer()
-    this.addLayer(this.menuManager.menuManager.container)
-    this.addLayer(this.menuManager.container)
+    // this.addLayer(this.menuManager.menuManager.container)
+    // this.addLayer(this.menuManager.container)
 
     this.setLayerSettings(this.gameMap.tileMap.containers[0])
     this.setLayerSettings(this.layerObjects)
@@ -220,7 +220,7 @@ export class LudumDare41Context {
     this.ninjas.update()
     this.bullets.update()
     this.cards.update()
-    this.menuManager.update()
+    // this.menuManager.update()
     this.modeBar.update()
     this.powerups.update()
     this.effects.update()
