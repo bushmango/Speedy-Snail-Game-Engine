@@ -8,13 +8,16 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 function buildConfig(mode, options, settings) {
     var port = options.port, debug = options.debug;
-    var inScript = 'game.ts';
+    var inScript = options.inScript || 'game.ts';
     var outScript = 'game.bundle.js';
     if (settings) {
         outScript = './src-deploy/public/' + settings.prodExport + outScript;
     }
     else {
         outScript = './src-deploy/public/js/' + outScript;
+    }
+    if (options.outDir) {
+        outScript = path.join('./src-deploy/public/js/', options.outDir, 'game.bundle.js');
     }
     var tsConfig = 'tsconfig.json';
     var useCache = false; // debug
@@ -84,10 +87,7 @@ function buildConfig(mode, options, settings) {
                 'src',
                 'node_modules',
             ],
-            plugins: [
-            // Not currently needed or working
-            // new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
-            ]
+            plugins: []
         },
         plugins: plugins,
         module: {

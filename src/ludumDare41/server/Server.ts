@@ -631,12 +631,12 @@ export class Server {
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
-        if (card.type === 'respawn') {
+        if (card && card.type === 'respawn') {
 
           for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
             let action = card.actions[iCardCaction]
 
-            if (action.type === 'respawn') {
+            if (action && action.type === 'respawn') {
 
               // Find a target
               if (c.socket) {
@@ -678,11 +678,11 @@ export class Server {
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
-        if (card.type === 'attack') {
+        if (card && card.type === 'attack') {
           for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
             let action = card.actions[iCardCaction]
 
-            if (c.isAlive && action.type === 'shoot') {
+            if (c.isAlive && action && action.type === 'shoot') {
               let correctedDir = dir
               if (action.dir) {
                 correctedDir += action.dir
@@ -786,12 +786,12 @@ export class Server {
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
-        if (card.type === 'move') {
+        if (card && card.type === 'move') {
 
           for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
             let action = card.actions[iCardCaction]
 
-            if (c.isAlive && action.type === 'move') {
+            if (action && c.isAlive && action.type === 'move') {
 
               let { xo, yo } = this.convertDirToOffsets(dir)
 
