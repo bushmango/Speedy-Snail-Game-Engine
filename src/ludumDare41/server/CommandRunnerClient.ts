@@ -119,6 +119,7 @@ export class CommandRunnerClient {
             bullet.isReadyToBeDestroyed = true
           } else {
             bullet.moveTo(c.x, c.y)
+            await delay(10)
           }
         } else {
           console.warn('cant find bullet', c.id)

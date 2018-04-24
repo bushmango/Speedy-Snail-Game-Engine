@@ -362,6 +362,10 @@ export class Server {
       tileSpawns: tileSpawns,
     })
 
+    _.forEach(this.players, c => {
+      this._switchDeck(c, standardDeck)
+    })
+
     // Add some test bullets
     this.bullets = []
     let numBullets = 0
