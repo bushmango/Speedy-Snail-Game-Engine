@@ -17,3 +17,5 @@ copy files to
 
 deploy server to
 /var/node/ludumdare41/server 
+
+pm2 start npm --no-automation --name "ludumdare41" -- run start-prod-server-ld41
