@@ -33,13 +33,13 @@ export function preload() {
   settingsGeneric.load('ludum-dare-start-v001')
 
   sge.preloadAudioSprites([
-    'audioSprite',
+    // 'audioSprite',
   ])
   sge.preloadBitmapFonts([
     'defaultfont',
   ])
   sge.preloadSprites([
-    'test-ship',
+    // 'test-ship',
     'prariesnailgames',
   ])
   sge.preloadSpriteSheets([

@@ -20,6 +20,8 @@ export function buildConfig(
   options: {
     debug: boolean,
     port: number,
+    inScript?: string,
+    outDir?: string,
   },
   settings?: {
     prodExport: string,
@@ -28,13 +30,17 @@ export function buildConfig(
 
   let { port, debug } = options
 
-  let inScript = 'game.ts'
+  let inScript = options.inScript || 'game.ts'
   let outScript = 'game.bundle.js'
 
   if (settings) {
     outScript = './src-deploy/public/' + settings.prodExport + outScript
   } else {
     outScript = './src-deploy/public/js/' + outScript
+  }
+
+  if (options.outDir) {
+    outScript = path.join('./src-deploy/public/js/', options.outDir, 'game.bundle.js')
   }
 
   let tsConfig = 'tsconfig.json'

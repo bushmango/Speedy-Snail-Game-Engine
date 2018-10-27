@@ -1,0 +1,44 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"lib": [
+			"DOM",
+			"ES5",
+			"ScriptHost",
+			"ES2015.Promise",
+			"esnext"
+		],
+		"downlevelIteration": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"importHelpers": true,
+		"allowSyntheticDefaultImports": true,
+		"sourceMap": true,
+		"noEmit": false,
+		"noImplicitAny": false,
+		"removeComments": false,
+		"preserveConstEnums": true,
+		"experimentalDecorators": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"pretty": true,
+		"outDir": "./lib/",
+		"baseUrl": ".",
+		"paths": {
+			"*": [
+				"src/*"
+			]
+		}
+	},
+	"include": [
+		"src/ludumDare41/serverOnly/runServer.ts"
+	],
+	"exclude": [
+		"node_modules"
+	],
+	"awesomeTypescriptLoaderOptions": {
+		"transpileOnly": true,
+		"useTranspileModule": true
+	}
+}
