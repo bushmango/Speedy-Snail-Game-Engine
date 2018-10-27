@@ -14,8 +14,12 @@
 // import * as ludumDareStart from './ludumDareStart/game'
 // ludumDareStart.run()
 
-import * as ludumDare41 from './ludumDare41/game'
-ludumDare41.run()
+// import * as ludumDare41 from './ludumDare41/game'
+// ludumDare41.run()
+
+
+import * as ludumDare40 from './ludumDare40/game'
+ludumDare40.run()
 
 
 //import * as snakeBatle from './snakeBattle/snakeBattle'
