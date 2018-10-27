@@ -80,13 +80,13 @@ export function buildConfig(
   }
 
   if (false === options.debug) {
-    plugins.unshift(new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-    }))
-    plugins.unshift(new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-    }))
+    // plugins.unshift(new webpack.LoaderOptionsPlugin({
+    //   minimize: true,
+    //   debug: false,
+    // }))
+    // plugins.unshift(new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    // }))
   }
 
   let tsxLoaders = [`ts-loader?configFile=${tsConfig}`]
@@ -133,7 +133,7 @@ export function buildConfig(
     plugins,
 
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.ts$/,
           exclude: [

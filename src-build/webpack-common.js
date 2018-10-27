@@ -53,13 +53,13 @@ function buildConfig(mode, options, settings) {
         }));
     }
     if (false === options.debug) {
-        plugins.unshift(new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false
-        }));
-        plugins.unshift(new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true
-        }));
+        // plugins.unshift(new webpack.LoaderOptionsPlugin({
+        //   minimize: true,
+        //   debug: false,
+        // }))
+        // plugins.unshift(new webpack.optimize.UglifyJsPlugin({
+        //   sourceMap: true,
+        // }))
     }
     var tsxLoaders = ["ts-loader?configFile=" + tsConfig];
     var entry = [
@@ -84,11 +84,14 @@ function buildConfig(mode, options, settings) {
                 'src',
                 'node_modules',
             ],
-            plugins: []
+            plugins: [
+            // Not currently needed or working
+            // new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
+            ]
         },
         plugins: plugins,
         module: {
-            loaders: [
+            rules: [
                 {
                     test: /\.ts$/,
                     exclude: [

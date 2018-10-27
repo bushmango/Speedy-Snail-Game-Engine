@@ -18,5 +18,5 @@ import * as ludumDare41 from './ludumDare41/game'
 ludumDare41.run()
 
 
-import * as snakeBatle from './snakeBattle/snakeBattle'
-snakeBatle.run()
+//import * as snakeBatle from './snakeBattle/snakeBattle'
+//snakeBatle.run()
