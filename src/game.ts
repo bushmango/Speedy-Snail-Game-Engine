@@ -1,4 +1,3 @@
-
 // import * as simpleGameEngine from './engine/simpleGameEngine'
 // simpleGameEngine.init()
 
@@ -17,10 +16,12 @@
 // import * as ludumDare41 from './ludumDare41/game'
 // ludumDare41.run()
 
-
-import * as ludumDare40 from './ludumDare40/game'
-ludumDare40.run()
-
+// import * as ludumDare40 from './ludumDare40/game'
+// ludumDare40.run()
 
 //import * as snakeBatle from './snakeBattle/snakeBattle'
 //snakeBatle.run()
+
+console.log("loading parallax game");
+import * as game from "./parallax/game";
+game.run();
