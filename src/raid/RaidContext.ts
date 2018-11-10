@@ -7,6 +7,7 @@ import { GamepadTester } from 'engine/gamepad/GamepadTester'
 import { InputControl } from 'engine/gamepad/InputControl'
 
 import * as players from './players'
+import * as flightControler from './flightController'
 import * as log from './log'
 import * as map from './map'
 
@@ -43,7 +44,9 @@ export class RaidContext {
     ctx.layerPlayer = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
-    players.create(ctx, ctx.layerPlayer)
+    let player = players.create(ctx, ctx.layerPlayer)
+    player.flightController = flightControler.create(ctx)
+
     map.create(ctx)
 
     ctx.sge.stage.addChild(ctx.rootContainer)
@@ -67,6 +70,7 @@ export class RaidContext {
     log.x('update')
 
     // parallaxLayers.updateLayers(ctx);
+    flightControler.updateAll(ctx)
     players.updateAll(ctx)
   }
 }

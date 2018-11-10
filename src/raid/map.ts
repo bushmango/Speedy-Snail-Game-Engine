@@ -4,7 +4,7 @@ import { RaidContext } from './RaidContext'
 import * as log from './log'
 import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
-import * as spriteUtil from './spriteUtil'
+import * as spriteUtil from '../engine/anim/spriteUtil'
 
 const isActive = true
 

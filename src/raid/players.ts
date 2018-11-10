@@ -4,14 +4,18 @@ import { RaidContext } from './RaidContext'
 import * as log from './log'
 import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
-import * as anim from './anim'
-import * as spriteUtil from './spriteUtil'
+import * as spriteUtil from '../engine/anim/spriteUtil'
+import * as anim from '../engine/anim/anim'
+
+import * as flightController from './flightController'
 
 const isActive = true
 
 interface IPlayer {
   anim: anim.IAnim
-  y: number
+  bx: number
+  by: number
+  flightController: flightController.IFlightController
 }
 let items: IPlayer[] = []
 
@@ -35,7 +39,9 @@ export function create(ctx: RaidContext, container: PIXI.Container) {
   log.x('create player')
   let item: IPlayer = {
     anim: anim.create(),
-    y: 0,
+    bx: 4,
+    by: 4,
+    flightController: null,
   }
 
   let baseTex = ctx.sge.getTexture('player1')
@@ -44,7 +50,7 @@ export function create(ctx: RaidContext, container: PIXI.Container) {
   var tex0 = texs[0]
 
   let sprite = new PIXI.Sprite(tex0)
-  sprite.anchor.set(0, 0)
+  sprite.anchor.set(0.5, 0.5)
   sprite.y = 400
   sprite.x = 250
   sprite.scale.set(4)
@@ -57,6 +63,11 @@ export function create(ctx: RaidContext, container: PIXI.Container) {
   return item
 }
 
+export function onMove(item: IPlayer, dirX, dirY) {
+  item.bx += dirX
+  item.by += dirY
+}
+
 import { InputControl } from 'engine/gamepad/InputControl'
 export function updateAll(ctx: RaidContext) {
   let kb = ctx.sge.keyboard
@@ -64,8 +75,18 @@ export function updateAll(ctx: RaidContext) {
   let elapsedTime = 1.0 / 60.0
 
   _.forEach(items, (c) => {
-    c.anim.sprite.y = 32 * 4 * 5
-    c.anim.sprite.x = 32 * 4 * 5
+    let fc = c.flightController
+    if (fc) {
+      let { ox, oy, r } = flightController.dirToXYR(fc.dir)
+      if (fc.hasMove) {
+        c.bx += ox
+        c.by += oy
+      }
+      c.anim.sprite.rotation = r
+    }
+
+    c.anim.sprite.x = 32 * 4 * c.bx - c.anim.sprite.width / 2
+    c.anim.sprite.y = 32 * 4 * c.by - c.anim.sprite.height / 2
 
     anim.update(c.anim, elapsedTime)
   })
