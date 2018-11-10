@@ -11,6 +11,7 @@ interface IPlayer {
   frameIndex: number;
   frameTimeLeft: number;
   currentAnimation: IAnim;
+  y: number;
 }
 let items: IPlayer[] = [];
 
@@ -47,7 +48,8 @@ export function create(ctx: ParallaxContext, container: PIXI.Container) {
     sprite: null,
     frameIndex: 0,
     frameTimeLeft: 0,
-    currentAnimation: null
+    currentAnimation: null,
+    y: 0
   };
 
   let baseTex = ctx.sge.getTexture("player1");
@@ -83,6 +85,7 @@ export function playAnim(item: IPlayer, anim: IAnim, force = false) {
 
   item.currentAnimation = anim;
   item.sprite.texture = anim.textures[0];
+  item.frameIndex = 0;
   item.frameTimeLeft = anim.frameTime || 10 / 60;
 }
 
@@ -93,9 +96,11 @@ export function updateAll(ctx: ParallaxContext) {
   _.forEach(items, c => {
     // log.x("update player", c.sprite.x, c.sprite.y);
 
+    let isJumping = false;
+
     let adj = 0;
     if (kb.isPressed(KeyCodes.arrowUp)) {
-      adj = -20;
+      isJumping = true;
       playAnim(c, animFall);
     } else if (kb.isPressed(KeyCodes.arrowDown)) {
       //adj = 20;
@@ -104,16 +109,34 @@ export function updateAll(ctx: ParallaxContext) {
       playAnim(c, animRun, false);
     }
 
-    c.sprite.y += adj;
+    let base = 400;
+
+    if (isJumping) {
+      c.y += 20;
+    } else {
+      if (c.y > 0) {
+        c.y -= 10;
+      }
+      if (c.y < 0) {
+        c.y = 0;
+      }
+    }
+
+    c.sprite.y = -c.y + base;
 
     if (c.currentAnimation) {
       c.frameTimeLeft -= 1 / 60;
       if (c.frameTimeLeft < 0) {
         c.frameIndex++;
-        if (c.frameIndex >= c.currentAnimation.frames.length) {
+        if (
+          c.frameIndex >= c.currentAnimation.frames.length &&
+          c.currentAnimation.loop
+        ) {
           c.frameIndex = 0;
         }
-        c.sprite.texture = c.currentAnimation.textures[c.frameIndex];
+        if (c.frameIndex < c.currentAnimation.textures.length) {
+          c.sprite.texture = c.currentAnimation.textures[c.frameIndex];
+        }
         c.frameTimeLeft = c.currentAnimation.frameTime;
       }
     }
