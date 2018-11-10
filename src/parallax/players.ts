@@ -89,43 +89,149 @@ export function playAnim(item: IPlayer, anim: IAnim, force = false) {
   item.frameTimeLeft = anim.frameTime || 10 / 60;
 }
 
+let playerControllerValues = {
+  maxJumpTime: 0.38,
+  jumpAccel: 3000,
+  fallAccel: -4000,
+  endJumpDamp: 0.33,
+  jumpStartVelocity: 500,
+  jumpTerminalVelocity: 5000,
+  fallTerminalVelocity: -5000
+};
+let playerController = {
+  isJumping: false,
+  isFalling: false,
+  isOnLand: true,
+  isDucking: false,
+  curJumpTime: 0,
+  velY: 0
+};
+
 import { InputControl } from "engine/gamepad/InputControl";
 export function updateAll(ctx: ParallaxContext) {
   let kb = ctx.sge.keyboard;
 
+  let elapsedTime = 1.0 / 60.0;
+
   _.forEach(items, c => {
     // log.x("update player", c.sprite.x, c.sprite.y);
 
-    let isJumping = false;
-
-    let adj = 0;
-    if (kb.isPressed(KeyCodes.arrowUp)) {
-      isJumping = true;
-      playAnim(c, animFall);
-    } else if (kb.isPressed(KeyCodes.arrowDown)) {
-      //adj = 20;
-      playAnim(c, animDuck);
-    } else {
-      playAnim(c, animRun, false);
+    // Are we on land?
+    if (playerController.isOnLand) {
+      playerController.velY = 0;
+      if (kb.isPressed(KeyCodes.arrowUp)) {
+        playerController.isJumping = true;
+        playerController.isOnLand = false;
+        playerController.curJumpTime = 0;
+        playerController.velY = playerControllerValues.jumpStartVelocity;
+      }
     }
 
-    let base = 400;
-
-    if (isJumping) {
-      c.y += 20;
-    } else {
-      if (c.y > 0) {
-        c.y -= 10;
+    // Are we jumping?
+    if (playerController.isJumping) {
+      // Check for button released
+      if (kb.isUp(KeyCodes.arrowUp)) {
+        playerController.isJumping = false;
+        playerController.isFalling = true;
+        playerController.velY *= playerControllerValues.endJumpDamp;
       }
-      if (c.y < 0) {
+      // Check for end of jumping
+      if (playerController.isJumping) {
+        playerController.curJumpTime += elapsedTime;
+        if (
+          playerController.curJumpTime >= playerControllerValues.maxJumpTime
+        ) {
+          playerController.isJumping = false;
+          playerController.isFalling = true;
+          playerController.velY *= playerControllerValues.endJumpDamp;
+        }
+      }
+      if (playerController.isJumping) {
+        playerController.velY += elapsedTime * playerControllerValues.jumpAccel;
+      }
+    }
+
+    if (playerController.isFalling) {
+      if (c.y <= 0) {
+        playerController.isFalling = false;
+        playerController.isOnLand = true;
+        playerController.velY = 0;
         c.y = 0;
       }
+      if (playerController.isFalling) {
+        playerController.velY += elapsedTime * playerControllerValues.fallAccel;
+      }
     }
+
+    if (playerController.velY > playerControllerValues.jumpTerminalVelocity) {
+      playerController.velY = playerControllerValues.jumpTerminalVelocity;
+    }
+
+    if (playerController.velY < playerControllerValues.fallTerminalVelocity) {
+      playerController.velY = playerControllerValues.fallTerminalVelocity;
+    }
+
+    if (kb.isPressed(KeyCodes.arrowDown)) {
+      playerController.isDucking = true;
+    } else {
+      playerController.isDucking = false;
+    }
+
+    if (playerController.isDucking) {
+      playAnim(c, animDuck);
+    } else {
+      if (playerController.isFalling) {
+        playAnim(c, animFall, false);
+      }
+      if (playerController.isJumping) {
+        playAnim(c, animFall, false);
+      }
+      if (playerController.isOnLand) {
+        playAnim(c, animRun, false);
+      }
+    }
+
+    c.y += playerController.velY * elapsedTime;
+
+    if (c.y <= 0) {
+      playerController.isFalling = false;
+      playerController.isOnLand = true;
+      playerController.velY = 0;
+      c.y = 0;
+    }
+
+    log.x(JSON.stringify(playerController, null, 2));
+
+    // let isJumping = false;
+
+    // let adj = 0;
+    // if (kb.isPressed(KeyCodes.arrowUp)) {
+    //   isJumping = true;
+    //   playAnim(c, animFall);
+    // } else if (kb.isPressed(KeyCodes.arrowDown)) {
+    //   //adj = 20;
+    //   playAnim(c, animDuck);
+    // } else {
+    //   playAnim(c, animRun, false);
+    // }
+
+    let base = 600;
+
+    // if (isJumping) {
+    //   c.y += 20;
+    // } else {
+    //   if (c.y > 0) {
+    //     c.y -= 10;
+    //   }
+    //   if (c.y < 0) {
+    //     c.y = 0;
+    //   }
+    // }
 
     c.sprite.y = -c.y + base;
 
     if (c.currentAnimation) {
-      c.frameTimeLeft -= 1 / 60;
+      c.frameTimeLeft -= elapsedTime;
       if (c.frameTimeLeft < 0) {
         c.frameIndex++;
         if (
