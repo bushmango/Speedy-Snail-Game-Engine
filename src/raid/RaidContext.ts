@@ -8,6 +8,7 @@ import { InputControl } from 'engine/gamepad/InputControl'
 
 import * as players from './players'
 import * as log from './log'
+import * as map from './map'
 
 const showSplashScreen = false
 const useLocalServer = false
@@ -24,6 +25,7 @@ export class RaidContext {
   layerP4: PIXI.Container
   layerP5: PIXI.Container
 
+  layerMap: PIXI.Container
   layerPlayer: PIXI.Container
 
   onLoaded(_sge: SimpleGameEngine) {
@@ -37,10 +39,12 @@ export class RaidContext {
     ctx.layerP3 = this.addLayer()
     ctx.layerP4 = this.addLayer()
     ctx.layerP5 = this.addLayer()
+    ctx.layerMap = this.addLayer()
     ctx.layerPlayer = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
     players.create(ctx, ctx.layerPlayer)
+    map.create(ctx)
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer

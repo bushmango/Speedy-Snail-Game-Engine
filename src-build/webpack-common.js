@@ -26,7 +26,7 @@ function buildConfig(mode, options, settings) {
         new HtmlWebpackPlugin({
             title: 'Development SGE',
             template: 'src-deploy/index.ejs'
-        })
+        }),
     ];
     if (useCache) {
         plugins.unshift(new HardSourceWebpackPlugin({
@@ -65,9 +65,7 @@ function buildConfig(mode, options, settings) {
         // }))
     }
     var tsxLoaders = ["ts-loader?configFile=" + tsConfig];
-    var entry = [
-        "./src/" + inScript,
-    ];
+    var entry = ["./src/" + inScript];
     var output = {
         filename: outScript
     };
@@ -82,11 +80,7 @@ function buildConfig(mode, options, settings) {
         },
         resolve: {
             extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
-            modules: [
-                '.',
-                'src',
-                'node_modules',
-            ],
+            modules: ['.', 'src', 'node_modules'],
             plugins: [
             // Not currently needed or working
             // new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
@@ -97,9 +91,7 @@ function buildConfig(mode, options, settings) {
             rules: [
                 {
                     test: /\.ts$/,
-                    exclude: [
-                        /node_modules/,
-                    ],
+                    exclude: [/node_modules/],
                     loaders: tsxLoaders
                 },
             ]

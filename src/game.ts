@@ -22,6 +22,9 @@
 //import * as snakeBatle from './snakeBattle/snakeBattle'
 //snakeBatle.run()
 
-console.log('loading parallax game')
-import * as game from './parallax/game'
+// console.log('loading parallax game')
+// import * as game from './parallax/game'
+// game.run()
+
+import * as game from './raid/game'
 game.run()
