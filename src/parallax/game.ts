@@ -22,7 +22,8 @@ export function preload() {
   sge.preloadBitmapFonts(["defaultfont"]);
   sge.preloadSprites([
     // 'test-ship',
-    "prariesnailgames"
+    "prariesnailgames",
+    "parallax-buildings"
   ]);
   sge.preloadSpriteSheets([
     "test-tileset",
@@ -44,7 +45,7 @@ export function run() {
   let renderer = sge.renderer;
 
   preload();
-  sge.preload("/public/ludumDare41", () => {
+  sge.preload("/public/parallax", () => {
     onLoaded();
   });
 

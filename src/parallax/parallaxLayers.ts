@@ -27,12 +27,14 @@ export function create(
     endX: 0
   };
 
-  let texture = ctx.sge.getTexture("prariesnailgames");
+  let baseTex = ctx.sge.getTexture("parallax-buildings");
+  var frame = new PIXI.Rectangle(16, 16, 16 * 2, 16 * 3);
+  var tex = new PIXI.Texture(baseTex.baseTexture, frame);
 
   let numSprites =
-    Math.ceil(ctx.sge.getViewSize().width / (texture.width * sizeScale)) + 1;
+    Math.ceil(ctx.sge.getViewSize().width / (tex.width * sizeScale)) + 1;
   for (let i = 0; i < numSprites; i++) {
-    let sprite = new PIXI.Sprite(texture);
+    let sprite = new PIXI.Sprite(tex);
     sprite.anchor.set(0, 0);
     sprite.y = y;
     sprite.x = i * sprite.width * sizeScale;

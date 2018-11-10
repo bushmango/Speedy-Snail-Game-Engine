@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc index.ts && node index.js ludumDare41",
+    "start-parallax": "tsc index.ts && node index.js parallax",
     "start2": "ts-node index.ts ludumDare41",
     "dev": "ts-node-dev index.ts ludumDare41",
     "dev-40": "ts-node-dev index.ts ludumDare40",
