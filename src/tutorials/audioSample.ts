@@ -1,4 +1,3 @@
-
 // see: https://github.com/goldfire/howler.js#documentation
 
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
@@ -10,7 +9,6 @@ import * as howler from 'howler'
 let sge = new SimpleGameEngine()
 
 export function run() {
-
   console.log('Running audio sample')
 
   sge.init()
@@ -18,15 +16,11 @@ export function run() {
   let stage = sge.stage
   let renderer = sge.renderer
 
-  sge.preload(
-    'public/examples',
-    () => {
-      onLoaded()
-    },
-  )
+  sge.preload('public/examples', () => {
+    onLoaded()
+  })
 
   function onLoaded() {
-
     test_simpleAudio()
 
     sge.onUpdateCallback = onUpdate
@@ -34,7 +28,6 @@ export function run() {
   }
 
   function test_simpleAudio() {
-
     let baseDir = '/public/sounds/'
     // let soundName = 'hurt001'
     // let sound = new howler.Howl({
@@ -63,56 +56,44 @@ export function run() {
 
     let jsonFilename = baseDir + soundSpriteName + '.json'
     var loader = new PIXI.loaders.Loader()
-    loader
-      .add(jsonFilename)
-      .load((a) => {
-        let json = loader.resources[jsonFilename].data
-        console.log('loaded', json)
+    loader.add(jsonFilename).load((a) => {
+      let json = loader.resources[jsonFilename].data
+      console.log('loaded', json)
 
-        let soundSprite = new howler.Howl({
-          src: json.urls,
-          sprite: json.sprite,
-        })
-        soundSprite.once('load', () => {
-          soundSprite.play('hurt001')
-          _.delay(() => {
-            soundSprite.play('pickup001')
-          }, 1000)
-          _.delay(() => {
-            soundSprite.play('hurt001')
-          }, 1500)
-        })
-        soundSprite.on('loaderror', (id, err) => {
-          console.log('howl', 'loaderror', id, err)
-        })
-        // sound.on('playerror', () => {
-        //   console.log('howl', 'playerror ')
-        // })
-
-        // let soundSprite = new howler.Howl({
-        //   src: [baseDir + soundSpriteName + '.ogg', baseDir + soundSpriteName + '.m4a', baseDir + soundSpriteName + '.ac3', baseDir + soundSpriteName + '.mp3']
-        // })
-        // soundSprite.once('load', () => {
-        //   soundSprite.play()
-        // })
-        // soundSprite.on('loaderror', (id, err) => {
-        //   console.log('howl', 'loaderror', id, err)
-        // })
-        // sound.on('playerror', () => {
-        //   console.log('howl', 'playerror ')
-        // })
-
+      let soundSprite = new howler.Howl({
+        src: json.urls,
+        sprite: json.sprite,
       })
+      soundSprite.once('load', () => {
+        soundSprite.play('hurt001')
+        _.delay(() => {
+          soundSprite.play('pickup001')
+        }, 1000)
+        _.delay(() => {
+          soundSprite.play('hurt001')
+        }, 1500)
+      })
+      soundSprite.on('loaderror', (id, err) => {
+        console.log('howl', 'loaderror', id, err)
+      })
+      // sound.on('playerror', () => {
+      //   console.log('howl', 'playerror ')
+      // })
 
-
-
-
+      // let soundSprite = new howler.Howl({
+      //   src: [baseDir + soundSpriteName + '.ogg', baseDir + soundSpriteName + '.m4a', baseDir + soundSpriteName + '.ac3', baseDir + soundSpriteName + '.mp3']
+      // })
+      // soundSprite.once('load', () => {
+      //   soundSprite.play()
+      // })
+      // soundSprite.on('loaderror', (id, err) => {
+      //   console.log('howl', 'loaderror', id, err)
+      // })
+      // sound.on('playerror', () => {
+      //   console.log('howl', 'playerror ')
+      // })
+    })
   }
 
-  function onUpdate() {
-
-
-  }
-
+  function onUpdate() {}
 }
-

@@ -1,4 +1,3 @@
-
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { _ } from 'engine/importsEngine'
 
@@ -18,7 +17,6 @@ export interface IParticle {
 }
 
 export class ParticleEmitter {
-
   maxParticles = 200
   sge: SimpleGameEngine
   particles: IParticle[] = []
@@ -31,8 +29,10 @@ export class ParticleEmitter {
     this.textureKey = textureKey
     this.container = new PIXI.Container()
 
-    this.textureRects = _.map(rects, (c) => new PIXI.Rectangle(c[0], c[1], c[2], c[3]))
-
+    this.textureRects = _.map(
+      rects,
+      (c) => new PIXI.Rectangle(c[0], c[1], c[2], c[3])
+    )
   }
 
   getNextSprite() {
@@ -72,7 +72,9 @@ export class ParticleEmitter {
   update() {
     for (let i = 0; i < this.particles.length; i++) {
       let p: IParticle = this.particles[i]
-      if (!p.sprite.visible) { continue }
+      if (!p.sprite.visible) {
+        continue
+      }
 
       p.sprite.x += p.vx
       p.sprite.y += p.vy
@@ -82,7 +84,7 @@ export class ParticleEmitter {
       p.vx += p.ax
       p.vy += p.ay
 
-      let t = 1 - (p.framesLeft / p.framesStart)
+      let t = 1 - p.framesLeft / p.framesStart
       p.sprite.alpha = (1 - t) * p.alpha1 + t * p.alpha2
       p.sprite.scale.set((1 - t) * p.scale1 + t * p.scale2)
 
@@ -92,19 +94,22 @@ export class ParticleEmitter {
     }
   }
 
-  emit(x, y, options?: {
-    numMin?: number,
-    numMax?: number,
-    vMax?: number,
-    rMin?: number,
-    rMax?: number,
-    ax?: number,
-    ay?: number,
-    framesMin?: number,
-    framesMax?: number,
-    rects?: PIXI.Rectangle[],
-  }) {
-
+  emit(
+    x,
+    y,
+    options?: {
+      numMin?: number
+      numMax?: number
+      vMax?: number
+      rMin?: number
+      rMax?: number
+      ax?: number
+      ay?: number
+      framesMin?: number
+      framesMax?: number
+      rects?: PIXI.Rectangle[]
+    }
+  ) {
     let num = 1
     let vMax = options.vMax
     let rMin = 0
@@ -114,7 +119,7 @@ export class ParticleEmitter {
     let framesMin = 60
     let framesMax = 60
     if (options) {
-      num = _.random((options.numMin || 1), (options.numMax || 1) + 1, false)
+      num = _.random(options.numMin || 1, (options.numMax || 1) + 1, false)
       if (options.rMin) {
         rMin = options.rMin
       }
@@ -132,11 +137,12 @@ export class ParticleEmitter {
     }
     for (let i = 0; i < num; i++) {
       let p = this.getNextSprite()
-      if (!p) { break } // Out of sprites
+      if (!p) {
+        break
+      } // Out of sprites
 
       if (options && options.rects) {
         p.sprite.texture.frame = _.sample(options.rects)
-
       } else {
         p.sprite.texture.frame = _.sample(this.textureRects)
       }
@@ -159,6 +165,5 @@ export class ParticleEmitter {
 
       p.framesStart = p.framesLeft = _.random(framesMin, framesMax, false)
     }
-
   }
 }

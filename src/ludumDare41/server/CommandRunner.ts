@@ -1,7 +1,3 @@
-
 import { IMessage } from './IMessage'
 
-export class CommandRunnerServer {
-
-}
-
+export class CommandRunnerServer {}

@@ -1,19 +1,17 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes, Keyboard } from 'engine/input/Keyboard';
+import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
-import { HatStack } from 'ludumDare40/entities/HatStack';
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
+import { HatStack } from 'ludumDare40/entities/HatStack'
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
 
 const subPix = 32
 
-
 export class Bounds {
-
   // State
   onGround = false
   isJumping = false
@@ -74,7 +72,12 @@ export class Bounds {
   recalcBounds() {
     this.x = Math.floor(this.subX / subPix)
     this.y = Math.floor(this.subY / subPix)
-    this._setBounds(this.x - this.width / 2, this.y - this.height, this.x + this.width / 2, this.y)
+    this._setBounds(
+      this.x - this.width / 2,
+      this.y - this.height,
+      this.x + this.width / 2,
+      this.y
+    )
   }
 
   _setBounds(x1, y1, x2, y2) {
@@ -113,7 +116,6 @@ export class Bounds {
   }
 
   update(context: LudumDare40Context) {
-
     this.isTouchingFatal = false
 
     if (this.isFalling) {
@@ -129,8 +131,7 @@ export class Bounds {
         } else {
           this.accelY = 20
         }
-      }
-      else {
+      } else {
         if (this.fallFrames < 8) {
           this.accelY = 4
         } else if (this.fallFrames < 16) {
@@ -176,18 +177,17 @@ export class Bounds {
 
     this.recalcBounds()
 
-
     let tm = context.tileMap
 
-
     if (!this.isGhost) {
-
       let rs1 = tm.safeGetTileAtWorld(this.boundsX2, this.boundsY2 - 1)
       let rightContact1 = false
       let rightX = 0
       if (rs1) {
         if (!rs1.canMove) {
-          if (rs1.fatal) { this.isTouchingFatal = true }
+          if (rs1.fatal) {
+            this.isTouchingFatal = true
+          }
           rightContact1 = true
           rightX = rs1.bx * 16 * subPix - subPix * 4 - 1
           this.vx = 0
@@ -199,7 +199,9 @@ export class Bounds {
       rightX = 0
       if (rs2) {
         if (!rs2.canMove) {
-          if (rs2.fatal) { this.isTouchingFatal = true }
+          if (rs2.fatal) {
+            this.isTouchingFatal = true
+          }
           rightContact2 = true
           rightX = rs2.bx * 16 * subPix - subPix * 4 - 1
           this.vx = 0
@@ -212,7 +214,9 @@ export class Bounds {
       let leftX = 0
       if (ls1) {
         if (!ls1.canMove) {
-          if (ls1.fatal) { this.isTouchingFatal = true }
+          if (ls1.fatal) {
+            this.isTouchingFatal = true
+          }
           leftContact1 = true
           leftX = (ls1.bx + 1) * 16 * subPix + subPix * 4 + 1
           this.vx = 0
@@ -225,7 +229,9 @@ export class Bounds {
       leftX = 0
       if (ls2) {
         if (!ls2.canMove) {
-          if (ls2.fatal) { this.isTouchingFatal = true }
+          if (ls2.fatal) {
+            this.isTouchingFatal = true
+          }
           leftContact2 = true
           leftX = (ls2.bx + 1) * 16 * subPix + subPix * 4 + 1
           this.vx = 0
@@ -237,13 +243,14 @@ export class Bounds {
         this.recalcBounds()
       }
 
-
       let gs1 = tm.safeGetTileAtWorld(this.boundsX1, this.boundsY2 + 1)
       let groundContact1 = false
       let groundY = 0
       if (gs1) {
         if (!gs1.canMove) {
-          if (gs1.fatal) { this.isTouchingFatal = true }
+          if (gs1.fatal) {
+            this.isTouchingFatal = true
+          }
           groundContact1 = true
           groundY = gs1.by * 16
         }
@@ -252,7 +259,9 @@ export class Bounds {
       let groundContact2 = false
       if (gs2) {
         if (!gs2.canMove) {
-          if (gs2.fatal) { this.isTouchingFatal = true }
+          if (gs2.fatal) {
+            this.isTouchingFatal = true
+          }
           groundContact2 = true
           groundY = gs1.by * 16
         }
@@ -263,7 +272,9 @@ export class Bounds {
       let cielingY = 0
       if (cs1) {
         if (!cs1.canMove) {
-          if (cs1.fatal) { this.isTouchingFatal = true }
+          if (cs1.fatal) {
+            this.isTouchingFatal = true
+          }
           ceilingContact1 = true
           cielingY = cs1.by * 16
         }
@@ -272,12 +283,13 @@ export class Bounds {
       let ceilingContact2 = false
       if (cs2) {
         if (!cs2.canMove) {
-          if (cs2.fatal) { this.isTouchingFatal = true }
+          if (cs2.fatal) {
+            this.isTouchingFatal = true
+          }
           ceilingContact2 = true
           cielingY = cs2.by * 16
         }
       }
-
 
       if (this.isFalling) {
         if (groundContact1 || groundContact2) {
@@ -289,26 +301,25 @@ export class Bounds {
         if (ceilingContact1 || ceilingContact2) {
           //this.subY = groundY * 32
           this.setStateFalling()
-          if (this.vy < 0) { this.vy = 0 }
+          if (this.vy < 0) {
+            this.vy = 0
+          }
         }
       }
-
 
       if (this.onGround) {
         if (!groundContact1 && !groundContact2) {
           this.setStateFalling()
         }
       }
-    } 
+    }
 
-    let floor = 64 * 32 * 16  // Maximum lowest point
+    let floor = 64 * 32 * 16 // Maximum lowest point
     if (this.subY >= floor) {
       this.subY = floor
       this.setStateOnGround()
     }
 
     this.recalcBounds()
-
   }
-
 }

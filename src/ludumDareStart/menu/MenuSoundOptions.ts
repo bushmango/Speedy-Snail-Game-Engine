@@ -7,7 +7,6 @@ import { MenuGeneric } from 'engine/menus/MenuGeneric'
 import * as pubSub from 'engine/common/pubSub'
 
 export class MenuSoundOptions {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -16,7 +15,6 @@ export class MenuSoundOptions {
   modeName = 'sound-options'
 
   init(sge: SimpleGameEngine) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
@@ -25,10 +23,7 @@ export class MenuSoundOptions {
     this.menu.addOptionSimple(
       'Sounds',
       'muteSound',
-      [
-        { label: 'on', value: false },
-        { label: 'off', value: true },
-      ]
+      [{ label: 'on', value: false }, { label: 'off', value: true }]
     ).onClick = () => {
       pubSub.emit('gui:toggle-sounds')
     }
@@ -36,10 +31,7 @@ export class MenuSoundOptions {
     this.menu.addOptionSimple(
       'Music',
       'muteMusic',
-      [
-        { label: 'on', value: false },
-        { label: 'off', value: true },
-      ]
+      [{ label: 'on', value: false }, { label: 'off', value: true }]
     ).onClick = () => {
       pubSub.emit('gui:toggle-music')
     }
@@ -54,7 +46,4 @@ export class MenuSoundOptions {
   update(menuInput: MenuInputControl) {
     this.menu.update(menuInput)
   }
-
-
-
 }

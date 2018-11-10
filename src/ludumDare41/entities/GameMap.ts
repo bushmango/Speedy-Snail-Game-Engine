@@ -1,12 +1,9 @@
-
-
 import { TileMap, ITileData, IGridSpot } from 'engine/tiles/TileMap'
 import * as tileMapFiller from 'engine/tiles/tileMapFiller'
-import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
+import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 // import * as tileMapLoader from 'snakeBattle/tiles/tileMapLoader'
 
 export class GameMap {
-
   tileMap: TileMap<IGridSpot>
 
   init(context: LudumDare41Context) {
@@ -46,12 +43,9 @@ export class GameMap {
     this.tileMap.resize(22, 22)
 
     this.reset()
-
   }
 
-  update() {
-
-  }
+  update() {}
 
   reset() {
     //tileMapFiller.strokeRect(this.tileMap, 0, 'wall-1', 0, 0, 22, 22)
@@ -65,6 +59,4 @@ export class GameMap {
   setTile(x, y, t) {
     this.tileMap.setTileAt(0, x, y, t)
   }
-
-
 }

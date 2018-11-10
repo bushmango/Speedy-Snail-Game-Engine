@@ -1,15 +1,15 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes } from 'engine/input/Keyboard';
+import { KeyCodes } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
-import { HatStack } from 'ludumDare40/entities/HatStack';
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { Bounds } from 'ludumDare40/entities/Bounds';
-import { PlayerController } from 'ludumDare40/entities/PlayerController';
+import { HatStack } from 'ludumDare40/entities/HatStack'
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
+import { Bounds } from 'ludumDare40/entities/Bounds'
+import { PlayerController } from 'ludumDare40/entities/PlayerController'
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
 
@@ -20,9 +20,7 @@ let frameFall = spriteCreator.create16_frame(1, 0)
 let frameNormal = spriteCreator.create16_frame(1, 1)
 let frameJump = spriteCreator.create16_frame(2, 0)
 
-
 export class Player {
-
   context: LudumDare40Context
   container = new PIXI.Container()
 
@@ -43,9 +41,19 @@ export class Player {
   init(cx: LudumDare40Context) {
     this.context = cx
 
-    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, 1)
+    this.body = spriteCreator.create16_sprite(
+      this.context.sge,
+      'ase-512-16',
+      1,
+      1
+    )
     this.body.anchor.set(0.5, 1)
-    this.head = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, 2)
+    this.head = spriteCreator.create16_sprite(
+      this.context.sge,
+      'ase-512-16',
+      1,
+      2
+    )
     this.head.anchor.set(0.5, 1)
 
     this.bounds.airDrag = 0
@@ -63,7 +71,6 @@ export class Player {
     // for (let i = 0; i < 20; i++) {
     //   this.hats.addHat()
     // }
-
   }
 
   reset() {
@@ -78,13 +85,17 @@ export class Player {
   }
 
   addFollower() {
-
     // let x = _.random(3, 5, false)
 
     let entries = [3, 5]
     let x = _.sample(entries)
 
-    let item = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 1, x)
+    let item = spriteCreator.create16_sprite(
+      this.context.sge,
+      'ase-512-16',
+      1,
+      x
+    )
     item.anchor.set(0.5, 1)
 
     this.followers.push(item)
@@ -100,7 +111,6 @@ export class Player {
 
   die() {
     if (!this.isDying) {
-
       this.context.achievements.addAchievement('You died!')
       sounds.playMusicDie()
 
@@ -109,29 +119,37 @@ export class Player {
       this.bounds.reset()
       this.bounds.isGhost = true
       this.bounds.jump()
-
     }
   }
 
   update() {
-
-
     // controls
     this.bounds.width = 8
     this.bounds.height = 14
     //if (!this.isDying) {
     if (this.context.menuManager.getMode() === 'game') {
-      this.controller.update(this.context.sge.keyboard, this.bounds, this.isDying)
+      this.controller.update(
+        this.context.sge.keyboard,
+        this.bounds,
+        this.isDying
+      )
     }
     //}
     this.bounds.update(this.context)
 
-
-    this.pastPositions.unshift([this.bounds.x, this.bounds.y, this.bounds.facingRight])
+    this.pastPositions.unshift([
+      this.bounds.x,
+      this.bounds.y,
+      this.bounds.facingRight,
+    ])
     if (this.pastPositions.length > 300) {
       this.pastPositions.pop()
     }
-    for (let idxFollower = 0; idxFollower < this.followers.length; idxFollower++) {
+    for (
+      let idxFollower = 0;
+      idxFollower < this.followers.length;
+      idxFollower++
+    ) {
       let f = this.followers[idxFollower]
       let adj = idxFollower * 5 + 5
       if (this.pastPositions.length > adj) {
@@ -141,13 +159,11 @@ export class Player {
       } else {
         f.position.set(0, 0)
       }
-
     }
 
     // Attack with hats!
     let kb = this.context.sge.keyboard
     if (kb.justPressed(KeyCodes.space)) {
-
       if (this.hats.hats.length > 0) {
         this.context.sounds.playThrowHat()
         let protoHat = this.hats.removeBottomHat()
@@ -156,7 +172,10 @@ export class Player {
 
         console.log('throw a hat!')
 
-        let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 16 - 8)
+        let hat = this.context.hats.createAt(
+          this.bounds.x,
+          this.bounds.y - 16 - 8
+        )
         hat.body.texture.frame = protoHat.texture.frame
         hat.bounds.maxVy = 16
         let speed = 1000
@@ -164,11 +183,7 @@ export class Player {
           speed = -speed
         }
         hat.bounds.vx = speed
-
       }
-
-
-
     }
 
     this.container.position.set(this.bounds.x, this.bounds.y)
@@ -183,7 +198,6 @@ export class Player {
       } else {
         this.body.texture.frame = frameNormal
       }
-
     }
 
     this.head.position.set(0, 0 - 16)
@@ -205,8 +219,5 @@ export class Player {
     this.hats.y = -16 - 8
     this.hats.facingRight = this.bounds.facingRight
     this.hats.update()
-
   }
-
-
 }

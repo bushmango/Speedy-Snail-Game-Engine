@@ -1,5 +1,5 @@
 import { buildConfig } from './webpack-common'
-import { settings } from './currentGame' 
+import { settings } from './currentGame'
 let config = buildConfig(
   'production',
   {
@@ -8,7 +8,7 @@ let config = buildConfig(
     inScript: 'game.ld41.ts',
     outDir: 'ld41',
   },
-  settings,
+  settings
 )
 
 export default config

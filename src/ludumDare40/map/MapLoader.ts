@@ -15,7 +15,7 @@ const tilesetHeight = 512
 const defaultTextureName = 'public/ludumdare40/images/ase-512-16.png'
 
 import { loadBasicLayer } from './MapLoaderBasic'
-import { ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
+import { ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button'
 
 export {
   Layer_Background,
@@ -27,18 +27,18 @@ export {
 }
 
 export interface ISpawnLocation {
-  bx: number,
-  by: number,
-  data?: any,
+  bx: number
+  by: number
+  data?: any
 }
 export interface IMapMedatada {
-  spawn: ISpawnLocation,
-  blobs: ISpawnLocation[],
-  hats: ISpawnLocation[],
-  hatCounters: ISpawnLocation[],
-  buttons: ISpawnLocation[],
-  texts: ISpawnLocation[],
-  decors: ISpawnLocation[],
+  spawn: ISpawnLocation
+  blobs: ISpawnLocation[]
+  hats: ISpawnLocation[]
+  hatCounters: ISpawnLocation[]
+  buttons: ISpawnLocation[]
+  texts: ISpawnLocation[]
+  decors: ISpawnLocation[]
 }
 export function createMetaData() {
   let md: IMapMedatada = {
@@ -54,11 +54,10 @@ export function createMetaData() {
 }
 
 function isExact(t, y, x) {
-  return (t == y * tilesPerRow + x)
+  return t == y * tilesPerRow + x
 }
 
 function inYRange(t, y1, y2, x) {
-
   for (let y = y1; y <= y2; y++) {
     if (t >= y * tilesPerRow + x) {
       return true
@@ -66,7 +65,6 @@ function inYRange(t, y1, y2, x) {
   }
 
   return false
-
 }
 
 function inXRange(t, y, x1, x2) {
@@ -77,7 +75,6 @@ function inXRange(t, y, x1, x2) {
 }
 
 function inSquareRange(t, y1, y2, x1, x2) {
-
   for (let y = y1; y <= y2; y++) {
     if (t >= y * tilesPerRow + x1 && t <= y * tilesPerRow + x2) {
       return true
@@ -85,11 +82,9 @@ function inSquareRange(t, y1, y2, x1, x2) {
   }
 
   return false
-
 }
 
 export function addTex(y, x, tm: TileMap<ILD40GridSpot>) {
-
   let texKey = '_' + y + '_' + x
 
   if (x >= tilesetWidth || y >= tilesetHeight) {
@@ -110,58 +105,93 @@ export function addTex(y, x, tm: TileMap<ILD40GridSpot>) {
   }
 }
 
-export function load(x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, json, levelMetadata) {
+export function load(
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  json,
+  levelMetadata
+) {
   console.log('load map', json)
 
-  _.forEach(json.layers, (layer: { name: string, data: any }) => {
-
+  _.forEach(json.layers, (layer: { name: string; data: any }) => {
     console.log('processing layer', layer.name, layer)
 
-    if (layer.name === "Background") {
+    if (layer.name === 'Background') {
       loadBackgroundLayer(json, x, y, tm, mapMeta, layer.data)
     }
-    if (layer.name === "Background-Decor") {
+    if (layer.name === 'Background-Decor') {
       loadBackgroundDecorLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
-    if (layer.name === "Wall") {
+    if (layer.name === 'Wall') {
       loadWallLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
-    if (layer.name === "Decor") {
+    if (layer.name === 'Decor') {
       loadDecorLayer(json, x, y, tm, mapMeta, layer.data)
     }
 
-    if (layer.name === "Marker") {
+    if (layer.name === 'Marker') {
       loadMarkerLayer(json, x, y, tm, mapMeta, layer.data)
     }
-
   })
-
 }
 
-
-
-function loadBackgroundLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(json, x, y, tm, Layer_Background, data, (t) => {
-    return t
-  },
-    (gs, t) => {
-
-    })
+function loadBackgroundLayer(
+  json,
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  data: any
+) {
+  loadBasicLayer(
+    json,
+    x,
+    y,
+    tm,
+    Layer_Background,
+    data,
+    (t) => {
+      return t
+    },
+    (gs, t) => {}
+  )
 }
-function loadBackgroundDecorLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(json, x, y, tm, Layer_BackgroundDecor, data, (t) => {
-    return t
-  },
-    (gs, t) => {
-
-    })
+function loadBackgroundDecorLayer(
+  json,
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  data: any
+) {
+  loadBasicLayer(
+    json,
+    x,
+    y,
+    tm,
+    Layer_BackgroundDecor,
+    data,
+    (t) => {
+      return t
+    },
+    (gs, t) => {}
+  )
 }
 
-function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+function loadWallLayer(
+  json,
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  data: any
+) {
   loadBasicLayer(json, x, y, tm, Layer_Wall, data, null, (gs, t) => {
-    gs.canMove = (t <= 1)
+    gs.canMove = t <= 1
 
     if (isExact(t, 6, 4)) {
       gs.hatCountHide = 1
@@ -213,11 +243,12 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
     if (isExact(t, 4, 7)) {
       gs.hideBossButtonPressed = true
       gs.canMove = false
-
-    } if (isExact(t, 4, 9)) {
+    }
+    if (isExact(t, 4, 9)) {
       gs.hideBossDefeated = true
       gs.canMove = false
-    } if (isExact(t, 4, 11)) {
+    }
+    if (isExact(t, 4, 11)) {
       gs.hideMidButtonPressed = true
       gs.canMove = false
     }
@@ -227,7 +258,7 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
       mapMeta.hatCounters.push({
         bx: gs.bx,
         by: gs.by,
-        data: { type: 'hat' }
+        data: { type: 'hat' },
       })
     }
     if (isExact(t, 15, 4)) {
@@ -235,22 +266,32 @@ function loadWallLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMeda
       mapMeta.hatCounters.push({
         bx: gs.bx,
         by: gs.by,
-        data: { type: 'lava' }
+        data: { type: 'lava' },
       })
     }
-
   })
 }
 
-function loadDecorLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
-  loadBasicLayer(json, x, y, tm, Layer_Decor, data, null, (gs, t) => {
-
-  })
+function loadDecorLayer(
+  json,
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  data: any
+) {
+  loadBasicLayer(json, x, y, tm, Layer_Decor, data, null, (gs, t) => {})
 }
 
-function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMedatada, data: any) {
+function loadMarkerLayer(
+  json,
+  x,
+  y,
+  tm: TileMap<ILD40GridSpot>,
+  mapMeta: IMapMedatada,
+  data: any
+) {
   loadBasicLayer(json, x, y, tm, Layer_Marker, data, null, (gs, t, x, y) => {
-
     if (t > 1) {
       // Add spawns
       if (isExact(t, 1, 2)) {
@@ -265,8 +306,7 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           bx: gs.bx,
           by: gs.by,
         })
-      }
-      else if (isExact(t, 2, 1)) {
+      } else if (isExact(t, 2, 1)) {
         console.log('marker hit hat', t)
         mapMeta.hats.push({
           bx: gs.bx,
@@ -286,16 +326,14 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           by: gs.by,
           data: { buttonType: ButtonWin },
         })
-      }
-      else if (isExact(t, 5, 10)) {
+      } else if (isExact(t, 5, 10)) {
         console.log('marker hit button 3', t)
         mapMeta.buttons.push({
           bx: gs.bx,
           by: gs.by,
           data: { buttonType: ButtonMid },
         })
-      }
-      else if (isExact(t, 15, 5)) {
+      } else if (isExact(t, 15, 5)) {
         console.log('marker hit text', t)
         mapMeta.texts.push({
           bx: gs.bx,
@@ -349,8 +387,7 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           by: gs.by,
           data: { idx: 1 },
         })
-      }
-      else if (isExact(t, 4, 13)) {
+      } else if (isExact(t, 4, 13)) {
         mapMeta.decors.push({
           bx: gs.bx,
           by: gs.by,
@@ -362,12 +399,9 @@ function loadMarkerLayer(json, x, y, tm: TileMap<ILD40GridSpot>, mapMeta: IMapMe
           by: gs.by,
           data: { idx: 3 },
         })
-      }
-      else {
+      } else {
         console.warn('marker UNKNOWN', t)
       }
-
     }
-
   })
 }

@@ -13,7 +13,6 @@ export function load(sge: SimpleGameEngine) {
         playLoaded()
       }, 500)
     }
-
   })
   playMusic1()
 }
@@ -42,5 +41,3 @@ pubSub.on('gui:click-button', () => {
 pubSub.on('gui:toggle-music', () => {
   playMusic1()
 })
-
-

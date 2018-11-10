@@ -1,8 +1,8 @@
 //import { _ } from './importsLodashsServer'
 import * as _ from 'lodash'
 import { IMessage } from './IMessage'
-import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
-import { NinjaManager } from 'ludumDare41/entities/Ninja';
+import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
+import { NinjaManager } from 'ludumDare41/entities/Ninja'
 
 export function log(...message) {
   console.log('S>', ...message)
@@ -13,7 +13,7 @@ export function logWarn(...message) {
 export function logError(...message) {
   console.error('S>', ...message)
 }
-const delay = ms => new Promise(res => setTimeout(res, ms))
+const delay = (ms) => new Promise((res) => setTimeout(res, ms))
 
 const fastSpawn = true
 
@@ -59,11 +59,10 @@ export class CommandRunnerClient {
     ninja.id = message.id
     ninja.isBot = message.isBot
     ninja.isAlive = message.isAlive
-
   }
 
   replaceSpawn = (message: IMessage) => {
-    let ninja = _.find(this.context.ninjas.items, c => c.id === message.id)
+    let ninja = _.find(this.context.ninjas.items, (c) => c.id === message.id)
     if (ninja) {
       ninja.isBot = message.isBot
       ninja.isAlive = message.isAlive
@@ -75,11 +74,15 @@ export class CommandRunnerClient {
     // console.log('cards', message.cards)
 
     this.context.cards.setHand(message.cards)
-
   }
 
   spawnBullet = (message: IMessage) => {
-    let bullet = this.context.bullets.createAt(message.x, message.y, message.dir, message.idx)
+    let bullet = this.context.bullets.createAt(
+      message.x,
+      message.y,
+      message.dir,
+      message.idx
+    )
     bullet.id = message.id
   }
 
@@ -88,12 +91,15 @@ export class CommandRunnerClient {
     powerup.id = message.id
   }
   killPowerup = (message: IMessage) => {
-    let powerup = _.find(this.context.powerups.items, d => d.id === message.id)
+    let powerup = _.find(
+      this.context.powerups.items,
+      (d) => d.id === message.id
+    )
     powerup.destroy()
   }
 
   changeClass = (message: IMessage) => {
-    let ninja = _.find(this.context.ninjas.items, d => d.id === message.id)
+    let ninja = _.find(this.context.ninjas.items, (d) => d.id === message.id)
     if (ninja) {
       ninja.changeClass(message.className)
     }
@@ -104,16 +110,13 @@ export class CommandRunnerClient {
 
     for (let i = 0; i < message.moves.length; i++) {
       let c = message.moves[i]
-      let ninja = _.find(this.context.ninjas.items, d => d.id === c.id)
+      let ninja = _.find(this.context.ninjas.items, (d) => d.id === c.id)
 
       if (c.message) {
         this.run(c.message)
-      }
-      else if (c.bounce) {
-
-      }
-      else if (c.bullet) {
-        let bullet = _.find(this.context.bullets.items, d => d.id === c.id)
+      } else if (c.bounce) {
+      } else if (c.bullet) {
+        let bullet = _.find(this.context.bullets.items, (d) => d.id === c.id)
         if (bullet) {
           if (c.kill) {
             bullet.isReadyToBeDestroyed = true
@@ -124,27 +127,22 @@ export class CommandRunnerClient {
         } else {
           console.warn('cant find bullet', c.id)
         }
-      }
-      else if (c.kill) {
+      } else if (c.kill) {
         if (ninja) {
           ninja.isAlive = false
         }
         await delay(10)
-      }
-      else if (c.attack) {
+      } else if (c.attack) {
         // Add anim
         //await delay(10)
         this.context.effects.createAt(c.x, c.y)
-      }
-      else if (c.changeTile) {
+      } else if (c.changeTile) {
         this.context.gameMap.setTile(c.x, c.y, c.t)
         await delay(10)
-      }
-      else if (c.destroyTree) {
+      } else if (c.destroyTree) {
         this.context.gameMap.setTile(c.x, c.y, 0)
         await delay(10)
-      }
-      else if (c.lava) {
+      } else if (c.lava) {
         console.debug('lavad', ninja.id)
         if (ninja) {
           ninja.moveTo(c.x, c.y)
@@ -152,15 +150,13 @@ export class CommandRunnerClient {
           ninja.isAlive = false
         }
         await delay(10)
-      }
-      else if (c.move) {
+      } else if (c.move) {
         if (ninja) {
           ninja.moveTo(c.x, c.y)
         }
         await delay(10)
       }
     }
-
   }
 
   lava = (message: IMessage) => {
@@ -168,9 +164,16 @@ export class CommandRunnerClient {
   }
 
   mode = (message: IMessage) => {
-
-    let aliveHumans = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
-    let aliveBots = _.reduce(this.context.ninjas.items, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
+    let aliveHumans = _.reduce(
+      this.context.ninjas.items,
+      (sum, c) => sum + (c.isAlive && !c.isBot ? 1 : 0),
+      0
+    )
+    let aliveBots = _.reduce(
+      this.context.ninjas.items,
+      (sum, c) => sum + (c.isAlive && c.isBot ? 1 : 0),
+      0
+    )
     let text = `${aliveHumans} humans + ${aliveBots} zombies`
 
     this.context.textMode.text = '' //message.message
@@ -185,9 +188,5 @@ export class CommandRunnerClient {
     if (message.discardHand) {
       this.context.cards.discardHand()
     }
-
   }
-
-
-
 }

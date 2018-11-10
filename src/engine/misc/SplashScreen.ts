@@ -1,10 +1,9 @@
 import { _ } from 'engine/importsEngine'
-import { SimpleGameEngine } from 'engine/SimpleGameEngine';
+import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
 const isActive = true
 
 export class SplashScreen {
-
   frame = 0
 
   sprite: PIXI.Sprite
@@ -24,10 +23,7 @@ export class SplashScreen {
     this.container.addChild(this.sprite)
   }
 
-
   update() {
-
-
     this.frame++
 
     let maxTime = 120
@@ -56,9 +52,10 @@ export class SplashScreen {
       let scale1 = Math.floor(width / this.sprite.texture.width)
       let scale2 = Math.floor(height / this.sprite.texture.height)
       let scale = scale1
-      if (scale2 < scale) { scale = scale2 }
+      if (scale2 < scale) {
+        scale = scale2
+      }
       this.sprite.scale.set(scale)
-
     } else {
       this.sprite.visible = false
       if (this.onDone) {
@@ -66,10 +63,5 @@ export class SplashScreen {
         this.onDone = null
       }
     }
-
-
-
   }
-
-
 }

@@ -8,13 +8,13 @@ export interface ICardAction {
 }
 
 export interface ICardAndDir {
-  card: ICard,
-  dir: number,
+  card: ICard
+  dir: number
 }
 
 export interface ICard {
-  name: string,
-  type: 'move' | 'dodge' | 'attack' | 'respawn',
+  name: string
+  type: 'move' | 'dodge' | 'attack' | 'respawn'
   frame: number
   actions: ICardAction[]
 }
@@ -23,13 +23,13 @@ export const cards: ICard[] = [
     name: 'Null',
     type: 'move',
     frame: 0,
-    actions: []
+    actions: [],
   },
   {
     name: 'Dead',
     type: 'move',
     frame: 4,
-    actions: []
+    actions: [],
   },
   {
     name: 'Pheonix',
@@ -38,8 +38,8 @@ export const cards: ICard[] = [
     actions: [
       {
         type: 'respawn',
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Walk',
@@ -48,8 +48,8 @@ export const cards: ICard[] = [
     actions: [
       {
         type: 'move',
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Run',
@@ -61,8 +61,8 @@ export const cards: ICard[] = [
       },
       {
         type: 'move',
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Sprint',
@@ -77,8 +77,8 @@ export const cards: ICard[] = [
       },
       {
         type: 'move',
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Punch',
@@ -87,8 +87,8 @@ export const cards: ICard[] = [
     actions: [
       {
         type: 'attack',
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Swipe',
@@ -105,8 +105,8 @@ export const cards: ICard[] = [
       {
         type: 'attack',
         dir: +1,
-      }
-    ]
+      },
+    ],
   },
 
   {
@@ -117,8 +117,8 @@ export const cards: ICard[] = [
       {
         type: 'shoot',
         idx: 0,
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Shoot Gun',
@@ -131,8 +131,8 @@ export const cards: ICard[] = [
       {
         type: 'shoot',
         idx: 1,
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Fireball',
@@ -142,20 +142,23 @@ export const cards: ICard[] = [
       {
         type: 'shoot',
         idx: 2,
-      }, {
+      },
+      {
         type: 'shoot',
         idx: 2,
         dir: +1,
-      }, {
+      },
+      {
         type: 'shoot',
         idx: 2,
         dir: +2,
-      }, {
+      },
+      {
         type: 'shoot',
         idx: 2,
         dir: +3,
-      }
-    ]
+      },
+    ],
   },
   {
     name: 'Rocket',
@@ -165,17 +168,15 @@ export const cards: ICard[] = [
       {
         type: 'shoot',
         idx: 3,
-      }
-    ]
+      },
+    ],
   },
-
 ]
 
-const nullCard = _.find(cards, c => c.name === 'Null')
-
+const nullCard = _.find(cards, (c) => c.name === 'Null')
 
 function addCards(deck, name, num = 1) {
-  let card = _.find(cards, c => c.name === name)
+  let card = _.find(cards, (c) => c.name === name)
   if (!card) {
     console.error('cant find card', card.name)
   }
@@ -240,4 +241,14 @@ addCards(zombieHand, 'Walk', 6)
 
 // console.log('standard deck', standardDeck)
 
-export { standardDeck, nullCard, deadHand, zombieHand, ninjaDeck, robotDeck, wizardDeck, pirateDeck, catDeck }
+export {
+  standardDeck,
+  nullCard,
+  deadHand,
+  zombieHand,
+  ninjaDeck,
+  robotDeck,
+  wizardDeck,
+  pirateDeck,
+  catDeck,
+}

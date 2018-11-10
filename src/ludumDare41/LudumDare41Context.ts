@@ -1,4 +1,3 @@
-
 const { Rectangle, Sprite } = PIXI
 const { TextureCache } = PIXI.utils
 
@@ -13,16 +12,16 @@ import { MenuManager } from 'ludumDareStart/menu/MenuManager'
 import { SplashScreen } from 'engine/misc/SplashScreen'
 import { Ninja, NinjaManager } from 'ludumDare41/entities/Ninja'
 import { Card, CardManager } from 'ludumDare41/entities/Card'
-import { Server } from 'ludumDare41/server/Server';
-import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient';
-import { ICard } from 'ludumDare41/server/CardInfo';
-import { IClientMesssage } from 'ludumDare41/server/IMessage';
+import { Server } from 'ludumDare41/server/Server'
+import { CommandRunnerClient } from 'ludumDare41/server/CommandRunnerClient'
+import { ICard } from 'ludumDare41/server/CardInfo'
+import { IClientMesssage } from 'ludumDare41/server/IMessage'
 import { GameMap } from 'ludumDare41/entities/GameMap'
-import { ModeBar } from 'ludumDare41/ui/ModeBar2';
-import io from 'socket.io-client';
-import { EffectManager } from 'ludumDare41/entities/Effect';
-import { BulletManager } from 'ludumDare41/entities/Bullet';
-import { PowerupManager } from 'ludumDare41/entities/Powerup';
+import { ModeBar } from 'ludumDare41/ui/ModeBar2'
+import io from 'socket.io-client'
+import { EffectManager } from 'ludumDare41/entities/Effect'
+import { BulletManager } from 'ludumDare41/entities/Bullet'
+import { PowerupManager } from 'ludumDare41/entities/Powerup'
 
 const showSplashScreen = true
 const useLocalServer = false
@@ -30,10 +29,7 @@ const useLocalServer = false
 //const testServerAddress = 'http://192.168.0.113:4041'
 const testServerAddress = 'https://ludumdare41.steviebushman.com'
 
-
-
 export class LudumDare41Context {
-
   sge: SimpleGameEngine
 
   // menuManager = new MenuManager()
@@ -71,7 +67,6 @@ export class LudumDare41Context {
   textAlive: PIXI.extras.BitmapText
 
   setLayerSettings(layer: PIXI.Container) {
-
     layer.position.set(this.mx, this.my)
     layer.scale.set(this.scale)
   }
@@ -93,7 +88,7 @@ export class LudumDare41Context {
 
     this.gameMap.init(this)
 
-    // Add layers    
+    // Add layers
     this.addLayer(this.gameMap.tileMap.containers[0])
     this.layerObjects = this.addLayer()
     this.layerPowerups = this.addLayer()
@@ -158,27 +153,33 @@ export class LudumDare41Context {
       this.socket = io(testServerAddress, {
         reconnection: false,
         transports: ['websocket'],
-      });
+      })
       this.socket.on('connect', () => {
         console.log('W>', 'connected')
-      });
+      })
       this.socket.on('event', (message) => {
         console.log('W>', 'event', message)
         this.commandRunner.run(message)
-      });
+      })
       this.socket.on('disconnect', () => {
         console.log('W>', 'disconnect')
         this.isDisconnected = true
-      });
+      })
     }
 
-    this.textMode = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
+    this.textMode = new PIXI.extras.BitmapText(``, {
+      font: '8px defaultfont',
+      align: 'left',
+    })
     this.textMode.anchor = new PIXI.Point(0, 0)
     this.rootContainer.addChild(this.textMode)
     this.textMode.position.set(5, 20)
     this.textMode.scale.set(3)
 
-    this.textAlive = new PIXI.extras.BitmapText(``, { font: '8px defaultfont', align: 'left' })
+    this.textAlive = new PIXI.extras.BitmapText(``, {
+      font: '8px defaultfont',
+      align: 'left',
+    })
     this.textAlive.anchor = new PIXI.Point(0, 0)
     this.rootContainer.addChild(this.textAlive)
     this.textAlive.position.set(500, 2)
@@ -186,7 +187,6 @@ export class LudumDare41Context {
 
     this.modeBar.init(this)
     this.rootContainer.addChild(this.modeBar.container)
-
   }
 
   onChoseCard = (cardInfo: ICard, dir: number) => {
@@ -233,16 +233,15 @@ export class LudumDare41Context {
     if (this.isDisconnected) {
       this.textMode.text = 'Disconnected from server! Refresh page to try again'
     } else {
-
       this.textMode.text = 'Trying to connect to server...'
 
       if (this.playerId) {
         this.textMode.text = 'Trying to connect to server...' + this.playerId
-        _.forEach(this.ninjas.items, c => {
+        _.forEach(this.ninjas.items, (c) => {
           if (c.id === this.playerId) {
-
             if (c.isAlive) {
-              this.textMode.text = 'You are the green human! Survive the longest'
+              this.textMode.text =
+                'You are the green human! Survive the longest'
 
               if (c.className && c.className !== 'human') {
                 if (c.className === 'robot') {
@@ -261,18 +260,13 @@ export class LudumDare41Context {
                   this.textMode.text = "You're a pirate bandit!"
                 }
               }
-
+            } else {
+              this.textMode.text =
+                'You are dead! Respawn or wait for the next round'
             }
-            else {
-              this.textMode.text = 'You are dead! Respawn or wait for the next round'
-            }
-
           }
         })
       }
     }
-
   }
-
 }
-

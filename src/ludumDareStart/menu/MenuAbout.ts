@@ -5,16 +5,14 @@ import { MenuInputControl } from 'engine/input/MenuInputControl'
 import { MenuGeneric } from 'engine/menus/MenuGeneric'
 
 export class MenuAbout {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
   menu: MenuGeneric = new MenuGeneric()
-  
+
   modeName = 'about'
 
   init(sge: SimpleGameEngine) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
@@ -30,7 +28,4 @@ export class MenuAbout {
   update(menuInput: MenuInputControl) {
     this.menu.update(menuInput)
   }
-
-
-
 }

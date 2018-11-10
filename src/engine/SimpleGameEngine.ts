@@ -12,7 +12,6 @@ import { Keyboard } from 'engine/input/Keyboard'
 // }
 
 export class SimpleGameEngine {
-
   pixiMode = 'unknown'
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer = null
   stage: PIXI.Container = null
@@ -24,12 +23,11 @@ export class SimpleGameEngine {
   keyboard = new Keyboard()
 
   init() {
-
     console.log('starting SGE')
 
-    let type = "WebGL"
+    let type = 'WebGL'
     if (!PIXI.utils.isWebGLSupported()) {
-      type = "canvas"
+      type = 'canvas'
     }
 
     PIXI.utils.sayHello(type)
@@ -41,7 +39,6 @@ export class SimpleGameEngine {
 
   resize() {
     if (this.renderer) {
-
       let w = window
       let d = document
       let e = d.documentElement
@@ -50,20 +47,16 @@ export class SimpleGameEngine {
       let height = w.innerHeight || e.clientHeight || g.clientHeight
 
       this.renderer.resize(width, height)
-
     }
   }
 
   createRenderer() {
     // Create the renderer
-    let renderer = this.renderer = PIXI.autoDetectRenderer(
-      256, 256,
-      {
-        antialias: false,
-        transparent: false,
-        resolution: 1,
-      }
-    )
+    let renderer = (this.renderer = PIXI.autoDetectRenderer(256, 256, {
+      antialias: false,
+      transparent: false,
+      resolution: 1,
+    }))
 
     if (this.renderer instanceof PIXI.CanvasRenderer) {
       this.pixiMode = 'canvas'
@@ -72,8 +65,8 @@ export class SimpleGameEngine {
     }
 
     // renderer.backgroundColor = 0x061639
-    renderer.view.style.position = "absolute"
-    renderer.view.style.display = "block"
+    renderer.view.style.position = 'absolute'
+    renderer.view.style.display = 'block'
     renderer.autoResize = true
     renderer.resize(window.innerWidth, window.innerHeight)
 
@@ -84,8 +77,7 @@ export class SimpleGameEngine {
       document.body.appendChild(renderer.view)
     }
 
-
-    let stage = this.stage = new PIXI.Container()
+    let stage = (this.stage = new PIXI.Container())
     renderer.render(stage)
 
     return renderer
@@ -103,38 +95,52 @@ export class SimpleGameEngine {
   // Preloading
   _preloadBitmapFonts = []
   preloadBitmapFonts(files) {
-    _.forEach(files, (c) => { this._preloadBitmapFonts.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadBitmapFonts.push(c)
+    })
   }
   _preloadSprites = []
   preloadSprites(files) {
-    _.forEach(files, (c) => { this._preloadSprites.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadSprites.push(c)
+    })
   }
   _preloadSpritesheets = []
   preloadSpriteSheets(files) {
-    _.forEach(files, (c) => { this._preloadSpritesheets.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadSpritesheets.push(c)
+    })
   }
   _preloadTiledMaps = []
   preloadTiledMaps(files) {
-    _.forEach(files, (c) => { this._preloadTiledMaps.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadTiledMaps.push(c)
+    })
   }
   _preloadAudioSprites = []
   preloadAudioSprites(files) {
-    _.forEach(files, (c) => { this._preloadAudioSprites.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadAudioSprites.push(c)
+    })
   }
   _preloadPackedSprites = []
   preloadPackedSprites(files) {
-    _.forEach(files, (c) => { this._preloadPackedSprites.push(c) })
+    _.forEach(files, (c) => {
+      this._preloadPackedSprites.push(c)
+    })
   }
 
   preload(rootDirectory, onLoadedCallback: () => void) {
+    let loadingMessage = (this.loadingMessage = new PIXI.Text('Loading...', {
+      fontFamily: 'Arial',
+      fontSize: 64,
+      fill: 'white',
+    }))
 
-    let loadingMessage = this.loadingMessage = new PIXI.Text(
-      "Loading...",
-      { fontFamily: "Arial", fontSize: 64, fill: "white" }
-    )
-
-    let loader = this.loader = new PIXI.loaders.Loader()
-    loader.on("progress", (loader, resource) => { this.onloaderProgress(loader, resource) })
+    let loader = (this.loader = new PIXI.loaders.Loader())
+    loader.on('progress', (loader, resource) => {
+      this.onloaderProgress(loader, resource)
+    })
 
     _.forEach(this._preloadAudioSprites, (c) => {
       loader.add(c, rootDirectory + '/sounds/' + c + '.json')
@@ -166,17 +172,17 @@ export class SimpleGameEngine {
       // .add("public/maps/tiled-test.json")
       // .add("public/sounds/audioSprite.json")
       .load(() => {
-
         _.forEach(this._preloadSpritesheets, (c) => {
           // Pixel mode!
-          this.loader.resources[c].texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST
+          this.loader.resources[c].texture.baseTexture.scaleMode =
+            PIXI.SCALE_MODES.NEAREST
         })
 
         this.loadingMessage.visible = false
-        let frameRateText = this.frameRateText = new PIXI.extras.BitmapText(
-          "",
+        let frameRateText = (this.frameRateText = new PIXI.extras.BitmapText(
+          '',
           { font: '16px defaultfont' }
-        )
+        ))
         frameRateText.position.set(0, 2)
         this.stage.addChild(frameRateText)
 
@@ -184,7 +190,7 @@ export class SimpleGameEngine {
       })
   }
   onloaderProgress(loader, resource) {
-    let text = Math.floor(loader.progress) + "%" + " - " + resource.url
+    let text = Math.floor(loader.progress) + '%' + ' - ' + resource.url
     console.log('loading', text)
     this.loadingMessage.text = text
     this.renderer.render(this.stage)
@@ -204,11 +210,11 @@ export class SimpleGameEngine {
     return res.texture
   }
 
-
-
   startGameLoop() {
     this.frameRateStart = new Date().getTime()
-    requestAnimationFrame(() => { this.gameLoop() })
+    requestAnimationFrame(() => {
+      this.gameLoop()
+    })
   }
   frameNum = 0
   frameNumThisInterval = 0
@@ -226,21 +232,21 @@ export class SimpleGameEngine {
   frameMaxLoad = 0
   frameAverageLoad = 0
 
-
   gameLoop() {
-
     this.lastPerfStart = this.perfStart
     this.lastPerfMid = this.perfMid
     this.lastPerfEnd = this.perfEnd
 
-    let lastTimeA = (this.lastPerfMid - this.lastPerfStart)
-    let lastTimeB = (this.lastPerfEnd - this.lastPerfStart)
+    let lastTimeA = this.lastPerfMid - this.lastPerfStart
+    let lastTimeB = this.lastPerfEnd - this.lastPerfStart
     let frameLoad = lastTimeB
     this.frameLoads.push(frameLoad)
     // ${lastTimeA}/${lastTimeB}/
 
     // Loop this function at 60 frames per second
-    requestAnimationFrame(() => { this.gameLoop() })
+    requestAnimationFrame(() => {
+      this.gameLoop()
+    })
 
     this.perfStart = performance.now()
 
@@ -251,15 +257,26 @@ export class SimpleGameEngine {
     this.frameNum++
     this.frameNumThisInterval++
     const maxMsPerFrame = 16.6
-    
-    this.frameRateText.text = `${this.framesPerSecond || '--'} | ${numeral(this.frameAverageLoad / maxMsPerFrame).format('0%')} | ${numeral(this.frameMaxLoad / maxMsPerFrame).format('0%')} | ${numeral(this.frameMaxLoad).format('0')}ms | ${this.frameNum % 60} ${this.frameMaxLoad / maxMsPerFrame > 0.5 ? 'WARNING' : ''} `
+
+    this.frameRateText.text = `${this.framesPerSecond || '--'} | ${numeral(
+      this.frameAverageLoad / maxMsPerFrame
+    ).format('0%')} | ${numeral(this.frameMaxLoad / maxMsPerFrame).format(
+      '0%'
+    )} | ${numeral(this.frameMaxLoad).format('0')}ms | ${this.frameNum % 60} ${
+      this.frameMaxLoad / maxMsPerFrame > 0.5 ? 'WARNING' : ''
+    } `
     this.onUpdate()
 
     // FPS counter
     let fpsMultiplier = 2
     let now = new Date().getTime()
     if (now - this.frameRateStart >= 1000 * fpsMultiplier) {
-      this.framesPerSecond = Math.floor(this.frameNumThisInterval * (now - this.frameRateStart) / 1000 / fpsMultiplier / fpsMultiplier)
+      this.framesPerSecond = Math.floor(
+        (this.frameNumThisInterval * (now - this.frameRateStart)) /
+          1000 /
+          fpsMultiplier /
+          fpsMultiplier
+      )
       this.frameNumThisInterval = 0
       this.frameRateStart = now
 
@@ -282,11 +299,4 @@ export class SimpleGameEngine {
       this.onUpdateCallback()
     }
   }
-
 }
-
-
-
-
-
-

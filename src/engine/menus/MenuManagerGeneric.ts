@@ -9,7 +9,6 @@ let menuInputControl = new MenuInputControl()
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 export class MenuManagerGeneric {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -18,7 +17,6 @@ export class MenuManagerGeneric {
 
   currentItemX = 0
   currentItemY = 0
-
 
   init(sge: SimpleGameEngine, savedSettingsKey: string) {
     this.sge = sge
@@ -45,23 +43,21 @@ export class MenuManagerGeneric {
   }
 
   changeMode(newMode) {
-
     console.log('new menu mode', newMode)
 
     this.container.removeChildren()
 
     settingsGeneric.updateSettings({ menuMode: newMode })
 
-    this.currentMenu = _.find(this.menus, (c) => c.modeName === newMode) || this.menus[0]
+    this.currentMenu =
+      _.find(this.menus, (c) => c.modeName === newMode) || this.menus[0]
 
     console.log('mode found', this.currentMenu.modeName, this.menus)
 
     this.container.addChild(this.currentMenu.container)
-
   }
 
   update() {
-
     menuInputControl.update()
     this.currentMenu.update(menuInputControl)
 
@@ -70,6 +66,4 @@ export class MenuManagerGeneric {
       this.currentItemY = (this.currentMenu.menu.currentItemY || 1) + 25
     }
   }
-
 }
-

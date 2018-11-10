@@ -1,18 +1,17 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes } from 'engine/input/Keyboard';
+import { KeyCodes } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
-import { Bounds } from './Bounds';
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer'
+import { Bounds } from './Bounds'
 
 export class HatCounterManager {
-
   context: LudumDare40Context
 
   items: HatCounter[] = []
@@ -38,15 +37,16 @@ export class HatCounterManager {
   }
 
   destroyMarked() {
-    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+    let removed = _.remove(this.items, (c) => c.isReadyToBeDestroyed)
 
     if (removed.length > 0) {
-
       _.forEach(removed, (c) => {
         this.context.layerObjects.removeChild(c.container)
       })
 
-      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+      console.log(
+        `cleaning up ${removed.length} items - ${this.items.length} left`
+      )
     }
   }
 
@@ -57,11 +57,9 @@ export class HatCounterManager {
     })
     this.items = []
   }
-
 }
 
 export class HatCounter {
-
   context: LudumDare40Context
   container = new PIXI.Container()
 
@@ -72,34 +70,35 @@ export class HatCounter {
   init(cx: LudumDare40Context) {
     this.context = cx
 
-    this.text = new PIXI.extras.BitmapText(`99`, { font: '8px defaultfont', align: 'left' })
+    this.text = new PIXI.extras.BitmapText(`99`, {
+      font: '8px defaultfont',
+      align: 'left',
+    })
     this.text.anchor = new PIXI.Point(0, 0)
     this.container.addChild(this.text)
     this.text.position.set(-2.25, 0)
-
   }
 
   destroy() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
     this.isReadyToBeDestroyed = true
   }
   update() {
-
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
 
     if (this.type === 'hat') {
       this.text.text = '' + this.context.getPlayerHatCount()
-    }
-    else {
+    } else {
       this.text.text = '' + this.context.getPlayerLavaCount()
     }
   }
-
-
 
   moveTo(x, y) {
     this.container.x = x
     this.container.y = y
   }
-
 }

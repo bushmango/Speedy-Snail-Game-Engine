@@ -21,15 +21,13 @@ app.get('/ping', (req, res) => {
   res.send('pong')
 })
 
-
-
 import * as socketIo from 'socket.io'
 
 import * as http from 'http'
-import { IMessage } from 'ludumDare41/server/IMessage';
+import { IMessage } from 'ludumDare41/server/IMessage'
 
 var httpServ = new http.Server(app)
-var io = socketIo(httpServ);
+var io = socketIo(httpServ)
 
 httpServ.listen(port, () => {
   console.log(`Sockets Server listening on port ${port}!`)
@@ -48,7 +46,7 @@ httpServ.listen(port, () => {
   }
 
   io.on('connection', (socket) => {
-    console.log('W>', 'user connected');
+    console.log('W>', 'user connected')
 
     let player = server.addPlayer(false, socket, true)
     socket.emit('event', {
@@ -60,9 +58,9 @@ httpServ.listen(port, () => {
     server.sendMapTo(player)
 
     socket.on('disconnect', () => {
-      console.log('W>', 'user d/c');
+      console.log('W>', 'user d/c')
       // Kill this player
-      _.forEach(server.players, c => {
+      _.forEach(server.players, (c) => {
         if (c.socket === socket) {
           //c.isAlive = false
           c.isBot = true
@@ -74,24 +72,20 @@ httpServ.listen(port, () => {
             isBot: true,
             isAlive: c.isAlive,
           })
-
         }
 
         // TODO: send to client that they are dead
       })
-
-    });
+    })
     socket.on('event', (data) => {
-      console.log('W>', 'event: ', data);
-      _.forEach(server.players, c => {
+      console.log('W>', 'event: ', data)
+      _.forEach(server.players, (c) => {
         if (c.socket === socket) {
-          console.log('W>', 'processed: ', data);
+          console.log('W>', 'processed: ', data)
           server.receive(c, data)
           return false
         }
       })
-
-    });
-  });
-
+    })
+  })
 })

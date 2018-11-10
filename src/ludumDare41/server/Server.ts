@@ -1,12 +1,23 @@
 // import { _ } from './importsLodashsServer'
 import * as _ from 'lodash'
 
-const delay = ms => new Promise(res => setTimeout(res, ms))
+const delay = (ms) => new Promise((res) => setTimeout(res, ms))
 const fastServer = false
 
 import { IMessage, IClientMesssage, IMove, ITileSpawn } from './IMessage'
 
-import { ICard, ICardAndDir, standardDeck, deadHand, zombieHand, wizardDeck, pirateDeck, catDeck, robotDeck, ninjaDeck } from './CardInfo'
+import {
+  ICard,
+  ICardAndDir,
+  standardDeck,
+  deadHand,
+  zombieHand,
+  wizardDeck,
+  pirateDeck,
+  catDeck,
+  robotDeck,
+  ninjaDeck,
+} from './CardInfo'
 
 export interface IMapSpot {
   x: number
@@ -17,12 +28,12 @@ export interface IMapSpot {
 }
 
 export interface IPlayer {
-  id: number,
-  hand: ICard[],
-  deck: ICard[],
-  discard: ICard[],
-  chosenCards: ICardAndDir[],
-  isAlive: boolean,
+  id: number
+  hand: ICard[]
+  deck: ICard[]
+  discard: ICard[]
+  chosenCards: ICardAndDir[]
+  isAlive: boolean
   x: number
   y: number
   isBot: boolean
@@ -31,19 +42,19 @@ export interface IPlayer {
 }
 
 export interface IBullet {
-  id: number,
+  id: number
   x: number
   y: number
   dir: number
-  isAlive: boolean,
-  idx: number,
+  isAlive: boolean
+  idx: number
 }
 
 export interface IPowerup {
-  id: number,
+  id: number
   x: number
   y: number
-  isAlive: boolean,
+  isAlive: boolean
 }
 
 export function log(...message) {
@@ -57,7 +68,6 @@ export function logError(...message) {
 }
 
 export class Server {
-
   players: IPlayer[] = []
   bullets: IBullet[] = []
   powerups: IPowerup[] = []
@@ -98,7 +108,7 @@ export class Server {
   _replacePlayer = (isBot: boolean, socket: any = null) => {
     let replacement: IPlayer = null
 
-    _.forEach(_.shuffle(this.players), c => {
+    _.forEach(_.shuffle(this.players), (c) => {
       if (c.isBot && c.isAlive) {
         c.isBot = isBot
         c.socket = socket
@@ -153,22 +163,20 @@ export class Server {
       y: -1,
       isBot,
       socket,
-      noInputCounter: 0
+      noInputCounter: 0,
     }
     // log('player deck', player.deck)
     this.players.push(player)
     return player
-
   }
 
   wait = async () => await delay(this.tickDelay)
   waitFor = async (ms) => await delay(ms)
 
   tick = async () => {
-
     while (this.continueRunning) {
       log('waiting for players')
-      while (_.every(this.players, c => c.isBot)) {
+      while (_.every(this.players, (c) => c.isBot)) {
         await this.wait()
       }
 
@@ -177,7 +185,7 @@ export class Server {
       await this.spawnMap()
       await this.spawnPlayers()
 
-      while (_.some(this.players, c => c.isAlive)) {
+      while (_.some(this.players, (c) => c.isAlive)) {
         log('some alive players')
         await this.addLava()
         await this.dealCards()
@@ -204,7 +212,6 @@ export class Server {
     }
   }
 
-
   sendToAllPlayers(message: IMessage) {
     if (this.onLocalMessage) {
       this.onLocalMessage(message)
@@ -215,7 +222,9 @@ export class Server {
     // TODO: send via sockets or somesuch
   }
   sendToPlayer(player: IPlayer, message: IMessage) {
-    if (player.isBot) { return }
+    if (player.isBot) {
+      return
+    }
 
     if (this.onLocalMessage) {
       if (player === this.localPlayer) {
@@ -238,18 +247,18 @@ export class Server {
       return
     }
     if (clientMessage.command === 'play') {
-
-      let card = _.find(player.hand, c => c.name === clientMessage.cardName)
+      let card = _.find(player.hand, (c) => c.name === clientMessage.cardName)
       if (card) {
-        player.chosenCards = [{
-          card,
-          dir: clientMessage.direction,
-        }]
+        player.chosenCards = [
+          {
+            card,
+            dir: clientMessage.direction,
+          },
+        ]
         log('card chosen', player.id)
       } else {
         logWarn('dont have card', clientMessage.cardName)
       }
-
     } else {
       logWarn('unknown client message', clientMessage.command)
     }
@@ -290,11 +299,12 @@ export class Server {
 
       let gs = this.getMap(x, y)
       if (gs.t === 0 && gs.hasSomething === false) {
-
         if (checkPlayers) {
-          if (_.some(this.players, c => {
-            return (c.x === x && c.y === y)
-          })) {
+          if (
+            _.some(this.players, (c) => {
+              return c.x === x && c.y === y
+            })
+          ) {
             continue
           }
         }
@@ -318,7 +328,7 @@ export class Server {
           x,
           y,
           hasSomething: false,
-          t: 0
+          t: 0,
         }
         this.map.push(gs)
       }
@@ -331,14 +341,22 @@ export class Server {
     }
     for (let i = 0; i < this.mapWidth; i++) {
       this.setTileSpawn(tileSpawns, i, 0, 1)
-      this.setTileSpawn(tileSpawns, this.mapWidth - i - 1, this.mapHeight - 1, 1)
+      this.setTileSpawn(
+        tileSpawns,
+        this.mapWidth - i - 1,
+        this.mapHeight - 1,
+        1
+      )
     }
     for (let i = 1; i < this.mapHeight - 1; i++) {
       this.setTileSpawn(tileSpawns, 0, i, 1)
-      this.setTileSpawn(tileSpawns, this.mapWidth - 1, this.mapHeight - i - 1, 1)
+      this.setTileSpawn(
+        tileSpawns,
+        this.mapWidth - 1,
+        this.mapHeight - i - 1,
+        1
+      )
     }
-
-
 
     let numLava = _.random(5, 25, false)
     for (let i = 0; i < numLava; i++) {
@@ -362,7 +380,7 @@ export class Server {
       tileSpawns: tileSpawns,
     })
 
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       this._switchDeck(c, standardDeck)
     })
 
@@ -387,7 +405,6 @@ export class Server {
       }
     }
 
-
     await this.wait()
   }
 
@@ -400,12 +417,9 @@ export class Server {
       this.addPlayer(true)
     }
 
-
-    _.forEach(this.players, c => {
-
+    _.forEach(this.players, (c) => {
       let space = this.findOpenSpace(true)
       if (space) {
-
         c.isAlive = true
         c.x = space.x
         c.y = space.y
@@ -421,7 +435,6 @@ export class Server {
       } else {
         logError('no space for player')
       }
-
     })
 
     await this.wait()
@@ -430,58 +443,54 @@ export class Server {
   sendMapTo = (player: IPlayer) => {
     // Send map
     let tileSpawns = [] as ITileSpawn[]
-    _.forEach(this.map, c => {
+    _.forEach(this.map, (c) => {
       if (c.t !== 0) {
         tileSpawns.push({
           x: c.x,
           y: c.y,
-          t: c.t
+          t: c.t,
         })
       }
     })
-    this.sendToPlayer(player,
-      {
-        command: 'resetMap',
-        tileSpawns: tileSpawns,
-      })
+    this.sendToPlayer(player, {
+      command: 'resetMap',
+      tileSpawns: tileSpawns,
+    })
     // Send player spawns
-    _.forEach(this.players, c => {
-      this.sendToPlayer(player,
-        {
-          command: 'spawn',
-          id: c.id,
-          x: c.x,
-          y: c.y,
-          isBot: c.isBot,
-          isAlive: c.isAlive,
-        })
+    _.forEach(this.players, (c) => {
+      this.sendToPlayer(player, {
+        command: 'spawn',
+        id: c.id,
+        x: c.x,
+        y: c.y,
+        isBot: c.isBot,
+        isAlive: c.isAlive,
+      })
     })
 
     // Send bullet spawns
-    _.forEach(this.bullets, c => {
+    _.forEach(this.bullets, (c) => {
       if (c.isAlive) {
-        this.sendToPlayer(player,
-          {
-            command: 'spawnBullet',
-            id: c.id,
-            x: c.x,
-            y: c.y,
-            dir: c.dir,
-            idx: c.idx,
-          })
+        this.sendToPlayer(player, {
+          command: 'spawnBullet',
+          id: c.id,
+          x: c.x,
+          y: c.y,
+          dir: c.dir,
+          idx: c.idx,
+        })
       }
     })
 
     // Send powerup spawns
-    _.forEach(this.powerups, c => {
+    _.forEach(this.powerups, (c) => {
       if (c.isAlive) {
-        this.sendToPlayer(player,
-          {
-            command: 'spawnPowerup',
-            id: c.id,
-            x: c.x,
-            y: c.y,
-          })
+        this.sendToPlayer(player, {
+          command: 'spawnPowerup',
+          id: c.id,
+          x: c.x,
+          y: c.y,
+        })
       }
     })
   }
@@ -500,8 +509,7 @@ export class Server {
     })
     log('dealCards')
 
-    _.forEach(this.players, c => {
-
+    _.forEach(this.players, (c) => {
       if (c.isBot) {
         c.hand = zombieHand
       }
@@ -511,15 +519,14 @@ export class Server {
         c.deck = c.hand
         this.sendToPlayer(c, {
           command: 'dealt',
-          cards: c.hand
+          cards: c.hand,
         })
       }
 
       if (!c.isBot && c.isAlive) {
-
         // Discard hand
         c.chosenCards = []
-        _.forEach(c.hand, d => {
+        _.forEach(c.hand, (d) => {
           c.discard.push(d)
         })
         c.hand = []
@@ -542,7 +549,7 @@ export class Server {
 
         this.sendToPlayer(c, {
           command: 'dealt',
-          cards: _.cloneDeep(c.hand)
+          cards: _.cloneDeep(c.hand),
         })
       }
     })
@@ -558,19 +565,20 @@ export class Server {
     log('waitForCards')
 
     // calculate moves for vots
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       if (!c.isBot || !c.isAlive) {
         return
       }
-      c.chosenCards = [{
-        card: c.hand[0],
-        dir: _.random(0, 4 - 1, false)
-      }]
+      c.chosenCards = [
+        {
+          card: c.hand[0],
+          dir: _.random(0, 4 - 1, false),
+        },
+      ]
     })
 
     let numTicks = 10
     for (let iTicks = 0; iTicks < numTicks; iTicks++) {
-
       this.sendToAllPlayers({
         command: 'mode',
         percent: (iTicks + 1) / numTicks,
@@ -583,7 +591,10 @@ export class Server {
         log('cards chosen (local)!')
         break
       } else {
-        let doWait = _.some(this.players, c => c.isAlive && !c.isBot && c.chosenCards.length === 0)
+        let doWait = _.some(
+          this.players,
+          (c) => c.isAlive && !c.isBot && c.chosenCards.length === 0
+        )
         if (!doWait) {
           log('cards chosen (server)!')
           break
@@ -591,7 +602,7 @@ export class Server {
       }
     }
 
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       if (c.isAlive && !c.isBot && c.chosenCards.length === 0) {
         //afk
         c.noInputCounter++
@@ -621,40 +632,36 @@ export class Server {
     })
     log('resolveRespawns')
 
-    _.forEach(this.players, c => {
-
+    _.forEach(this.players, (c) => {
       if (!c.isBot && !c.isAlive && c.chosenCards.length > 0) {
         let cardAndDir = c.chosenCards[0]
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
         if (card && card.type === 'respawn') {
-
-          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+          for (
+            let iCardCaction = 0;
+            iCardCaction < card.actions.length;
+            iCardCaction++
+          ) {
             let action = card.actions[iCardCaction]
 
             if (action && action.type === 'respawn') {
-
               // Find a target
               if (c.socket) {
                 let replacement = this._replacePlayer(false, c.socket)
                 if (replacement) {
                   this._changeToBot(c)
-                  this.sendToPlayer(replacement,
-                    {
-                      command: 'welcome',
-                      id: replacement.id,
-                    }
-                  )
+                  this.sendToPlayer(replacement, {
+                    command: 'welcome',
+                    id: replacement.id,
+                  })
                 }
-
               }
-
             }
           }
         }
       }
-
     })
 
     // await this.wait()
@@ -668,15 +675,18 @@ export class Server {
     log('resoveAttacks')
 
     let moves = [] as IMove[]
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       if (c.isAlive && c.chosenCards.length > 0) {
-
         let cardAndDir = c.chosenCards[0]
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
         if (card && card.type === 'attack') {
-          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+          for (
+            let iCardCaction = 0;
+            iCardCaction < card.actions.length;
+            iCardCaction++
+          ) {
             let action = card.actions[iCardCaction]
 
             if (c.isAlive && action && action.type === 'shoot') {
@@ -693,11 +703,9 @@ export class Server {
               if (gs) {
                 this._addBullet(xp, yp, correctedDir, action.idx)
               }
-
             }
 
             if (c.isAlive && action.type === 'attack') {
-
               let correctedDir = dir
               if (action.dir) {
                 correctedDir += action.dir
@@ -727,7 +735,7 @@ export class Server {
                 }
 
                 // Anyone here
-                _.forEach(this.players, d => {
+                _.forEach(this.players, (d) => {
                   if (d.isAlive) {
                     // Hurt here
                     if (d.x === gs.x && d.y === gs.y) {
@@ -743,14 +751,12 @@ export class Server {
                 })
               }
 
-
               // continue
             }
           }
         }
       }
     })
-
 
     this.sendToAllPlayers({
       command: 'moves',
@@ -771,25 +777,26 @@ export class Server {
     })
     log('resolveMoves')
 
-    this.players = _.sortBy(this.players, c => c.x + c.y * this.mapWidth)
+    this.players = _.sortBy(this.players, (c) => c.x + c.y * this.mapWidth)
 
     // sort by x/y position
     // process one at a time
     let moves = [] as IMove[]
-    _.forEach(this.players, c => {
-
+    _.forEach(this.players, (c) => {
       if (c.isBot === forBots && c.isAlive && c.chosenCards.length > 0) {
         let cardAndDir = c.chosenCards[0]
         let card = cardAndDir.card
         let dir = cardAndDir.dir
 
         if (card && card.type === 'move') {
-
-          for (let iCardCaction = 0; iCardCaction < card.actions.length; iCardCaction++) {
+          for (
+            let iCardCaction = 0;
+            iCardCaction < card.actions.length;
+            iCardCaction++
+          ) {
             let action = card.actions[iCardCaction]
 
             if (action && c.isAlive && action.type === 'move') {
-
               let { xo, yo } = this.convertDirToOffsets(dir)
 
               // can we move here?
@@ -802,7 +809,6 @@ export class Server {
           }
         }
       }
-
     })
 
     this.sendToAllPlayers({
@@ -842,7 +848,12 @@ export class Server {
     let gs = this.getMapSafe(x, y)
     if (gs && gs.t === 1) {
       // Dont break outside barrier
-      if (x !== 0 && y !== 0 && x !== this.mapWidth - 1 && y !== this.mapHeight - 1) {
+      if (
+        x !== 0 &&
+        y !== 0 &&
+        x !== this.mapWidth - 1 &&
+        y !== this.mapHeight - 1
+      ) {
         gs.t = 0
         moves.push({
           changeTile: true,
@@ -858,13 +869,11 @@ export class Server {
     let killBullet = false
     let gs = this.getMapSafe(c.x, c.y)
     if (gs) {
-
       if (gs.t === 2) {
         // Tree
         killBullet = true
         this._move_killTree(moves, c.x, c.y)
-      }
-      else if (gs.t === 1) {
+      } else if (gs.t === 1) {
         // Stone
         killBullet = true
         if (c.idx === 3) {
@@ -872,7 +881,7 @@ export class Server {
         }
       } else {
         // Search for player
-        _.forEach(this.players, d => {
+        _.forEach(this.players, (d) => {
           if (d.isAlive) {
             if (c.x === d.x && c.y === d.y) {
               killBullet = true
@@ -902,8 +911,7 @@ export class Server {
 
     let moves = [] as IMove[]
 
-    _.forEach(this.bullets, c => {
-
+    _.forEach(this.bullets, (c) => {
       log('bullet', c)
 
       let killBullet = false
@@ -920,7 +928,6 @@ export class Server {
         let gs = this.getMapSafe(xp, yp)
 
         if (gs) {
-
           // Move bullet
           c.x = xp
           c.y = yp
@@ -947,7 +954,6 @@ export class Server {
         })
         c.isAlive = false
       }
-
     })
 
     if (moves.length > 0) {
@@ -978,7 +984,6 @@ export class Server {
       dir: bullet.dir,
       idx: bullet.idx,
     })
-
   }
 
   _addPowerup = (x, y) => {
@@ -995,23 +1000,28 @@ export class Server {
       x: powerup.x,
       y: powerup.y,
     })
-
   }
-
 
   checkVictory = async () => {
     log('checkVictory')
 
-    let aliveHumans = _.reduce(this.players, (sum, c) => sum + ((c.isAlive && !c.isBot) ? 1 : 0), 0)
-    let aliveBots = _.reduce(this.players, (sum, c) => sum + ((c.isAlive && c.isBot) ? 1 : 0), 0)
+    let aliveHumans = _.reduce(
+      this.players,
+      (sum, c) => sum + (c.isAlive && !c.isBot ? 1 : 0),
+      0
+    )
+    let aliveBots = _.reduce(
+      this.players,
+      (sum, c) => sum + (c.isAlive && c.isBot ? 1 : 0),
+      0
+    )
     log(aliveHumans, 'humans', aliveBots, 'bots')
     if (!aliveHumans) {
       // Kill everything
       log('no more alive humans')
-      _.forEach(this.players, c => {
+      _.forEach(this.players, (c) => {
         c.isAlive = false
-      }
-      )
+      })
     }
 
     await this.wait()
@@ -1042,7 +1052,7 @@ export class Server {
     log('addLava')
 
     // Kill afk
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       if (c.isAlive && c.noInputCounter >= 3) {
         this._addLavaAt(c.x, c.y)
       }
@@ -1063,7 +1073,7 @@ export class Server {
 
     // Check for lava deaths
     let moves = [] as IMove[]
-    _.forEach(this.players, c => {
+    _.forEach(this.players, (c) => {
       if (c.isAlive) {
         let gs = this.getMapSafe(c.x, c.y)
         if (gs && gs.t === 3) {
@@ -1091,8 +1101,12 @@ export class Server {
     let xo = 0
     let yo = 0
 
-    if (dir < 0) { dir += 4 }
-    if (dir >= 4) { dir -= 4 }
+    if (dir < 0) {
+      dir += 4
+    }
+    if (dir >= 4) {
+      dir -= 4
+    }
 
     switch (dir) {
       case 0:
@@ -1115,10 +1129,11 @@ export class Server {
   }
 
   _checkSpotForPowerup(moves: IMove[], player: IPlayer) {
-    if (!player.isAlive || player.isBot) { return }
-    _.forEach(this.powerups, powerup => {
+    if (!player.isAlive || player.isBot) {
+      return
+    }
+    _.forEach(this.powerups, (powerup) => {
       if (powerup.isAlive && powerup.x === player.x && powerup.y === player.y) {
-
         // There's a powerup here!
         powerup.isAlive = false
         moves.push({
@@ -1127,26 +1142,30 @@ export class Server {
             id: powerup.id,
             x: powerup.x,
             y: powerup.y,
-          }
+          },
         })
 
         let classes = [
           {
             name: 'wizard',
             deck: wizardDeck,
-          }, {
+          },
+          {
             name: 'pirate',
             deck: pirateDeck,
-          }, {
+          },
+          {
             name: 'cat',
             deck: catDeck,
-          }, {
+          },
+          {
             name: 'robot',
             deck: robotDeck,
-          }, {
+          },
+          {
             name: 'ninja',
             deck: ninjaDeck,
-          }
+          },
         ]
         let randomClass = _.sample(classes)
 
@@ -1158,8 +1177,7 @@ export class Server {
             command: 'changeClass',
             id: player.id,
             className: randomClass.name,
-
-          }
+          },
         })
 
         return false
@@ -1168,7 +1186,6 @@ export class Server {
   }
 
   tryMovePlayer(moves: IMove[], player: IPlayer, xo: number, yo: number) {
-
     let xp = player.x + xo
     let yp = player.y + yo
     let gs = this.getMapSafe(xp, yp)
@@ -1204,10 +1221,13 @@ export class Server {
       return true
     }
 
-
     // Is there another player here?
     let isValid = true
-    for (let iOtherPlayer = 0; iOtherPlayer < this.players.length; iOtherPlayer++) {
+    for (
+      let iOtherPlayer = 0;
+      iOtherPlayer < this.players.length;
+      iOtherPlayer++
+    ) {
       let otherPlayer = this.players[iOtherPlayer]
       if (otherPlayer.isAlive && otherPlayer.x === xp && otherPlayer.y == yp) {
         // Uh oh, another player is here
@@ -1228,9 +1248,7 @@ export class Server {
       })
 
       this._checkSpotForPowerup(moves, player)
-
     }
     return isValid
-
   }
 }

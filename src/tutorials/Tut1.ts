@@ -7,26 +7,22 @@ const { TextureCache } = PIXI.utils
 
 let pixiMode = 'unknown'
 export function run() {
-
   console.log('Running tutorial 1')
 
   // Create the renderer
-  let renderer = PIXI.autoDetectRenderer(
-    256, 256,
-    {
-      antialias: false,
-      transparent: false,
-      resolution: 1,
-    }
-  )
+  let renderer = PIXI.autoDetectRenderer(256, 256, {
+    antialias: false,
+    transparent: false,
+    resolution: 1,
+  })
   if (renderer instanceof PIXI.CanvasRenderer) {
     pixiMode = 'canvas'
   } else {
     pixiMode = 'openGl'
   }
   // renderer.backgroundColor = 0x061639
-  renderer.view.style.position = "absolute"
-  renderer.view.style.display = "block"
+  renderer.view.style.position = 'absolute'
+  renderer.view.style.display = 'block'
   renderer.autoResize = true
   renderer.resize(window.innerWidth, window.innerHeight)
   document.body.appendChild(renderer.view)
@@ -34,23 +30,22 @@ export function run() {
   let stage = new PIXI.Container()
   renderer.render(stage)
 
-  PIXI.loader.on("progress", onloaderProgress)
+  PIXI.loader.on('progress', onloaderProgress)
   PIXI.loader
-    .add("public/images/test-ship.png")
-    .add("public/images/test-tileset.png")
+    .add('public/images/test-ship.png')
+    .add('public/images/test-tileset.png')
     .load(onLoaded)
 
   function onloaderProgress(loader, resource) {
-    console.log(loader.progress + "%" + " - " + resource.url)
+    console.log(loader.progress + '%' + ' - ' + resource.url)
   }
 
   let rocket: PIXI.Sprite = null
   let message: PIXI.Text = null
   function onLoaded() {
-
     // Simple Sprite
     let sprite = new Sprite(
-      PIXI.loader.resources["public/images/test-ship.png"].texture
+      PIXI.loader.resources['public/images/test-ship.png'].texture
     )
 
     sprite.x = 96
@@ -62,7 +57,7 @@ export function run() {
 
     // Tileset sprite
     // Create the `tileset` sprite from the texture
-    let texture = TextureCache["public/images/test-tileset.png"]
+    let texture = TextureCache['public/images/test-tileset.png']
 
     let size = 32
 
@@ -77,14 +72,14 @@ export function run() {
     // Add the rocket to the stage
     stage.addChild(rocket)
 
+    message = new PIXI.Text('Hello Pixi!', {
+      fontFamily: 'Arial',
+      fontSize: 32,
+      fill: 'white',
+    })
 
-    message = new PIXI.Text(
-      "Hello Pixi!",
-      { fontFamily: "Arial", fontSize: 32, fill: "white" }
-    );
-
-    message.position.set(0, 0);
-    stage.addChild(message);
+    message.position.set(0, 0)
+    stage.addChild(message)
 
     renderer.render(stage)
 
@@ -94,7 +89,6 @@ export function run() {
 
   let frameNum = 0
   function gameLoop() {
-
     // Loop this function at 60 frames per second
     requestAnimationFrame(gameLoop)
 
@@ -110,6 +104,4 @@ export function run() {
   function stateUpdate() {
     rocket.x += 1
   }
-
 }
-

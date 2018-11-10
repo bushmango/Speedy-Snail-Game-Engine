@@ -19,7 +19,7 @@ const { TextureCache } = PIXI.utils
 
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-import { LudumDare41Context } from 'ludumDare41/LudumDare41Context';
+import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 import * as ldSounds from 'ludumDare41/sounds/ldSounds'
@@ -29,15 +29,12 @@ let sge = new SimpleGameEngine()
 let context = new LudumDare41Context()
 
 export function preload() {
-
   settingsGeneric.load('ludum-dare-start-v001')
 
   sge.preloadAudioSprites([
     // 'audioSprite',
   ])
-  sge.preloadBitmapFonts([
-    'defaultfont',
-  ])
+  sge.preloadBitmapFonts(['defaultfont'])
   sge.preloadSprites([
     // 'test-ship',
     'prariesnailgames',
@@ -48,16 +45,12 @@ export function preload() {
     'ase-512-16',
     'ase-512-8',
   ])
-  sge.preloadTiledMaps([
-  ])
-  sge.preloadPackedSprites([
-  ])
-
+  sge.preloadTiledMaps([])
+  sge.preloadPackedSprites([])
 }
 
 let pixiMode = 'unknown'
 export function run() {
-
   console.log('Running ludum dare 41 by Stevie Bushman')
 
   sge.init()
@@ -66,19 +59,15 @@ export function run() {
   let renderer = sge.renderer
 
   preload()
-  sge.preload(
-    '/public/ludumDare41',
-    () => {
-      onLoaded()
-    },
-  )
+  sge.preload('/public/ludumDare41', () => {
+    onLoaded()
+  })
 
   window.onresize = () => {
     sge.resize()
   }
 
   function onLoaded() {
-
     sge.onUpdateCallback = onUpdate
 
     // Now load sounds & music
@@ -89,9 +78,7 @@ export function run() {
     sge.startGameLoop()
   }
 
-
   function onUpdate() {
     context.onUpdate()
   }
-
 }

@@ -1,74 +1,74 @@
 // See: https://github.com/kittykatattack/learningPixi
 
-const { Rectangle, Sprite } = PIXI;
-const { TextureCache } = PIXI.utils;
+const { Rectangle, Sprite } = PIXI
+const { TextureCache } = PIXI.utils
 
-import { _ } from "engine/importsEngine";
-import { SimpleGameEngine } from "engine/SimpleGameEngine";
-import * as settingsGeneric from "engine/misc/settingsGeneric";
-import * as ldSounds from "ludumDare41/sounds/ldSounds";
-import { ParallaxContext } from "./ParallaxContext";
+import { _ } from 'engine/importsEngine'
+import { SimpleGameEngine } from 'engine/SimpleGameEngine'
+import * as settingsGeneric from 'engine/misc/settingsGeneric'
+import * as ldSounds from 'ludumDare41/sounds/ldSounds'
+import { ParallaxContext } from './ParallaxContext'
 
-let sge = new SimpleGameEngine();
+let sge = new SimpleGameEngine()
 
-let ctx = new ParallaxContext();
+let ctx = new ParallaxContext()
 
 export function preload() {
-  settingsGeneric.load("ludum-dare-start-v001");
+  settingsGeneric.load('ludum-dare-start-v001')
 
   sge.preloadAudioSprites([
     // 'audioSprite',
-  ]);
-  sge.preloadBitmapFonts(["defaultfont"]);
+  ])
+  sge.preloadBitmapFonts(['defaultfont'])
   sge.preloadSprites([
     // 'test-ship',
-    "prariesnailgames",
-    "parallax-buildings",
-    "player1"
-  ]);
+    'prariesnailgames',
+    'parallax-buildings',
+    'player1',
+  ])
   sge.preloadSpriteSheets([
-    "test-tileset",
-    "gui-tileset",
-    "ase-512-16",
-    "ase-512-8"
-  ]);
-  sge.preloadTiledMaps([]);
-  sge.preloadPackedSprites([]);
+    'test-tileset',
+    'gui-tileset',
+    'ase-512-16',
+    'ase-512-8',
+  ])
+  sge.preloadTiledMaps([])
+  sge.preloadPackedSprites([])
 }
 
-let pixiMode = "unknown";
+let pixiMode = 'unknown'
 export function run() {
-  console.log("Parallax test by Stevie Bushman");
+  console.log('Parallax test by Stevie Bushman')
 
   // Make crisp
-  PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+  PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
-  sge.init();
-  sge.createRenderer();
-  let stage = sge.stage;
-  let renderer = sge.renderer;
+  sge.init()
+  sge.createRenderer()
+  let stage = sge.stage
+  let renderer = sge.renderer
 
-  preload();
-  sge.preload("/public/parallax", () => {
-    onLoaded();
-  });
+  preload()
+  sge.preload('/public/parallax', () => {
+    onLoaded()
+  })
 
   window.onresize = () => {
-    sge.resize();
-  };
+    sge.resize()
+  }
 
   function onLoaded() {
-    sge.onUpdateCallback = onUpdate;
+    sge.onUpdateCallback = onUpdate
 
     // Now load sounds & music
-    ldSounds.load(sge);
+    ldSounds.load(sge)
 
-    ctx.onLoaded(sge);
+    ctx.onLoaded(sge)
 
-    sge.startGameLoop();
+    sge.startGameLoop()
   }
 
   function onUpdate() {
-    ctx.onUpdate();
+    ctx.onUpdate()
   }
 }

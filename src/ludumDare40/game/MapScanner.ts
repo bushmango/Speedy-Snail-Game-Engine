@@ -1,7 +1,7 @@
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { hats } from 'ludumDare40/entities/hats';
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
+import { hats } from 'ludumDare40/entities/hats'
 
-import * as mapLoader from 'ludumDare40/map/MapLoader';
+import * as mapLoader from 'ludumDare40/map/MapLoader'
 
 export class MapScanner {
   frames = 0
@@ -11,22 +11,19 @@ export class MapScanner {
   isScanning = true
   scanY = 0
   update(context: LudumDare40Context) {
-
     let hidden = 0.15
 
     this.frames++
     let numHats = context.player.hats.hats.length
     if (!this.isScanning) {
-
       // if (numHats !== this.lastHats) {
-      //   
+      //
       //   this.isScanning = true
       //   this.scanY = 0
       // }
       this.lastHats = numHats
       this.isScanning = true
       this.scanY = 0
-
     } else {
       // Scan and update
       let tm = context.tileMap
@@ -35,7 +32,6 @@ export class MapScanner {
       if (j >= tm.blockHeight) {
         this.isScanning = false
       } else {
-
         for (let i = 0; i < tm.blockWidth; i++) {
           let gs = tm.getTileAt(i, j)
 
@@ -74,5 +70,4 @@ export class MapScanner {
       }
     }
   }
-
 }

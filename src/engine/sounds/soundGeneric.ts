@@ -1,4 +1,3 @@
-
 import * as howler from 'howler'
 
 let devMute = false
@@ -54,6 +53,4 @@ export function play(soundKey) {
   if (!devMute && !settingsGeneric.getSettings().muteSound) {
     soundSprite.play(soundKey)
   }
-
 }
-

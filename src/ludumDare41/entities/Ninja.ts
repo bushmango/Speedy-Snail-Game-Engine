@@ -62,7 +62,6 @@ const ninjaFramesHelper = [
 ]
 
 export class NinjaManager {
-
   context: LudumDare41Context
 
   items: Ninja[] = []
@@ -88,12 +87,14 @@ export class NinjaManager {
   }
 
   destroyMarked() {
-    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+    let removed = _.remove(this.items, (c) => c.isReadyToBeDestroyed)
     if (removed.length > 0) {
       _.forEach(removed, (c) => {
         this.context.layerObjects.removeChild(c.container)
       })
-      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+      console.log(
+        `cleaning up ${removed.length} items - ${this.items.length} left`
+      )
     }
   }
 
@@ -107,7 +108,6 @@ export class NinjaManager {
 }
 
 export class Ninja {
-
   context: LudumDare41Context
   container = new PIXI.Container()
 
@@ -130,10 +130,20 @@ export class Ninja {
   init(cx: LudumDare41Context) {
     this.context = cx
 
-    this.body = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 3, 1)
+    this.body = spriteCreator.create8_sprite(
+      this.context.sge,
+      'ase-512-8',
+      3,
+      1
+    )
     this.body.anchor.set(0.5, 1)
 
-    this.helper = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 3, 1)
+    this.helper = spriteCreator.create8_sprite(
+      this.context.sge,
+      'ase-512-8',
+      3,
+      1
+    )
     this.helper.anchor.set(0.5, 1)
     this.helper.visible = false
 
@@ -145,23 +155,25 @@ export class Ninja {
   }
 
   destroy() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
     this.isReadyToBeDestroyed = true
 
     // this.context.particles.emitNinjaParts(this.bounds.x, this.bounds.y - 4)
     // this.context.sounds.playNinjaDie()
-
   }
 
   helperFrame = 0
   update() {
-
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
 
     this.frameIdx++
     this.helperFrame++
 
-    let isPlayer = (this.id === this.context.playerId)
+    let isPlayer = this.id === this.context.playerId
 
     if (this.isBot) {
       this.animationIndex = 0
@@ -188,7 +200,6 @@ export class Ninja {
           set = newSet
         }
       }
-
     }
 
     if (this.isAlive) {
@@ -199,20 +210,18 @@ export class Ninja {
       this.body.texture.frame = set[1][this.frameIdx]
     }
 
-
-
     let scale = 1
     this.body.scale.set(this.facingRight ? -scale : scale, scale)
 
     if (!this.isBot) {
-      this.helper.texture.frame = ninjaFramesHelper[this.animationIndex][Math.floor(this.helperFrame / 15) % 2]
+      this.helper.texture.frame =
+        ninjaFramesHelper[this.animationIndex][
+          Math.floor(this.helperFrame / 15) % 2
+        ]
       this.helper.visible = true
     } else {
       this.helper.visible = false
     }
-
-
-
   }
 
   changeClass(className) {
@@ -220,7 +229,6 @@ export class Ninja {
   }
 
   moveTo(x, y) {
-
     if (x > this.bx) {
       this.facingRight = true
     } else if (x < this.bx) {
@@ -230,7 +238,5 @@ export class Ninja {
     this.by = y
     this.body.position.set(8 * x + 8 / 2, 8 * y + 8)
     this.helper.position.set(8 * x + 8 / 2, 8 * y + 8)
-
   }
-
 }

@@ -1,5 +1,5 @@
 let settings = {
-  prodExport: 'ludumDareStart/'
+  prodExport: 'ludumDareStart/',
 }
 
 export { settings }

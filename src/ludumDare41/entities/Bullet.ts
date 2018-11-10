@@ -3,7 +3,7 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare41/util/spriteCreator'
 import { KeyCodes } from 'engine/input/Keyboard'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
-import { GenericManager } from 'ludumDare41/entities/GenericManager';
+import { GenericManager } from 'ludumDare41/entities/GenericManager'
 
 const bulletFrames = [
   [spriteCreator.create8_frame(1, 8)],
@@ -13,7 +13,6 @@ const bulletFrames = [
 ]
 
 export class BulletManager extends GenericManager<Bullet> {
-
   createAt(x, y, dir, idx) {
     let item = this._createAt(Bullet, x, y)
     item.moveTo(x, y)
@@ -21,11 +20,9 @@ export class BulletManager extends GenericManager<Bullet> {
     item.idx = idx
     return item
   }
-
 }
 
 export class Bullet {
-
   context: LudumDare41Context
   container = new PIXI.Container()
 
@@ -42,18 +39,27 @@ export class Bullet {
 
   init(cx: LudumDare41Context) {
     this.context = cx
-    this.body = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 1, 8)
+    this.body = spriteCreator.create8_sprite(
+      this.context.sge,
+      'ase-512-8',
+      1,
+      8
+    )
     this.body.anchor.set(0.5, 0.5)
     this.container.addChild(this.body)
   }
 
   destroy() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
     this.isReadyToBeDestroyed = true
   }
 
   update() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
 
     this.frame++
 
@@ -66,24 +72,21 @@ export class Bullet {
         this.rotation = 0
       }
     } else {
-      this.rotation = (this.dir / 4) * Math.PI * 2 + Math.PI /2
+      this.rotation = (this.dir / 4) * Math.PI * 2 + Math.PI / 2
     }
     let scale = 1
     if (this.idx === 3) {
       if (fx % 2 === 0) {
         scale = -1
       } else {
-
       }
-    } 
-
+    }
 
     this.body.rotation = this.rotation
     this.body.scale.set(1, scale)
     if (this.idx) {
       this.body.texture.frame = bulletFrames[this.idx][0]
     }
-
 
     // this.frame++
     // if (this.frame > 10) {
@@ -92,8 +95,6 @@ export class Bullet {
     // if (this.frame > 20) {
     //   this.isReadyToBeDestroyed = true
     // }
-
-
   }
 
   moveTo(x, y) {
@@ -101,5 +102,4 @@ export class Bullet {
     this.by = y
     this.body.position.set(8 * x + 8 / 2, 8 * y + 8 / 2)
   }
-
 }

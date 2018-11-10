@@ -2,7 +2,9 @@
 
 export function wrapRange(val, min, max) {
   let d = max - min
-  if (d <= 0) { throw new Error('invalid range') }
+  if (d <= 0) {
+    throw new Error('invalid range')
+  }
   while (val < min) {
     val += d
   }
@@ -11,4 +13,3 @@ export function wrapRange(val, min, max) {
   }
   return val
 }
-

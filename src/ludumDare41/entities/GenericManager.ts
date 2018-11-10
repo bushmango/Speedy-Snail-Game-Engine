@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare41/util/spriteCreator'
-import { KeyCodes } from 'engine/input/Keyboard';
+import { KeyCodes } from 'engine/input/Keyboard'
 import { LudumDare41Context } from 'ludumDare41/LudumDare41Context'
 
 export interface IEntity {
@@ -12,7 +12,6 @@ export interface IEntity {
 }
 
 export class GenericManager<T extends IEntity> {
-
   context: LudumDare41Context
   layer: PIXI.Container
 
@@ -40,12 +39,14 @@ export class GenericManager<T extends IEntity> {
   }
 
   destroyMarked() {
-    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+    let removed = _.remove(this.items, (c) => c.isReadyToBeDestroyed)
     if (removed.length > 0) {
       _.forEach(removed, (c) => {
         this.layer.removeChild(c.container)
       })
-      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+      console.log(
+        `cleaning up ${removed.length} items - ${this.items.length} left`
+      )
     }
   }
 

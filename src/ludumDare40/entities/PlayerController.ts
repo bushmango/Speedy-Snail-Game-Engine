@@ -1,25 +1,21 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes, Keyboard } from 'engine/input/Keyboard';
+import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
-import { HatStack } from 'ludumDare40/entities/HatStack';
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { Bounds } from 'ludumDare40/entities/Bounds';
+import { HatStack } from 'ludumDare40/entities/HatStack'
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
+import { Bounds } from 'ludumDare40/entities/Bounds'
 
 const subPix = 32
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
 
-
 export class PlayerController {
-
   update(kb: Keyboard, bounds: Bounds, isDying) {
-
-
     if (kb.isPressed(KeyCodes.arrowRight) || kb.isPressed(KeyCodes.d)) {
       bounds.movingFrames++
       bounds.isMovingRight = true
@@ -37,7 +33,6 @@ export class PlayerController {
     }
 
     if (bounds.isMovingLeft || bounds.isMovingRight) {
-
       let dir = bounds.isMovingLeft ? -1 : 1
 
       if (bounds.vx * dir < 0) {
@@ -49,9 +44,7 @@ export class PlayerController {
       } else if (bounds.vx * dir < bounds.maxVx) {
         bounds.accelX = 1 * dir
       }
-
     } else {
-
       let xDrag = 1
       let speed = bounds.vx > 0 ? bounds.vx : -bounds.vx
       if (speed > 16) {
@@ -81,7 +74,6 @@ export class PlayerController {
       } else {
         bounds.accelX = 0
       }
-
     }
 
     if (bounds.onGround) {
@@ -89,17 +81,19 @@ export class PlayerController {
         bounds.isJumping = true
         bounds.onGround = false
         sounds.playJump()
-        
+
         //this.vy = -8
         bounds.accelY = -8
         bounds.jumpFrames = 0
       }
-    }
-    else if (bounds.isJumping) {
+    } else if (bounds.isJumping) {
       bounds.jumpFrames++
 
-      if (!isDying && (bounds.jumpFrames > 6) && (kb.isUp(KeyCodes.w) && kb.isUp(KeyCodes.arrowUp))) {
-
+      if (
+        !isDying &&
+        bounds.jumpFrames > 6 &&
+        (kb.isUp(KeyCodes.w) && kb.isUp(KeyCodes.arrowUp))
+      ) {
         bounds.setStateFalling()
 
         //this.accelY = 8
@@ -118,11 +112,9 @@ export class PlayerController {
         }
       }
     } else if (bounds.isFalling) {
-
       if (!isDying && kb.isUp(KeyCodes.space)) {
         bounds.isFastFalling = true
       }
     }
-
   }
 }

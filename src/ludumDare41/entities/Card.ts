@@ -15,7 +15,6 @@ const cardBackFrames = [
 ]
 
 export class CardManager {
-
   discardHand(): any {
     _.forEach(this.items, (c, cIdx) => {
       c.discardCard()
@@ -64,12 +63,14 @@ export class CardManager {
   }
 
   destroyMarked() {
-    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+    let removed = _.remove(this.items, (c) => c.isReadyToBeDestroyed)
     if (removed.length > 0) {
       _.forEach(removed, (c) => {
         this.context.layerCards.removeChild(c.container)
       })
-      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+      console.log(
+        `cleaning up ${removed.length} items - ${this.items.length} left`
+      )
     }
   }
 
@@ -83,7 +84,6 @@ export class CardManager {
 }
 
 export class Card {
-
   context: LudumDare41Context
   container = new PIXI.Container()
   flipContainer = new PIXI.Container()
@@ -107,22 +107,43 @@ export class Card {
     this.context = cx
     this.cardIdx = idx
 
-    this.body = spriteCreator.create_loose_sprite(this.context.sge, 'ase-512-8', 8 * 6, 8 * 1, 8 * 3, 8 * 3)
+    this.body = spriteCreator.create_loose_sprite(
+      this.context.sge,
+      'ase-512-8',
+      8 * 6,
+      8 * 1,
+      8 * 3,
+      8 * 3
+    )
     this.body.anchor.set(0.5, 0.5)
 
-    this.card = spriteCreator.create_loose_sprite2(this.context.sge, 'ase-512-8', spriteCreator.create_card_frame(0))
+    this.card = spriteCreator.create_loose_sprite2(
+      this.context.sge,
+      'ase-512-8',
+      spriteCreator.create_card_frame(0)
+    )
     this.card.anchor.set(0.5, 0.5)
 
     let alphaHidden = 0.1
     let alphaShown = 1
-    this.rotLeft = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 4)
+    this.rotLeft = spriteCreator.create8_sprite(
+      this.context.sge,
+      'ase-512-8',
+      6,
+      4
+    )
     this.rotLeft.anchor.set(0.5, 0.5)
-    this.rotLeft.position.set(-8 + 1 + (idx * (8 * 3 + 2)), -8 * 2 + 1 - 2)
+    this.rotLeft.position.set(-8 + 1 + idx * (8 * 3 + 2), -8 * 2 + 1 - 2)
     this.rotLeft.alpha = alphaHidden
 
-    this.rotRight = spriteCreator.create8_sprite(this.context.sge, 'ase-512-8', 6, 5)
+    this.rotRight = spriteCreator.create8_sprite(
+      this.context.sge,
+      'ase-512-8',
+      6,
+      5
+    )
     this.rotRight.anchor.set(0.5, 0.5)
-    this.rotRight.position.set(8 - 1 + (idx * (8 * 3 + 2)), -8 * 2 + 1 - 2)
+    this.rotRight.position.set(8 - 1 + idx * (8 * 3 + 2), -8 * 2 + 1 - 2)
     this.rotRight.alpha = alphaHidden
 
     this.container.interactive = true
@@ -188,31 +209,40 @@ export class Card {
 
     this.setDir(_.random(0, 4, false))
 
-    this.textName = new PIXI.extras.BitmapText(`Null`, { font: '8px defaultfont', align: 'left' })
+    this.textName = new PIXI.extras.BitmapText(`Null`, {
+      font: '8px defaultfont',
+      align: 'left',
+    })
     this.textName.anchor = new PIXI.Point(0, 0)
     this.body.addChild(this.textName)
     this.textName.position.set(-11, 6)
     this.textName.scale.set(0.66)
 
-    this.textSpeed = new PIXI.extras.BitmapText(`Fast`, { font: '8px defaultfont', align: 'left' })
+    this.textSpeed = new PIXI.extras.BitmapText(`Fast`, {
+      font: '8px defaultfont',
+      align: 'left',
+    })
     this.textSpeed.anchor = new PIXI.Point(0, 0)
     this.body.addChild(this.textSpeed)
     this.textSpeed.position.set(-8, -11)
-    this.textSpeed.scale.set(0.50)
-
+    this.textSpeed.scale.set(0.5)
   }
 
   setDir(dir) {
-    while (dir < 0) { dir += 4 }
-    while (dir >= 4) { dir -= 4 }
-    this.rotation = Math.PI / 2 * dir
+    while (dir < 0) {
+      dir += 4
+    }
+    while (dir >= 4) {
+      dir -= 4
+    }
+    this.rotation = (Math.PI / 2) * dir
     this.dir = dir
   }
 
   onClick = () => {
     if (!this.isSelected && this.cardInfo && this.cardInfo !== nullCard) {
       this.context.onChoseCard(this.cardInfo, this.dir)
-      _.forEach(this.context.cards.items, c => {
+      _.forEach(this.context.cards.items, (c) => {
         if (c === this) {
           c.body.texture.frame = cardBackFrames[0]
           c.isSelected = true
@@ -286,7 +316,6 @@ export class Card {
   slideY = 0
 
   updateAnim() {
-
     let len = 20 + this.cardIdx * 2
     let halfLen = len / 2
     let finalPos = (8 * 3 + 2) * this.cardIdx
@@ -316,7 +345,9 @@ export class Card {
         // Set new info while hidden
         this.textName.text = this.cardInfo ? this.cardInfo.name : '?'
         this.isSelected = false
-        this.card.texture.frame = spriteCreator.create_card_frame(this.cardInfo ? this.cardInfo.frame : 0)
+        this.card.texture.frame = spriteCreator.create_card_frame(
+          this.cardInfo ? this.cardInfo.frame : 0
+        )
         this.card.visible = true
         let speed = '-'
         if (this.cardInfo.type === 'move') {
@@ -357,33 +388,28 @@ export class Card {
     this.flipContainer.position.set(this.slideX, this.flipContainer.position.y)
   }
 
-
   destroy() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
     this.isReadyToBeDestroyed = true
 
     // this.context.particles.emitNinjaParts(this.bounds.x, this.bounds.y - 4)
     // this.context.sounds.playNinjaDie()
-
-
   }
 
   update() {
-
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
 
     this.updateAnim()
 
-
-
-
     this.body.rotation = this.rotation
     this.card.rotation = this.rotation
-
   }
 
   moveTo(x, y) {
     this.container.position.set(x, y)
   }
-
 }

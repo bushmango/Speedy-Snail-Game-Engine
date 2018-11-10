@@ -16,7 +16,7 @@ const chalk: any = require('chalk')
 const program: any = require('commander')
 
 console.log(chalk.bold.cyan('-.-'))
-console.log(chalk.bold.green("~Stevie Bushman Presents~"))
+console.log(chalk.bold.green('~Stevie Bushman Presents~'))
 console.log('Sounds Builder - watch and convert sounds - v0.0.3')
 
 // print args
@@ -34,8 +34,6 @@ let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\publi
 let watchPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\music\\`
 let outPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\music\\`
 
-
-
 let verbose = false
 
 let mode = 'sprite'
@@ -45,15 +43,12 @@ let watchGlob = watchPath + '*.wav'
 let watchGlobMusic = watchPathMusic + '*.wav'
 
 function run() {
-
   // TODO: command line args
   program
     .arguments('<file>')
     .option('-n, --narm <narm>', 'Your name')
-    .action(function (file, options) {
-
-    })
-    .parse(process.argv);
+    .action(function(file, options) {})
+    .parse(process.argv)
 
   // Stuff that is always done
   watch(watchGlob)
@@ -66,40 +61,41 @@ function run() {
 function watch(glob: string) {
   // Initialize watcher.
   let watcher = chokidar.watch(glob, {
-    persistent: true
+    persistent: true,
   })
 
   // Something to use when events are received.
   let log = console.log.bind(console)
   // Add event listeners.
   watcher
-    .on('add', loc => onWatchEvent(loc, 'added', false))
-    .on('change', loc => onWatchEvent(loc, 'changed', false))
+    .on('add', (loc) => onWatchEvent(loc, 'added', false))
+    .on('change', (loc) => onWatchEvent(loc, 'changed', false))
 }
 
 function watchMusic(glob: string) {
   // Initialize watcher.
   let watcher = chokidar.watch(glob, {
-    persistent: true
+    persistent: true,
   })
 
   // Something to use when events are received.
   let log = console.log.bind(console)
   // Add event listeners.
   watcher
-    .on('add', loc => onWatchEvent(loc, 'added', true))
-    .on('change', loc => onWatchEvent(loc, 'changed', true))
+    .on('add', (loc) => onWatchEvent(loc, 'added', true))
+    .on('change', (loc) => onWatchEvent(loc, 'changed', true))
 }
 
-
-const exec = require('child_process').exec;
-const path = require('path');
+const exec = require('child_process').exec
+const path = require('path')
 function onWatchEvent(loc, type, isMusic) {
-
   console.log(type, loc)
   if (mode === 'convert' || isMusic) {
     let originalFilePath = loc
-    let originalFilePathWithoutExtension = loc.slice(0, -path.extname(loc).length)
+    let originalFilePathWithoutExtension = loc.slice(
+      0,
+      -path.extname(loc).length
+    )
     let fileName = path.basename(originalFilePathWithoutExtension)
 
     let filePath = path.join(isMusic ? outPathMusic : outPath, fileName)
@@ -122,7 +118,7 @@ function runCommand(pathToProgram, args, prefix, friendlyName) {
   if (verbose) {
     console.log('exe', cmd)
   }
-  exec(cmd, function (error, stdout, stderr) {
+  exec(cmd, function(error, stdout, stderr) {
     // command output is in stdout
     if (error) {
       console.log('error =>', error)
@@ -143,8 +139,8 @@ function createSprite() {
   fs.readdir(path, (err, items) => {
     for (let i = 0; i < items.length; i++) {
       let file = path + items[i]
-      if ((/.wav$/).test(file.toLowerCase())) {
-        console.log("+", file)
+      if (/.wav$/.test(file.toLowerCase())) {
+        console.log('+', file)
         files.push(file)
       }
 
@@ -182,13 +178,13 @@ function createSprite() {
 
       let file = outPath + 'audioSprite.json'
       jsonfile.writeFileSync(file, obj, { spaces: 2 })
-
     })
-
   })
-
 }
 
-const _throttled_createSprite = _.throttle(createSprite, 500, { leading: false, trailing: true })
+const _throttled_createSprite = _.throttle(createSprite, 500, {
+  leading: false,
+  trailing: true,
+})
 
 run()

@@ -1,13 +1,12 @@
-
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
 import * as Lockr from 'lockr'
 
 interface IBasicSettings {
-  menuMode: string,
-  muteMusic: boolean,
-  muteSound: boolean,
+  menuMode: string
+  muteMusic: boolean
+  muteSound: boolean
 }
 let settings = {
   menuMode: 'title',
@@ -23,7 +22,6 @@ let loaded = false
 let settingsKey = null
 
 export function load(savedSettingsKey) {
-
   settingsKey = savedSettingsKey
 
   console.log('loading settings', savedSettingsKey)
@@ -39,7 +37,6 @@ export function load(savedSettingsKey) {
   }
 
   return settings
-
 }
 export function save() {
   console.log('saving settings', settingsKey, settings)

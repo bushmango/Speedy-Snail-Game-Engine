@@ -12,4 +12,3 @@ export function emit(actionName, data?: any) {
 export function on(actionName, cb: (data?: any) => any) {
   pubSubHub.on(actionName, cb)
 }
-
