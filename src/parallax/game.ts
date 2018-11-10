@@ -23,7 +23,8 @@ export function preload() {
   sge.preloadSprites([
     // 'test-ship',
     "prariesnailgames",
-    "parallax-buildings"
+    "parallax-buildings",
+    "player1"
   ]);
   sge.preloadSpriteSheets([
     "test-tileset",
@@ -38,6 +39,9 @@ export function preload() {
 let pixiMode = "unknown";
 export function run() {
   console.log("Parallax test by Stevie Bushman");
+
+  // Make crisp
+  PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
   sge.init();
   sge.createRenderer();

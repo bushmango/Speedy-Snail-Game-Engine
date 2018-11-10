@@ -251,6 +251,7 @@ export class SimpleGameEngine {
     this.frameNum++
     this.frameNumThisInterval++
     const maxMsPerFrame = 16.6
+    
     this.frameRateText.text = `${this.framesPerSecond || '--'} | ${numeral(this.frameAverageLoad / maxMsPerFrame).format('0%')} | ${numeral(this.frameMaxLoad / maxMsPerFrame).format('0%')} | ${numeral(this.frameMaxLoad).format('0')}ms | ${this.frameNum % 60} ${this.frameMaxLoad / maxMsPerFrame > 0.5 ? 'WARNING' : ''} `
     this.onUpdate()
 

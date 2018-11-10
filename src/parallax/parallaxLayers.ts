@@ -14,12 +14,23 @@ interface IParallaxLayer {
 }
 let parallaxLayers: IParallaxLayer[] = [];
 
+var framesBuildings = [
+  new PIXI.Rectangle(16 * 2, 16 * 2, 16 * 2, 16 * 3),
+  new PIXI.Rectangle(16 * 6, 16 * 2, 16 * 2, 16 * 3),
+  new PIXI.Rectangle(16 * 10, 16 * 2, 16 * 2, 16 * 3)
+];
+
+var framesMountains = [new PIXI.Rectangle(16 * 2, 16 * 8, 16 * 8, 16 * 5)];
+
+export { framesBuildings, framesMountains };
+
 export function create(
   ctx: ParallaxContext,
   container: PIXI.Container,
   positionXScale: number,
   sizeScale: number,
-  y: number
+  y: number,
+  frames: PIXI.Rectangle[]
 ) {
   let item: IParallaxLayer = {
     sprites: [],
@@ -28,20 +39,22 @@ export function create(
   };
 
   let baseTex = ctx.sge.getTexture("parallax-buildings");
-  var frame = new PIXI.Rectangle(16, 16, 16 * 2, 16 * 3);
-  var tex = new PIXI.Texture(baseTex.baseTexture, frame);
+
+  var texs = _.map(frames, c => new PIXI.Texture(baseTex.baseTexture, c));
+
+  var tex0 = texs[0];
 
   let numSprites =
-    Math.ceil(ctx.sge.getViewSize().width / (tex.width * sizeScale)) + 1;
+    Math.ceil(ctx.sge.getViewSize().width / (tex0.width * sizeScale)) + 1;
   for (let i = 0; i < numSprites; i++) {
-    let sprite = new PIXI.Sprite(tex);
+    let sprite = new PIXI.Sprite(_.sample(texs));
     sprite.anchor.set(0, 0);
     sprite.y = y;
     sprite.x = i * sprite.width * sizeScale;
     item.endX += sprite.width * sizeScale;
     sprite.scale.set(sizeScale);
     item.sprites.push(sprite);
-    ctx.layerP1.addChild(sprite);
+    container.addChild(sprite);
   }
 
   parallaxLayers.push(item);
