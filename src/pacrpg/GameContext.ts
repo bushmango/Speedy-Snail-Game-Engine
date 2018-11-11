@@ -7,11 +7,14 @@ import { GamepadTester } from 'engine/gamepad/GamepadTester'
 import { InputControl } from 'engine/gamepad/InputControl'
 
 import * as players from './actors/players'
+import * as coins from './actors/coins'
 import * as flightControler from './flightController'
 
 import * as log from '../engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
+
+let debugCollision = true
 
 let currentContext: GameContext = null
 export function getContext() {
@@ -27,8 +30,11 @@ export class GameContext {
   layerMap: PIXI.Container
   layerPlayer: PIXI.Container
   layerDetectors: PIXI.Container
+  layerDebugGraphics: PIXI.Container
 
   map: maps.IMap
+
+  gfx: PIXI.Graphics
 
   onLoaded(_sge: SimpleGameEngine) {
     let ctx = this
@@ -40,6 +46,7 @@ export class GameContext {
     ctx.layerMap = this.addLayer()
     ctx.layerPlayer = this.addLayer()
     ctx.layerDetectors = this.addLayer()
+    ctx.layerDebugGraphics = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
     let player = players.create(ctx.layerPlayer)
@@ -58,6 +65,11 @@ export class GameContext {
     ctx.layerFrameRate.addChild(ctx.sge.frameRateText)
     ctx.sge.stage.addChild(ctx.layerFrameRate)
     //this.rootContainer.addChild(this.modeBar.container)
+
+    if (debugCollision) {
+      ctx.gfx = new PIXI.Graphics()
+      ctx.layerDebugGraphics.addChild(ctx.gfx)
+    }
   }
 
   addLayer(container: PIXI.Container = null) {
@@ -75,5 +87,11 @@ export class GameContext {
     // parallaxLayers.updateLayers(ctx);
     flightControler.updateAll(ctx)
     players.updateAll()
+    coins.updateAll()
+
+    if (debugCollision && ctx.gfx) {
+      ctx.gfx.clear()
+      coins.drawDebug(ctx.gfx)
+    }
   }
 }
