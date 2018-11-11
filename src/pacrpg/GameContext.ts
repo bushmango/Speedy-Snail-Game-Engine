@@ -9,8 +9,8 @@ import { InputControl } from 'engine/gamepad/InputControl'
 import * as players from './actors/players'
 import * as coins from './actors/coins'
 import * as enemies from './actors/enemies'
-import * as flightControler from './flightController'
-
+import * as flightController from './flightController'
+import * as uiExpBar from './ui/uiExpBar'
 import * as log from '../engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
@@ -32,6 +32,7 @@ export class GameContext {
   layerFrameRate: PIXI.Container
   layerMap: PIXI.Container
   layerPlayer: PIXI.Container
+  layerUi: PIXI.Container
   layerDetectors: PIXI.Container
   layerDebugGraphics: PIXI.Container
 
@@ -49,11 +50,14 @@ export class GameContext {
     ctx.layerMap = this.addLayer()
     ctx.layerPlayer = this.addLayer()
     ctx.layerDetectors = this.addLayer()
+    ctx.layerUi = this.addLayer()
     ctx.layerDebugGraphics = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
     let player = players.create(ctx.layerPlayer)
-    player.flightController = flightControler.create(ctx)
+    player.flightController = flightController.create(ctx)
+
+    uiExpBar.create()
 
     let map = (this.map = maps.create(ctx.layerMap))
     let jsonTiles = this.sge.getJson('tiled-tiles')
@@ -84,10 +88,12 @@ export class GameContext {
     log.x('update')
 
     // parallaxLayers.updateLayers(ctx);
-    flightControler.updateAll(ctx)
+    flightController.updateAll(ctx)
     players.updateAll()
     coins.updateAll()
     enemies.updateAll()
+
+    uiExpBar.update()
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

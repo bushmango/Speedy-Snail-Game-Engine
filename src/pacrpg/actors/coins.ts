@@ -1,17 +1,10 @@
 import { _ } from 'engine/importsEngine'
-import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
-import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
-
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
-import * as tween from '../../engine/anim/tween'
 
-import * as flightController from '../flightController'
-
-import * as detectors from './detectors'
-import * as maps from '../map/maps'
+import * as stats from 'pacrpg/stats'
 
 const isActive = true
 
@@ -139,4 +132,5 @@ export function doCollect(c: ICoin) {
   }
   c.isCollected = true
   anim.playAnim(c.anim, animCollect)
+  stats.addExp(1)
 }

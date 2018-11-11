@@ -12,12 +12,13 @@ export function preload(sge) {
     'parallax-buildings',
     'player1',
     'tiles',
+    'rpg-gui',
   ])
   sge.preloadSpriteSheets([
-    'test-tileset',
-    'gui-tileset',
-    'ase-512-16',
-    'ase-512-8',
+    //'test-tileset',
+    //'gui-tileset',
+    //'ase-512-16',
+    //'ase-512-8',
   ])
   sge.preloadTiledMaps(['tiled-tiles', 'map-pac-001'])
   sge.preloadPackedSprites([])
