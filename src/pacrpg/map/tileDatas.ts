@@ -1,8 +1,11 @@
+import * as _ from 'lodash'
+import * as log from 'engine/log'
+import * as spriteUtil from 'engine/anim/spriteUtil'
+
 let tileDatas: any = {}
+let tileProps: any = {}
 
 // TODO: configure tile size, num columns -- load from tile json?
-
-import * as spriteUtil from 'engine/anim/spriteUtil'
 
 export interface ITileData {
   t: number
@@ -10,7 +13,22 @@ export interface ITileData {
   ty: number
   rect: PIXI.Rectangle
   tex: PIXI.Texture
+  props: any
 }
+
+export function loadTileProps(data) {
+  let t = data.id
+  let tileProp = {
+    t,
+  }
+  _.forEach(data.properties, (c) => {
+    log.x(t, c.name, c.value)
+    tileProp[c.name] = c.value
+  })
+
+  tileProps[t] = tileProp
+}
+
 export function getTileData(t, numTileColumns) {
   let tileData: ITileData = tileDatas[t]
   if (!tileData) {
@@ -22,6 +40,7 @@ export function getTileData(t, numTileColumns) {
       ty,
       rect: spriteUtil.frame32(ty, tx),
       tex: null,
+      props: tileProps[t],
     }
     tileDatas[t] = tileData
   }

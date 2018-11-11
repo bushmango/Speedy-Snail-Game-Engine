@@ -61,7 +61,7 @@ function loadLayer_path(
     data,
     numTileColumns,
     (bx, by, t, tx, ty, flwasipX, flipY, rot) => {
-      log.x('tile', bx, by, tx, ty, t)
+      // log.x('tile', bx, by, tx, ty, t)
 
       if (t) {
         if (t === 11) {
@@ -85,27 +85,37 @@ function loadLayer_spawn(data: tiledMapLayerLoader.ILayerData, numTileColumns) {
     data,
     numTileColumns,
     (bx, by, t, tx, ty, flwasipX, flipY, rot) => {
-      log.x('tile', bx, by, tx, ty, t)
+      // log.x('tile', bx, by, tx, ty, t)
 
       if (t) {
-        if (t === 26) {
-          let c = enemies.create('cactus')
-          enemies.moveToB(c, bx, by)
-        }
-        if (t === 27) {
-          let c = enemies.create('rat')
-          enemies.moveToB(c, bx, by)
-        }
-        if (t === 28) {
-          let c = enemies.create('bat')
-          enemies.moveToB(c, bx, by)
-        }
-        if (t === 29) {
-          let c = enemies.create('goblin')
-          enemies.moveToB(c, bx, by)
+        let td = tileData.getTileData(t, numTileColumns)
+        if (td.props) {
+          if (td.props.enemy) {
+            log.x('spawn enemy!')
+
+            let c = enemies.create(td.props.enemy)
+            enemies.moveToB(c, bx, by)
+          }
         }
 
-        // let td = tileData.getTileData(t, numTileColumns)
+        // if (t === 26) {
+        //   let c = enemies.create('cactus')
+        //   enemies.moveToB(c, bx, by)
+        // }
+        // if (t === 27) {
+        //   let c = enemies.create('rat')
+        //   enemies.moveToB(c, bx, by)
+        // }
+        // if (t === 28) {
+        //   let c = enemies.create('bat')
+        //   enemies.moveToB(c, bx, by)
+        // }
+        // if (t === 29) {
+        //   let c = enemies.create('goblin')
+        //   enemies.moveToB(c, bx, by)
+        // }
+
+        //
 
         //maps.setTile(map, bx, by, td)
       }

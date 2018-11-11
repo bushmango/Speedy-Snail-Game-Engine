@@ -14,6 +14,7 @@ import * as flightControler from './flightController'
 import * as log from '../engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
+import * as tilesLoader from './map/tilesLoader'
 import { KeyCodes } from 'engine/input/Keyboard'
 
 let debugCollision = false
@@ -56,6 +57,7 @@ export class GameContext {
 
     let map = (this.map = maps.create(ctx.layerMap))
     let jsonTiles = this.sge.getJson('tiled-tiles')
+    tilesLoader.load(jsonTiles)
     let jsonMap = this.sge.getJson('map-pac-001')
     mapLoader.load(map, jsonTiles, jsonMap)
 
