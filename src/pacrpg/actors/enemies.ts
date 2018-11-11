@@ -15,8 +15,14 @@ import * as maps from '../map/maps'
 
 const isActive = true
 
-interface ICoin {
+interface IEnemyAnimSet {
+  animDefault: anim.IAnimData
+  animCollect: anim.IAnimData
+}
+
+interface IEnemy {
   anim: anim.IAnim
+  animSet: IEnemyAnimSet
 
   bx: number
   by: number
@@ -26,27 +32,76 @@ interface ICoin {
   isCollected: boolean
   isDead: boolean
 }
-let items: ICoin[] = []
+let items: IEnemy[] = []
 
 export function getAll() {
   return items
 }
 
-var animDefault: anim.IAnimData = {
-  frames: spriteUtil.frame32runH(2, 3, 2),
-  frameTime: 10 / 60,
-  loop: true,
+var animSet_cactus: IEnemyAnimSet = {
+  animDefault: {
+    frames: spriteUtil.frame32runH(4, 1, 2),
+    frameTime: 10 / 60,
+    loop: true,
+  },
+  animCollect: {
+    frames: spriteUtil.frame32runH(4, 3, 1),
+    frameTime: 10 / 60,
+  },
 }
-var animCollect: anim.IAnimData = {
-  frames: spriteUtil.frame32runH(3, 3, 4),
-  frameTime: 10 / 60,
+var animSet_rat: IEnemyAnimSet = {
+  animDefault: {
+    frames: spriteUtil.frame32runH(5, 1, 2),
+    frameTime: 10 / 60,
+    loop: true,
+  },
+  animCollect: {
+    frames: spriteUtil.frame32runH(5, 3, 1),
+    frameTime: 10 / 60,
+  },
+}
+var animSet_bat: IEnemyAnimSet = {
+  animDefault: {
+    frames: spriteUtil.frame32runH(6, 1, 2),
+    frameTime: 10 / 60,
+    loop: true,
+  },
+  animCollect: {
+    frames: spriteUtil.frame32runH(6, 3, 1),
+    frameTime: 10 / 60,
+  },
+}
+var animSet_goblin: IEnemyAnimSet = {
+  animDefault: {
+    frames: spriteUtil.frame32runH(7, 1, 2),
+    frameTime: 10 / 60,
+    loop: true,
+  },
+  animCollect: {
+    frames: spriteUtil.frame32runH(7, 3, 1),
+    frameTime: 10 / 60,
+  },
 }
 
-export function create() {
+export function create(type: string) {
   let ctx = getContext()
 
-  log.x('create coin')
-  let item: ICoin = {
+  log.x('create enemy', type)
+
+  let animSet = animSet_cactus
+  switch (type) {
+    case 'rat':
+      animSet = animSet_rat
+      break
+    case 'bat':
+      animSet = animSet_bat
+      break
+    case 'goblin':
+      animSet = animSet_goblin
+      break
+  }
+
+  let item: IEnemy = {
     anim: anim.create(),
     bx: 14,
     by: 18,
@@ -54,10 +109,11 @@ export function create() {
     y: 0,
     isCollected: false,
     isDead: false,
+    animSet,
   }
 
   let baseTex = ctx.sge.getTexture('player1')
-  let tex = new PIXI.Texture(baseTex.baseTexture, animDefault.frames[0])
+  let tex = new PIXI.Texture(baseTex.baseTexture, animSet.animDefault.frames[0])
 
   let sprite = new PIXI.Sprite(tex)
   sprite.anchor.set(0.5, 0.5)
@@ -70,12 +126,12 @@ export function create() {
 
   moveToB(item, 14, 18)
 
-  anim.playAnim(item.anim, animDefault)
+  anim.playAnim(item.anim, animSet.animDefault)
 
   return item
 }
 
-export function moveToB(item: ICoin, bx, by) {
+export function moveToB(item: IEnemy, bx, by) {
   item.bx = bx
   item.by = by
   item.x = item.bx * 32 + 16
@@ -97,7 +153,7 @@ export function updateAll() {
     anim.update(c.anim, elapsedTime)
     if (c.isCollected) {
       if (c.anim.done) {
-        c.isDead = true // Kill after animation finished
+        // c.isDead = true // Kill after animation finished
       }
     }
   })
@@ -111,7 +167,7 @@ export function removeDead() {
     //log.x('check', i)
     if (c.isDead) {
       // kill it!
-      log.x('kill coin', c)
+      log.x('kill enemy', c)
       ctx.layerPlayer.removeChild(c.anim.sprite)
       items.splice(i, 1)
       i--
@@ -130,7 +186,7 @@ export function drawDebug(gfx: PIXI.Graphics) {
   })
 }
 
-export function doCollect(c: ICoin) {
+export function doCollect(c: IEnemy) {
   if (c.isDead) {
     return
   }
@@ -138,5 +194,5 @@ export function doCollect(c: ICoin) {
     return
   }
   c.isCollected = true
-  anim.playAnim(c.anim, animCollect)
+  anim.playAnim(c.anim, c.animSet.animCollect)
 }

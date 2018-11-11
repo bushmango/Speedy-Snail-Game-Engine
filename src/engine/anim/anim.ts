@@ -12,6 +12,7 @@ export interface IAnim {
   frameIndex: number
   frameTimeLeft: number
   currentAnimation: IAnimData
+  done: boolean
 }
 
 export function create(sprite: PIXI.Sprite = null): IAnim {
@@ -20,6 +21,7 @@ export function create(sprite: PIXI.Sprite = null): IAnim {
     frameIndex: 0,
     frameTimeLeft: 0,
     currentAnimation: null,
+    done: true,
   }
 }
 
@@ -39,6 +41,7 @@ export function playAnim(anim: IAnim, animData: IAnimData, force = false) {
   anim.sprite.texture = animData.textures[0]
   anim.frameIndex = 0
   anim.frameTimeLeft = animData.frameTime || 10 / 60
+  anim.done = false
 }
 
 export function update(anim: IAnim, elapsedTime: number) {
@@ -46,11 +49,12 @@ export function update(anim: IAnim, elapsedTime: number) {
     anim.frameTimeLeft -= elapsedTime
     if (anim.frameTimeLeft < 0) {
       anim.frameIndex++
-      if (
-        anim.frameIndex >= anim.currentAnimation.frames.length &&
-        anim.currentAnimation.loop
-      ) {
-        anim.frameIndex = 0
+      if (anim.frameIndex >= anim.currentAnimation.frames.length) {
+        if (anim.currentAnimation.loop) {
+          anim.frameIndex = 0
+        } else {
+          anim.done = true
+        }
       }
       if (anim.frameIndex < anim.currentAnimation.textures.length) {
         anim.sprite.texture = anim.currentAnimation.textures[anim.frameIndex]

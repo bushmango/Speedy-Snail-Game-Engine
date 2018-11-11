@@ -17,6 +17,42 @@
                  "type":"bool",
                  "value":true
                 }]
+        }, 
+        {
+         "id":26,
+         "properties":[
+                {
+                 "name":"enemy",
+                 "type":"string",
+                 "value":"cactus"
+                }]
+        }, 
+        {
+         "id":27,
+         "properties":[
+                {
+                 "name":"enemy",
+                 "type":"string",
+                 "value":"rat"
+                }]
+        }, 
+        {
+         "id":28,
+         "properties":[
+                {
+                 "name":"enemy",
+                 "type":"string",
+                 "value":"bat"
+                }]
+        }, 
+        {
+         "id":29,
+         "properties":[
+                {
+                 "name":"enemy",
+                 "type":"string",
+                 "value":"goblin"
+                }]
         }],
  "tilewidth":32,
  "type":"tileset",

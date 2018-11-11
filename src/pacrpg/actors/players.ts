@@ -13,6 +13,9 @@ import * as flightController from '../flightController'
 import * as detectors from './detectors'
 import * as maps from './../map/maps'
 
+import * as coins from './coins'
+import * as enemies from './enemies'
+
 const isActive = true
 
 interface IPlayer {
@@ -180,5 +183,40 @@ export function updateAll() {
     //c.anim.sprite.y = 32 * 4 * easeBy - c.anim.sprite.height / 2
 
     anim.update(c.anim, elapsedTime)
+
+    detectCollisions_coins(c)
+    detectCollisions_enemies(c)
+  })
+}
+
+function checkCirclesCollide(x1, y1, r1, x2, y2, r2) {
+  let dx = x2 - x1
+  let dx2 = dx * dx
+  let dy = y2 - y1
+  let dy2 = dy * dy
+
+  let rc = r1 + r2
+  let rc2 = rc * rc
+
+  return dx2 + dy2 < rc2
+}
+
+export function detectCollisions_coins(c: IPlayer) {
+  _.forEach(coins.getAll(), (d) => {
+    if (!d.isDead && !d.isCollected) {
+      if (checkCirclesCollide(c.x, c.y, 16, d.x, d.y, 16)) {
+        coins.doCollect(d)
+      }
+    }
+  })
+}
+
+export function detectCollisions_enemies(c: IPlayer) {
+  _.forEach(enemies.getAll(), (d) => {
+    if (!d.isDead && !d.isCollected) {
+      if (checkCirclesCollide(c.x, c.y, 16, d.x, d.y, 16)) {
+        enemies.doCollect(d)
+      }
+    }
   })
 }

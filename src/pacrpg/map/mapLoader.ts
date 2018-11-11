@@ -11,7 +11,7 @@ import { getContext } from './../GameContext'
 import { catDeck } from 'ludumDare41/server/CardInfo'
 
 import * as coins from '../actors/coins'
-
+import * as enemies from '../actors/enemies'
 // const Layer_Path = 0
 // const Layer_Spawn = 1
 // const Num_Layers = 2
@@ -57,8 +57,6 @@ function loadLayer_path(
   data: tiledMapLayerLoader.ILayerData,
   numTileColumns
 ) {
-  let ctx = getContext()
-
   tiledMapLayerLoader.loadLayer(
     data,
     numTileColumns,
@@ -66,45 +64,53 @@ function loadLayer_path(
       log.x('tile', bx, by, tx, ty, t)
 
       if (t) {
+        if (t === 11) {
+          let c = coins.create()
+          coins.moveToB(c, bx, by)
+          t = 10
+        }
+
         let td = tileData.getTileData(t, numTileColumns)
 
         maps.setTile(map, bx, by, td)
-
-        if (td.t === 11) {
-          let c = coins.create()
-          coins.moveToB(c, bx, by)
-        }
       }
 
       // if(t )
     }
   )
-
-  // loadBasicLayer(
-  //   json,
-  //   x,
-  //   y,
-  //   tm,
-  //   Layer_Background,
-  //   data,
-  //   (t) => {
-  //     return t
-  //   },
-  //   (gs, t) => {}
-  // )
 }
 
 function loadLayer_spawn(data: tiledMapLayerLoader.ILayerData, numTileColumns) {
-  // loadBasicLayer(
-  //   json,
-  //   x,
-  //   y,
-  //   tm,
-  //   Layer_Background,
-  //   data,
-  //   (t) => {
-  //     return t
-  //   },
-  //   (gs, t) => {}
-  // )
+  tiledMapLayerLoader.loadLayer(
+    data,
+    numTileColumns,
+    (bx, by, t, tx, ty, flwasipX, flipY, rot) => {
+      log.x('tile', bx, by, tx, ty, t)
+
+      if (t) {
+        if (t === 26) {
+          let c = enemies.create('cactus')
+          enemies.moveToB(c, bx, by)
+        }
+        if (t === 27) {
+          let c = enemies.create('rat')
+          enemies.moveToB(c, bx, by)
+        }
+        if (t === 28) {
+          let c = enemies.create('bat')
+          enemies.moveToB(c, bx, by)
+        }
+        if (t === 29) {
+          let c = enemies.create('goblin')
+          enemies.moveToB(c, bx, by)
+        }
+
+        // let td = tileData.getTileData(t, numTileColumns)
+
+        //maps.setTile(map, bx, by, td)
+      }
+
+      // if(t )
+    }
+  )
 }

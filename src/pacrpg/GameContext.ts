@@ -8,13 +8,15 @@ import { InputControl } from 'engine/gamepad/InputControl'
 
 import * as players from './actors/players'
 import * as coins from './actors/coins'
+import * as enemies from './actors/enemies'
 import * as flightControler from './flightController'
 
 import * as log from '../engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
+import { KeyCodes } from 'engine/input/Keyboard'
 
-let debugCollision = true
+let debugCollision = false
 
 let currentContext: GameContext = null
 export function getContext() {
@@ -65,11 +67,6 @@ export class GameContext {
     ctx.layerFrameRate.addChild(ctx.sge.frameRateText)
     ctx.sge.stage.addChild(ctx.layerFrameRate)
     //this.rootContainer.addChild(this.modeBar.container)
-
-    if (debugCollision) {
-      ctx.gfx = new PIXI.Graphics()
-      ctx.layerDebugGraphics.addChild(ctx.gfx)
-    }
   }
 
   addLayer(container: PIXI.Container = null) {
@@ -88,9 +85,21 @@ export class GameContext {
     flightControler.updateAll(ctx)
     players.updateAll()
     coins.updateAll()
+    enemies.updateAll()
 
-    if (debugCollision && ctx.gfx) {
+    // Debugging
+    if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {
+      debugCollision = !debugCollision
+    }
+    if (ctx.gfx) {
       ctx.gfx.clear()
+    }
+    if (debugCollision) {
+      if (!ctx.gfx) {
+        ctx.gfx = new PIXI.Graphics()
+        ctx.layerDebugGraphics.addChild(ctx.gfx)
+      }
+
       coins.drawDebug(ctx.gfx)
     }
   }
