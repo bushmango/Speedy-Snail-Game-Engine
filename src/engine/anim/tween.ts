@@ -1,5 +1,3 @@
-// see https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
-
 export function lerp(v0, v1, t) {
   return v0 * (1 - t) + v1 * t
 }

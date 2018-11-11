@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-import { RaidContext } from './RaidContext'
-import * as log from './log'
+import { GameContext } from './GameContext'
+import * as log from '../engine/log'
 import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 import * as spriteUtil from '../engine/anim/spriteUtil'
@@ -40,7 +40,7 @@ var animDuck: anim.IAnimData = {
   frameTime: 10 / 60,
 }
 
-export function create(ctx: RaidContext, container: PIXI.Container) {
+export function create(ctx: GameContext, container: PIXI.Container) {
   log.x('create player')
   let item: IPlayer = {
     anim: anim.create(),
@@ -76,7 +76,7 @@ export function onMove(item: IPlayer, dirX, dirY) {
 }
 
 import { InputControl } from 'engine/gamepad/InputControl'
-export function updateAll(ctx: RaidContext) {
+export function updateAll(ctx: GameContext) {
   let kb = ctx.sge.keyboard
 
   let elapsedTime = 1.0 / 60.0
@@ -86,25 +86,9 @@ export function updateAll(ctx: RaidContext) {
     if (fc) {
       if (fc.hasMove) {
         let { ox, oy } = flightController.dirToXY(fc.moveDir)
-
-        // c.bx = c.tbx
-        // c.by = c.tby
-        // c.tbx = c.bx + ox
-        // c.tby = c.by + oy
-        //c.bx += ox
-        //c.by += oy
       }
       let r = flightController.dirToR(fc.pointDir)
-
-      const PI2 = Math.PI * 2
-      // if (c.anim.sprite.rotation < fc.springRot.target) {
-      //   c.anim.sprite.rotation += (PI2 / 10) * elapsedTime
-      // }
-      // if (c.anim.sprite.rotation > fc.springRot.target) {
-      //   c.anim.sprite.rotation -= (PI2 / 10) * elapsedTime
-      // }
-
-      c.anim.sprite.rotation = fc.springRot.cur
+      c.anim.sprite.rotation = r
     }
 
     // lerp

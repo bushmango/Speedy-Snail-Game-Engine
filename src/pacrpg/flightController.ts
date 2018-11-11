@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-import { RaidContext } from './RaidContext'
-import * as log from './log'
+import { GameContext } from './GameContext'
+import * as log from '../engine/log'
 import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 import * as anim from '../engine/anim/anim'
@@ -60,14 +60,14 @@ function updateSpring(spring: ISpring, elapsedTime) {
 
   //spring.vel -= spring.damp * spring.vel * elapsedTime
   spring.cur = spring.cur + spring.vel * elapsedTime
-  log.json(spring)
-  log.x(dx)
+  // log.json(spring)
+  // log.x(dx)
 }
 function setSpring(spring: ISpring, val) {
   spring.cur = spring.target = val
 }
 
-export function create(ctx: RaidContext) {
+export function create(ctx: GameContext) {
   let item: IFlightController = {
     timeAccum: 0,
     moveTime: 0.5,
@@ -85,7 +85,7 @@ export function create(ctx: RaidContext) {
 }
 
 import { InputControl } from 'engine/gamepad/InputControl'
-export function updateAll(ctx: RaidContext) {
+export function updateAll(ctx: GameContext) {
   let kb = ctx.sge.keyboard
 
   let elapsedTime = 1.0 / 60.0
