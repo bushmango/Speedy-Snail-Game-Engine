@@ -6,6 +6,8 @@ import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 
+import * as tileDatas from './tileDatas'
+
 const isActive = true
 
 export interface IMap {
@@ -16,6 +18,8 @@ export interface IMap {
 }
 export interface ITile {
   sprite: PIXI.Sprite
+  canMove: true
+  tileData: tileDatas.ITileData
 }
 let maps: IMap[] = []
 
@@ -63,6 +67,8 @@ export function resize(map: IMap, width, height) {
     for (let i = 0; i < map.width; i++) {
       let item: ITile = {
         sprite: null,
+        canMove: true,
+        tileData: null,
       }
       let sprite = new PIXI.Sprite(tex0)
       sprite.anchor.set(0, 0)
@@ -76,7 +82,7 @@ export function resize(map: IMap, width, height) {
   }
 }
 
-export function setTile(map: IMap, x, y, tileData) {
+export function setTile(map: IMap, x, y, tileData: tileDatas.ITileData) {
   if (!tileData.tex) {
     let ctx = getContext()
     let baseTex = ctx.sge.getTexture('tiles')
@@ -85,6 +91,13 @@ export function setTile(map: IMap, x, y, tileData) {
 
   let tile = map.tiles[y * map.width + x]
   tile.sprite.texture = tileData.tex
+  tile.tileData = tileData
+  // tile.canMove =
+}
+
+export function getTileAtWorld(map: IMap, wx, wy) {
+  let tile = map.tiles[Math.floor(wy / 32) * map.width + Math.floor(wx / 32)]
+  return tile
 }
 
 export function updateAll() {

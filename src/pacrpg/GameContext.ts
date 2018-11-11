@@ -6,7 +6,7 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { GamepadTester } from 'engine/gamepad/GamepadTester'
 import { InputControl } from 'engine/gamepad/InputControl'
 
-import * as players from './players'
+import * as players from './actors/players'
 import * as flightControler from './flightController'
 
 import * as log from '../engine/log'
@@ -26,6 +26,9 @@ export class GameContext {
   layerFrameRate: PIXI.Container
   layerMap: PIXI.Container
   layerPlayer: PIXI.Container
+  layerDetectors: PIXI.Container
+
+  map: maps.IMap
 
   onLoaded(_sge: SimpleGameEngine) {
     let ctx = this
@@ -36,12 +39,13 @@ export class GameContext {
 
     ctx.layerMap = this.addLayer()
     ctx.layerPlayer = this.addLayer()
+    ctx.layerDetectors = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
-    let player = players.create(ctx, ctx.layerPlayer)
+    let player = players.create(ctx.layerPlayer)
     player.flightController = flightControler.create(ctx)
 
-    let map = maps.create(ctx.layerMap)
+    let map = (this.map = maps.create(ctx.layerMap))
     let jsonTiles = this.sge.getJson('tiled-tiles')
     let jsonMap = this.sge.getJson('map-pac-001')
     mapLoader.load(map, jsonTiles, jsonMap)
@@ -70,6 +74,6 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     flightControler.updateAll(ctx)
-    players.updateAll(ctx)
+    players.updateAll()
   }
 }

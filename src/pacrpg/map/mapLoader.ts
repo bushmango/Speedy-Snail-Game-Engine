@@ -5,7 +5,7 @@ import * as tiledMapLayerLoader from 'engine/tiles2/tiledMapLayerLoader'
 import * as maps from './maps'
 import * as log from 'engine/log'
 
-import * as tileData from './tileData'
+import * as tileData from './tileDatas'
 
 // const Layer_Path = 0
 // const Layer_Spawn = 1
