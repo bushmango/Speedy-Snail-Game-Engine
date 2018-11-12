@@ -8,14 +8,16 @@ import * as stats from 'pacrpg/stats'
 
 const isActive = true
 
-interface IEnemyAnimSet {
+interface IEnemyData {
   animDefault: anim.IAnimData
   animCollect: anim.IAnimData
+  level: number
+  exp: number
 }
 
 interface IEnemy {
   anim: anim.IAnim
-  animSet: IEnemyAnimSet
+  data: IEnemyData
 
   bx: number
   by: number
@@ -31,7 +33,9 @@ export function getAll() {
   return items
 }
 
-var animSet_cactus: IEnemyAnimSet = {
+var data_cactus: IEnemyData = {
+  level: 0,
+  exp: 2,
   animDefault: {
     frames: spriteUtil.frame32runH(4, 1, 2),
     frameTime: 10 / 60,
@@ -42,18 +46,9 @@ var animSet_cactus: IEnemyAnimSet = {
     frameTime: 10 / 60,
   },
 }
-var animSet_rat: IEnemyAnimSet = {
-  animDefault: {
-    frames: spriteUtil.frame32runH(5, 1, 2),
-    frameTime: 10 / 60,
-    loop: true,
-  },
-  animCollect: {
-    frames: spriteUtil.frame32runH(5, 3, 1),
-    frameTime: 10 / 60,
-  },
-}
-var animSet_bat: IEnemyAnimSet = {
+var data_bat: IEnemyData = {
+  level: 1,
+  exp: 4,
   animDefault: {
     frames: spriteUtil.frame32runH(6, 1, 2),
     frameTime: 10 / 60,
@@ -64,7 +59,24 @@ var animSet_bat: IEnemyAnimSet = {
     frameTime: 10 / 60,
   },
 }
-var animSet_goblin: IEnemyAnimSet = {
+
+var data_rat: IEnemyData = {
+  level: 2,
+  exp: 6,
+  animDefault: {
+    frames: spriteUtil.frame32runH(5, 1, 2),
+    frameTime: 10 / 60,
+    loop: true,
+  },
+  animCollect: {
+    frames: spriteUtil.frame32runH(5, 3, 1),
+    frameTime: 10 / 60,
+  },
+}
+
+var data_goblin: IEnemyData = {
+  level: 3,
+  exp: 8,
   animDefault: {
     frames: spriteUtil.frame32runH(7, 1, 2),
     frameTime: 10 / 60,
@@ -81,16 +93,16 @@ export function create(type: string) {
 
   log.x('create enemy', type)
 
-  let animSet = animSet_cactus
+  let data = data_cactus
   switch (type) {
     case 'rat':
-      animSet = animSet_rat
+      data = data_rat
       break
     case 'bat':
-      animSet = animSet_bat
+      data = data_bat
       break
     case 'goblin':
-      animSet = animSet_goblin
+      data = data_goblin
       break
   }
 
@@ -102,11 +114,11 @@ export function create(type: string) {
     y: 0,
     isCollected: false,
     isDead: false,
-    animSet,
+    data,
   }
 
   let baseTex = ctx.sge.getTexture('player1')
-  let tex = new PIXI.Texture(baseTex.baseTexture, animSet.animDefault.frames[0])
+  let tex = new PIXI.Texture(baseTex.baseTexture, data.animDefault.frames[0])
 
   let sprite = new PIXI.Sprite(tex)
   sprite.anchor.set(0.5, 0.5)
@@ -119,7 +131,7 @@ export function create(type: string) {
 
   moveToB(item, 14, 18)
 
-  anim.playAnim(item.anim, animSet.animDefault)
+  anim.playAnim(item.anim, data.animDefault)
 
   return item
 }
@@ -186,7 +198,12 @@ export function doCollect(c: IEnemy) {
   if (c.isCollected) {
     return
   }
-  c.isCollected = true
-  anim.playAnim(c.anim, c.animSet.animCollect)
-  stats.addExp(5)
+
+  if (c.data.level < stats.getCurrentStats().level) {
+    c.isCollected = true
+    anim.playAnim(c.anim, c.data.animCollect)
+    stats.addExp(5)
+  } else {
+    // die?
+  }
 }
