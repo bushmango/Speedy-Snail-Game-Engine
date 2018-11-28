@@ -18,6 +18,8 @@ import * as tilesLoader from './map/tilesLoader'
 
 import * as tilePickers from './actors/tilePickers'
 
+import * as mouseTrails from './actors/mouseTrails'
+
 import { KeyCodes } from 'engine/input/Keyboard'
 
 let debugCollision = false
@@ -39,7 +41,10 @@ export class GameContext {
   layerPlayer: PIXI.Container
   layerUi: PIXI.Container
   layerDetectors: PIXI.Container
+
   layerDebugGraphics: PIXI.Container
+
+  layerMouseTrail: PIXI.Container
 
   map: maps.IMap
   tilePicker: tilePickers.ITilePicker
@@ -59,6 +64,7 @@ export class GameContext {
     ctx.layerDetectors = this.addCameraLayer()
     ctx.layerUi = this.addLayer()
     ctx.layerDebugGraphics = this.addCameraLayer()
+    ctx.layerMouseTrail = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
     // let player = players.create(ctx.layerPlayer)
@@ -75,6 +81,11 @@ export class GameContext {
     ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
 
     // log.x('map loaded', jsonMap)
+
+    for (let i = 0; i < 5; i++) {
+      let item = mouseTrails.create(ctx.layerMouseTrail)
+      item.rate = 0.2 * (i / 5)
+    }
 
     // camera?
     ctx.cameraLayers.position.x = 50
@@ -113,6 +124,7 @@ export class GameContext {
     flightController.updateAll(ctx)
     maps.updateAll(ctx.cameraLayers)
     tilePickers.updateAll()
+    mouseTrails.updateAll()
 
     // players.updateAll()
     // coins.updateAll()

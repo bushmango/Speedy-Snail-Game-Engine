@@ -1,5 +1,24 @@
 
 
+- game engine
+- juicyness
+-- camera shake
+-- particles
+-- from video - color, tween in, random delay in tween, squeeze and stretch, rotate in direction going, sound, music, yeay! sound
+-- more from video - particles, smiles, eyes, background color flashes, screen shake, trails
+- ui
+-- buttons
+-- click handling
+-- health bars
+-- tweening
+-- scale production
+-- flop out to square
+-- tween fall in
+
+game like factorio
+game like forager
+game like sheltered
+
 
 zombie base builder
 
