@@ -1,0 +1,21 @@
+
+
+
+zombie base builder
+
+like agricola / caverna
+
+deploy each person to do one task per day
+farms take a few days
+
+manage wood, steel, food, manufacturing
+
+chop down trees with an axe
+
+expeditions for goods
+
+attract new people
+
+event cards that happen each day
+
+8x8 or so building area

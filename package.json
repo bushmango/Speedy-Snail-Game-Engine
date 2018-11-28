@@ -7,9 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-old": "tsc ./src-build/webpack-dev.ts && webpack --watch --progress --config ./src-build/webpack-dev.js",
     
-        "start": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
+    "start": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "start-raid": "tsc ./src-build/run-game-raid.ts && webpack-dev-server --open --config ./src-build/run-game-raid.js",
     "start-pacrpg": "tsc ./src-build/run-game-pacrpg.ts && webpack-dev-server --open --config ./src-build/run-game-pacrpg.js",
+    "start-shelter": "tsc ./src-build/run-game-shelter.ts && webpack-dev-server --open --config ./src-build/run-game-shelter.js",
+    "start-ld-43": "tsc ./src-build/run-game-ludum-dare-43.ts && webpack-dev-server --open --config ./src-build/run-game-ludum-dare-43.js",
 
     "dev": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "start-server-ld41": "ts-node-dev --respawn --project tsconfig.server.json src/ludumDare41/serverOnly/runServer.ts",
