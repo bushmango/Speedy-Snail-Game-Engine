@@ -1,5 +1,5 @@
-const settingsPath = 'pacrpg-v001'
-const preloadPath = '/public/pacrpg'
+const settingsPath = 'ld43-v001'
+const preloadPath = '/public/ludumDare43'
 export { settingsPath, preloadPath }
 export function preload(sge) {
   sge.preloadAudioSprites([

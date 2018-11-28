@@ -64,11 +64,11 @@ function loadLayer_path(
       // log.x('tile', bx, by, tx, ty, t)
 
       if (t) {
-        if (t === 11) {
-          let c = coins.create()
-          coins.moveToB(c, bx, by)
-          t = 10
-        }
+        // if (t === 11) {
+        //   let c = coins.create()
+        //   coins.moveToB(c, bx, by)
+        //   t = 10
+        // }
 
         let td = tileData.getTileData(t, numTileColumns)
 
@@ -90,12 +90,11 @@ function loadLayer_spawn(data: tiledMapLayerLoader.ILayerData, numTileColumns) {
       if (t) {
         let td = tileData.getTileData(t, numTileColumns)
         if (td.props) {
-          if (td.props.enemy) {
-            log.x('spawn enemy!')
-
-            let c = enemies.create(td.props.enemy)
-            enemies.moveToB(c, bx, by)
-          }
+          // if (td.props.enemy) {
+          //   log.x('spawn enemy!')
+          //   let c = enemies.create(td.props.enemy)
+          //   enemies.moveToB(c, bx, by)
+          // }
         }
 
         // if (t === 26) {

@@ -1,5 +1,5 @@
-const settingsPath = 'pacrpg-v001'
-const preloadPath = '/public/pacrpg'
+const settingsPath = 'shelter-v001'
+const preloadPath = '/public/shelter'
 export { settingsPath, preloadPath }
 export function preload(sge) {
   sge.preloadAudioSprites([
@@ -20,6 +20,6 @@ export function preload(sge) {
     //'ase-512-16',
     //'ase-512-8',
   ])
-  sge.preloadTiledMaps(['tiled-tiles', 'map-pac-001'])
+  sge.preloadTiledMaps(['tiled-tiles', 'map-shelter-001'])
   sge.preloadPackedSprites([])
 }

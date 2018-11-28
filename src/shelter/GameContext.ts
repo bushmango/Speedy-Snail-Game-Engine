@@ -54,15 +54,15 @@ export class GameContext {
     ctx.layerDebugGraphics = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
-    let player = players.create(ctx.layerPlayer)
-    player.flightController = flightController.create(ctx)
+    // let player = players.create(ctx.layerPlayer)
+    // player.flightController = flightController.create(ctx)
 
-    uiExpBar.create()
+    // uiExpBar.create()
 
     let map = (this.map = maps.create(ctx.layerMap))
     let jsonTiles = this.sge.getJson('tiled-tiles')
     tilesLoader.load(jsonTiles)
-    let jsonMap = this.sge.getJson('map-pac-001')
+    let jsonMap = this.sge.getJson('map-shelter-001')
     mapLoader.load(map, jsonTiles, jsonMap)
 
     // log.x('map loaded', jsonMap)
@@ -89,11 +89,11 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
-    players.updateAll()
-    coins.updateAll()
-    enemies.updateAll()
+    // players.updateAll()
+    // coins.updateAll()
+    // enemies.updateAll()
 
-    uiExpBar.update()
+    // uiExpBar.update()
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {
