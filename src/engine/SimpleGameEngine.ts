@@ -210,6 +210,11 @@ export class SimpleGameEngine {
     return res.texture
   }
 
+  getMousePosition() {
+    var mouseposition = this.renderer.plugins.interaction.mouse.global
+    return mouseposition
+  }
+
   startGameLoop() {
     this.frameRateStart = new Date().getTime()
     requestAnimationFrame(() => {

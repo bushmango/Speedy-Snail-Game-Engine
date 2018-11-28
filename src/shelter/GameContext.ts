@@ -15,6 +15,9 @@ import * as log from '../engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
 import * as tilesLoader from './map/tilesLoader'
+
+import * as tilePickers from './actors/tilePickers'
+
 import { KeyCodes } from 'engine/input/Keyboard'
 
 let debugCollision = false
@@ -29,6 +32,8 @@ export class GameContext {
 
   rootContainer: PIXI.Container
 
+  cameraLayers: PIXI.Container
+
   layerFrameRate: PIXI.Container
   layerMap: PIXI.Container
   layerPlayer: PIXI.Container
@@ -37,6 +42,7 @@ export class GameContext {
   layerDebugGraphics: PIXI.Container
 
   map: maps.IMap
+  tilePicker: tilePickers.ITilePicker
 
   gfx: PIXI.Graphics
 
@@ -47,11 +53,12 @@ export class GameContext {
     ctx.sge = _sge
     ctx.rootContainer = new PIXI.Container()
 
-    ctx.layerMap = this.addLayer()
-    ctx.layerPlayer = this.addLayer()
-    ctx.layerDetectors = this.addLayer()
+    ctx.cameraLayers = this.addLayer()
+    ctx.layerMap = this.addCameraLayer()
+    ctx.layerPlayer = this.addCameraLayer()
+    ctx.layerDetectors = this.addCameraLayer()
     ctx.layerUi = this.addLayer()
-    ctx.layerDebugGraphics = this.addLayer()
+    ctx.layerDebugGraphics = this.addCameraLayer()
     ctx.layerFrameRate = this.addLayer()
 
     // let player = players.create(ctx.layerPlayer)
@@ -65,7 +72,14 @@ export class GameContext {
     let jsonMap = this.sge.getJson('map-shelter-001')
     mapLoader.load(map, jsonTiles, jsonMap)
 
+    ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
+
     // log.x('map loaded', jsonMap)
+
+    // camera?
+    ctx.cameraLayers.position.x = 50
+    ctx.cameraLayers.position.y = 50
+    ctx.cameraLayers.scale.set(2, 2)
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer
@@ -82,6 +96,14 @@ export class GameContext {
     this.rootContainer.addChild(container)
     return container
   }
+  addCameraLayer(container: PIXI.Container = null) {
+    if (!container) {
+      container = new PIXI.Container()
+    }
+    //container.scale.set(2, 2)
+    this.cameraLayers.addChild(container)
+    return container
+  }
 
   onUpdate() {
     let ctx = this
@@ -89,6 +111,9 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
+    maps.updateAll(ctx.cameraLayers)
+    tilePickers.updateAll()
+
     // players.updateAll()
     // coins.updateAll()
     // enemies.updateAll()

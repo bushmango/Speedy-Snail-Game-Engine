@@ -7,7 +7,7 @@ import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 
 import * as tileDatas from './tileDatas'
-
+import * as tilePickers from './../actors/tilePickers'
 const isActive = true
 
 export interface IMap {
@@ -112,6 +112,35 @@ export function getTileAtWorld(map: IMap, wx, wy) {
   return tile
 }
 
-export function updateAll() {
-  _.forEach(maps, (c) => {})
+export function convertWorldToTile(wx, wy) {
+  let bx = Math.floor(wx / 32)
+  let by = Math.floor(wy / 32)
+  return { bx, by }
+}
+
+export function updateAll(cameraLayer: PIXI.Container) {
+  _.forEach(maps, (c) => {
+    update(c, cameraLayer)
+  })
+}
+export function update(c: IMap, cameraLayer: PIXI.Container) {
+  // Get which tile the mouse is over
+  // getTileAtWorld(c, 50, 50)
+
+  let ctx = getContext()
+
+  let mousePosition = ctx.sge.getMousePosition()
+  // get local postion
+  let localX = mousePosition.x
+  let localY = mousePosition.y
+  localX -= cameraLayer.position.x
+  localY -= cameraLayer.position.y
+  localX /= cameraLayer.scale.x
+  localY /= cameraLayer.scale.y
+
+  //let tile = getTileAtWorld(c, localX, localY)
+  //if (tile) {
+  let converted = convertWorldToTile(localX, localY)
+  tilePickers.moveToB(ctx.tilePicker, converted.bx, converted.by)
+  //}
 }
