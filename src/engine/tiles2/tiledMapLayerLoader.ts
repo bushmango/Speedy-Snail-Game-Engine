@@ -70,35 +70,39 @@ export function loadLayer(
             rot = Math.PI * 0.5
 
             if (flipY && !flipX) {
-              //t = 4
               rot = -Math.PI * 0.5
             }
 
             if (!flipY && flipX) {
-              //t = 4
               flipY = !flipY
               flipX = !flipX
             }
           }
 
-          if (t & Rot_90_Flag) {
-            t -= Rot_90_Flag
-            t = 4
-            // This doesn't seem to be working?
-            //rot = Math.PI * 0.5
-          }
-          if (t & Rot_180_Flag) {
-            t -= Rot_180_Flag
-            t = 4
-            // This doesn't seem to be working?
-            //rot = Math.PI * 1
-          }
-          if (t & Rot_270_Flag) {
-            t -= Rot_270_Flag
-            t = 4
-            // This doesn't seem to be working?
-            //rot = Math.PI * 1.5
-          }
+          // if (t & Rot_90_Flag) {
+          //   t -= Rot_90_Flag
+          //   // t = 4
+          //   // This doesn't seem to be working?
+          //   //rot = Math.PI * 0.5
+          //   rot = 1
+          //   console.log('rot 90')
+          // }
+          // if (t & Rot_180_Flag) {
+          //   t -= Rot_180_Flag
+          //   // t = 4
+          //   // This doesn't seem to be working?
+          //   //rot = Math.PI * 1
+          //   rot = 2
+          //   console.log('rot 180')
+          // }
+          // if (t & Rot_270_Flag) {
+          //   t -= Rot_270_Flag
+          //   // t = 4
+          //   // This doesn't seem to be working?
+          //   //rot = Math.PI * 1.5
+          //   rot = 3
+          //   console.log('rot 270')
+          // }
         }
 
         let tx = t % tilesPerRow

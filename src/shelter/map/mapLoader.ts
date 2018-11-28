@@ -60,7 +60,7 @@ function loadLayer_path(
   tiledMapLayerLoader.loadLayer(
     data,
     numTileColumns,
-    (bx, by, t, tx, ty, flwasipX, flipY, rot) => {
+    (bx, by, t, tx, ty, flipX, flipY, rot) => {
       // log.x('tile', bx, by, tx, ty, t)
 
       if (t) {
@@ -72,7 +72,7 @@ function loadLayer_path(
 
         let td = tileData.getTileData(t, numTileColumns)
 
-        maps.setTile(map, bx, by, td)
+        maps.setTile(map, bx, by, td, flipX, flipY, rot)
       }
 
       // if(t )

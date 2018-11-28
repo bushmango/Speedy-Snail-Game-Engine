@@ -71,9 +71,9 @@ export function resize(map: IMap, width, height) {
         tileData: null,
       }
       let sprite = new PIXI.Sprite(tex0)
-      sprite.anchor.set(0, 0)
-      sprite.x = i * 32
-      sprite.y = j * 32
+      sprite.anchor.set(0.5, 0.5)
+      sprite.x = i * 32 + 16
+      sprite.y = j * 32 + 16
       // sprite.scale.set(4)
       map.layer.addChild(sprite)
       item.sprite = sprite
@@ -82,7 +82,15 @@ export function resize(map: IMap, width, height) {
   }
 }
 
-export function setTile(map: IMap, x, y, tileData: tileDatas.ITileData) {
+export function setTile(
+  map: IMap,
+  x,
+  y,
+  tileData: tileDatas.ITileData,
+  flipX,
+  flipY,
+  rot
+) {
   if (!tileData.tex) {
     let ctx = getContext()
     let baseTex = ctx.sge.getTexture('tiles')
@@ -92,7 +100,11 @@ export function setTile(map: IMap, x, y, tileData: tileDatas.ITileData) {
   let tile = map.tiles[y * map.width + x]
   tile.sprite.texture = tileData.tex
   tile.tileData = tileData
-  // tile.canMove =
+
+  // Set flipping and rotation
+  tile.sprite.scale.x = flipX ? -1 : 1
+  tile.sprite.scale.y = flipY ? -1 : 1
+  tile.sprite.rotation = rot
 }
 
 export function getTileAtWorld(map: IMap, wx, wy) {
