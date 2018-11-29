@@ -1,5 +1,6 @@
 
 
+
 - copy resources dir
 - create new src build
 - set up graphic builder

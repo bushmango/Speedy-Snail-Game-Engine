@@ -20,8 +20,9 @@ import * as tilesLoader from './map/tilesLoader'
 
 import * as tilePickers from './actors/tilePickers'
 import * as mouseTrails from './actors/mouseTrails'
-import * as cameras from './actors/cameras'
+import * as stretchyBois from './actors/stretchyBois'
 
+import * as cameras from 'engine/camera/cameras'
 import { KeyCodes } from 'engine/input/Keyboard'
 
 let debugCollision = false
@@ -89,6 +90,12 @@ export class GameContext {
 
     ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
 
+    stretchyBois.create()
+    let sb2 = stretchyBois.create()
+    sb2.anim.sprite.x -= 100
+    sb2.anim.sprite.y -= 50
+    sb2.frame = 30
+
     // log.x('map loaded', jsonMap)
 
     for (let i = 0; i < 5; i++) {
@@ -135,6 +142,8 @@ export class GameContext {
     maps.updateAll(ctx.camera.container)
     tilePickers.updateAll()
     mouseTrails.updateAll()
+
+    stretchyBois.updateAll()
 
     if (_.random(true) < 0.1) {
       ctx.particleEmitter1.emit(50, 50)

@@ -1,8 +1,8 @@
 import { _ } from 'engine/importsEngine'
-import { getContext } from '../GameContext'
-import * as log from '../../engine/log'
-import * as spriteUtil from '../../engine/anim/spriteUtil'
-import * as anim from '../../engine/anim/anim'
+import { getContext } from '../../shelter/GameContext'
+import * as log from '../log'
+import * as spriteUtil from '../anim/spriteUtil'
+import * as anim from '../anim/anim'
 
 import * as stats from 'pacrpg/stats'
 

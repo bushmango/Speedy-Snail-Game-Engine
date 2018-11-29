@@ -1,16 +1,32 @@
 
 
+// Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
+
 - game engine
 - juicyness
--- camera shake
--- particles
--- from video - color, tween in, random delay in tween, squeeze and stretch, rotate in direction going, sound, music, yeay! sound
--- more from video - particles, smiles, eyes, background color flashes, screen shake, trails
+-- from video 
+- color 
+- tween in,
+- random delay in tween
+x squeeze and stretch 
+- rotate in direction going
+- sound, 
+- music, 
+- yeay! sound
+-- more from video 
+x particles
+- smiles 
+- eyes 
+- background color flashes
+x screen shake
+x trails
 - ui
+xx mouse handling
 -- buttons
 -- click handling
 -- health bars
 -- tweening
+xx basic tweaking
 -- scale production
 -- flop out to square
 -- tween fall in
