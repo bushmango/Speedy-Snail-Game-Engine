@@ -43,7 +43,7 @@ export class MenuManagerGeneric {
   }
 
   changeMode(newMode) {
-    console.log('new menu mode', newMode)
+    // console.log('new menu mode', newMode)
 
     this.container.removeChildren()
 
@@ -52,7 +52,7 @@ export class MenuManagerGeneric {
     this.currentMenu =
       _.find(this.menus, (c) => c.modeName === newMode) || this.menus[0]
 
-    console.log('mode found', this.currentMenu.modeName, this.menus)
+    // console.log('mode found', this.currentMenu.modeName, this.menus)
 
     this.container.addChild(this.currentMenu.container)
   }

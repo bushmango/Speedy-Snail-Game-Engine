@@ -15,7 +15,7 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
     callbackOnLoaded()
   })
   soundSprite.on('loaderror', (id, err) => {
-    console.log('howl', 'loaderror', id, err)
+    // console.log('howl', 'loaderror', id, err)
   })
 
   soundSprite.mute(settingsGeneric.getSettings().muteSound)
@@ -40,7 +40,7 @@ export function playMusic(song, loop = true, cb: () => void = null) {
   //musicSprite.play()
   //})
   musicSprite.on('loaderror', (id, err) => {
-    console.log('howl', 'loaderror', id, err)
+    // console.log('howl', 'loaderror', id, err)
   })
   if (cb) {
     musicSprite.on('end', () => {

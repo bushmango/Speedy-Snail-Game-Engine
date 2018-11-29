@@ -11,6 +11,8 @@ import * as mouse from 'engine/input/mouse'
 //   }
 // }
 
+import * as log from './log'
+
 export class SimpleGameEngine {
   pixiMode = 'unknown'
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer = null
@@ -23,7 +25,7 @@ export class SimpleGameEngine {
   keyboard = new Keyboard()
 
   init() {
-    console.log('starting SGE')
+    log.x('starting SGE')
 
     let type = 'WebGL'
     if (!PIXI.utils.isWebGLSupported()) {
@@ -34,7 +36,7 @@ export class SimpleGameEngine {
 
     this.keyboard.init()
 
-    console.log('started SGE')
+    log.x('started SGE')
   }
 
   resize() {
@@ -191,13 +193,13 @@ export class SimpleGameEngine {
   }
   onloaderProgress(loader, resource) {
     let text = Math.floor(loader.progress) + '%' + ' - ' + resource.url
-    console.log('loading', text)
+    // console.log('loading', text)
     this.loadingMessage.text = text
     this.renderer.render(this.stage)
   }
 
   getJson(key: string) {
-    console.log('get json', key)
+    // console.log('get json', key)
     let res = this.loader.resources[key]
     assert.exists(res, `json not loaded ${key}`)
     assert.exists(res.data, `is not json ${key}`)

@@ -1,11 +1,11 @@
 // see : https://stackoverflow.com/questions/322378/javascript-check-if-mouse-button-down
 let mouseDown = [false, false, false, false, false, false]
 document.body.onmousedown = (evt) => {
-  console.log('onmousedown', evt.button)
+  // console.log('onmousedown', evt.button)
   mouseDown[evt.button] = true
 }
 document.body.onmouseup = (evt) => {
-  console.log('onmouseup')
+  // console.log('onmouseup')
   mouseDown[evt.button] = false
 }
 document.body.oncontextmenu = () => {
@@ -24,10 +24,15 @@ let isRightJustUp = false
 let x = 0
 let y = 0
 
+let isConsumedThisFrame = false
+
 // Call once per update cycle
 export function scan(mouseX, mouseY) {
   x = mouseX
   y = mouseY
+
+  // reset consumption
+  isConsumedThisFrame = false
 
   let newIsLeftDown = mouseDown[0]
   isLeftJustDown = false
@@ -47,6 +52,9 @@ export function scan(mouseX, mouseY) {
   }
   isRightDown = newIsRightDown
 }
+export function consume() {
+  isConsumedThisFrame = true
+}
 export function getMouse() {
   return {
     isLeftDown,
@@ -57,5 +65,6 @@ export function getMouse() {
     isRightJustUp,
     x,
     y,
+    isConsumedThisFrame,
   }
 }

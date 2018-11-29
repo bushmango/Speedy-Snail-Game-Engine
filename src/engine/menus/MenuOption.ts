@@ -40,7 +40,7 @@ export class MenuOption {
     this.container.addChild(this.button.container)
 
     this.button.onClick = () => {
-      console.log('change option', settingKey)
+      // console.log('change option', settingKey)
       let setting = this.getSettingFunc(this.settingKey)
 
       let idx = _.findIndex(this.options, (c, cIdx) => c === setting) + 1

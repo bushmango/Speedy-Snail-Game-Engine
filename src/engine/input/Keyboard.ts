@@ -39,7 +39,7 @@ export class Keyboard {
       return
     }
 
-    console.log('key down', ev.keyCode)
+    // console.log('key down', ev.keyCode)
 
     key._delay_justPressed = true
     key._delay_isPressed = true
@@ -51,7 +51,7 @@ export class Keyboard {
       return
     }
 
-    console.log('key up', ev.keyCode)
+    // console.log('key up', ev.keyCode)
 
     key._delay_justReleased = true
     key._delay_isPressed = false
@@ -92,10 +92,10 @@ export class Keyboard {
     let key = this.keys[keyCode]
     if (key) {
       // Already listening to this
-      console.warn('already listening to key ' + keyCode)
+      // console.warn('already listening to key ' + keyCode)
       return key
     }
-    console.log('listening to key ' + keyCode)
+    // console.log('listening to key ' + keyCode)
 
     key = {
       keyCode: keyCode,

@@ -52,7 +52,7 @@ export class MenuOptionSimple {
     // })
 
     this.button.onClick = () => {
-      console.log('change option', settingKey)
+      // console.log('change option', settingKey)
 
       let setting = settingsGeneric.getSettings()[this.settingKey]
 
@@ -61,7 +61,7 @@ export class MenuOptionSimple {
         idx = 0
       }
 
-      console.log('change option to', this.options[idx].value)
+      // console.log('change option to', this.options[idx].value)
 
       // find the value of this option
       settingsGeneric.updateSettings({
