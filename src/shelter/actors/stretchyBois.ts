@@ -8,7 +8,7 @@ import * as stats from 'pacrpg/stats'
 
 const isActive = true
 
-interface IStretchyBoi {
+export interface IStretchyBoi {
   anim: anim.IAnim
   frame: number
   bx: number

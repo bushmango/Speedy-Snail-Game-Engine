@@ -60,6 +60,8 @@ export class GameContext {
   gfx: PIXI.Graphics
   sfx = sounds
 
+  stretchyBoi: stretchyBois.IStretchyBoi
+
   // Particles
   particleEmitter1: ParticleEmitter
 
@@ -99,10 +101,10 @@ export class GameContext {
     ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
 
     stretchyBois.create()
-    let sb2 = stretchyBois.create()
-    sb2.anim.sprite.x -= 100
-    sb2.anim.sprite.y -= 50
-    sb2.frame = 30
+    ctx.stretchyBoi = stretchyBois.create()
+    ctx.stretchyBoi.anim.sprite.x -= 100
+    ctx.stretchyBoi.anim.sprite.y -= 50
+    ctx.stretchyBoi.frame = 30
 
     // log.x('map loaded', jsonMap)
 
@@ -169,6 +171,8 @@ export class GameContext {
     } else {
       backgroundColorChanger.cycleColor(elapsedTimeSec)
     }
+
+    ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
     if (mouse.isRightDown) {
       cameras.shake(ctx.camera, 10, 5)
