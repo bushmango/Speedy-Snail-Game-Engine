@@ -23,6 +23,7 @@ import * as mouseTrails from './actors/mouseTrails'
 import * as stretchyBois from './actors/stretchyBois'
 import * as sounds from './sounds/sounds'
 
+import * as backgroundColorChanger from './misc/backgroundColorChanger'
 import * as cameras from 'engine/camera/cameras'
 import { KeyCodes } from 'engine/input/Keyboard'
 
@@ -141,6 +142,9 @@ export class GameContext {
 
   onUpdate() {
     let ctx = this
+
+    let elapsedTimeSec = ctx.sge.elapsedTimeSec
+    // log.x('update', elapsedTime)
     // log.x('update')
 
     // parallaxLayers.updateLayers(ctx);
@@ -160,7 +164,12 @@ export class GameContext {
     // log.json(mouse)
     if (mouse.isLeftDown) {
       ctx.particleEmitter1.emit(mouse.x, mouse.y)
+
+      backgroundColorChanger.setRandom()
+    } else {
+      backgroundColorChanger.cycleColor(elapsedTimeSec)
     }
+
     if (mouse.isRightDown) {
       cameras.shake(ctx.camera, 10, 5)
 

@@ -245,7 +245,20 @@ export class SimpleGameEngine {
   frameMaxLoad = 0
   frameAverageLoad = 0
 
+  elapsedFrameStart = 0
+  elapsedFrameEnd = 0
+  elapsedTimeMs = 0
+  elapsedTimeSec
+
   gameLoop() {
+    this.elapsedFrameEnd = performance.now()
+    this.elapsedTimeMs = 16.6
+    if (this.elapsedFrameStart !== 0) {
+      this.elapsedTimeMs = this.elapsedFrameEnd - this.elapsedFrameStart
+    }
+    this.elapsedTimeSec = this.elapsedTimeMs / 1000
+    this.elapsedFrameStart = this.elapsedFrameEnd
+
     this.lastPerfStart = this.perfStart
     this.lastPerfMid = this.perfMid
     this.lastPerfEnd = this.perfEnd
