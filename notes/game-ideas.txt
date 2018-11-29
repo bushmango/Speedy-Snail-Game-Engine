@@ -5,7 +5,7 @@
 - game engine
 - juicyness
 -- from video 
-- color 
+x color 
 - tween in,
 - random delay in tween
 x squeeze and stretch 
@@ -17,7 +17,7 @@ x sound,
 x particles
 - smiles 
 - eyes 
-- background color flashes
+x background color flashes
 x screen shake
 x trails
 - ui

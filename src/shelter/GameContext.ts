@@ -23,9 +23,13 @@ import * as mouseTrails from './actors/mouseTrails'
 import * as stretchyBois from './actors/stretchyBois'
 import * as sounds from './sounds/sounds'
 
+import * as uiHearts from './ui/uiHearts'
+
 import * as backgroundColorChanger from './misc/backgroundColorChanger'
 import * as cameras from 'engine/camera/cameras'
 import { KeyCodes } from 'engine/input/Keyboard'
+
+import * as stats from './misc/stats'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
@@ -59,6 +63,7 @@ export class GameContext {
 
   gfx: PIXI.Graphics
   sfx = sounds
+  stats = stats
 
   stretchyBoi: stretchyBois.IStretchyBoi
 
@@ -86,6 +91,8 @@ export class GameContext {
 
     ctx.layerMouseTrail = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
+
+    uiHearts.create()
 
     // let player = players.create(ctx.layerPlayer)
     // player.flightController = flightController.create(ctx)
@@ -158,6 +165,8 @@ export class GameContext {
 
     stretchyBois.updateAll()
 
+    uiHearts.update(elapsedTimeSec)
+
     if (_.random(true) < 0.1) {
       ctx.particleEmitter1.emit(50, 50)
     }
@@ -166,7 +175,6 @@ export class GameContext {
     // log.json(mouse)
     if (mouse.isLeftDown) {
       ctx.particleEmitter1.emit(mouse.x, mouse.y)
-
       backgroundColorChanger.setRandom()
     } else {
       backgroundColorChanger.cycleColor(elapsedTimeSec)
@@ -179,6 +187,14 @@ export class GameContext {
 
       ctx.sfx.playExplode()
     }
+
+    if (mouse.isLeftJustDown) {
+      ctx.stats.addLife(1)
+    }
+    if (mouse.isRightJustUp) {
+      ctx.stats.addLife(-1)
+    }
+
     ctx.particleEmitter1.update()
 
     // players.updateAll()
