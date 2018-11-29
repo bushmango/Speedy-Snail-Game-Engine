@@ -19,8 +19,8 @@ import * as mapLoader from './map/mapLoader'
 import * as tilesLoader from './map/tilesLoader'
 
 import * as tilePickers from './actors/tilePickers'
-
 import * as mouseTrails from './actors/mouseTrails'
+import * as cameras from './actors/cameras'
 
 import { KeyCodes } from 'engine/input/Keyboard'
 
@@ -36,7 +36,7 @@ export class GameContext {
 
   rootContainer: PIXI.Container
 
-  cameraLayers: PIXI.Container
+  //cameraLayer: PIXI.Container
 
   layerFrameRate: PIXI.Container
   layerMap: PIXI.Container
@@ -50,6 +50,7 @@ export class GameContext {
 
   map: maps.IMap
   tilePicker: tilePickers.ITilePicker
+  camera: cameras.ICamera
 
   gfx: PIXI.Graphics
 
@@ -63,12 +64,15 @@ export class GameContext {
     ctx.sge = _sge
     ctx.rootContainer = new PIXI.Container()
 
-    ctx.cameraLayers = this.addLayer()
-    ctx.layerMap = this.addCameraLayer()
-    ctx.layerPlayer = this.addCameraLayer()
-    ctx.layerDetectors = this.addCameraLayer()
+    ctx.camera = cameras.create()
+    ctx.layerMap = cameras.addLayer(ctx.camera)
+    ctx.layerPlayer = cameras.addLayer(ctx.camera)
+    ctx.layerDetectors = cameras.addLayer(ctx.camera)
+    ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
+    ctx.addLayer(ctx.camera.container)
+
     ctx.layerUi = this.addLayer()
-    ctx.layerDebugGraphics = this.addCameraLayer()
+
     ctx.layerMouseTrail = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
@@ -98,9 +102,12 @@ export class GameContext {
     ctx.addLayer(ctx.particleEmitter1.container)
 
     // camera?
-    ctx.cameraLayers.position.x = 50
-    ctx.cameraLayers.position.y = 50
-    ctx.cameraLayers.scale.set(2, 2)
+    ctx.camera.x = 50
+    ctx.camera.y = 50
+    ctx.camera.scale = 2
+    // ctx.cameraLayers.position.x = 50
+    // ctx.cameraLayers.position.y = 50
+    // ctx.cameraLayers.scale.set(2, 2)
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer
@@ -117,14 +124,6 @@ export class GameContext {
     this.rootContainer.addChild(container)
     return container
   }
-  addCameraLayer(container: PIXI.Container = null) {
-    if (!container) {
-      container = new PIXI.Container()
-    }
-    //container.scale.set(2, 2)
-    this.cameraLayers.addChild(container)
-    return container
-  }
 
   onUpdate() {
     let ctx = this
@@ -132,7 +131,8 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
-    maps.updateAll(ctx.cameraLayers)
+    cameras.updateAll()
+    maps.updateAll(ctx.camera.container)
     tilePickers.updateAll()
     mouseTrails.updateAll()
 
@@ -141,11 +141,13 @@ export class GameContext {
     }
 
     let mouse = ctx.sge.getMouse()
-    console.log('mouse', JSON.stringify(mouse, null, 2))
+    log.json(mouse)
     if (mouse.isLeftDown) {
       ctx.particleEmitter1.emit(mouse.x, mouse.y)
     }
-
+    if (mouse.isRightDown) {
+      cameras.shake(ctx.camera, 10, 5)
+    }
     ctx.particleEmitter1.update()
 
     // players.updateAll()
