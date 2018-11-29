@@ -2,9 +2,7 @@ const settingsPath = 'shelter-v001'
 const preloadPath = '/public/shelter'
 export { settingsPath, preloadPath }
 export function preload(sge) {
-  sge.preloadAudioSprites([
-    // 'audioSprite',
-  ])
+  sge.preloadAudioSprites(['audioSprite'])
   sge.preloadBitmapFonts(['defaultfont'])
   sge.preloadSprites([
     // 'test-ship',

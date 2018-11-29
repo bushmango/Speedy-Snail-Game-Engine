@@ -21,9 +21,12 @@ import * as tilesLoader from './map/tilesLoader'
 import * as tilePickers from './actors/tilePickers'
 import * as mouseTrails from './actors/mouseTrails'
 import * as stretchyBois from './actors/stretchyBois'
+import * as sounds from './sounds/sounds'
 
 import * as cameras from 'engine/camera/cameras'
 import { KeyCodes } from 'engine/input/Keyboard'
+
+import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 let debugCollision = false
 
@@ -54,11 +57,15 @@ export class GameContext {
   camera: cameras.ICamera
 
   gfx: PIXI.Graphics
+  sfx = sounds
 
   // Particles
   particleEmitter1: ParticleEmitter
 
   onLoaded(_sge: SimpleGameEngine) {
+    // Force unmute
+    settingsGeneric.updateSettings({ muteSound: false })
+
     let ctx = this
     currentContext = ctx
 
@@ -134,7 +141,7 @@ export class GameContext {
 
   onUpdate() {
     let ctx = this
-    log.x('update')
+    // log.x('update')
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
@@ -150,12 +157,14 @@ export class GameContext {
     }
 
     let mouse = ctx.sge.getMouse()
-    log.json(mouse)
+    // log.json(mouse)
     if (mouse.isLeftDown) {
       ctx.particleEmitter1.emit(mouse.x, mouse.y)
     }
     if (mouse.isRightDown) {
       cameras.shake(ctx.camera, 10, 5)
+
+      ctx.sfx.playExplode()
     }
     ctx.particleEmitter1.update()
 

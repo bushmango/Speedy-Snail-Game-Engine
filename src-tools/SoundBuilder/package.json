@@ -4,7 +4,7 @@
   "description": "Convert sounds from wav to something internet playable",
   "main": "index.js",
   "scripts": {
-    "start": "tsc index.ts && node index.js hello=world",
+    "start": "tsc index.ts && node index.js",
     "start2": "ts-node index.ts hello=worldTs",
     "dev": "ts-node-dev index.ts hello=dev",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -8,7 +8,7 @@ import * as log from '../engine/log'
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
-import * as ldSounds from 'ludumDare41/sounds/ldSounds'
+import * as sounds from './sounds/sounds'
 import { GameContext } from './GameContext'
 
 let sge = new SimpleGameEngine()
@@ -45,8 +45,7 @@ export function run() {
     sge.onUpdateCallback = onUpdate
 
     // Now load sounds & music
-    ldSounds.load(sge)
-
+    sounds.load(sge)
     ctx.onLoaded(sge)
 
     sge.startGameLoop()

@@ -1,5 +1,9 @@
 #!/usr/bin/env ts-node
 
+// install instructions:
+// install ffmpeg
+// run npm i
+
 // See:
 // http://stackoverflow.com/questions/12742082/nodejs-require-inside-typescript-file
 // https://github.com/TypeStrong/ts-node
@@ -14,6 +18,8 @@ const fs: any = require('fs')
 const chokidar: any = require('chokidar')
 const chalk: any = require('chalk')
 const program: any = require('commander')
+const path = require('path')
+const exec = require('child_process').exec
 
 console.log(chalk.bold.cyan('-.-'))
 console.log(chalk.bold.green('~Stevie Bushman Presents~'))
@@ -27,19 +33,40 @@ process.argv.forEach((val, index, array) => {
 // let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
 // let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
 
-let folder = 'ludumDare40'
-let watchPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\sounds\\sprite1\\`
-let outPath = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\sounds\\`
+let dir = process.argv[2] || 'ludumDareStart'
 
-let watchPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\music\\`
-let outPathMusic = `C:\\dev-prarie-snail\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\music\\`
+let folder = dir
+
+let basePath = __dirname
+console.log('__dirname', __dirname)
+basePath = path.join(basePath, '../../')
+console.log('basePath', basePath)
+console.log('dir', dir)
+
+let watchPath =
+  path.join(basePath, 'src-resources', dir, 'sounds', 'sprite1') + '\\'
+let outPath = path.join(basePath, 'src-deploy', 'public', dir, 'sounds') + '\\'
+//let watchPath = `C:\\dev\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\sounds\\sprite1\\`
+//let outPath = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\sounds\\`
+
+// let watchPath = `C:\\dev\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\sounds\\sprite1\\`
+// let outPath = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\sounds\\`
+
+let watchPathMusic = path.join(basePath, 'src-resources', dir, 'music') + '\\'
+let outPathMusic =
+  path.join(basePath, 'src-deploy', 'public', dir, 'music') + '\\'
+
+// let watchPathMusic = `C:\\dev\\Speedy-Snail-Game-Engine\\src-resources\\${folder}\\music\\`
+// let outPathMusic = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\${folder}\\music\\`
 
 let verbose = false
 
 let mode = 'sprite'
 
-let ffmpegPath = 'C:/dev/tools/ffmpeg-3.3.3-win64-static/bin/ffmpeg.exe'
-let watchGlob = watchPath + '*.wav'
+// let basePath = __dirname
+// let ffmpegPath = 'C:/dev/tools/ffmpeg-3.3.3-win64-static/bin/ffmpeg.exe'
+let ffmpegPath = path.join(__dirname, 'ffmpeg', 'bin', 'ffmpeg.exe')
+let watchGlob = watchPath + '**/*.wav'
 let watchGlobMusic = watchPathMusic + '*.wav'
 
 function run() {
@@ -56,6 +83,8 @@ function run() {
 
   watchMusic(watchGlobMusic)
   console.log('Watching music : ', watchGlobMusic)
+
+  console.log('ffmpegPath', ffmpegPath)
 }
 
 function watch(glob: string) {
@@ -66,6 +95,7 @@ function watch(glob: string) {
 
   // Something to use when events are received.
   let log = console.log.bind(console)
+
   // Add event listeners.
   watcher
     .on('add', (loc) => onWatchEvent(loc, 'added', false))
@@ -76,6 +106,7 @@ function watchMusic(glob: string) {
   // Initialize watcher.
   let watcher = chokidar.watch(glob, {
     persistent: true,
+    ignoreInitial: false,
   })
 
   // Something to use when events are received.
@@ -86,10 +117,8 @@ function watchMusic(glob: string) {
     .on('change', (loc) => onWatchEvent(loc, 'changed', true))
 }
 
-const exec = require('child_process').exec
-const path = require('path')
 function onWatchEvent(loc, type, isMusic) {
-  console.log(type, loc)
+  console.log('=>', type, loc, isMusic)
   if (mode === 'convert' || isMusic) {
     let originalFilePath = loc
     let originalFilePathWithoutExtension = loc.slice(
@@ -115,6 +144,7 @@ function onWatchEvent(loc, type, isMusic) {
 function runCommand(pathToProgram, args, prefix, friendlyName) {
   let cmd = pathToProgram + ' ' + args
   console.log('start', prefix, friendlyName)
+  console.log('exe', cmd)
   if (verbose) {
     console.log('exe', cmd)
   }
@@ -157,6 +187,8 @@ function createSprite() {
       format: 'howler',
     }
     const audiosprite = require('audiosprite')
+
+    console.log('creating autiosprite')
     audiosprite(files, opts, (err, obj) => {
       if (err) {
         console.error(err)
@@ -177,6 +209,7 @@ function createSprite() {
       let jsonfile = require('jsonfile')
 
       let file = outPath + 'audioSprite.json'
+      console.log('write', file)
       jsonfile.writeFileSync(file, obj, { spaces: 2 })
     })
   })

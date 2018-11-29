@@ -47,7 +47,7 @@ export function getSettings() {
   return settings
 }
 
-export function updateSettings(newSettings) {
+export function updateSettings(newSettings: Partial<IBasicSettings>) {
   _.merge(settings, newSettings)
   save()
 }

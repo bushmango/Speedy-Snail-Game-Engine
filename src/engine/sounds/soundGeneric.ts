@@ -1,5 +1,5 @@
 import * as howler from 'howler'
-
+import * as log from 'engine/log'
 let devMute = false
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
@@ -51,6 +51,7 @@ export function playMusic(song, loop = true, cb: () => void = null) {
 
 export function play(soundKey) {
   if (!devMute && !settingsGeneric.getSettings().muteSound) {
+    log.x('play', soundKey)
     soundSprite.play(soundKey)
   }
 }

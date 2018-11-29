@@ -5,6 +5,8 @@ import * as players from './actors/players'
 import { KeyCodes } from 'engine/input/Keyboard'
 import * as log from '../engine/log'
 
+import * as settingsGeneric from 'engine/misc/settingsGeneric'
+
 let debugCollision = false
 
 let currentContext: GameContext = null
