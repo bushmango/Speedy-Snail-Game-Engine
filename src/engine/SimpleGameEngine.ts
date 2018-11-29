@@ -1,7 +1,7 @@
 import * as assert from 'engine/common/assert'
 import { _, numeral } from 'engine/importsEngine'
 import { Keyboard } from 'engine/input/Keyboard'
-
+import * as mouse from 'engine/input/mouse'
 // import {keyboard} from 'pixi-keyboard'
 
 // Add PIXI plugins
@@ -210,9 +210,12 @@ export class SimpleGameEngine {
     return res.texture
   }
 
-  getMousePosition() {
+  getMousePosition(): { x: number; y: number } {
     var mouseposition = this.renderer.plugins.interaction.mouse.global
     return mouseposition
+  }
+  getMouse() {
+    return mouse.getMouse()
   }
 
   startGameLoop() {
@@ -257,6 +260,10 @@ export class SimpleGameEngine {
 
     // Update keyboard
     this.keyboard.onUpdate()
+
+    // Update mouse
+    let mousePosition = this.getMousePosition()
+    mouse.scan(mousePosition.x, mousePosition.y)
 
     // Update the current game state:
     this.frameNum++

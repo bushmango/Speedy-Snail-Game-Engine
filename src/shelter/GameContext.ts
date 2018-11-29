@@ -6,6 +6,8 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { GamepadTester } from 'engine/gamepad/GamepadTester'
 import { InputControl } from 'engine/gamepad/InputControl'
 
+import { ParticleEmitter } from 'engine/particles/ParticleEmitter'
+
 import * as players from './actors/players'
 import * as coins from './actors/coins'
 import * as enemies from './actors/enemies'
@@ -51,6 +53,9 @@ export class GameContext {
 
   gfx: PIXI.Graphics
 
+  // Particles
+  particleEmitter1: ParticleEmitter
+
   onLoaded(_sge: SimpleGameEngine) {
     let ctx = this
     currentContext = ctx
@@ -86,6 +91,11 @@ export class GameContext {
       let item = mouseTrails.create(ctx.layerMouseTrail)
       item.rate = 0.2 * (i / 5)
     }
+
+    let particles1 = [[0, 0, 32, 32], [32, 32, 32, 32]]
+    ctx.particleEmitter1 = new ParticleEmitter()
+    ctx.particleEmitter1.init(ctx.sge, 'player1', particles1)
+    ctx.addLayer(ctx.particleEmitter1.container)
 
     // camera?
     ctx.cameraLayers.position.x = 50
@@ -125,6 +135,18 @@ export class GameContext {
     maps.updateAll(ctx.cameraLayers)
     tilePickers.updateAll()
     mouseTrails.updateAll()
+
+    if (_.random(true) < 0.1) {
+      ctx.particleEmitter1.emit(50, 50)
+    }
+
+    let mouse = ctx.sge.getMouse()
+    console.log('mouse', JSON.stringify(mouse, null, 2))
+    if (mouse.isLeftDown) {
+      ctx.particleEmitter1.emit(mouse.x, mouse.y)
+    }
+
+    ctx.particleEmitter1.update()
 
     // players.updateAll()
     // coins.updateAll()

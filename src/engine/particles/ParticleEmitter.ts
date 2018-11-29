@@ -111,7 +111,7 @@ export class ParticleEmitter {
     }
   ) {
     let num = 1
-    let vMax = options.vMax
+    let vMax = 1
     let rMin = 0
     let rMax = 0
     let ax = 0
@@ -131,6 +131,9 @@ export class ParticleEmitter {
       }
       if (options.ay) {
         ay = options.ay
+      }
+      if (options.vMax) {
+        vMax = options.vMax
       }
       framesMin = options.framesMin || framesMin
       framesMax = options.framesMax || framesMax

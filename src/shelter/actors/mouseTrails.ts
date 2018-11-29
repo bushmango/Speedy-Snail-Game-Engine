@@ -65,7 +65,7 @@ export function updateAll() {
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTime)
 
-    // move to mouse
+    // move to mouse (super-simple tween)
     c.anim.sprite.x += (mousePosition.x - c.anim.sprite.x) * c.rate
     c.anim.sprite.y += (mousePosition.y - c.anim.sprite.y) * c.rate
   })
