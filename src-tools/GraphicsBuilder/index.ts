@@ -29,6 +29,7 @@ process.argv.forEach((val, index, array) => {
 })
 
 let dir = process.argv[2] || 'ludumDareStart'
+process.title = 'Gfx:' + dir
 
 //let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/images/`
 //let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`

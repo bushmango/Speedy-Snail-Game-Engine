@@ -4,7 +4,7 @@
   "description": "convert graphic files",
   "main": "index.js",
   "scripts": {
-    "start": "tsc index.ts && node index.js ludumDare41",
+    "start": "tsc index.ts && node index.js",
     "start-parallax": "tsc index.ts && node index.js parallax",
     "start-raid": "tsc index.ts && node index.js raid",
     "start-pacrpg": "tsc index.ts && node index.js pacrpg",

@@ -10,7 +10,7 @@
 - random delay in tween
 x squeeze and stretch 
 - rotate in direction going
-- sound, 
+x sound, 
 - music, 
 - yeay! sound
 -- more from video 
@@ -30,6 +30,8 @@ xx basic tweaking
 -- scale production
 -- flop out to square
 -- tween fall in
+
+- sound and music toggle bois
 
 game like factorio
 game like forager

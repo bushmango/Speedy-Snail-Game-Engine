@@ -18,6 +18,7 @@ process.argv.forEach(function (val, index, array) {
 // let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/sounds/sprite1/`
 // let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
 var dir = process.argv[2] || 'ludumDareStart';
+process.title = 'Sfx:' + dir;
 var folder = dir;
 var basePath = __dirname;
 console.log('__dirname', __dirname);

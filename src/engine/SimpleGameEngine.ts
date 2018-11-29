@@ -220,6 +220,9 @@ export class SimpleGameEngine {
     return mouse.getMouse()
   }
 
+  fpsLimit = 30
+  fpsLimit_previousDelta = 0
+
   startGameLoop() {
     this.frameRateStart = new Date().getTime()
     requestAnimationFrame(() => {
@@ -253,7 +256,7 @@ export class SimpleGameEngine {
     this.frameLoads.push(frameLoad)
     // ${lastTimeA}/${lastTimeB}/
 
-    // Loop this function at 60 frames per second
+    // Loop this function at ~60 frames per second (depending on monitor)
     requestAnimationFrame(() => {
       this.gameLoop()
     })

@@ -34,6 +34,7 @@ process.argv.forEach((val, index, array) => {
 // let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/sounds/`
 
 let dir = process.argv[2] || 'ludumDareStart'
+process.title = 'Sfx:' + dir
 
 let folder = dir
 

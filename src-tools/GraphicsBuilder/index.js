@@ -16,6 +16,7 @@ process.argv.forEach(function (val, index, array) {
     console.log(index + ': ' + val);
 });
 var dir = process.argv[2] || 'ludumDareStart';
+process.title = 'Gfx:' + dir;
 //let watchPath = `C:/dev/stevieweb/SimpleGameEngine/src-resources/images/`
 //let outPath = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
 //let inPathPacked = `C:/dev/stevieweb/SimpleGameEngine/src-deploy/public/images/`
