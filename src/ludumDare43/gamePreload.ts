@@ -12,6 +12,9 @@ export function preload(sge) {
     'tiles',
     'rpg-gui',
     '512-32-gui',
+    'credits',
+    'instructions',
+    'title',
   ])
   sge.preloadSpriteSheets([
     //'test-tileset',

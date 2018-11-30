@@ -13,6 +13,7 @@ import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 export interface IMenuQuickSettings {
   buttonSound: buttonsGeneric.IMenuButton
   buttonMusic: buttonsGeneric.IMenuButton
+  buttonMainMenu: buttonsGeneric.IMenuButton
   buttons: buttonsGeneric.IMenuButton[]
 }
 
@@ -33,6 +34,7 @@ export function create() {
   item = {
     buttonSound: null,
     buttonMusic: null,
+    buttonMainMenu: null,
     buttons: [],
   }
 
@@ -55,6 +57,13 @@ export function create() {
     })
   }
   item.buttons.push(item.buttonSound)
+
+  item.buttonMainMenu = buttons.create('Main menu')
+  item.buttonMainMenu.onClick = () => {
+    let ctx = getContext()
+    ctx.menuStart.slideIn()
+  }
+  item.buttons.push(item.buttonMainMenu)
 
   onResize()
 
@@ -80,7 +89,7 @@ export function onResize() {
   let { width, height } = ctx.sge.getViewSize()
   _.forEach(item.buttons, (c, cIdx) => {
     c.placeSwitcher = placeSwitcher.create(
-      100 + 100 * cIdx,
+      100 + 150 * cIdx,
       height - 50,
       -200,
       height - 50 + 100
