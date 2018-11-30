@@ -8,17 +8,37 @@ import * as stats from 'pacrpg/stats'
 
 const isActive = true
 
-import * as placeSwitcher from './placeSwitcher'
+import * as placeSwitcher from 'engine/anim/placeSwitcher'
 import * as buttons from './buttons'
+import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 
 export interface IStartMenu {
   logoSwitch: placeSwitcher.IPlaceSwitcher
   logoSprite: PIXI.Sprite
 
-  buttons: buttons.IMenuButton[]
+  buttons: buttonsGeneric.IMenuButton[]
 }
 
 let item: IStartMenu = null
+
+export function slideIn() {
+  let ctx = getContext()
+  ctx.uiMode.setMode('menu-start')
+
+  placeSwitcher.moveIn(item.logoSwitch)
+  _.forEach(item.buttons, (c, cIdx) => {
+    placeSwitcher.moveIn(c.placeSwitcher)
+  })
+}
+export function slideOut() {
+  let ctx = getContext()
+  ctx.uiMode.setMode('game')
+
+  placeSwitcher.moveOut(item.logoSwitch)
+  _.forEach(item.buttons, (c, cIdx) => {
+    placeSwitcher.moveOut(c.placeSwitcher)
+  })
+}
 
 export function create() {
   let ctx = getContext()
@@ -41,15 +61,10 @@ export function create() {
   ctx.layerUi.addChild(item.logoSprite)
   item.logoSwitch.delayOut = 0.5
   placeSwitcher.startOut(item.logoSwitch, item.logoSprite)
-  placeSwitcher.moveIn(item.logoSwitch)
 
   let button = buttons.create('Play!')
   button.onClick = () => {
-    ctx.uiMode.setMode('game')
-    placeSwitcher.moveOut(item.logoSwitch)
-    _.forEach(item.buttons, (c, cIdx) => {
-      placeSwitcher.moveOut(c.placeSwitcher)
-    })
+    slideOut()
   }
   item.buttons.push(button)
   button = buttons.create('b')
@@ -68,7 +83,6 @@ export function create() {
     c.placeSwitcher.delayOut = (item.buttons.length - cIdx) * 0.1
 
     placeSwitcher.startOut(c.placeSwitcher, c.container)
-    placeSwitcher.moveIn(c.placeSwitcher)
   })
 
   return item

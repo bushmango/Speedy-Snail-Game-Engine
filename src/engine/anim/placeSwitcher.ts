@@ -53,10 +53,17 @@ export interface ITarget {
   x: any
   y: any
 }
-
+export function startIn(c: IPlaceSwitcher, t: ITarget) {
+  t.x = c.x1
+  t.y = c.y1
+  c.tx = c.x1
+  c.ty = c.y1
+}
 export function startOut(c: IPlaceSwitcher, t: ITarget) {
   t.x = c.x2
   t.y = c.y2
+  c.tx = c.x2
+  c.ty = c.y2
 }
 export function update(c: IPlaceSwitcher, t: ITarget, elapsedSec: number) {
   if (c.delay > 0) {

@@ -32,12 +32,12 @@ import { KeyCodes } from 'engine/input/Keyboard'
 import * as stats from './misc/stats'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
-import { create8_sprite } from 'ludumDare41/util/spriteCreator'
 
 import * as buttons from './menu/buttons'
 import * as menuStart from './menu/menuStart'
 import * as uiMode from './ui/uiMode'
-import { catDeck } from 'ludumDare41/server/CardInfo'
+
+import { SplashScreen } from 'engine/misc/SplashScreen'
 
 let debugCollision = false
 
@@ -50,6 +50,7 @@ export class GameContext {
   sge: SimpleGameEngine
 
   rootContainer: PIXI.Container
+  splash: SplashScreen
 
   //cameraLayer: PIXI.Container
 
@@ -164,6 +165,20 @@ export class GameContext {
     ctx.layerFrameRate.addChild(ctx.sge.frameRateText)
     ctx.sge.stage.addChild(ctx.layerFrameRate)
     //this.rootContainer.addChild(this.modeBar.container)
+
+    ctx.splash = new SplashScreen()
+    ctx.splash.init(this.sge, 'prariesnailgames', () => {
+      
+
+      menuStart.slideIn()
+      
+      
+      this.rootContainer.visible = true
+
+
+      //this.rootContainerUI.visible = true
+    })
+    ctx.sge.stage.addChild(this.splash.container)
   }
 
   addLayer(container: PIXI.Container = null) {
@@ -180,6 +195,8 @@ export class GameContext {
     let elapsedTimeSec = ctx.sge.elapsedTimeSec
     // log.x('update', elapsedTime)
     // log.x('update')
+
+    ctx.splash.update()
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
