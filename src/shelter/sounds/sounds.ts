@@ -3,6 +3,7 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as soundsGeneric from 'engine/sounds/soundGeneric'
 import * as pubSub from 'engine/common/pubSub'
 
+let doPlayLoaded = false
 let soundTest = false
 const musicDir = '/public/shelter/music/'
 
@@ -10,7 +11,9 @@ import * as log from 'engine/log'
 
 export function load(sge: SimpleGameEngine) {
   soundsGeneric.load(sge.getJson('audioSprite'), () => {
-    playLoaded()
+    if (doPlayLoaded) {
+      playLoaded()
+    }
 
     if (soundTest) {
       setInterval(() => {

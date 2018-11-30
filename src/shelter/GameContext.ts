@@ -32,6 +32,12 @@ import { KeyCodes } from 'engine/input/Keyboard'
 import * as stats from './misc/stats'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
+import { create8_sprite } from 'ludumDare41/util/spriteCreator'
+
+import * as buttons from './menu/buttons'
+import * as menuStart from './menu/menuStart'
+import * as uiMode from './ui/uiMode'
+import { catDeck } from 'ludumDare41/server/CardInfo'
 
 let debugCollision = false
 
@@ -64,11 +70,24 @@ export class GameContext {
   gfx: PIXI.Graphics
   sfx = sounds
   stats = stats
+  uiMode = uiMode
 
   stretchyBoi: stretchyBois.IStretchyBoi
 
   // Particles
   particleEmitter1: ParticleEmitter
+
+  createSprite(spriteSheet, frame: PIXI.Rectangle, anchorX, anchorY, scale) {
+    let ctx = this
+    let baseTex = ctx.sge.getTexture(spriteSheet)
+    let tex = new PIXI.Texture(baseTex.baseTexture, frame)
+    let sprite = new PIXI.Sprite(tex)
+    sprite.anchor.set(anchorX, anchorY)
+    sprite.y = 0
+    sprite.x = 0
+    sprite.scale.set(scale)
+    return sprite
+  }
 
   onLoaded(_sge: SimpleGameEngine) {
     // Force unmute
@@ -93,6 +112,12 @@ export class GameContext {
     ctx.layerFrameRate = this.addLayer()
 
     uiHearts.create()
+
+    //buttons.create('hello button')
+    buttons.create('')
+
+    menuStart.create()
+    uiMode.setMode('menu-start')
 
     // let player = players.create(ctx.layerPlayer)
     // player.flightController = flightController.create(ctx)
@@ -165,33 +190,38 @@ export class GameContext {
 
     stretchyBois.updateAll()
 
+    menuStart.update(elapsedTimeSec)
+    buttons.updateAll(elapsedTimeSec)
+
     uiHearts.update(elapsedTimeSec)
 
     if (_.random(true) < 0.1) {
       ctx.particleEmitter1.emit(50, 50)
     }
 
-    let mouse = ctx.sge.getMouse()
-    // log.json(mouse)
-    if (mouse.isLeftDown) {
-      ctx.particleEmitter1.emit(mouse.x, mouse.y)
-      backgroundColorChanger.setRandom()
-    } else {
-    }
+    if (ctx.uiMode.getMode() === 'game') {
+      let mouse = ctx.sge.getMouse()
+      // log.json(mouse)
+      if (mouse.isLeftDown) {
+        ctx.particleEmitter1.emit(mouse.x, mouse.y)
+        backgroundColorChanger.setRandom()
+      } else {
+      }
 
-    ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
+      ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
-    if (mouse.isRightDown) {
-      cameras.shake(ctx.camera, 10, 5)
-      backgroundColorChanger.cycleColor(elapsedTimeSec)
-      ctx.sfx.playExplode()
-    }
+      if (mouse.isRightDown) {
+        cameras.shake(ctx.camera, 10, 5)
+        backgroundColorChanger.cycleColor(elapsedTimeSec)
+        ctx.sfx.playExplode()
+      }
 
-    if (mouse.isLeftJustDown) {
-      ctx.stats.addLife(1)
-    }
-    if (mouse.isRightJustUp) {
-      ctx.stats.addLife(-1)
+      if (mouse.isLeftJustDown) {
+        ctx.stats.addLife(1)
+      }
+      if (mouse.isRightJustUp) {
+        ctx.stats.addLife(-1)
+      }
     }
 
     ctx.particleEmitter1.update()
