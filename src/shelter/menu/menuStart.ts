@@ -12,14 +12,14 @@ import * as placeSwitcher from 'engine/anim/placeSwitcher'
 import * as buttons from './buttons'
 import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 
-export interface IStartMenu {
+export interface IMenuStart {
   logoSwitch: placeSwitcher.IPlaceSwitcher
   logoSprite: PIXI.Sprite
 
   buttons: buttonsGeneric.IMenuButton[]
 }
 
-let item: IStartMenu = null
+let item: IMenuStart = null
 
 export function slideIn() {
   let ctx = getContext()

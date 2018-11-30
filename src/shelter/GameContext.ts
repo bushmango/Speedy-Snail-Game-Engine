@@ -35,9 +35,12 @@ import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 import * as buttons from './menu/buttons'
 import * as menuStart from './menu/menuStart'
+import * as menuQuickSettings from './menu/menuQuickSettings'
 import * as uiMode from './ui/uiMode'
 
 import { SplashScreen } from 'engine/misc/SplashScreen'
+
+const skipSplashScreen = true
 
 let debugCollision = false
 
@@ -92,7 +95,7 @@ export class GameContext {
 
   onLoaded(_sge: SimpleGameEngine) {
     // Force unmute
-    settingsGeneric.updateSettings({ muteSound: false })
+    // settingsGeneric.updateSettings({ muteSound: false })
 
     let ctx = this
     currentContext = ctx
@@ -118,7 +121,7 @@ export class GameContext {
     buttons.create('')
 
     menuStart.create()
-    uiMode.setMode('menu-start')
+    menuQuickSettings.create()
 
     // let player = players.create(ctx.layerPlayer)
     // player.flightController = flightController.create(ctx)
@@ -168,17 +171,18 @@ export class GameContext {
 
     ctx.splash = new SplashScreen()
     ctx.splash.init(this.sge, 'prariesnailgames', () => {
-      
-
       menuStart.slideIn()
-      
-      
       this.rootContainer.visible = true
-
-
       //this.rootContainerUI.visible = true
     })
     ctx.sge.stage.addChild(this.splash.container)
+    if (skipSplashScreen) {
+      ctx.splash.skip()
+    }
+
+    ctx.sge.onResize = () => {
+      menuQuickSettings.onResize()
+    }
   }
 
   addLayer(container: PIXI.Container = null) {
@@ -208,6 +212,7 @@ export class GameContext {
     stretchyBois.updateAll()
 
     menuStart.update(elapsedTimeSec)
+    menuQuickSettings.update(elapsedTimeSec)
     buttons.updateAll(elapsedTimeSec)
 
     uiHearts.update(elapsedTimeSec)

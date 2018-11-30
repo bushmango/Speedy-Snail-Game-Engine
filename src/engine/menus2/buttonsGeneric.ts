@@ -6,6 +6,8 @@ import * as anim from '../anim/anim'
 
 import * as placeSwitcher from 'engine/anim/placeSwitcher'
 
+import * as pubSub from 'engine/common/pubSub'
+
 export interface IMenuButton {
   anim: anim.IAnim
   textSprite: PIXI.Sprite
@@ -74,6 +76,7 @@ export function create(
     anim.playAnim(item.anim, item.animHover)
     item.state = 1
     item.onClick(item)
+    pubSub.emit('gui:click-button')
   })
 
   let sprite = ctx.createSprite(spritesheetName, animDefault.frames[0], 0, 0, 1)

@@ -2,12 +2,13 @@
 
 // Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
 
-- basic menu
+x basic menu
 - sound/music mute buttons
-- slidy menus
-- text example
-- website set up for deploy 
-- test deploy
+x slidy menus
+x text example
+x website set up for deploy 
+x test deploy
+- resetup for ld 43
 
 - game engine
 - juicyness
@@ -29,8 +30,8 @@ x screen shake
 x trails
 x ui
 xx mouse handling
--- buttons
--- click handling
+xx buttons
+xx click handling
 -- health bars
 xx heart bars
 -- tweening

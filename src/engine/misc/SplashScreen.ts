@@ -23,6 +23,11 @@ export class SplashScreen {
     this.container.addChild(this.sprite)
   }
 
+  skip() {
+    this.frame = 100000
+    this.update()
+  }
+
   update() {
     this.frame++
 

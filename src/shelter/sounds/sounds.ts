@@ -25,7 +25,7 @@ export function load(sge: SimpleGameEngine) {
 }
 
 export function playMusic1() {
-  soundsGeneric.playMusic(musicDir + 'theme1')
+  soundsGeneric.playMusic(musicDir + 'dungeon1')
 }
 export function playMusicMenu() {
   soundsGeneric.playMusic(musicDir + 'menu1')

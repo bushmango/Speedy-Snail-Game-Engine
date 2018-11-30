@@ -18,7 +18,7 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
     // console.log('howl', 'loaderror', id, err)
   })
 
-  soundSprite.mute(settingsGeneric.getSettings().muteSound)
+  // soundSprite.mute(settingsGeneric.getSettings().muteSound)
 }
 
 export function playMusic(song, loop = true, cb: () => void = null) {

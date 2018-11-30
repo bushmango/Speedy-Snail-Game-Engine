@@ -49,8 +49,12 @@ export class SimpleGameEngine {
       let height = w.innerHeight || e.clientHeight || g.clientHeight
 
       this.renderer.resize(width, height)
+      if (this.onResize) {
+        this.onResize()
+      }
     }
   }
+  onResize = () => {}
 
   createRenderer() {
     // Create the renderer
