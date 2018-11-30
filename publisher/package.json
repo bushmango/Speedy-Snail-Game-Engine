@@ -1,0 +1,21 @@
+{
+  "name": "simplegameengine",
+  "version": "1.0.0",
+  "description": "simple pixi game engine",
+  "main": "index.js",
+  "scripts": {
+    "publish": "ts-node publish.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.14.118",
+    "@types/node": "^10.12.11",
+    "bluebird": "^3.5.3",
+    "node-ssh": "^5.1.2",
+    "terminal-kit": "^1.26.5",
+    "ts-node": "^7.0.1",
+    "tslib": "^1.9.3",
+    "typescript": "^3.2.1"
+  }
+}
