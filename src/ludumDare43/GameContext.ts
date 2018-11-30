@@ -32,6 +32,7 @@ export class GameContext {
   sfx = sounds
   stats = stats
   uiMode = uiMode
+  menuStart = menuStart
 
   layerFrameRate: PIXI.Container
   layerMap: PIXI.Container

@@ -49,7 +49,7 @@ export function create() {
   log.x('create menu start')
 
   item = {
-    logoSwitch: placeSwitcher.create(200, 100, 100, -100),
+    logoSwitch: placeSwitcher.create(230, 50, 100, -300),
     logoSprite: null,
 
     creditsSwitch: placeSwitcher.create(250, 200, 2000, -100),
@@ -61,13 +61,14 @@ export function create() {
     buttons: [],
   }
 
-  item.logoSprite = ctx.createSprite(
-    '512-32-gui',
-    spriteUtil.frame32(2, 5, 6, 2),
-    0,
-    0,
-    1
-  )
+  // item.logoSprite = ctx.createSprite(
+  //   '512-32-gui',
+  //   spriteUtil.frame32(2, 5, 6, 2),
+  //   0,
+  //   0,
+  //   1
+  // )
+  item.logoSprite = ctx.createSprite('title', null, 0, 0, 2)
   ctx.layerUi.addChild(item.logoSprite)
   item.logoSwitch.delayOut = 0.5
   placeSwitcher.startOut(item.logoSwitch, item.logoSprite)
