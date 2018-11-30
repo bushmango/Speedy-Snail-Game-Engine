@@ -177,14 +177,13 @@ export class GameContext {
       ctx.particleEmitter1.emit(mouse.x, mouse.y)
       backgroundColorChanger.setRandom()
     } else {
-      backgroundColorChanger.cycleColor(elapsedTimeSec)
     }
 
     ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
     if (mouse.isRightDown) {
       cameras.shake(ctx.camera, 10, 5)
-
+      backgroundColorChanger.cycleColor(elapsedTimeSec)
       ctx.sfx.playExplode()
     }
 

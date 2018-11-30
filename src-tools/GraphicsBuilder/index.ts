@@ -62,7 +62,7 @@ let mode = 'convert-only'
 let verbose = false
 let aseSpritePath = '"C:\\Program Files\\Aseprite\\aseprite.exe"'
 
-let watchGlob = watchPath + '**/*.ase'
+let watchGlob = watchPath + '**/*.ase*'
 
 let texturePackerPath =
   '"C:\\Program Files\\CodeAndWeb\\TexturePacker\\bin\\TexturePacker.exe"'

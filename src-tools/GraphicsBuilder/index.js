@@ -41,7 +41,7 @@ var doPack = true;
 var mode = 'convert-only';
 var verbose = false;
 var aseSpritePath = '"C:\\Program Files\\Aseprite\\aseprite.exe"';
-var watchGlob = watchPath + '**/*.ase';
+var watchGlob = watchPath + '**/*.ase*';
 var texturePackerPath = '"C:\\Program Files\\CodeAndWeb\\TexturePacker\\bin\\TexturePacker.exe"';
 function run() {
     // TODO: command line args
