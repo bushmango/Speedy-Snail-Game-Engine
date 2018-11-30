@@ -87,3 +87,40 @@ export async function putFile(src, dest) {
     log('ERR|', err)
   }
 }
+
+export function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+export function replaceAll(str, toReplace, replaceWith) {
+  var re = new RegExp(escapeRegExp(toReplace), 'g')
+  str = str.replace(re, replaceWith)
+  return str
+}
+
+import * as child_process from 'child-process-promise'
+const { exec } = child_process
+
+export async function npmRun(command, cwd) {
+  //console.log(process.env)
+
+  let env = _.cloneDeep(process.env)
+  env.FORCE_COLOR = '1'
+
+  log('running npm command ', command, cwd)
+  let promise = exec('npm run ' + command + ' --colors', {
+    cwd: cwd,
+    env,
+  })
+  var childProcess = promise.childProcess
+  log('[spawn] childProcess.pid: ', childProcess.pid)
+  childProcess.stdout.on('data', (chunk) => {
+    console.log('[spawn] stdout: ', chunk.toString('utf8'))
+  })
+  childProcess.stderr.on('data', (chunk) => {
+    console.log('[spawn] stderr: ', chunk.toString('utf8'))
+  })
+
+  let result = await promise
+  log(result.stdout)
+  log(result.stderr)
+}
