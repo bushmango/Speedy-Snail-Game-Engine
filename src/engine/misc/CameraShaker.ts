@@ -1,12 +1,10 @@
 import { _ } from 'engine/importsEngine'
 
 export class CameraShaker {
-
   shakeFramesLeft = 0
   shakeAmount = 0
 
   addShake(frames, shakeAmount) {
-
     if (this.shakeAmount < shakeAmount) {
       this.shakeAmount = shakeAmount
     }
@@ -14,7 +12,6 @@ export class CameraShaker {
     if (this.shakeFramesLeft < frames) {
       this.shakeFramesLeft = frames
     }
-
   }
 
   update(container: PIXI.Container) {
@@ -31,12 +28,8 @@ export class CameraShaker {
 
       return
     } else {
-
       container.x = _.random(-this.shakeAmount / 2, this.shakeAmount / 2)
       container.y = _.random(-this.shakeAmount / 2, this.shakeAmount / 2)
-
     }
   }
-
-
 }

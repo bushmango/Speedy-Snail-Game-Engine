@@ -5,10 +5,10 @@ const gp = new GamepadMicro()
 let gamepads = null
 gp.onUpdate((_gamepads) => {
   if (gp.gamepadConnected) {
-    // Parse gamepads 
+    // Parse gamepads
     gamepads = _gamepads
   } else {
-    // Gamepad disconnected 
+    // Gamepad disconnected
     gamepads = null
   }
 })
@@ -17,4 +17,4 @@ function getGamepads() {
   return gamepads
 }
 
-export { GamepadMicro, gp, getGamepads }  
+export { GamepadMicro, gp, getGamepads }

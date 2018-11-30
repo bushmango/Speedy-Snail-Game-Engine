@@ -1,0 +1,14 @@
+
+
+
+- copy resources dir
+- create new src build
+- set up graphic builder
+- set up sound builder
+- set up website placeholder on server
+
+- set up dropbox
+
+- menu items
+- basic juicyness
+- sound options?

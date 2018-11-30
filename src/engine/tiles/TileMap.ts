@@ -6,13 +6,12 @@ const { Rectangle, Sprite, Container } = PIXI
 const { TextureCache } = PIXI.utils
 
 export interface IGridSpot {
+  sprites: PIXI.Sprite[]
 
-  sprites: PIXI.Sprite[],
+  bx: number
+  by: number
 
-  bx: number,
-  by: number,
-
-  canMove: boolean,
+  canMove: boolean
 
   // // Extra data
   // canSpawnCoin: boolean,
@@ -24,14 +23,13 @@ export interface IGridSpot {
 }
 
 export interface ITileData {
-  name: string,
-  textureName: string,
-  tx: number,
-  ty: number,
+  name: string
+  textureName: string
+  tx: number
+  ty: number
 }
 
 export class TileMap<TIGridSpot extends IGridSpot> {
-
   blockWidth = 0
   blockHeight = 0
   blockSize = 0
@@ -43,20 +41,19 @@ export class TileMap<TIGridSpot extends IGridSpot> {
   tileData: ITileData[] = []
   defaultTile: ITileData
 
-  gridSpotCreator: (sprites, bx, by) => TIGridSpot 
+  gridSpotCreator: (sprites, bx, by) => TIGridSpot
 
   constructor(
     sge: SimpleGameEngine,
     blockSize,
     tiles: ITileData[],
     numLayers,
-    gridSpotCreator) {
-
+    gridSpotCreator
+  ) {
     this.blockSize = blockSize
     this.numLayers = numLayers
     this.tileData = tiles
     this.gridSpotCreator = gridSpotCreator
-
 
     // Index tiles by name too
     _.forEach(tiles, (c) => {
@@ -71,11 +68,9 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     _.forEach(_.times(numLayers), (c) => {
       this.containers.push(new PIXI.Container())
     })
-
   }
 
   resize(blockWidth, blockHeight) {
-
     this.blockWidth = blockWidth
     this.blockHeight = blockHeight
 
@@ -88,15 +83,14 @@ export class TileMap<TIGridSpot extends IGridSpot> {
       })
     })
 
-    if(this.gridSpotCreator === null) {
-      this.gridSpotCreator = (sprites, bx, by) => (
-        {
+    if (this.gridSpotCreator === null) {
+      this.gridSpotCreator = (sprites, bx, by) =>
+        ({
           sprites: sprites,
           bx: bx,
           by: by,
           canMove: true,
-        } as TIGridSpot
-      )
+        } as TIGridSpot)
     }
 
     this.data = []
@@ -115,15 +109,11 @@ export class TileMap<TIGridSpot extends IGridSpot> {
         // }
         let gridSpot: TIGridSpot = this.gridSpotCreator(sprites, i, j)
         this.data.push(gridSpot)
-
       }
     }
   }
 
-
-  update() {
-
-  }
+  update() {}
 
   setPosition(x, y) {
     _.forEach(this.containers, (c) => {
@@ -144,28 +134,48 @@ export class TileMap<TIGridSpot extends IGridSpot> {
   // }
 
   inRange(bx, by) {
-    if (bx < 0 || bx >= this.blockWidth) { return false }
-    if (by < 0 || by >= this.blockHeight) { return false }
+    if (bx < 0 || bx >= this.blockWidth) {
+      return false
+    }
+    if (by < 0 || by >= this.blockHeight) {
+      return false
+    }
     return true
   }
   wrapX(bx) {
-    if (bx < 0) { bx = this.blockWidth - 1 }
-    if (bx > this.blockWidth - 1) { bx = 0 }
+    if (bx < 0) {
+      bx = this.blockWidth - 1
+    }
+    if (bx > this.blockWidth - 1) {
+      bx = 0
+    }
     return bx
   }
   wrapY(by) {
-    if (by < 0) { by = this.blockHeight - 1 }
-    if (by > this.blockHeight - 1) { by = 0 }
+    if (by < 0) {
+      by = this.blockHeight - 1
+    }
+    if (by > this.blockHeight - 1) {
+      by = 0
+    }
     return by
   }
   clampBoundsX(bx) {
-    if (bx < 0) { bx = 0 }
-    if (bx > this.blockWidth - 1) { bx = this.blockWidth - 1 }
+    if (bx < 0) {
+      bx = 0
+    }
+    if (bx > this.blockWidth - 1) {
+      bx = this.blockWidth - 1
+    }
     return bx
   }
   clampBoundsY(by) {
-    if (by < 0) { by = 0 }
-    if (by > this.blockHeight - 1) { by = this.blockHeight - 1 }
+    if (by < 0) {
+      by = 0
+    }
+    if (by > this.blockHeight - 1) {
+      by = this.blockHeight - 1
+    }
     return by
   }
 
@@ -173,18 +183,25 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     this.tileData[newTile.name] = newTile
   }
   hasTile(tileName) {
-    return (this.tileData[tileName] != null)
+    return this.tileData[tileName] != null
   }
 
-
   checkInRange(bx, by) {
-    if (bx < 0 || bx >= this.blockWidth) { return false }
-    if (by < 0 || by >= this.blockHeight) { return false }
+    if (bx < 0 || bx >= this.blockWidth) {
+      return false
+    }
+    if (by < 0 || by >= this.blockHeight) {
+      return false
+    }
     return true
   }
   safeGetTileAt(bx, by) {
-    if (bx < 0 || bx >= this.blockWidth) { return null }
-    if (by < 0 || by >= this.blockHeight) { return null }
+    if (bx < 0 || bx >= this.blockWidth) {
+      return null
+    }
+    if (by < 0 || by >= this.blockHeight) {
+      return null
+    }
 
     let gs = this.data[by * this.blockWidth + bx]
     return gs
@@ -192,9 +209,13 @@ export class TileMap<TIGridSpot extends IGridSpot> {
   safeGetTileAtWorld(x, y) {
     let bx = Math.floor(x / this.blockSize)
     let by = Math.floor(y / this.blockSize)
-    
-    if (bx < 0 || bx >= this.blockWidth) { return null }
-    if (by < 0 || by >= this.blockHeight) { return null }
+
+    if (bx < 0 || bx >= this.blockWidth) {
+      return null
+    }
+    if (by < 0 || by >= this.blockHeight) {
+      return null
+    }
 
     let gs = this.data[by * this.blockWidth + bx]
     return gs
@@ -207,7 +228,6 @@ export class TileMap<TIGridSpot extends IGridSpot> {
   }
 
   getTileAt(bx, by) {
-
     assert.failIf(bx < 0 || bx >= this.blockWidth, `bx out of range: ${bx}`)
     assert.failIf(by < 0 || by >= this.blockHeight, `by out of range: ${by}`)
 
@@ -215,7 +235,6 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     return gs
   }
   setTileAt(layer: number, bx: number, by: number, tileIndex) {
-
     return this.setTileAtEx(layer, bx, by, tileIndex, false, false, 0)
 
     // TODO: multiple texture support
@@ -235,8 +254,15 @@ export class TileMap<TIGridSpot extends IGridSpot> {
     // gs.sprite.play(tileName, 1, false)
   }
 
-  setTileAtEx(layer: number, bx: number, by: number, tileIndex, flipX, flipY, rot) {
-
+  setTileAtEx(
+    layer: number,
+    bx: number,
+    by: number,
+    tileIndex,
+    flipX,
+    flipY,
+    rot
+  ) {
     assert.failIf(bx < 0 || bx >= this.blockWidth, `bx out of range: ${bx}`)
     assert.failIf(by < 0 || by >= this.blockHeight, `by out of range: ${by}`)
 
@@ -254,12 +280,20 @@ export class TileMap<TIGridSpot extends IGridSpot> {
       sprite = new PIXI.Sprite(new PIXI.Texture(texture.baseTexture))
       sprite.anchor.set(0.5)
       let pixelAdjust = 0.01
-      sprite.position.set(bx * blockSize + blockSize/2 + pixelAdjust, by * blockSize + blockSize/2 + pixelAdjust)
+      sprite.position.set(
+        bx * blockSize + blockSize / 2 + pixelAdjust,
+        by * blockSize + blockSize / 2 + pixelAdjust
+      )
       this.containers[layer].addChild(sprite)
       gs.sprites[layer] = sprite
     }
 
-    let rectangle = new PIXI.Rectangle(blockSize * tile.tx, blockSize * tile.ty, blockSize, blockSize)
+    let rectangle = new PIXI.Rectangle(
+      blockSize * tile.tx,
+      blockSize * tile.ty,
+      blockSize,
+      blockSize
+    )
     sprite.texture.frame = rectangle
     sprite.visible = true
 

@@ -6,7 +6,6 @@ let textures = []
 let useGraphics = false
 
 export class MenuButtonSimple {
-
   sge: SimpleGameEngine
   container: PIXI.Container
   graphics: PIXI.Graphics
@@ -20,31 +19,31 @@ export class MenuButtonSimple {
   onOver: (btn: MenuButtonSimple) => any
 
   doClick() {
-    
     if (this.onClick) {
       this.onClick()
     }
 
     pubSub.emit('gui:click-button')
-
   }
 
   init(sge: SimpleGameEngine, text) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
     if (useGraphics) {
       this.graphics = new PIXI.Graphics()
       this.graphics.clear()
-      this.graphics.lineStyle(2, 0xFF00FF, 1)
-      this.graphics.beginFill(0xFF00BB, 0.25)
+      this.graphics.lineStyle(2, 0xff00ff, 1)
+      this.graphics.beginFill(0xff00bb, 0.25)
       this.graphics.drawRoundedRect(0, 0, 200, 50, 6)
       this.graphics.endFill()
       this.container.addChild(this.graphics)
     }
 
-    this.text = new PIXI.extras.BitmapText(`${text}`, { font: '24px defaultfont', align: 'left' })
+    this.text = new PIXI.extras.BitmapText(`${text}`, {
+      font: '24px defaultfont',
+      align: 'left',
+    })
     this.text.anchor = new PIXI.Point(0, 0)
     this.container.addChild(this.text)
 
@@ -82,7 +81,6 @@ export class MenuButtonSimple {
   }
 
   update(x, y) {
-
     this.container.x = x
     if (this.isActive) {
       // this.container.x += 10
@@ -95,13 +93,11 @@ export class MenuButtonSimple {
     this.text.x = 100
 
     // this.text.y = 14 + (2 - this.state) - 3
-    this.text.y = 14 
+    this.text.y = 14
 
     if (useGraphics) {
       this.graphics.x = 0
       this.graphics.y = 0
     }
-
   }
-
 }

@@ -6,12 +6,11 @@ import { MenuButtonSimple } from './MenuButtonSimple'
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 export interface IOption {
-  label?: string,
-  value: any,
+  label?: string
+  value: any
 }
 
 export class MenuOptionSimple {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -28,7 +27,6 @@ export class MenuOptionSimple {
   onOver: (btn: MenuOptionSimple) => any
 
   init(sge: SimpleGameEngine, text, settingKey: string, options: IOption[]) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
@@ -54,7 +52,7 @@ export class MenuOptionSimple {
     // })
 
     this.button.onClick = () => {
-      console.log('change option', settingKey)
+      // console.log('change option', settingKey)
 
       let setting = settingsGeneric.getSettings()[this.settingKey]
 
@@ -63,15 +61,16 @@ export class MenuOptionSimple {
         idx = 0
       }
 
-      console.log('change option to', this.options[idx].value)
+      // console.log('change option to', this.options[idx].value)
 
       // find the value of this option
-      settingsGeneric.updateSettings({ [this.settingKey]: this.options[idx].value })
+      settingsGeneric.updateSettings({
+        [this.settingKey]: this.options[idx].value,
+      })
 
-      if(this.onClick) {
+      if (this.onClick) {
         this.onClick()
       }
-
     }
   }
 
@@ -89,34 +88,25 @@ export class MenuOptionSimple {
   }
 
   update(x, y) {
-
     let optionsText = this.getOptionsText()
     this.button.text.text = this.intiialText + ':   ' + optionsText
 
     this.button.setActive(this.isActive)
     this.button.update(x, y)
-
   }
 
   getOptionsText() {
-
     let currentVal = settingsGeneric.getSettings()[this.settingKey]
     let text = ''
 
     _.forEach(this.options, (c) => {
-
       if (c.value === currentVal) {
         text += '[' + c.label + ']  '
-      }
-      else {
+      } else {
         text += ' ' + c.label + '   '
       }
-
     })
 
     return text
-
   }
-
-
 }

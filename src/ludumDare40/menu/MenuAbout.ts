@@ -5,7 +5,6 @@ import { MenuInputControl } from 'engine/input/MenuInputControl'
 import { MenuGeneric } from 'engine/menus/MenuGeneric'
 
 export class MenuAbout {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -14,7 +13,6 @@ export class MenuAbout {
   modeName = 'about'
 
   init(sge: SimpleGameEngine) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
@@ -24,25 +22,21 @@ export class MenuAbout {
       this.menu.changeModeTo('title')
     }
 
-    this.menu.addButtonSimple('Made in 72 hours').onClick = () => {
-
-    }
-    this.menu.addButtonSimple('For Ludum Dare 40 (ldjam.com)').onClick = () => {
-
-    }
-    this.menu.addOptionSimple('Art / programming / design / levelsdw', 'stevie',
-      [
-        { label: 'Stevie B.', value: 'Stevie B.' },
-      ]
+    this.menu.addButtonSimple('Made in 72 hours').onClick = () => {}
+    this.menu.addButtonSimple(
+      'For Ludum Dare 40 (ldjam.com)'
+    ).onClick = () => {}
+    this.menu.addOptionSimple(
+      'Art / programming / design / levelsdw',
+      'stevie',
+      [{ label: 'Stevie B.', value: 'Stevie B.' }]
     )
     this.menu.addOptionSimple('Design / testing / levels', 'brenden', [
       { label: 'Brenden B.', value: 'Brenden B.' },
-    ]
-    )
+    ])
     this.menu.addOptionSimple('Music / Sfx / Design', 'casey', [
       { label: 'Casey B.', value: 'Casey B.' },
-    ]
-    )
+    ])
 
     this.update(null)
   }
@@ -50,7 +44,4 @@ export class MenuAbout {
   update(menuInput: MenuInputControl) {
     this.menu.update(menuInput)
   }
-
-
-
 }

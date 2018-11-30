@@ -1,14 +1,13 @@
-import { TileMap } from 'engine/tiles/TileMap';
-import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
+import { TileMap } from 'engine/tiles/TileMap'
+import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot'
 
 const tilesPerRow = 32
 const tilesetWidth = 512
 const tilesetHeight = 512
 const defaultTextureName = 'public/ludumdare40/images/ase-512-16.png'
 
-
-const Rot_90_Flag = 0xA0000000
-const Rot_180_Flag = 0xC0000000
+const Rot_90_Flag = 0xa0000000
+const Rot_180_Flag = 0xc0000000
 const Rot_270_Flag = 0x60000000
 
 const FlippedHorizontallyFlag = 0x80000000
@@ -18,39 +17,37 @@ const FlippedAntiDiagonallyFlag = 0x20000000
 const MinFlag = 0x10000000
 
 export function loadBasicLayer(
-  json, 
-  xDest, yDest, 
+  json,
+  xDest,
+  yDest,
   tm: TileMap<ILD40GridSpot>,
   layer,
   data: any,
   pcb: (t: number, x: number, y: number) => any,
   cb: (gs: ILD40GridSpot, t: number, x: number, y: number) => any,
-  clearEmpty: boolean = true) {
-
+  clearEmpty: boolean = true
+) {
   let { width, height } = json
 
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
-
       let ix = i + xDest
       let jy = j + yDest
 
-      let idxDest = (jy) * tm.blockWidth + (ix)
-      let idxSrc =  (j) * width + (i)
+      let idxDest = jy * tm.blockWidth + ix
+      let idxSrc = j * width + i
       let d = tm.data[idxDest]
 
       let t = data[idxSrc] - 1
 
       // .. beep boop
       if (t > 1) {
-
         let flipX = false
         let flipY = false
         let rot = 0
 
         // Check for flipping
         if (t > MinFlag) {
-
           if (t & FlippedHorizontallyFlag) {
             t -= FlippedHorizontallyFlag
             flipX = !flipX
@@ -77,8 +74,6 @@ export function loadBasicLayer(
               flipY = !flipY
               flipX = !flipX
             }
-
-
           }
 
           if (t & Rot_90_Flag) {
@@ -96,8 +91,6 @@ export function loadBasicLayer(
             t = 4
             //rot = Math.PI * 1.5
           }
-
-
         }
 
         let x = t % tilesPerRow
@@ -130,9 +123,7 @@ export function loadBasicLayer(
         if (cb) {
           cb(gs, t, x, y)
         }
-
       } else {
-
         if (clearEmpty) {
           let gs = tm.clearTileAt(layer, ix, jy)
 
@@ -140,9 +131,7 @@ export function loadBasicLayer(
             cb(gs, t, 0, 0)
           }
         }
-
       }
-
     }
   }
 }

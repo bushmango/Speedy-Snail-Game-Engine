@@ -4,16 +4,10 @@ import { Blob } from 'ludumDare40/entities/Blob'
 import { IBounds } from './BoundsDrawer'
 
 export function checkPlayerVsBlob(player: Player, blob: Blob) {
-
   // Get player bounds
-
-
-
 }
 
-
 export function isRectOverlap(a: IBounds, b: IBounds) {
-
   if (a.boundsX2 < b.boundsX1 || a.boundsX1 > b.boundsX2) {
     return false
   }
@@ -21,5 +15,4 @@ export function isRectOverlap(a: IBounds, b: IBounds) {
     return false
   }
   return true
-
 }

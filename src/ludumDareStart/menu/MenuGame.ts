@@ -7,22 +7,17 @@ import { MenuGeneric } from 'engine/menus/MenuGeneric'
 import * as pubSub from 'engine/common/pubSub'
 
 export class MenuGame {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
   modeName = 'game'
 
   init(sge: SimpleGameEngine) {
-
     this.sge = sge
     this.container = new PIXI.Container()
 
     this.update(null)
   }
 
-  update(menuInput: MenuInputControl) {
-   
-  }
-
+  update(menuInput: MenuInputControl) {}
 }

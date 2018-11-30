@@ -1,14 +1,13 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes } from 'engine/input/Keyboard';
+import { KeyCodes } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
 
 export class HatStack {
-
   sge: SimpleGameEngine
   container = new PIXI.Container()
 
@@ -26,38 +25,50 @@ export class HatStack {
     //dfor (let i = 0; i < 3; i++) {
     //this.addHat()
     //}
-
   }
   update() {
-
     let { x, y } = this
 
     this.container.position.set(x, y)
 
     this.restackHats()
-
   }
   restackHats() {
     _.forEach(this.hats, (c, cIdx) => {
       c.position.set(0 + (this.facingRight ? 1 : -1), 0 - 3 * cIdx)
       c.scale.set(this.facingRight ? 1 : -1, 1)
-      if(cIdx === 0) {
+      if (cIdx === 0) {
         c.rotation = 0
       }
     })
   }
 
   clear() {
-   _.forEach(this.hats, (c) => {
-     this.container.removeChild(c)     
-   })
-   this.hats = []
+    _.forEach(this.hats, (c) => {
+      this.container.removeChild(c)
+    })
+    this.hats = []
   }
 
   addHat(frame = null) {
-    let hatTilts = [turn / 64, turn / 32, turn / 16, 0, 0, 0, -turn / 16, -turn / 32, -turn / 64]
+    let hatTilts = [
+      turn / 64,
+      turn / 32,
+      turn / 16,
+      0,
+      0,
+      0,
+      -turn / 16,
+      -turn / 32,
+      -turn / 64,
+    ]
     let hatData = _.sample(hats)
-    let hat = spriteCreator.create16_sprite(this.sge, 'ase-512-16', hatData.y, hatData.x)
+    let hat = spriteCreator.create16_sprite(
+      this.sge,
+      'ase-512-16',
+      hatData.y,
+      hatData.x
+    )
     if (frame) {
       hat.texture.frame = frame
     }
@@ -78,11 +89,10 @@ export class HatStack {
     let hat = this.hats.shift()
     this.container.removeChild(hat)
     return hat
-  } 
-   removeTopHat() {
+  }
+  removeTopHat() {
     let hat = this.hats.pop()
     this.container.removeChild(hat)
     return hat
   }
-
 }

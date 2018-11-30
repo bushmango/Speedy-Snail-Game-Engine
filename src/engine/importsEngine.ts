@@ -7,4 +7,3 @@ import * as Freezer from 'freezer-js'
 export { Freezer }
 
 export { Lockr } from 'lockr'
-

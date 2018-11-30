@@ -2,18 +2,17 @@ import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { numeral } from 'engine/importsEngine'
 
 import { GamepadMicro, gp, getGamepads } from './gamepadLib'
- 
-export class GamepadTester {
 
+export class GamepadTester {
   group: PIXI.Container
 
-  messages: any = {} 
+  messages: any = {}
 
   cx = 20
   cy = 80
 
   init(sge: SimpleGameEngine) {
-    let group = this.group = new PIXI.Container()
+    let group = (this.group = new PIXI.Container())
     sge.addGroup(group)
   }
 
@@ -21,10 +20,11 @@ export class GamepadTester {
     if (this.messages[key]) {
       return this.messages[key]
     }
-    let message = new PIXI.Text(
-      "Hello Controller!",
-      { fontFamily: "Arial", fontSize: 20, fill: "white" }
-    )
+    let message = new PIXI.Text('Hello Controller!', {
+      fontFamily: 'Arial',
+      fontSize: 20,
+      fill: 'white',
+    })
     message.x = this.cx
     message.y = this.cy
     this.cy += 24
@@ -36,16 +36,17 @@ export class GamepadTester {
   tryAddStick(gamepad, key) {
     if (gamepad[key]) {
       let m = this.addMessage(key)
-      m.text = ''
-        + key + ':'
-        + numeral(gamepad[key].x).format('0.00')
-        + ' '
-        + numeral(gamepad[key].y).format('0.00')
+      m.text =
+        '' +
+        key +
+        ':' +
+        numeral(gamepad[key].x).format('0.00') +
+        ' ' +
+        numeral(gamepad[key].y).format('0.00')
     }
   }
 
   update() {
-
     //var gamepad = gamepads[0]
     let gamepads = getGamepads()
     // console.log('gamepads', gamepads)
@@ -64,13 +65,17 @@ export class GamepadTester {
         let id = 'button_' + key
         let m = this.addMessage(id)
         if (button) {
-          m.text = '' + id + ':' + (button.released ? 'released' : '') + (button.pressed ? 'pressed' : '') + (button.held ? 'held' : '') 
+          m.text =
+            '' +
+            id +
+            ':' +
+            (button.released ? 'released' : '') +
+            (button.pressed ? 'pressed' : '') +
+            (button.held ? 'held' : '')
         } else {
           m.text = '' + id + ':'
         }
       })
-
     }
-
   }
 }

@@ -3,10 +3,17 @@
   "version": "0.0.3",
   "description": "convert graphic files",
   "main": "index.js",
-  "scripts": {   
-    "start": "tsc index.ts && node index.js hello=world",
-    "start2": "ts-node index.ts hello=worldTs",
-    "dev": "ts-node-dev index.ts hello=dev",
+  "scripts": {
+    "start": "tsc index.ts && node index.js",
+    "start-parallax": "tsc index.ts && node index.js parallax",
+    "start-raid": "tsc index.ts && node index.js raid",
+    "start-pacrpg": "tsc index.ts && node index.js pacrpg",
+    "start-shelter": "tsc index.ts && node index.js shelter",
+    "start-ld-43": "tsc index.ts && node index.js ludumDare43",
+    "start2": "ts-node index.ts ludumDare41",
+    "dev": "ts-node-dev index.ts ludumDare41",
+    "dev-40": "ts-node-dev index.ts ludumDare40",
+    "dev-41": "ts-node-dev index.ts ludumDare41",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +23,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.74",
+    "@types/node": "^9.6.6",
     "audiosprite": "^0.7.0",
     "chalk": "^2.1.0",
     "chokidar": "^1.7.0",

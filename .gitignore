@@ -13,3 +13,5 @@ Thumbs.db
 *.zip
 
 lib
+
+*.ppk

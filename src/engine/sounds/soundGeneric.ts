@@ -1,6 +1,5 @@
-
 import * as howler from 'howler'
-
+import * as log from 'engine/log'
 let devMute = false
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
@@ -16,7 +15,7 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
     callbackOnLoaded()
   })
   soundSprite.on('loaderror', (id, err) => {
-    console.log('howl', 'loaderror', id, err)
+    // console.log('howl', 'loaderror', id, err)
   })
 
   soundSprite.mute(settingsGeneric.getSettings().muteSound)
@@ -41,7 +40,7 @@ export function playMusic(song, loop = true, cb: () => void = null) {
   //musicSprite.play()
   //})
   musicSprite.on('loaderror', (id, err) => {
-    console.log('howl', 'loaderror', id, err)
+    // console.log('howl', 'loaderror', id, err)
   })
   if (cb) {
     musicSprite.on('end', () => {
@@ -52,8 +51,7 @@ export function playMusic(song, loop = true, cb: () => void = null) {
 
 export function play(soundKey) {
   if (!devMute && !settingsGeneric.getSettings().muteSound) {
+    log.x('play', soundKey)
     soundSprite.play(soundKey)
   }
-
 }
-

@@ -1,12 +1,10 @@
-import { SimpleGameEngine } from 'engine/SimpleGameEngine';
+import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { _ } from 'engine/importsEngine'
 
 export class ButtonState {
-
   isPressed = false
   justPressed = false
   justReleased = false
-
 }
 
 export class DPadState {
@@ -17,14 +15,12 @@ export class DPadState {
 }
 
 export function setButtonState(btn: ButtonState, gamepad, buttonKey) {
-
   btn.justReleased = false
   btn.justPressed = false
 
   if (gamepad) {
     let gamepadButton = gamepad.buttons[buttonKey]
     if (gamepadButton) {
-
       if (gamepadButton.released) {
         if (btn.isPressed) {
           btn.isPressed = false
@@ -40,13 +36,14 @@ export function setButtonState(btn: ButtonState, gamepad, buttonKey) {
         btn.isPressed = false
       }
     }
-
   }
-
 }
 
-export function setKeyState(sge: SimpleGameEngine, btn: ButtonState, keys: number[]) {
-
+export function setKeyState(
+  sge: SimpleGameEngine,
+  btn: ButtonState,
+  keys: number[]
+) {
   btn.justReleased = false
   btn.justPressed = false
   btn.isPressed = false
@@ -63,7 +60,6 @@ export function setKeyState(sge: SimpleGameEngine, btn: ButtonState, keys: numbe
       btn.justReleased = true
     }
   })
-
 }
 
 export function setCombinedState(btn: ButtonState, buttons: ButtonState[]) {
@@ -83,7 +79,6 @@ export function setCombinedState(btn: ButtonState, buttons: ButtonState[]) {
     }
   })
 }
-
 
 export function setDPadState(dpadState: DPadState, gamepad) {
   setButtonState(dpadState.n, gamepad, 'dPadUp')
@@ -116,7 +111,6 @@ export function getStickDir(gamepad, stickName, threshhold) {
   if (gamepad) {
     let stick = gamepad[stickName]
     if (stick) {
-
       if (stick.x > threshhold) {
         dir = 1
       } else if (stick.x < -threshhold) {
@@ -133,20 +127,27 @@ export function getStickDir(gamepad, stickName, threshhold) {
   return dir
 }
 
-export function getGamepadDir(gamepad, dpadState: DPadState, threshhold: number) {
-
+export function getGamepadDir(
+  gamepad,
+  dpadState: DPadState,
+  threshhold: number
+) {
   let dir = -1
   if (gamepad) {
-
     let leftStickDir = getStickDir(gamepad, 'leftStick', threshhold)
-    if (leftStickDir !== -1) { dir = leftStickDir }
+    if (leftStickDir !== -1) {
+      dir = leftStickDir
+    }
 
     let rightStickDir = getStickDir(gamepad, 'rightStick', threshhold)
-    if (rightStickDir !== -1) { dir = rightStickDir }
+    if (rightStickDir !== -1) {
+      dir = rightStickDir
+    }
 
     let dpadDir = getDpadDir(dpadState)
-    if (dpadDir !== -1) { dir = dpadDir }
-
+    if (dpadDir !== -1) {
+      dir = dpadDir
+    }
   }
   return dir
 }

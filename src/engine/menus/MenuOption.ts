@@ -4,7 +4,6 @@ import { _ } from 'engine/importsEngine'
 import { MenuButton } from './MenuButton'
 
 export class MenuOption {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -19,8 +18,14 @@ export class MenuOption {
   setSettingFunc
   settingKey
 
-  init(sge: SimpleGameEngine, text, options, getSettingFunc, setSettingFunc, settingKey) {
-
+  init(
+    sge: SimpleGameEngine,
+    text,
+    options,
+    getSettingFunc,
+    setSettingFunc,
+    settingKey
+  ) {
     this.sge = sge
     this.container = new PIXI.Container()
 
@@ -35,7 +40,7 @@ export class MenuOption {
     this.container.addChild(this.button.container)
 
     this.button.onClick = () => {
-      console.log('change option', settingKey)
+      // console.log('change option', settingKey)
       let setting = this.getSettingFunc(this.settingKey)
 
       let idx = _.findIndex(this.options, (c, cIdx) => c === setting) + 1
@@ -44,9 +49,7 @@ export class MenuOption {
       }
 
       this.setSettingFunc(this.settingKey, this.options[idx])
-
     }
-
   }
 
   doClick() {
@@ -58,14 +61,10 @@ export class MenuOption {
   }
 
   update(x, y) {
-
-    this.button.text.text = this.intiialText + ': ' + this.getSettingFunc(this.settingKey)
+    this.button.text.text =
+      this.intiialText + ': ' + this.getSettingFunc(this.settingKey)
 
     this.button.setActive(this.isActive)
     this.button.update(x, y)
-
   }
-
-
-
 }

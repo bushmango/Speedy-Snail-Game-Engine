@@ -1,0 +1,66 @@
+
+
+// Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
+
+- basic menu
+- sound/music mute buttons
+- slidy menus
+- text example
+- website set up for deploy 
+- test deploy
+
+- game engine
+- juicyness
+-- from video 
+x color 
+- tween in,
+- random delay in tween
+x squeeze and stretch 
+- rotate in direction going
+x sound, 
+- music, 
+- yeay! sound
+-- more from video 
+x particles
+- smiles 
+- eyes 
+x background color flashes
+x screen shake
+x trails
+x ui
+xx mouse handling
+-- buttons
+-- click handling
+-- health bars
+xx heart bars
+-- tweening
+xx basic tweaking
+-- scale production
+-- flop out to square
+-- tween fall in
+
+- sound and music toggle bois
+
+game like factorio
+game like forager
+game like sheltered
+
+
+zombie base builder
+
+like agricola / caverna
+
+deploy each person to do one task per day
+farms take a few days
+
+manage wood, steel, food, manufacturing
+
+chop down trees with an axe
+
+expeditions for goods
+
+attract new people
+
+event cards that happen each day
+
+8x8 or so building area

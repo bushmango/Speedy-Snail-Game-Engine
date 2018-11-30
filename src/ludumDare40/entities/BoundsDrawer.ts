@@ -4,17 +4,15 @@ import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
 
 export interface IBounds {
-  boundsX1: number,
-  boundsX2: number,
-  boundsY1: number,
-  boundsY2: number,
+  boundsX1: number
+  boundsX2: number
+  boundsY1: number
+  boundsY2: number
 }
 
 export class BoundsDrawer {
-
   context: LudumDare40Context
   container = new PIXI.Container()
-
 
   spriteIdx = 0
   sprites: PIXI.Sprite[] = []
@@ -25,7 +23,9 @@ export class BoundsDrawer {
 
   clear() {
     this.spriteIdx = 0
-    _.forEach(this.sprites, (c) => { c.visible = false })
+    _.forEach(this.sprites, (c) => {
+      c.visible = false
+    })
   }
   draw(entity: IBounds) {
     let s = this.getSprite()
@@ -37,18 +37,18 @@ export class BoundsDrawer {
   }
 
   getSprite() {
-
     this.spriteIdx++
     if (this.spriteIdx > this.sprites.length) {
-      let sprite = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 0, 1)
+      let sprite = spriteCreator.create16_sprite(
+        this.context.sge,
+        'ase-512-16',
+        0,
+        1
+      )
       this.container.addChild(sprite)
       this.sprites.push(sprite)
       return sprite
     }
     return this.sprites[this.spriteIdx - 1]
-
   }
-
-
-
 }

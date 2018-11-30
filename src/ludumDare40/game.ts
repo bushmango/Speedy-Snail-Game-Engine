@@ -19,7 +19,7 @@ const { TextureCache } = PIXI.utils
 
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 import * as ldSounds from 'ludumDare40/sounds/ldSounds'
@@ -29,25 +29,13 @@ let sge = new SimpleGameEngine()
 let context = new LudumDare40Context()
 
 export function preload() {
-
   settingsGeneric.load('ludum-dare-40-v003')
 
-  sge.preloadAudioSprites([
-    'audioSprite',
-  ])
-  sge.preloadBitmapFonts([
-    'defaultfont',
-  ])
-  sge.preloadSprites([
-    'test-ship',
-    'prariesnailgames',
-  ])
-  sge.preloadSpriteSheets([
-    'test-tileset',
-    'gui-tileset',
-    'ase-512-16',
-  ])
- 
+  sge.preloadAudioSprites(['audioSprite'])
+  sge.preloadBitmapFonts(['defaultfont'])
+  sge.preloadSprites(['test-ship', 'prariesnailgames'])
+  sge.preloadSpriteSheets(['test-tileset', 'gui-tileset', 'ase-512-16'])
+
   sge.preloadTiledMaps([
     'map-start',
     'map-01-001',
@@ -63,14 +51,11 @@ export function preload() {
     'map-boss',
     'map-end',
   ])
-  sge.preloadPackedSprites([
-  ])
-
+  sge.preloadPackedSprites([])
 }
 
 let pixiMode = 'unknown'
 export function run() {
-
   console.log('Running ludum dare start sample')
 
   sge.init()
@@ -79,19 +64,15 @@ export function run() {
   let renderer = sge.renderer
 
   preload()
-  sge.preload(
-    '/public/ludumDare40',
-    () => {
-      onLoaded()
-    },
-  )
+  sge.preload('/public/ludumDare40', () => {
+    onLoaded()
+  })
 
   window.onresize = () => {
     sge.resize()
   }
 
   function onLoaded() {
-
     sge.onUpdateCallback = onUpdate
 
     // Now load sounds & music
@@ -102,9 +83,7 @@ export function run() {
     sge.startGameLoop()
   }
 
-
   function onUpdate() {
     context.onUpdate()
   }
-
 }

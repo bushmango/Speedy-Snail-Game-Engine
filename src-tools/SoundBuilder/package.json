@@ -4,7 +4,7 @@
   "description": "Convert sounds from wav to something internet playable",
   "main": "index.js",
   "scripts": {
-    "start": "tsc index.ts && node index.js hello=world",
+    "start": "tsc index.ts && node index.js",
     "start2": "ts-node index.ts hello=worldTs",
     "dev": "ts-node-dev index.ts hello=dev",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.74",
+    "@types/node": "^9.6.6",
     "audiosprite": "^0.7.0",
     "chalk": "^2.1.0",
     "chokidar": "^1.7.0",

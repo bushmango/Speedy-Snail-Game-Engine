@@ -1,14 +1,13 @@
-
 import { _ } from 'engine/importsEngine'
 
 export interface IKey {
-  keyCode: any,
-  isPressed: boolean,
-  _delay_isPressed: boolean,
-  justPressed: boolean,
-  justReleased: boolean,
-  _delay_justPressed: boolean,
-  _delay_justReleased: boolean,
+  keyCode: any
+  isPressed: boolean
+  _delay_isPressed: boolean
+  justPressed: boolean
+  justReleased: boolean
+  _delay_justPressed: boolean
+  _delay_justReleased: boolean
 }
 
 // see: http://keycode.info/
@@ -17,7 +16,7 @@ export enum KeyCodes {
   w = 87,
   a = 65,
   s = 83,
-  d = 68,  
+  d = 68,
   space = 32,
   enter = 13,
   arrowUp = 38,
@@ -29,33 +28,30 @@ export enum KeyCodes {
 }
 
 export class Keyboard {
-
   init() {
-    window.addEventListener(
-      "keydown", this.onKeyDown.bind(this), true
-    )
-    window.addEventListener(
-      "keyup", this.onKeyUp.bind(this), true
-    )
+    window.addEventListener('keydown', this.onKeyDown.bind(this), true)
+    window.addEventListener('keyup', this.onKeyUp.bind(this), true)
   }
 
   onKeyDown(ev) {
-
     let key = this.keys[ev.keyCode]
-    if (!key) { return }
+    if (!key) {
+      return
+    }
 
-    console.log('key down', ev.keyCode)
+    // console.log('key down', ev.keyCode)
 
     key._delay_justPressed = true
     key._delay_isPressed = true
     event.preventDefault()
   }
   onKeyUp(ev) {
-
     let key = this.keys[ev.keyCode]
-    if (!key) { return }
+    if (!key) {
+      return
+    }
 
-    console.log('key up', ev.keyCode)
+    // console.log('key up', ev.keyCode)
 
     key._delay_justReleased = true
     key._delay_isPressed = false
@@ -71,7 +67,7 @@ export class Keyboard {
     })
   }
 
-  getKey(keyCode):IKey {
+  getKey(keyCode): IKey {
     let key = this.keys[keyCode]
     if (!key) {
       key = this.listenFor(keyCode)
@@ -96,10 +92,10 @@ export class Keyboard {
     let key = this.keys[keyCode]
     if (key) {
       // Already listening to this
-      console.warn('already listening to key ' + keyCode)
+      // console.warn('already listening to key ' + keyCode)
       return key
     }
-    console.log('listening to key ' + keyCode)
+    // console.log('listening to key ' + keyCode)
 
     key = {
       keyCode: keyCode,
@@ -115,5 +111,4 @@ export class Keyboard {
   }
 
   keys: any = {}
-
 }

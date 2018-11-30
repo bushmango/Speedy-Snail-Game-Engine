@@ -12,7 +12,6 @@ import * as pubSub from 'engine/common/pubSub'
 import * as math from 'engine/common/math'
 
 export class MenuGeneric {
-
   sge: SimpleGameEngine
   container: PIXI.Container
 
@@ -25,11 +24,13 @@ export class MenuGeneric {
   currentItemY = 0
 
   init(sge: SimpleGameEngine, container, menuTitle) {
-
     this.sge = sge
     this.container = container
 
-    this.textTitle = new PIXI.extras.BitmapText(`${menuTitle}`, { font: '48px defaultfont', align: 'left' })
+    this.textTitle = new PIXI.extras.BitmapText(`${menuTitle}`, {
+      font: '48px defaultfont',
+      align: 'left',
+    })
     this.textTitle.anchor = new PIXI.Point(0, 0)
     this.container.addChild(this.textTitle)
   }
@@ -82,15 +83,17 @@ export class MenuGeneric {
   }
 
   update(menuInput: MenuInputControl) {
-
-
     let numButtons = 0
     _.forEach(this.menuButtons, (menuButton, idx) => {
       if (menuButton.container.visible) {
         numButtons++
       }
     })
-    this.activeButtonIndex = math.wrapRange(this.activeButtonIndex, 0, numButtons)
+    this.activeButtonIndex = math.wrapRange(
+      this.activeButtonIndex,
+      0,
+      numButtons
+    )
 
     this.textTitle.x = 50
     this.textTitle.y = 50
@@ -103,7 +106,6 @@ export class MenuGeneric {
       let input = menuInput.input
 
       if (input.combinedOk.justPressed) {
-
       } else {
         // Move menu item
         let { dir, lastDir } = input
@@ -122,7 +124,6 @@ export class MenuGeneric {
         if (input.keyDown.justPressed) {
           this.activeButtonIndex++
         }
-
       }
 
       let idxCount = -1
@@ -150,20 +151,10 @@ export class MenuGeneric {
           }
 
           y += 50 + 20
-
-
-
         } else {
           menuButton.setActive(false)
         }
       })
-
-
     }
-
-
-
-
-
   }
 }

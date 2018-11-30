@@ -5,31 +5,31 @@ export function fail(reason = 'unknown reason') {
 }
 
 export function failIf(condition, reason) {
-  if(condition) {
+  if (condition) {
     fail(reason)
-  } 
+  }
 }
 
 export function failIfNot(condition, reason) {
-  if(!condition) {
+  if (!condition) {
     fail(reason)
   }
 }
 
 export function is(condition, reason) {
-  if(!condition) {
+  if (!condition) {
     fail(reason)
   }
 }
 
 export function exists(condition, reason) {
-  if(condition === null || condition === undefined) {
+  if (condition === null || condition === undefined) {
     fail(reason)
   }
 }
 
 export function allExists(...objs) {
-  for(let i = 0; i < objs.length; i++) {
+  for (let i = 0; i < objs.length; i++) {
     exists(objs[i], 'all exists failed')
   }
 }

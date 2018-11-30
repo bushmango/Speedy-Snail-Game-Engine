@@ -1,4 +1,3 @@
-
 const { Rectangle, Sprite } = PIXI
 const { TextureCache } = PIXI.utils
 
@@ -14,28 +13,37 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 // import * as tileMapLoader from 'snakeBattle/tiles/tileMapLoader'
 
 import { MenuManager } from 'ludumDare40/menu/MenuManager'
-import { SplashScreen } from 'engine/misc/SplashScreen';
+import { SplashScreen } from 'engine/misc/SplashScreen'
 
 import { Player } from 'ludumDare40/entities/Player'
 import { Blob, BlobManager } from 'ludumDare40/entities/Blob'
 import { Hat, HatManager } from 'ludumDare40/entities/Hat'
-import { ParticleManager } from 'ludumDare40/entities/ParticleManager';
-import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
+import { ParticleManager } from 'ludumDare40/entities/ParticleManager'
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer'
 
 import * as collisions from './entities/collisions'
-import * as mapLoader from 'ludumDare40/map/MapLoader';
-import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot';
-import { Layer_Background, IMapMedatada, Layer_Decor } from 'ludumDare40/map/MapLoader';
+import * as mapLoader from 'ludumDare40/map/MapLoader'
+import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot'
+import {
+  Layer_Background,
+  IMapMedatada,
+  Layer_Decor,
+} from 'ludumDare40/map/MapLoader'
 
 import * as sounds from 'ludumDare40/sounds/ldSounds'
-import { MapScanner } from 'ludumDare40/game/MapScanner';
-import { KeyCodes } from 'engine/input/Keyboard';
-import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter';
-import { ButtonManager, ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button';
-import { TextsManager } from 'ludumDare40/entities/Texts';
-import { BossHeadManager } from 'ludumDare40/entities/Boss';
-import { DecorManager } from 'ludumDare40/entities/Decor';
-import { AchievementsManager } from 'ludumDare40/entities/Achievements';
+import { MapScanner } from 'ludumDare40/game/MapScanner'
+import { KeyCodes } from 'engine/input/Keyboard'
+import { HatCounter, HatCounterManager } from 'ludumDare40/entities/HatCounter'
+import {
+  ButtonManager,
+  ButtonBoss,
+  ButtonWin,
+  ButtonMid,
+} from 'ludumDare40/entities/Button'
+import { TextsManager } from 'ludumDare40/entities/Texts'
+import { BossHeadManager } from 'ludumDare40/entities/Boss'
+import { DecorManager } from 'ludumDare40/entities/Decor'
+import { AchievementsManager } from 'ludumDare40/entities/Achievements'
 
 const turn = Math.PI * 2
 
@@ -43,7 +51,6 @@ let drawBounds = false
 let drawMarkers = false
 
 export class LudumDare40Context {
-
   sge: SimpleGameEngine
 
   tileMap: TileMap<ILD40GridSpot> = null
@@ -91,7 +98,7 @@ export class LudumDare40Context {
     _sge.renderer.transparent = false
     // Force color property
     let r: any = _sge.renderer
-    r.backgroundColor = 0xFF333333
+    r.backgroundColor = 0xff333333
 
     this.menuManager.init(this.sge)
 
@@ -129,7 +136,9 @@ export class LudumDare40Context {
     this.addLayer(this.layerObjects)
 
     this.addLayer(this.tileMap.containers[mapLoader.Layer_Decor])
-    this.layerMarkers = this.addLayer(this.tileMap.containers[mapLoader.Layer_Marker])
+    this.layerMarkers = this.addLayer(
+      this.tileMap.containers[mapLoader.Layer_Marker]
+    )
     this.layerMarkers.visible = drawMarkers
 
     this.addLayer(this.layerParticles)
@@ -146,9 +155,7 @@ export class LudumDare40Context {
     this.addLayerUI(this.menuManager.menuManager.container)
     this.addLayerUI(this.menuManager.container)
 
-
     this.layerObjects.addChild(this.player.container)
-
 
     // for (let i = 0; i < 3; i++) {
     //   this.blobs.createAt(130 + i * 40, 0)
@@ -160,10 +167,7 @@ export class LudumDare40Context {
     this.sge.stage.addChild(this.rootContainerUI)
     this.sge.stage.addChild(this.splash.container)
 
-
-
     this.rootContainer.scale
-
   }
   getPlayerHatCount() {
     return this.hatCount
@@ -187,25 +191,19 @@ export class LudumDare40Context {
   }
 
   onUpdate() {
-
     this.hatCount = this.player.hats.hats.length
 
-    if(this.hatCount >= 100) {
+    if (this.hatCount >= 100) {
       this.achievements.addAchievement('100 Hat Hatfessional')
-    }
-    else if(this.hatCount >= 50) {
+    } else if (this.hatCount >= 50) {
       this.achievements.addAchievement('50 Hat Hatsterminator')
-    }
-    else if(this.hatCount >= 40) {
+    } else if (this.hatCount >= 40) {
       this.achievements.addAchievement('40 Hat Hatiator')
-    }
-    else if(this.hatCount >= 30) {
+    } else if (this.hatCount >= 30) {
       this.achievements.addAchievement('30 Hat Hatformer')
-    }
-    else if(this.hatCount >= 20) {
+    } else if (this.hatCount >= 20) {
       this.achievements.addAchievement('20 Hat Novice')
-    }
-    else if(this.hatCount >= 10) {
+    } else if (this.hatCount >= 10) {
       this.achievements.addAchievement('10 Hat Newbie')
     }
 
@@ -220,8 +218,6 @@ export class LudumDare40Context {
     }
 
     this.mapScanner.update(this)
-
-   
 
     this.boundsDrawer.clear()
 
@@ -251,7 +247,6 @@ export class LudumDare40Context {
     // Check collisions
     let p = this.player
     _.forEach(this.blobs.items, (c) => {
-
       let b = c
 
       if (collisions.isRectOverlap(p.bounds, b.bounds)) {
@@ -270,15 +265,12 @@ export class LudumDare40Context {
             let hat = b.hats.removeTopHat()
             b.popHat(hat, b.hats.hats.length)
             this.sounds.playSmash()
-          }
-          else {
-
+          } else {
             if (b.mode === 1) {
               this.sounds.playMetal()
             } else if (b.mode === 2) {
               p.die()
             } else {
-
               if (!b.isReadyToBeDestroyed) {
                 b.destroy()
                 // _.forEach(b.hats.hats, (c) => {
@@ -287,18 +279,15 @@ export class LudumDare40Context {
               }
             }
           }
-
         } else {
           p.die()
         }
-
       }
     })
 
     this.defeatedBoss = this.bossHeads.items.length === 0
 
     _.forEach(this.bossHeads.items, (c) => {
-
       let b = c
 
       if (collisions.isRectOverlap(p.bounds, b.bounds)) {
@@ -318,8 +307,7 @@ export class LudumDare40Context {
             let hat = b.hats.removeTopHat()
             b.popHat(hat, b.hats.hats.length)
             this.sounds.playSmash()
-          }
-          else {
+          } else {
             if (!b.isReadyToBeDestroyed) {
               b.destroy()
               this.achievements.addAchievement('Like a boss!')
@@ -334,16 +322,13 @@ export class LudumDare40Context {
               // })
             }
           }
-
         } else {
           p.die()
         }
-
       }
     })
 
     _.forEach(this.decors.items, (c) => {
-
       let b = c
 
       if (collisions.isRectOverlap(p.bounds, b.bounds)) {
@@ -369,13 +354,11 @@ export class LudumDare40Context {
           } else {
             this.achievements.addAchievement('Take that environment!')
           }
-
         }
       }
     })
 
     _.forEach(this.buttons.items, (c) => {
-
       let b = c
 
       if (collisions.isRectOverlap(p.bounds, b.bounds)) {
@@ -394,18 +377,20 @@ export class LudumDare40Context {
               this.achievements.addAchievement('Time to hat-tack! Amirite?')
 
               let numHeads = 1 + Math.floor(this.getPlayerHatCount() / 7)
-              if (numHeads > 10) { numHeads = 10 }
+              if (numHeads > 10) {
+                numHeads = 10
+              }
               for (let idxHead = 0; idxHead < numHeads; idxHead++) {
-                let head = this.bossHeads.createAt(b.bounds.x + 150 - idxHead * 12, p.bounds.y)
+                let head = this.bossHeads.createAt(
+                  b.bounds.x + 150 - idxHead * 12,
+                  p.bounds.y
+                )
                 let numHats = _.random(0, 3, false)
                 for (let idxHat = 0; idxHat < numHats; idxHat++) {
                   head.hats.addHat()
                 }
               }
-
-
             } else if (b.buttonType === ButtonWin) {
-
               this.achievements.addAchievement('You won!')
 
               sounds.playMusicWin()
@@ -415,23 +400,22 @@ export class LudumDare40Context {
               this.pressedMidButton = true
             }
           }
-
         }
-
       }
     })
 
     _.forEach(this.hats.items, (hat) => {
-
       let processed = false
-      if (hat.frame > 30) // Don't pick up a fresh hat
-      {
+      if (hat.frame > 30) {
+        // Don't pick up a fresh hat
         _.forEach(this.blobs.items, (blob) => {
-          if (processed) { return }
+          if (processed) {
+            return
+          }
 
           if (collisions.isRectOverlap(hat.bounds, blob.bounds)) {
             if (!blob.isReadyToBeDestroyed) {
-              // blob.destroy()          
+              // blob.destroy()
               blob.hats.addHat(hat.body.texture.frame)
               hat.destroy()
               processed = true
@@ -440,7 +424,6 @@ export class LudumDare40Context {
         })
 
         if (!processed && collisions.isRectOverlap(p.bounds, hat.bounds)) {
-
           if (!hat.isReadyToBeDestroyed) {
             this.achievements.addAchievement('Your baldness: cured!')
             this.sounds.playPickup()
@@ -450,16 +433,14 @@ export class LudumDare40Context {
             processed = true
           }
         }
-
       }
     })
 
     // camera
     let { width, height } = this.sge.getViewSize()
-    let x = (-this.player.bounds.boundsX1 * this.rootContainer.scale.x)
-    let y = (-this.player.bounds.boundsY1 * this.rootContainer.scale.y)
+    let x = -this.player.bounds.boundsX1 * this.rootContainer.scale.x
+    let y = -this.player.bounds.boundsY1 * this.rootContainer.scale.y
     this.rootContainer.position.set(x + width / 2, y + height / 2)
-
 
     // this.particles.emitBlobParts(this.blobs[0].body.texture.frame, this.player.subX / 32, this.player.subY / 32)
 
@@ -468,9 +449,7 @@ export class LudumDare40Context {
     this.menuManager.update()
   }
 
-
   reset() {
-
     this.pressedBossButton = false
     this.pressedMidButton = false
     this.defeatedBoss = false
@@ -479,7 +458,6 @@ export class LudumDare40Context {
 
     // Set player to spawn
     let spawn = this.mapMeta.spawn
-
 
     this.player.reset()
     this.player.moveTo(spawn.bx * 16 + 8, spawn.by * 16 + 14)
@@ -520,7 +498,6 @@ export class LudumDare40Context {
 
   resetTileMap() {
     if (this.tileMap === null) {
-
       let defaultTextureName = 'ase-512-16'
       let tileData: ITileData[] = []
       tileData.push({
@@ -551,9 +528,7 @@ export class LudumDare40Context {
           return gridSpot
         }
       )
-
     }
-
 
     let pieces1 = [
       'map-01-001',
@@ -563,12 +538,7 @@ export class LudumDare40Context {
       'map-01-005',
     ]
 
-    let pieces2 = [
-      'map-01-006',
-      'map-01-007',
-      'map-01-004',
-      'map-01-009',
-    ]
+    let pieces2 = ['map-01-006', 'map-01-007', 'map-01-004', 'map-01-009']
 
     let numPieces = pieces1.length + 5 + pieces2.length
     let maxRandos = pieces1.length + pieces2.length
@@ -586,60 +556,112 @@ export class LudumDare40Context {
     let width = 20
     let height = 20
     let acutalWidth = width + 1
-    this.tileMap.resize((acutalWidth) * numPieces + 2, height + 6)
+    this.tileMap.resize(acutalWidth * numPieces + 2, height + 6)
 
     // tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Background, 'default', 0, 0, 20, 20)
 
     let idxPiece = 0
-    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-start'), {})
+    mapLoader.load(
+      acutalWidth * idxPiece,
+      2,
+      this.tileMap,
+      this.mapMeta,
+      this.sge.getJson('map-start'),
+      {}
+    )
     idxPiece++
 
     let mid = Math.ceil(maxRandos / 2)
 
     while (pieces1.length > 0) {
-
       let map = pieces1.shift()
       if (exact) {
         map = exact
       }
       let randY = _.random(-2, 1)
 
-      mapLoader.load(acutalWidth * idxPiece, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson(map), {})
+      mapLoader.load(
+        acutalWidth * idxPiece,
+        2 + randY,
+        this.tileMap,
+        this.mapMeta,
+        this.sge.getJson(map),
+        {}
+      )
       idxPiece++
     }
 
     // Mid
-    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-mid'), {})
+    mapLoader.load(
+      acutalWidth * idxPiece,
+      2,
+      this.tileMap,
+      this.mapMeta,
+      this.sge.getJson('map-mid'),
+      {}
+    )
     idxPiece++
 
-    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-boss'), {})
+    mapLoader.load(
+      acutalWidth * idxPiece,
+      2,
+      this.tileMap,
+      this.mapMeta,
+      this.sge.getJson('map-boss'),
+      {}
+    )
     idxPiece++
 
     while (pieces2.length > 0) {
-
       let map = pieces2.shift()
       if (exact) {
         map = exact
       }
       let randY = _.random(-2, 2)
 
-      mapLoader.load(acutalWidth * idxPiece, 2 + randY, this.tileMap, this.mapMeta, this.sge.getJson(map), {})
+      mapLoader.load(
+        acutalWidth * idxPiece,
+        2 + randY,
+        this.tileMap,
+        this.mapMeta,
+        this.sge.getJson(map),
+        {}
+      )
       idxPiece++
     }
 
-    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-boss'), {})
+    mapLoader.load(
+      acutalWidth * idxPiece,
+      2,
+      this.tileMap,
+      this.mapMeta,
+      this.sge.getJson('map-boss'),
+      {}
+    )
     idxPiece++
 
-    mapLoader.load(acutalWidth * idxPiece, 2, this.tileMap, this.mapMeta, this.sge.getJson('map-end'), {})
+    mapLoader.load(
+      acutalWidth * idxPiece,
+      2,
+      this.tileMap,
+      this.mapMeta,
+      this.sge.getJson('map-end'),
+      {}
+    )
     idxPiece++
 
-    tileMapFiller.fillRect(this.tileMap, mapLoader.Layer_Wall, '_7_3', 0, height + 6 - 1, (acutalWidth) * numPieces + 1, 1,
+    tileMapFiller.fillRect(
+      this.tileMap,
+      mapLoader.Layer_Wall,
+      '_7_3',
+      0,
+      height + 6 - 1,
+      acutalWidth * numPieces + 1,
+      1,
       (gs: ILD40GridSpot) => {
         gs.canMove = false
         gs.fatal = true
-      })
-
-
+      }
+    )
   }
 }
-

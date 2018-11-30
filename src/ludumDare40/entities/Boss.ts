@@ -1,20 +1,19 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
-import { KeyCodes } from 'engine/input/Keyboard';
+import { KeyCodes } from 'engine/input/Keyboard'
 
 const turn = Math.PI * 2
 
 import { hats } from './hats'
 import { HatStack } from 'ludumDare40/entities/HatStack'
-import { LudumDare40Context } from 'ludumDare40/LudumDare40Context';
-import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer';
-import { Bounds } from './Bounds';
+import { LudumDare40Context } from 'ludumDare40/LudumDare40Context'
+import { BoundsDrawer } from 'ludumDare40/entities/BoundsDrawer'
+import { Bounds } from './Bounds'
 
 const blobFrames = spriteCreator.create16_frameHRun(7, 14, 2)
 
 export class BossHeadManager {
-
   context: LudumDare40Context
 
   items: BossHead[] = []
@@ -40,15 +39,16 @@ export class BossHeadManager {
   }
 
   destroyMarked() {
-    let removed = _.remove(this.items, (c) => (c.isReadyToBeDestroyed))
+    let removed = _.remove(this.items, (c) => c.isReadyToBeDestroyed)
 
     if (removed.length > 0) {
-
       _.forEach(removed, (c) => {
         this.context.layerObjects.removeChild(c.container)
       })
 
-      console.log(`cleaning up ${removed.length} items - ${this.items.length} left`)
+      console.log(
+        `cleaning up ${removed.length} items - ${this.items.length} left`
+      )
     }
   }
 
@@ -65,11 +65,9 @@ export class BossHeadManager {
       boundsDrawer.draw(c.bounds)
     })
   }
-
 }
 
 export class BossHead {
-
   context: LudumDare40Context
   container = new PIXI.Container()
 
@@ -88,7 +86,12 @@ export class BossHead {
   init(cx: LudumDare40Context) {
     this.context = cx
 
-    this.body = spriteCreator.create16_sprite(this.context.sge, 'ase-512-16', 7, 15)
+    this.body = spriteCreator.create16_sprite(
+      this.context.sge,
+      'ase-512-16',
+      7,
+      15
+    )
     this.body.anchor.set(0.5, 1)
 
     this.framesTillJump = _.random(0, 120)
@@ -99,11 +102,12 @@ export class BossHead {
 
     this.container.addChild(this.body)
     this.container.addChild(this.hats.container)
-
   }
 
   destroy() {
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
     this.isReadyToBeDestroyed = true
 
     this.context.particles.emitBlobParts(this.bounds.x, this.bounds.y - 4)
@@ -113,11 +117,13 @@ export class BossHead {
     _.forEach(this.hats.hats, (c, cIdx) => {
       this.popHat(c, cIdx)
     })
-
   }
 
   popHat(c, cIdx) {
-    let hat = this.context.hats.createAt(this.bounds.x, this.bounds.y - 4 - 8 - cIdx * 3)
+    let hat = this.context.hats.createAt(
+      this.bounds.x,
+      this.bounds.y - 4 - 8 - cIdx * 3
+    )
     hat.body.texture.frame = c.texture.frame
     hat.bounds.vx = _.random(15, 64)
     if (_.random(0, 1) === 1) {
@@ -127,8 +133,9 @@ export class BossHead {
   }
 
   update() {
-
-    if (this.isReadyToBeDestroyed) { return }
+    if (this.isReadyToBeDestroyed) {
+      return
+    }
 
     this.frame++
 
@@ -141,7 +148,6 @@ export class BossHead {
     if (this.bounds.onGround) {
       this.framesTillJump--
       if (this.framesTillJump <= 0) {
-
         this.bounds.jump()
         this.framesTillJump = _.random(0, 120)
       }
@@ -164,5 +170,4 @@ export class BossHead {
   moveTo(x, y) {
     this.bounds.moveTo(x, y)
   }
-
 }

@@ -1,4 +1,3 @@
-
 const { Rectangle, Sprite } = PIXI
 const { TextureCache } = PIXI.utils
 
@@ -14,8 +13,7 @@ import * as tileMapFiller from 'engine/tiles/tileMapFiller'
 // import * as tileMapLoader from 'snakeBattle/tiles/tileMapLoader'
 
 import { MenuManager } from 'ludumDareStart/menu/MenuManager'
-import { SplashScreen } from 'engine/misc/SplashScreen';
-
+import { SplashScreen } from 'engine/misc/SplashScreen'
 
 const turn = Math.PI * 2
 
@@ -26,7 +24,7 @@ export class Ship {
   init(_sge: SimpleGameEngine) {
     this.sge = _sge
 
-    let texture = this.sge.getTexture("test-tileset")
+    let texture = this.sge.getTexture('test-tileset')
     let size = 32
     let rectangle = new Rectangle(size * 3, size * 2, size, size)
     texture.frame = rectangle
@@ -34,16 +32,13 @@ export class Ship {
     this.ship.x = 32 + 300
     this.ship.y = 32 + 300
     this.ship.anchor.set(0.5, 0.5)
-
   }
   update() {
     this.ship.rotation += turn / (60 * 4)
   }
-
 }
 
 export class LudumDareStartContext {
-
   sge: SimpleGameEngine
   tileMap: TileMap<IGridSpot>
   menuManager = new MenuManager()
@@ -78,11 +73,10 @@ export class LudumDareStartContext {
 
     this.sge.stage.addChild(this.rootContainer)
     this.sge.stage.addChild(this.splash.container)
-
   }
 
   addLayer(container: PIXI.Container = null) {
-    if(!container) {
+    if (!container) {
       container = new PIXI.Container()
     }
     this.rootContainer.addChild(container)
@@ -123,8 +117,5 @@ export class LudumDareStartContext {
     let layer = this.tileMap.containers[0]
     layer.x = 350
     layer.y = 200
-
-
   }
 }
-

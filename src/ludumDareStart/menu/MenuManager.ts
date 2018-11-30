@@ -12,7 +12,6 @@ import { KeyCodes } from 'engine/input/Keyboard'
 import * as spriteCreator from 'ludumDare40/util/spriteCreator'
 
 export class MenuManager {
-
   sge: SimpleGameEngine
 
   container: PIXI.Container
@@ -20,8 +19,6 @@ export class MenuManager {
   menuManager: MenuManagerGeneric
 
   currentItemIndicator: PIXI.Sprite
-
-
 
   menuTitle: MenuTitle
   menuAbout: MenuAbout
@@ -31,13 +28,17 @@ export class MenuManager {
   menus: any[] = []
 
   init(sge: SimpleGameEngine) {
-
     this.sge = sge
 
     this.container = new PIXI.Container()
     this.container.visible = false
 
-    this.currentItemIndicator = spriteCreator.create16_sprite(sge, 'ase-512-16', 2, 2)
+    this.currentItemIndicator = spriteCreator.create16_sprite(
+      sge,
+      'ase-512-16',
+      2,
+      2
+    )
     this.currentItemIndicator.anchor.set(0.5, 0.5)
     this.currentItemIndicator.scale.set(4)
 
@@ -54,7 +55,6 @@ export class MenuManager {
     this.menuManager.loadSettings()
 
     // this.sge.keyboard.listenFor(KeyCodes.escape)
-
   }
 
   addMenu(menu) {
@@ -68,7 +68,6 @@ export class MenuManager {
   }
 
   update() {
-
     if (this.sge.keyboard.justPressed(KeyCodes.escape)) {
       this.menuManager.changeMode('title')
     }
@@ -79,6 +78,4 @@ export class MenuManager {
     this.currentItemIndicator.x = this.menuManager.currentItemX
     this.currentItemIndicator.y = this.menuManager.currentItemY
   }
-
 }
-
