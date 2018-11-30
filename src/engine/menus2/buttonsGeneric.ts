@@ -26,8 +26,9 @@ export interface IMenuButton {
 let items: IMenuButton[] = []
 
 export function create(
-  text: string = '',
+  text: string = null,
   spritesheetName,
+  frameTextSprite: PIXI.Rectangle,
   animDefault,
   animHover,
   animDown
@@ -86,21 +87,25 @@ export function create(
   items.push(item)
   anim.playAnim(item.anim, animDefault)
 
-  item.textSprite = ctx.createSprite(
-    spritesheetName,
-    spriteUtil.frame32(1, 5, 5, 1),
-    0,
-    0,
-    1
-  )
-  item.container.addChild(item.textSprite)
+  if (frameTextSprite) {
+    item.textSprite = ctx.createSprite(
+      spritesheetName,
+      spriteUtil.frame32(1, 5, 5, 1),
+      0,
+      0,
+      1
+    )
+    item.container.addChild(item.textSprite)
+  }
 
-  item.text = new PIXI.extras.BitmapText(`${text}`, {
-    font: '24px defaultfont',
-    align: 'left',
-  })
-  item.text.anchor = new PIXI.Point(0, 0)
-  item.container.addChild(item.text)
+  if (null !== text) {
+    item.text = new PIXI.extras.BitmapText(`${text}`, {
+      font: '24px defaultfont',
+      align: 'left',
+    })
+    item.text.anchor = new PIXI.Point(0, 0)
+    item.container.addChild(item.text)
+  }
 
   item.container.position.set(100, 100)
 
@@ -117,13 +122,26 @@ export function updateAll(elapsedTimeSec) {
       placeSwitcher.update(c.placeSwitcher, c.container, elapsedTimeSec)
     }
 
-    c.textSprite.x = 0
-    c.textSprite.y = 0
-    if (c.state === 1) {
-      c.textSprite.y = -2
+    if (c.textSprite) {
+      c.textSprite.x = 0
+      c.textSprite.y = 0
+      if (c.state === 1) {
+        c.textSprite.y = -2
+      }
+      if (c.state === 2) {
+        c.textSprite.y = 1
+      }
     }
-    if (c.state === 2) {
-      c.textSprite.y = 1
+
+    if (c.text) {
+      c.text.x = 5
+      c.text.y = 5
+      if (c.state === 1) {
+        c.text.y += -2
+      }
+      if (c.state === 2) {
+        c.text.y += 1
+      }
     }
   })
 }

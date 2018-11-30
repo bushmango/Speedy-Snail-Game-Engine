@@ -118,7 +118,7 @@ export class GameContext {
     uiHearts.create()
 
     //buttons.create('hello button')
-    buttons.create('')
+    // buttons.create('')
 
     menuStart.create()
     menuQuickSettings.create()

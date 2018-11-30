@@ -25,6 +25,22 @@ export function create(text: string = '') {
   return buttonsGeneric.create(
     text,
     '512-32-gui',
+    null,
+    animDefault,
+    animHover,
+    animDown
+  )
+}
+
+export function createSmaller(text: string = '') {
+  let ctx = getContext()
+
+  log.x('create button')
+
+  return buttonsGeneric.create(
+    text,
+    '512-32-gui',
+    null,
     animDefault,
     animHover,
     animDown
