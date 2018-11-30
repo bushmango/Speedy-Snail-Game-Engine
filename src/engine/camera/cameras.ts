@@ -1,9 +1,5 @@
 import { _ } from 'engine/importsEngine'
 import * as log from '../log'
-import * as spriteUtil from '../anim/spriteUtil'
-import * as anim from '../anim/anim'
-
-import * as stats from 'pacrpg/stats'
 
 const isActive = true
 
