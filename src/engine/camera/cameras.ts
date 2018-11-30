@@ -1,5 +1,4 @@
 import { _ } from 'engine/importsEngine'
-import { getContext } from '../../shelter/GameContext'
 import * as log from '../log'
 import * as spriteUtil from '../anim/spriteUtil'
 import * as anim from '../anim/anim'
@@ -32,8 +31,6 @@ export function getAll() {
 }
 
 export function create() {
-  let ctx = getContext()
-
   log.x('create camera')
   let item: ICamera = {
     container: new PIXI.Container(),
@@ -93,9 +90,6 @@ export function addLayer(c: ICamera, container: PIXI.Container = null) {
 }
 
 export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
-  let ctx = getContext()
-  let kb = ctx.sge.keyboard
-
   _.forEach(items, (c) => {
     if (c.shakeSec > 0) {
       c.shakeSec -= elapsedTimeSec

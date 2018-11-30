@@ -1,5 +1,4 @@
 import { _ } from 'engine/importsEngine'
-import { getContext } from '../../shelter/GameContext'
 import * as log from '../log'
 import * as spriteUtil from '../anim/spriteUtil'
 import * as anim from '../anim/anim'
@@ -31,10 +30,10 @@ export function create(
   frameTextSprite: PIXI.Rectangle,
   animDefault,
   animHover,
-  animDown
+  animDown,
+  createSpriteFunc,
+  layer: PIXI.Container
 ) {
-  let ctx = getContext()
-
   log.x('create button')
 
   let item: IMenuButton = {
@@ -80,15 +79,15 @@ export function create(
     pubSub.emit('gui:click-button')
   })
 
-  let sprite = ctx.createSprite(spritesheetName, animDefault.frames[0], 0, 0, 1)
+  let sprite = createSpriteFunc(spritesheetName, animDefault.frames[0], 0, 0, 1)
   item.container.addChild(sprite)
-  ctx.layerUi.addChild(item.container)
+  layer.addChild(item.container)
   item.anim.sprite = sprite
   items.push(item)
   anim.playAnim(item.anim, animDefault)
 
   if (frameTextSprite) {
-    item.textSprite = ctx.createSprite(
+    item.textSprite = createSpriteFunc(
       spritesheetName,
       spriteUtil.frame32(1, 5, 5, 1),
       0,
@@ -113,8 +112,6 @@ export function create(
 }
 
 export function updateAll(elapsedTimeSec) {
-  let ctx = getContext()
-
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
 

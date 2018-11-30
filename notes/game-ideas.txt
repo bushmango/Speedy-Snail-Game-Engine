@@ -9,6 +9,7 @@ x text example
 x website set up for deploy 
 x test deploy
 - resetup for ld 43
+x google analytics
 
 - game engine
 - juicyness

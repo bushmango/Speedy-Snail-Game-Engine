@@ -26,7 +26,8 @@ export async function build_client() {
     )
     fs.writeFileSync(src + '/ludum-dare-43.html', template, 'utf8')
     await publishLib.npmRun(
-      'build-prod-shelter', // build-prod-ld43
+      //'build-prod-shelter',
+      'build-prod-ld43',
       'C:\\dev\\Speedy-Snail-Game-Engine\\'
     )
 
@@ -56,7 +57,9 @@ export async function deploy_website() {
 export async function deploy_assets() {
   log('deploy_assets')
   await publishLib.connectToServer()
-  let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`
-  let wwwDir = `/var/www/jams/public/shelter/`
+  let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\ludumDare43\\`
+  let wwwDir = `/var/www/jams/public/ludumDare43/`
+  //let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`
+  //let wwwDir = `/var/www/jams/public/shelter/`
   await publishLib.putDirectory(src, wwwDir)
 }

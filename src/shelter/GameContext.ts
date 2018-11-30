@@ -31,8 +31,6 @@ import { KeyCodes } from 'engine/input/Keyboard'
 
 import * as stats from './misc/stats'
 
-import * as settingsGeneric from 'engine/misc/settingsGeneric'
-
 import * as buttons from './menu/buttons'
 import * as menuStart from './menu/menuStart'
 import * as menuQuickSettings from './menu/menuQuickSettings'

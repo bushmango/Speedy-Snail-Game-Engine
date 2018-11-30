@@ -28,7 +28,9 @@ export function create(text: string = '') {
     null,
     animDefault,
     animHover,
-    animDown
+    animDown,
+    ctx.createSprite,
+    ctx.layerUi
   )
 }
 
@@ -43,7 +45,9 @@ export function createSmaller(text: string = '') {
     null,
     animDefault,
     animHover,
-    animDown
+    animDown,
+    ctx.createSprite,
+    ctx.layerUi
   )
 }
 

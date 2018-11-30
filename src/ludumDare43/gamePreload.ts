@@ -2,9 +2,7 @@ const settingsPath = 'ld43-v001'
 const preloadPath = '/public/ludumDare43'
 export { settingsPath, preloadPath }
 export function preload(sge) {
-  sge.preloadAudioSprites([
-    // 'audioSprite',
-  ])
+  sge.preloadAudioSprites(['audioSprite'])
   sge.preloadBitmapFonts(['defaultfont'])
   sge.preloadSprites([
     // 'test-ship',
@@ -13,6 +11,7 @@ export function preload(sge) {
     'player1',
     'tiles',
     'rpg-gui',
+    '512-32-gui',
   ])
   sge.preloadSpriteSheets([
     //'test-tileset',
