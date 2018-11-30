@@ -66,19 +66,17 @@ export function create() {
 //   item.anim.sprite.y = item.y
 // }
 
-export function updateAll() {
+export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
 
-  let elapsedTime = 1.0 / 60.0
-
   _.forEach(items, (c) => {
-    anim.update(c.anim, elapsedTime)
+    anim.update(c.anim, elapsedTimeSec)
 
-    c.frame++
+    c.frame += elapsedTimeSec
 
-    let frameSpeed = 120
-    let frameQ = (c.frame % frameSpeed) / frameSpeed
+    //let frameSpeed = 120
+    let frameQ = c.frame
     let min = 0.5
     let max = 1.25
     let size = max - min

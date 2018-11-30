@@ -3,7 +3,7 @@
 // Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
 
 x basic menu
-- sound/music mute buttons
+x sound/music mute buttons
 x slidy menus
 x text example
 x website set up for deploy 
@@ -14,6 +14,8 @@ x test deploy
 - juicyness
 -- from video 
 x color 
+-- frame stop / slowdown effect
+-- motion blur trails
 - tween in,
 - random delay in tween
 x squeeze and stretch 

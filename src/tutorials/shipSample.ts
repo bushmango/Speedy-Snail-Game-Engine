@@ -208,8 +208,8 @@ export function run() {
     particleEmitter1.emit(50, 50)
     particleEmitter2.emit(300, 350)
 
-    particleEmitter1.update()
-    particleEmitter2.update()
+    particleEmitter1.update(1 / 60)
+    particleEmitter2.update(1 / 60)
 
     // console.log(inputControl)
     inputControl.update()

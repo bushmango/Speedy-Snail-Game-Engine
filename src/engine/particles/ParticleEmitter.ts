@@ -69,17 +69,19 @@ export class ParticleEmitter {
     return null // No more to add! // TODO: kill oldest?
   }
 
-  update() {
+  update(elapsedTimeSec) {
     for (let i = 0; i < this.particles.length; i++) {
       let p: IParticle = this.particles[i]
       if (!p.sprite.visible) {
         continue
       }
 
-      p.sprite.x += p.vx
-      p.sprite.y += p.vy
-      p.sprite.rotation += p.vr
-      p.framesLeft--
+      let factor = elapsedTimeSec * 60
+
+      p.sprite.x += p.vx * factor
+      p.sprite.y += p.vy * factor
+      p.sprite.rotation += p.vr * factor
+      p.framesLeft -= factor
 
       p.vx += p.ax
       p.vy += p.ay

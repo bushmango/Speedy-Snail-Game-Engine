@@ -94,7 +94,7 @@ export class ParticleManager {
 
   update() {
     _.forEach(this.emitters, (c) => {
-      c.update()
+      c.update(1 / 60)
     })
   }
 }

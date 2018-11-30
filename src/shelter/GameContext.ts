@@ -39,6 +39,7 @@ import * as menuQuickSettings from './menu/menuQuickSettings'
 import * as uiMode from './ui/uiMode'
 
 import { SplashScreen } from 'engine/misc/SplashScreen'
+import { AchievementsManager } from 'ludumDare40/entities/Achievements'
 
 const skipSplashScreen = true
 
@@ -196,7 +197,9 @@ export class GameContext {
   onUpdate() {
     let ctx = this
 
-    let elapsedTimeSec = ctx.sge.elapsedTimeSec
+    let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
+    let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
+
     // log.x('update', elapsedTime)
     // log.x('update')
 
@@ -204,12 +207,12 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     flightController.updateAll(ctx)
-    cameras.updateAll()
+    cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
     maps.updateAll(ctx.camera.container)
     tilePickers.updateAll()
     mouseTrails.updateAll()
 
-    stretchyBois.updateAll()
+    stretchyBois.updateAll(elapsedTimeSec)
 
     menuStart.update(elapsedTimeSec)
     menuQuickSettings.update(elapsedTimeSec)
@@ -219,6 +222,15 @@ export class GameContext {
 
     if (_.random(true) < 0.1) {
       ctx.particleEmitter1.emit(50, 50)
+    }
+
+    let kb = ctx.sge.keyboard
+
+    if (kb.justPressed(KeyCodes.space)) {
+      cameras.frameDelay(ctx.camera, 0.25)
+    }
+    if (kb.isPressed(KeyCodes.s)) {
+      cameras.frameSlowdown(ctx.camera, 0.1, 0.25)
     }
 
     if (ctx.uiMode.getMode() === 'game') {
@@ -233,7 +245,7 @@ export class GameContext {
       ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
       if (mouse.isRightDown) {
-        cameras.shake(ctx.camera, 10, 5)
+        cameras.shake(ctx.camera, 0.2, 5)
         backgroundColorChanger.cycleColor(elapsedTimeSec)
         ctx.sfx.playExplode()
       }
@@ -246,7 +258,7 @@ export class GameContext {
       }
     }
 
-    ctx.particleEmitter1.update()
+    ctx.particleEmitter1.update(elapsedTimeSec)
 
     // players.updateAll()
     // coins.updateAll()

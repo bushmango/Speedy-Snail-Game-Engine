@@ -18,7 +18,12 @@ export interface ICamera {
   shakeX: number
   shakeY: number
   shakeFactor: number
-  shakeFramesLeft: number
+  shakeSec: number
+
+  frameDelaySec: number
+
+  frameSlowdownSec: number
+  frameSlowdownRate: number
 }
 let items: ICamera[] = []
 
@@ -38,18 +43,45 @@ export function create() {
     shakeX: 0,
     shakeY: 0,
     shakeFactor: 0,
-    shakeFramesLeft: 0,
+    shakeSec: 0,
+    frameDelaySec: 0,
+    frameSlowdownSec: 0,
+    frameSlowdownRate: 0,
   }
   items.push(item)
 
   return item
 }
 
-export function shake(c: ICamera, frames, shakeFactor) {
+export function shake(c: ICamera, shakeSec, shakeFactor) {
   if (shakeFactor >= c.shakeFactor) {
     c.shakeFactor = shakeFactor
-    c.shakeFramesLeft = frames
+    c.shakeSec = shakeSec
   }
+}
+
+export function frameDelay(c: ICamera, frameDelaySec) {
+  if (frameDelaySec >= c.frameDelaySec) {
+    c.frameDelaySec = frameDelaySec
+  }
+}
+export function frameSlowdown(c: ICamera, frameSlowdownSec, frameSlowdownRate) {
+  if (
+    frameSlowdownSec >= c.frameSlowdownSec ||
+    frameSlowdownRate >= c.frameSlowdownRate
+  ) {
+    c.frameSlowdownSec = frameSlowdownSec
+    c.frameSlowdownRate = frameSlowdownRate
+  }
+}
+export function applySlowdown(c: ICamera, elapsedTimeSec) {
+  if (c.frameDelaySec > 0) {
+    elapsedTimeSec = 0
+  }
+  if (c.frameSlowdownSec > 0) {
+    elapsedTimeSec *= c.frameSlowdownRate
+  }
+  return elapsedTimeSec
 }
 
 export function addLayer(c: ICamera, container: PIXI.Container = null) {
@@ -60,15 +92,13 @@ export function addLayer(c: ICamera, container: PIXI.Container = null) {
   return container
 }
 
-export function updateAll() {
+export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
 
-  let elapsedTime = 1.0 / 60.0
-
   _.forEach(items, (c) => {
-    if (c.shakeFramesLeft > 0) {
-      c.shakeFramesLeft--
+    if (c.shakeSec > 0) {
+      c.shakeSec -= elapsedTimeSec
       c.shakeX = _.random(-1, 1, true) * c.shakeFactor
       c.shakeY = _.random(-1, 1, true) * c.shakeFactor
     } else {
@@ -76,6 +106,13 @@ export function updateAll() {
       c.shakeX = 0
       c.shakeY = 0
     }
+
+    if (c.frameDelaySec > 0) {
+      c.frameDelaySec -= elapsedTimeSecRaw
+    } else if (c.frameSlowdownSec > 0) {
+      c.frameSlowdownSec -= elapsedTimeSecRaw
+    }
+
     c.container.position.set(c.x + c.shakeX, c.y + c.shakeY)
     c.container.scale.set(c.scale)
   })

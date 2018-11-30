@@ -41,11 +41,14 @@ export class Keyboard {
 
     // console.log('key down', ev.keyCode)
 
-    key._delay_justPressed = true
+    // Skip repeats
+    if (!key._delay_isPressed) {
+      key._delay_justPressed = true
+    }
     key._delay_isPressed = true
     event.preventDefault()
   }
-  onKeyUp(ev) {
+  onKeyUp(ev) {   
     let key = this.keys[ev.keyCode]
     if (!key) {
       return
@@ -53,7 +56,9 @@ export class Keyboard {
 
     // console.log('key up', ev.keyCode)
 
-    key._delay_justReleased = true
+    if (key._delay_isPressed) {
+      key._delay_justReleased = true
+    }
     key._delay_isPressed = false
     event.preventDefault()
   }
