@@ -17,10 +17,47 @@ interface IShipPart {
   aBottom: IShipPart
 
   data: IShipPartData
+  bx: number
+  by: number
 }
 let items: IShipPart[] = []
 
 let tractoredPart: IShipPart = null
+
+let shipGrid: IShipPart[] = []
+let maxShipGridX = 9
+let maxShipGridY = 9
+for (let j = 0; j < maxShipGridY; j++) {
+  for (let i = 0; i < maxShipGridX; i++) {
+    shipGrid.push(null)
+  }
+}
+export function safeGetShipGrid(x, y) {
+  if (x < 0 || x >= maxShipGridX) {
+    return false
+  }
+  if (y < 0 || y >= maxShipGridY) {
+    return false
+  }
+  return shipGrid[y * maxShipGridX + x]
+}
+export function setShipGridCenter(c: IShipPart) {
+  safeSetShipGrid(Math.floor(maxShipGridX / 2), Math.floor(maxShipGridY / 2), c)
+  log.x(shipGrid)
+}
+export function safeSetShipGrid(x, y, c: IShipPart) {
+  if (x < 0 || x >= maxShipGridX) {
+    return false
+  }
+  if (y < 0 || y >= maxShipGridY) {
+    return false
+  }
+  shipGrid[y * maxShipGridX + x] = c
+  c.bx = x
+  c.by = y
+  c.isFree = false
+  return c
+}
 
 interface IShipPartData {
   name: string
@@ -86,6 +123,8 @@ export function create(data: IShipPartData = shipPart1) {
     aLeft: null,
     aRight: null,
     data: data,
+    bx: -1,
+    by: -1,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -160,7 +199,9 @@ export function updateAll(elapsedTimeSec) {
           let attach = null
           let isAllowed = true
           let ox = 0
+          let obx = 0
           let oy = 0
+          let oby = 0
           let dx = tractoredPart.anim.sprite.x - c.anim.sprite.x
           let adx = Math.abs(dx)
           let dy = tractoredPart.anim.sprite.y - c.anim.sprite.y
@@ -173,12 +214,14 @@ export function updateAll(elapsedTimeSec) {
                 isAllowed = false
               }
               ox = 32
+              obx = 1
             } else {
               attach = 'aLeft'
               if (tractoredPart.data.noRight || c.data.noLeft) {
                 isAllowed = false
               }
               ox = -32
+              obx = -1
             }
           } else {
             if (dy > 0) {
@@ -187,24 +230,43 @@ export function updateAll(elapsedTimeSec) {
                 isAllowed = false
               }
               oy = 32
+              oby = 1
             } else {
               attach = 'aTop'
               if (tractoredPart.data.noBottom || c.data.noTop) {
                 isAllowed = false
               }
               oy = -32
+              oby = -1
             }
           }
 
+          log.x(
+            attach,
+            oy,
+            oby,
+            ox,
+            obx,
+            isAllowed,
+            c[attach],
+            safeGetShipGrid(c.bx + obx, c.by + oby),
+            c.bx + obx,
+            c.by + oby
+          )
+
           if (!c[attach] && isAllowed) {
-            // Nothing already attached
-            // connect it!
-            c[attach] = tractoredPart
-            tractoredPart.isFree = false
-            tractoredPart.anim.sprite.tint = 0xff999999
-            tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
-            tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
-            tractoredPart = null
+            if (null === safeGetShipGrid(c.bx + obx, c.by + oby)) {
+              // valid and nothing here
+              // Nothing already attached
+              // connect it!
+              c[attach] = tractoredPart
+              tractoredPart.isFree = false
+              tractoredPart.anim.sprite.tint = 0xff999999
+              tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
+              tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
+              safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)
+              tractoredPart = null
+            }
           }
         }
       }

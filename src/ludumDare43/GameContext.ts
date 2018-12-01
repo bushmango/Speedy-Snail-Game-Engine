@@ -89,6 +89,7 @@ export class GameContext {
     sp.isFree = false
     sp.anim.sprite.x = 200
     sp.anim.sprite.y = 200
+    shipParts.setShipGridCenter(sp)
 
     let sps = shipPartSpawners.create()
     sps.x = 600
