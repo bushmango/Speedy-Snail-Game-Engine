@@ -180,7 +180,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    starfield.update(elapsedTimeSec, velocity);
+    starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)

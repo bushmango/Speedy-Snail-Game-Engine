@@ -9,6 +9,6 @@ export function initialize() {
   // TODO
 }
 
-export function update(elapsedTimeSec, velocity) {
+export function updateAll(elapsedTimeSec, velocity) {
   // TODO
 }
