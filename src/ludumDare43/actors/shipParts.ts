@@ -5,6 +5,7 @@ import * as log from '../../engine/log'
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
+import * as asteroids from './asteroids'
 
 interface IShipPart {
   anim: anim.IAnim
@@ -53,10 +54,12 @@ export function safeSetShipGrid(x, y, c: IShipPart) {
     return false
   }
   shipGrid[y * maxShipGridX + x] = c
-  c.bx = x
-  c.by = y
-  c.isFree = false
-  return c
+  if (c) {
+    c.bx = x
+    c.by = y
+    c.isFree = false
+  }
+  return true
 }
 
 interface IShipPartData {
@@ -180,10 +183,67 @@ export function updateAll(elapsedTimeSec) {
 
   removeDead()
 
+  let r = 32 / 2 - 1
+  if (tractoredPart) {
+    _.forEach(asteroids.getAll(), (d) => {
+      if (
+        checkCirclesCollide(
+          tractoredPart.anim.sprite.x,
+          tractoredPart.anim.sprite.y,
+          r,
+          d.anim.sprite.x,
+          d.anim.sprite.y,
+          r * d.data.size
+        )
+      ) {
+        tractoredPart.isDead = true
+        d.isDead = true
+        cameras.shake(ctx.camera, 0.25, 2)
+      }
+    })
+  }
+
   _.forEach(items, (c) => {
     if (!c.isFree) {
+      // See if we collide with asteroids
+      _.forEach(asteroids.getAll(), (d) => {
+        if (
+          checkCirclesCollide(
+            c.anim.sprite.x,
+            c.anim.sprite.y,
+            r,
+            d.anim.sprite.x,
+            d.anim.sprite.y,
+            r * d.data.size
+          )
+        ) {
+          cameras.shake(ctx.camera, 0.25, 5)
+
+          c.isDead = true
+          d.isDead = true
+          // TODO break apart ship
+
+          let sg = safeGetShipGrid(c.bx - 1, c.by)
+          if (sg) {
+            sg.aRight = null
+          }
+          sg = safeGetShipGrid(c.bx + 1, c.by)
+          if (sg) {
+            sg.aLeft = null
+          }
+          sg = safeGetShipGrid(c.bx, c.by - 1)
+          if (sg) {
+            sg.aBottom = null
+          }
+          sg = safeGetShipGrid(c.bx, c.by + 1)
+          if (sg) {
+            sg.aTop = null
+          }
+          safeSetShipGrid(c.bx, c.by, null)
+        }
+      })
+
       // See if we collide with the tractored part
-      let r = 32 / 2 - 1
       if (tractoredPart) {
         if (
           checkCirclesCollide(
@@ -266,6 +326,8 @@ export function updateAll(elapsedTimeSec) {
               tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
               safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)
               tractoredPart = null
+
+              cameras.shake(ctx.camera, 0.1, 1)
             }
           }
         }

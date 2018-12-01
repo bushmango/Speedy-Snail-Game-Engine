@@ -18,6 +18,8 @@ import * as uiMode from './ui/uiMode'
 import * as shipParts from './actors/shipParts'
 import * as shipPartSpawners from './actors/shipPartSpawners'
 
+import * as asteroids from './actors/asteroids'
+
 let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
@@ -158,6 +160,7 @@ export class GameContext {
     menuQuickSettings.update(elapsedTimeSec)
     buttons.updateAll(elapsedTimeSec)
 
+    asteroids.updateAll(elapsedTimeSec)
     players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)

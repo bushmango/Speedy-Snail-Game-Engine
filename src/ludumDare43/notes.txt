@@ -1,0 +1,28 @@
+- rotate selected parts?
+- animate snapping parts together?
+- need sound for snapping parts
+- fly in and out spawner ships
+- game modes based on distance
+
+-- tutorial
+- grab core
+- grab goat
+- grab engine
+- build ship
+
+-- asteroids 1
+-- depot 1
+-- asteroids 2
+-- depot 2
+-- boss fight
+-- land at base! (mission complete)
+
+x spawn asteroids
+x destroy blocks
+- destroy block chains
+- clean up destroy logic
+- create 9 frame particle splitter for destroying blocks and asteroids
+- jettison blocks
+
+- speed 
+- mass
