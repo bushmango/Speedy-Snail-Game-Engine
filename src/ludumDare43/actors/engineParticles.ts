@@ -27,8 +27,6 @@ export function updateAll(elapsedTimeSec) {
   //   emit(250, 50)
   // }
 
-  particleEmitter1.update(elapsedTimeSec)
-
   smokeTimeLeft -= elapsedTimeSec
 
   if (smokeTimeLeft < 0) {
@@ -44,6 +42,8 @@ export function updateAll(elapsedTimeSec) {
     })
     smokeTimeLeft = _.random(0.01, 0.3)
   }
+
+  particleEmitter1.update(elapsedTimeSec)
 
   //
 }

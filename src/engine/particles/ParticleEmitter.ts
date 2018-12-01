@@ -182,6 +182,7 @@ export class ParticleEmitter {
       if (setup) {
         setup(p)
       }
+      p.sprite.scale.set(p.scale1)
     }
   }
 }

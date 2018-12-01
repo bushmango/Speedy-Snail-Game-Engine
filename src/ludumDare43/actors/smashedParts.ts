@@ -15,6 +15,7 @@ interface ISmashedPart {
   isDead: boolean
 }
 let items: ISmashedPart[] = []
+let deadItems: ISmashedPart[] = []
 
 export function create(sourceSprite: PIXI.Sprite) {
   let ctx = getContext()
@@ -28,21 +29,35 @@ export function create(sourceSprite: PIXI.Sprite) {
   let sizeY = sourceSprite.texture.frame.width / num
   for (let j = 0; j < num; j++) {
     for (let i = 0; i < num; i++) {
-      let item: ISmashedPart = {
-        sprite: null,
-        vx: _.random(-50, 2),
-        vy: _.random(-50, 50),
-        vr: _.random(-Math.PI, Math.PI),
-        elapsedSec: 0,
-        isDead: false,
-      }
       let newFrame = new PIXI.Rectangle(
         startX + sizeX * i,
         startY + sizeY * j,
         sizeX,
         sizeY
       )
-      item.sprite = ctx.createSprite('ship-001', newFrame, 0.5, 0.5, 1)
+
+      let item: ISmashedPart = null
+      if (deadItems.length > 0) {
+        item = deadItems.pop()
+        item.sprite.texture.frame = newFrame
+      } else {
+        item = {
+          sprite: null,
+          vx: 0,
+          vy: 0,
+          vr: 0,
+          elapsedSec: 0,
+          isDead: false,
+        }
+        item.sprite = ctx.createSprite('ship-001', newFrame, 0.5, 0.5, 1)
+      }
+      item.sprite.visible = true
+      item.vx = _.random(-50, 2)
+      item.vy = _.random(-50, 50)
+      item.vr = _.random(-Math.PI, Math.PI)
+      item.elapsedSec = 0
+      item.isDead = false
+
       let rot = sourceSprite.rotation
       //let x = -(sizeX * num) / 2 + sizeX * i
       //let y = -(sizeY * num) / 2 + sizeY * j
@@ -109,7 +124,9 @@ export function removeDead() {
     let c = items[i]
     if (c.isDead) {
       log.x('kill smashed part', c)
-      ctx.layerParticles.removeChild(c.sprite)
+      //ctx.layerParticles.removeChild(c.sprite)
+      c.sprite.visible = false
+      deadItems.push(c)
       items.splice(i, 1)
       i--
     }
