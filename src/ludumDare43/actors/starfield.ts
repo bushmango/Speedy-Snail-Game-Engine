@@ -17,6 +17,23 @@ interface IItem {
 
 const items: IItem[] = []
 
+let spawnTimer = 0
+
+function cleanup() {
+  const ctx = getContext()
+
+  for (let i = 0, length = items.length; i < length; i++) {
+    const sprite = items[i].anim.sprite
+
+    if (sprite.x <= -sprite.width) {
+      ctx.layerBelow.removeChild(sprite)
+      items.splice(i, 1)
+      i--
+      length--
+    }
+  }
+}
+
 function createRandom(options) {
   // TODO: Create additional factories that build things like nebulae
   // TODO: Call a random factory, weighted heavily toward stars
@@ -98,6 +115,7 @@ function spawnAnywhere() {
 export function updateAll(elapsedTimeSec, velocity) {
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
+  cleanup()
 }
 
 function updateItems(elapsedTimeSec, velocity) {
@@ -107,7 +125,6 @@ function updateItems(elapsedTimeSec, velocity) {
   })
 }
 
-let spawnTimer = 0
 function updateSpawner(elapsedTimeSec, velocity) {
   spawnTimer += elapsedTimeSec
 
