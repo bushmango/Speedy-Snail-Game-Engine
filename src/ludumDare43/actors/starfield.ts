@@ -54,7 +54,7 @@ function createStar(options) {
     type: EItemType.Star,
   }
 
-  const scale = 4 / distance,
+  const scale = 1 / Math.max(1, distance / 8),
         spriteNumber = _.random(1, 4)
 
   const frame = spriteUtil.frame32(1, spriteNumber),
