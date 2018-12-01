@@ -6,7 +6,7 @@ let config = buildConfig(
     port: 8889,
     debug: false,
     inScript: 'game-ludum-dare-43.ts',
-    outDir: 'shelter',
+    outDir: 'ludumDare43',
   },
   settings
 )

@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
-import * as players from './actors/players'
+// import * as players from './actors/players'
 import { KeyCodes } from 'engine/input/Keyboard'
 import * as log from '../engine/log'
 
@@ -84,7 +84,7 @@ export class GameContext {
     ctx.layerUi = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
-    let player = players.create(ctx.layerPlayer)
+    // let player = players.create(ctx.layerPlayer)
 
     menuStart.create()
     menuQuickSettings.create()
@@ -136,6 +136,14 @@ export class GameContext {
     }
   }
 
+  toggleZoom() {
+    let ctx = getContext()
+    ctx.camera.scale++
+    if (ctx.camera.scale === 3) {
+      ctx.camera.scale = 1
+    }
+  }
+
   addLayer(container: PIXI.Container = null) {
     if (!container) {
       container = new PIXI.Container()
@@ -163,7 +171,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    players.updateAll()
+    // players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)

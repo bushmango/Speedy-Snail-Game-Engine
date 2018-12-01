@@ -14,6 +14,7 @@ export interface IMenuQuickSettings {
   buttonSound: buttonsGeneric.IMenuButton
   buttonMusic: buttonsGeneric.IMenuButton
   buttonMainMenu: buttonsGeneric.IMenuButton
+  buttonZoom: buttonsGeneric.IMenuButton
   buttons: buttonsGeneric.IMenuButton[]
 }
 
@@ -35,6 +36,7 @@ export function create() {
     buttonSound: null,
     buttonMusic: null,
     buttonMainMenu: null,
+    buttonZoom: null,
     buttons: [],
   }
 
@@ -64,6 +66,14 @@ export function create() {
     ctx.menuStart.slideIn()
   }
   item.buttons.push(item.buttonMainMenu)
+
+  item.buttonZoom = buttons.create('Zoom')
+  item.buttonZoom.onClick = () => {
+    //let ctx = getContext()
+    //ctx.menuStart.slideIn()
+    ctx.toggleZoom()
+  }
+  item.buttons.push(item.buttonZoom)
 
   onResize()
 
