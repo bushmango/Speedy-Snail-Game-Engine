@@ -7,6 +7,8 @@ import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
 import * as smashedParts from './smashedParts'
 
+import * as sounds from './../sounds/sounds'
+
 interface IAsteroid {
   anim: anim.IAnim
   isDead: boolean
@@ -117,7 +119,7 @@ export function smash(c: IAsteroid) {
 }
 
 let spawnTimer = 1
-let spawnerEnabled = false
+let spawnerEnabled = true
 export function updateSpawner(elapsedTimeSec) {
   let ctx = getContext()
   let view = ctx.sge.getViewSize()

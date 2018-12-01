@@ -166,6 +166,7 @@ export function updateAll(elapsedTimeSec) {
           r * d.data.size
         )
       ) {
+        getContext().sfx.playPartDestroyed()
         smash(tractoredPart)
         asteroids.smash(d)
 
@@ -202,7 +203,7 @@ export function updateAll(elapsedTimeSec) {
       })
 
       // See if we collide with the tractored part
-      if (tractoredPart) {
+      if (tractoredPart && !tractoredPart.isDead) {
         if (
           checkCirclesCollide(
             c.anim.sprite.x,
@@ -279,6 +280,8 @@ export function updateAll(elapsedTimeSec) {
               safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)
               tractoredPart = null
 
+              getContext().sfx.playPartConnected()
+
               cameras.shake(ctx.camera, 0.1, 1)
             }
           }
@@ -290,6 +293,7 @@ export function updateAll(elapsedTimeSec) {
 
 export function destroyFixedPiece(c: IShipPart) {
   if (!c.isDead) {
+    getContext().sfx.playPartDestroyed()
     smash(c)
     safeSetShipGrid(c.bx, c.by, null)
 
