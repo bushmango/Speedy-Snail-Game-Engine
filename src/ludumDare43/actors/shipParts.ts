@@ -135,11 +135,13 @@ export function updateAll(elapsedTimeSec) {
     }
   }
 
+  let goat = goats.getItem()
+
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
 
     if (c.isFree) {
-      if (tractoredPart === c) {
+      if (tractoredPart === c && !goat.isFree) {
         let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
         c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
         c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0

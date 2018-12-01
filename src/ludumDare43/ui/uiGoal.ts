@@ -124,7 +124,7 @@ function updateGoalPosition(elapsedTimeSec) {
     }
   })
 
-  let speed = engines / (mass || 1)
+  let speed = (engines * 5) / (mass || 1)
 
   if (speed === 0) {
     speed = -1 // Penalty
