@@ -29,7 +29,7 @@ import * as uiGoal from './ui/uiGoal'
 import * as goats from './actors/goats'
 import * as helpArrows from './actors/helpArrows'
 import * as coreSpawner from './actors/coreSpawner'
-import { cursorTo } from 'readline'
+import * as engineParticles from './actors/engineParticles'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -58,6 +58,7 @@ export class GameContext {
   layerGoat: PIXI.Container
   layerAbove: PIXI.Container
   layerBelow: PIXI.Container
+  layerSmoke: PIXI.Container
   layerUi: PIXI.Container
   layerDetectors: PIXI.Container
   layerDebugGraphics: PIXI.Container
@@ -90,6 +91,7 @@ export class GameContext {
     ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
     ctx.layerGoat = cameras.addLayer(ctx.camera)
+    ctx.layerSmoke = cameras.addLayer(ctx.camera)
     ctx.layerAbove = cameras.addLayer(ctx.camera)
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
     ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
@@ -105,6 +107,7 @@ export class GameContext {
     uiGoal.create()
 
     coreSpawner.create()
+    engineParticles.create()
 
     let sps = shipPartSpawners.create()
     sps.x = 600
@@ -205,6 +208,8 @@ export class GameContext {
     uiGoal.updateAll(elapsedTimeSec)
     goalPieces.updateAll(elapsedTimeSec)
     helpArrows.updateAll(elapsedTimeSec)
+
+    engineParticles.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

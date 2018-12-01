@@ -35,6 +35,14 @@ export class ParticleEmitter {
     )
   }
 
+  init2(sge: SimpleGameEngine, textureKey: string, rects: PIXI.Rectangle[]) {
+    this.sge = sge
+    this.textureKey = textureKey
+    this.container = new PIXI.Container()
+
+    this.textureRects = rects
+  }
+
   getNextSprite() {
     // Get first unused sprite
     for (let i = 0; i < this.particles.length; i++) {
@@ -110,7 +118,8 @@ export class ParticleEmitter {
       framesMin?: number
       framesMax?: number
       rects?: PIXI.Rectangle[]
-    }
+    },
+    setup?: (p: IParticle) => void
   ) {
     let num = 1
     let vMax = 1
@@ -169,6 +178,10 @@ export class ParticleEmitter {
       p.scale2 = 0.25
 
       p.framesStart = p.framesLeft = _.random(framesMin, framesMax, false)
+
+      if (setup) {
+        setup(p)
+      }
     }
   }
 }

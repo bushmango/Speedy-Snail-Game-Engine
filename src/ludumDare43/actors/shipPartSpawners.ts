@@ -6,6 +6,8 @@ import * as shipParts from './shipParts'
 import * as anim from 'engine/anim/anim'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
+import * as goats from './goats'
+
 interface IShipParSpawner {
   x: number
   y: number
@@ -42,6 +44,8 @@ export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
 
+  let goat = goats.getItem()
+
   _.forEach(items, (c) => {
     c.elapsedSec += elapsedTimeSec
 
@@ -51,11 +55,13 @@ export function updateAll(elapsedTimeSec) {
     if (c.elapsedSec > 1) {
       c.elapsedSec = 0
 
-      let nextPart = _.sample(shipParts.spawnableDatas)
+      if (!goat.isFree) {
+        let nextPart = _.sample(shipParts.spawnableDatas)
 
-      let shipPart = shipParts.create(nextPart)
-      shipPart.anim.sprite.x = c.x
-      shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
+        let shipPart = shipParts.create(nextPart)
+        shipPart.anim.sprite.x = c.x
+        shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
+      }
     }
   })
 }

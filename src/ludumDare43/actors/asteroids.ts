@@ -97,7 +97,9 @@ export function updateAll(elapsedTimeSec) {
   let stats = ctx.stats.getCurrentStats()
   let asteroidSpeed = 0
   if (stats.speed > 0) {
-    asteroidSpeed += stats.speed * 75
+    asteroidSpeed += stats.speed * 55
+  } else {
+    asteroidSpeed = 20
   }
 
   _.forEach(items, (c) => {
