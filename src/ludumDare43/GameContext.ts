@@ -19,6 +19,7 @@ import * as shipParts from './actors/shipParts'
 import * as shipPartSpawners from './actors/shipPartSpawners'
 
 import * as asteroids from './actors/asteroids'
+import * as smashedParts from './actors/smashedParts'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -41,7 +42,8 @@ export class GameContext {
   menuStart = menuStart
 
   layerFrameRate: PIXI.Container
-  layerMap: PIXI.Container
+
+  layerParticles: PIXI.Container
   layerPlayer: PIXI.Container
   layerAbove: PIXI.Container
   layerUi: PIXI.Container
@@ -72,7 +74,7 @@ export class GameContext {
     ctx.rootContainer = new PIXI.Container()
 
     ctx.camera = cameras.create()
-    ctx.layerMap = cameras.addLayer(ctx.camera)
+    ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
     ctx.layerAbove = cameras.addLayer(ctx.camera)
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
@@ -165,6 +167,7 @@ export class GameContext {
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)
+    smashedParts.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

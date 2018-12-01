@@ -5,6 +5,7 @@ import * as log from '../../engine/log'
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
+import * as smashedParts from './smashedParts'
 
 interface IAsteroid {
   anim: anim.IAnim
@@ -96,6 +97,19 @@ export function updateAll(elapsedTimeSec) {
       c.isDead = true
     }
   })
+
+  // Testing
+  const testMode = true
+  if (testMode) {
+    _.forEach(items, (c) => {
+      if (!c.isDead) {
+        if (c.anim.sprite.x < mouse.x / 2) {
+          smashedParts.create(c.anim.sprite)
+          c.isDead = true
+        }
+      }
+    })
+  }
 
   removeDead()
 }
