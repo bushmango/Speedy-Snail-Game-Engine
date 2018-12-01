@@ -43,7 +43,6 @@ export function updateAll(elapsedTimeSec) {
   let kb = ctx.sge.keyboard
 
   _.forEach(items, (c) => {
-    
     c.elapsedSec += elapsedTimeSec
 
     c.anim.sprite.x = c.x + 20
@@ -51,7 +50,10 @@ export function updateAll(elapsedTimeSec) {
 
     if (c.elapsedSec > 1) {
       c.elapsedSec = 0
-      let shipPart = shipParts.create()
+
+      let nextPart = _.sample(shipParts.datas)
+
+      let shipPart = shipParts.create(nextPart)
       shipPart.anim.sprite.x = c.x
       shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
     }

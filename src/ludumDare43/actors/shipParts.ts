@@ -15,6 +15,8 @@ interface IShipPart {
   aRight: IShipPart
   aTop: IShipPart
   aBottom: IShipPart
+
+  data: IShipPartData
 }
 let items: IShipPart[] = []
 
@@ -23,6 +25,10 @@ let tractoredPart: IShipPart = null
 interface IShipPartData {
   name: string
   frame: PIXI.Rectangle
+  noLeft?: boolean
+  noRight?: boolean
+  noTop?: boolean
+  noBottom?: boolean
 }
 
 let datas: IShipPartData[] = []
@@ -39,20 +45,35 @@ datas.push(shipPart2)
 let wing: IShipPartData = {
   name: 'wing-1',
   frame: spriteUtil.frame32(2, 1),
+  noRight: true,
+  noTop: true,
 }
 datas.push(wing)
+let wing2: IShipPartData = {
+  name: 'wing-2',
+  frame: spriteUtil.frame32(3, 1),
+  noRight: true,
+  noBottom: true,
+}
+datas.push(wing2)
 let cockpit: IShipPartData = {
   name: 'cockpit-1',
   frame: spriteUtil.frame32(2, 2),
+  noRight: true,
+  noTop: true,
+  noBottom: true,
 }
 datas.push(cockpit)
 let engine: IShipPartData = {
   name: 'engine-1',
   frame: spriteUtil.frame32(2, 3),
+  noLeft: true,
 }
 datas.push(engine)
 
-export function create() {
+export { datas }
+
+export function create(data: IShipPartData = shipPart1) {
   let ctx = getContext()
 
   log.x('create ship part')
@@ -64,9 +85,10 @@ export function create() {
     aTop: null,
     aLeft: null,
     aRight: null,
+    data: data,
   }
 
-  let sprite = ctx.createSprite('ship-001', engine.frame, 0.5, 0.5, 1)
+  let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
   sprite.interactive = true
@@ -136,6 +158,7 @@ export function updateAll(elapsedTimeSec) {
         ) {
           // whats the closest side?
           let attach = null
+          let isAllowed = true
           let ox = 0
           let oy = 0
           let dx = tractoredPart.anim.sprite.x - c.anim.sprite.x
@@ -146,22 +169,34 @@ export function updateAll(elapsedTimeSec) {
           if (adx > ady) {
             if (dx > 0) {
               attach = 'aRight'
+              if (tractoredPart.data.noLeft || c.data.noRight) {
+                isAllowed = false
+              }
               ox = 32
             } else {
               attach = 'aLeft'
+              if (tractoredPart.data.noRight || c.data.noLeft) {
+                isAllowed = false
+              }
               ox = -32
             }
           } else {
             if (dy > 0) {
               attach = 'aBottom'
+              if (tractoredPart.data.noTop || c.data.noBottom) {
+                isAllowed = false
+              }
               oy = 32
             } else {
               attach = 'aTop'
+              if (tractoredPart.data.noBottom || c.data.noTop) {
+                isAllowed = false
+              }
               oy = -32
             }
           }
 
-          if (!c[attach]) {
+          if (!c[attach] && isAllowed) {
             // Nothing already attached
             // connect it!
             c[attach] = tractoredPart
