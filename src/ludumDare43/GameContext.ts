@@ -26,6 +26,8 @@ import * as starfield from './actors/starfield'
 import * as goalPieces from './actors/goalPieces'
 import * as uiGoal from './ui/uiGoal'
 
+import * as goats from './actors/goats'
+
 let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
@@ -111,7 +113,8 @@ export class GameContext {
     sps.x = 600
     sps.y = 400
 
-    starfield.initialize()
+    goats.create()
+    //starfield.initialize()
 
     // camera?
     ctx.camera.x = 50
@@ -185,8 +188,9 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    starfield.updateAll(elapsedTimeSec, velocity);
+    // starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
+    goats.updateAll(elapsedTimeSec)
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)

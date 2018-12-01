@@ -7,8 +7,13 @@ import * as cameras from 'engine/camera/cameras'
 import * as asteroids from './asteroids'
 import * as smashedParts from './smashedParts'
 
-import { IShipPartData, datas, shipPart1 } from './shipPartsData'
-export { datas }
+import {
+  IShipPartData,
+  datas,
+  spawnableDatas,
+  shipPart1,
+} from './shipPartsData'
+export { datas, spawnableDatas }
 
 interface IShipPart {
   anim: anim.IAnim

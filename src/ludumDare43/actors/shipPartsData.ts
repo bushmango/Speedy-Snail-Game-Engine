@@ -1,4 +1,5 @@
 import * as spriteUtil from '../../engine/anim/spriteUtil'
+import { _ } from 'engine/importsEngine'
 
 export interface IShipPartData {
   name: string
@@ -9,13 +10,16 @@ export interface IShipPartData {
   noBottom?: boolean
   mass: number
   enginePower?: number
+  notSpawnable?: boolean
 }
 
 let datas: IShipPartData[] = []
+let spawnableDatas: IShipPartData[] = []
 let shipPart1: IShipPartData = {
   name: 'part-1',
   frame: spriteUtil.frame32(1, 1),
   mass: 2,
+  notSpawnable: true,
 }
 datas.push(shipPart1)
 let shipPart2: IShipPartData = {
@@ -59,11 +63,12 @@ let engine: IShipPartData = {
 datas.push(engine)
 let engine2: IShipPartData = {
   name: 'engine-2',
-  frame: spriteUtil.frame32(2, 3),
+  frame: spriteUtil.frame32(2, 4),
   noLeft: true,
   mass: 1,
   enginePower: 2,
 }
 datas.push(engine2)
+spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 
-export { datas, shipPart1 }
+export { datas, shipPart1, spawnableDatas }

@@ -14,6 +14,7 @@ import max from 'lodash/max'
 import mean from 'lodash/mean'
 import merge from 'lodash/merge'
 import find from 'lodash/find'
+import filter from 'lodash/filter'
 import findIndex from 'lodash/findIndex'
 
 const _ = {
@@ -34,6 +35,7 @@ const _ = {
   merge,
   find,
   findIndex,
+  filter,
 }
 
 export { _ }

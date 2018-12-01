@@ -51,7 +51,7 @@ export function updateAll(elapsedTimeSec) {
     if (c.elapsedSec > 1) {
       c.elapsedSec = 0
 
-      let nextPart = _.sample(shipParts.datas)
+      let nextPart = _.sample(shipParts.spawnableDatas)
 
       let shipPart = shipParts.create(nextPart)
       shipPart.anim.sprite.x = c.x
