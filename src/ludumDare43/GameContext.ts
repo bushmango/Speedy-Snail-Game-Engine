@@ -29,6 +29,7 @@ import * as uiGoal from './ui/uiGoal'
 import * as goats from './actors/goats'
 import * as helpArrows from './actors/helpArrows'
 import * as coreSpawner from './actors/coreSpawner'
+import { cursorTo } from 'readline'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -116,7 +117,7 @@ export class GameContext {
     goats.eject()
 
     helpArrows.createAll()
-    //starfield.initialize()
+    starfield.initialize()
 
     // camera?
     ctx.camera.x = 50
@@ -192,6 +193,8 @@ export class GameContext {
     asteroids.updateAll(elapsedTimeSec)
     // starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
+    let curStats = ctx.stats.getCurrentStats()
+    starfield.updateAll(elapsedTimeSec, curStats.speed * 100)
     goats.updateAll(elapsedTimeSec)
     coreSpawner.updateAll(elapsedTimeSec)
 
