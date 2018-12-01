@@ -7,6 +7,8 @@ import * as numeral from 'numeral'
 
 import * as goalPieces from './../actors/goalPieces'
 import * as shipParts from './../actors/shipParts'
+import * as coreSpawner from './../actors/coreSpawner'
+import * as goats from './../actors/goats'
 
 interface IGoalPieceMarker {
   anim: anim.IAnim
@@ -128,6 +130,11 @@ function updateGoalPosition(elapsedTimeSec) {
     speed = -1 // Penalty
   }
   if (!hasCore) {
+    speed = -5 // Big penalty
+    // Try to launch new core
+    coreSpawner.launch()
+  }
+  if (goats.getItem().isFree) {
     speed = -5 // Big penalty
   }
 

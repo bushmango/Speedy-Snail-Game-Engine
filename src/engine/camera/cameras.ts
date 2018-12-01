@@ -91,6 +91,14 @@ export function xyToCamera(c: ICamera, obj) {
   return { cx, cy }
 }
 
+export function cameraToXY(c: ICamera, obj) {
+  let x = obj.x * c.container.scale.x + c.container.x * c.container.scale.x
+  let y = obj.y * c.container.scale.y + c.container.y * c.container.scale.y
+  return { x, y }
+}
+
+//export function getCameraView() {}
+
 export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
   _.forEach(items, (c) => {
     if (c.shakeSec > 0) {

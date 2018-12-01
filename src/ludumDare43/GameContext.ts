@@ -27,6 +27,8 @@ import * as goalPieces from './actors/goalPieces'
 import * as uiGoal from './ui/uiGoal'
 
 import * as goats from './actors/goats'
+import * as helpArrows from './actors/helpArrows'
+import * as coreSpawner from './actors/coreSpawner'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -52,6 +54,7 @@ export class GameContext {
 
   layerParticles: PIXI.Container
   layerPlayer: PIXI.Container
+  layerGoat: PIXI.Container
   layerAbove: PIXI.Container
   layerBelow: PIXI.Container
   layerUi: PIXI.Container
@@ -85,6 +88,7 @@ export class GameContext {
     ctx.layerBelow = cameras.addLayer(ctx.camera)
     ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
+    ctx.layerGoat = cameras.addLayer(ctx.camera)
     ctx.layerAbove = cameras.addLayer(ctx.camera)
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
     ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
@@ -99,12 +103,7 @@ export class GameContext {
     menuQuickSettings.create()
     uiGoal.create()
 
-    let sp = shipParts.create()
-    sp.isFree = false
-    sp.isCore = true // Most important piece!
-    sp.anim.sprite.x = 200
-    sp.anim.sprite.y = 200
-    shipParts.setShipGridCenter(sp)
+    coreSpawner.create()
 
     let sps = shipPartSpawners.create()
     sps.x = 600
@@ -114,6 +113,9 @@ export class GameContext {
     sps.y = 400
 
     goats.create()
+    goats.eject()
+
+    helpArrows.createAll()
     //starfield.initialize()
 
     // camera?
@@ -191,6 +193,7 @@ export class GameContext {
     // starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
     goats.updateAll(elapsedTimeSec)
+    coreSpawner.updateAll(elapsedTimeSec)
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)
@@ -198,6 +201,7 @@ export class GameContext {
 
     uiGoal.updateAll(elapsedTimeSec)
     goalPieces.updateAll(elapsedTimeSec)
+    helpArrows.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

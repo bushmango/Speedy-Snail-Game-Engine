@@ -6,6 +6,7 @@ import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
 import * as asteroids from './asteroids'
 import * as smashedParts from './smashedParts'
+import * as goats from './goats'
 
 import {
   IShipPartData,
@@ -15,7 +16,7 @@ import {
 } from './shipPartsData'
 export { datas, spawnableDatas }
 
-interface IShipPart {
+export interface IShipPart {
   anim: anim.IAnim
   isFree: boolean
   isDead: boolean
@@ -32,6 +33,7 @@ export function getAll() {
   return items
 }
 
+let hoveredGoat: goats.IGoat = null
 let tractoredPart: IShipPart = null
 let hoveredPart: IShipPart = null
 
@@ -188,6 +190,28 @@ export function updateAll(elapsedTimeSec) {
       return
     }
     if (!c.isFree) {
+      if (c.isCore) {
+        // Connect with goat
+        let goat = goats.getItem()
+        if (goat.isPickedUp) {
+          if (
+            checkCirclesCollide(
+              c.anim.sprite.x,
+              c.anim.sprite.y,
+              r,
+              goat.anim.sprite.x,
+              goat.anim.sprite.y,
+              r
+            )
+          ) {
+            goat.isFree = false
+            goat.anim.sprite.x = c.anim.sprite.x
+            goat.anim.sprite.y = c.anim.sprite.y
+            goat.isPickedUp = false
+          }
+        }
+      }
+
       // See if we collide with asteroids
       _.forEach(asteroids.getAll(), (d) => {
         if (d.isDead) {
@@ -306,6 +330,10 @@ export function destroyFixedPiece(c: IShipPart) {
     safeSetShipGrid(c.bx, c.by, null)
 
     // Flood fill core to make sure everything is connected
+
+    if (c.isCore) {
+      goats.eject()
+    }
 
     // Reset
     _.forEach(items, (c) => {

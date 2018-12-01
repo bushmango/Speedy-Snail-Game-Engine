@@ -1,15 +1,16 @@
 import { _ } from 'engine/importsEngine'
-import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
-import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
-import * as tween from '../../engine/anim/tween'
 
-interface IGoat {
+import * as cameras from 'engine/camera/cameras'
+
+export interface IGoat {
   anim: anim.IAnim
+  isFree: boolean
+  isPickedUp: boolean
 }
 //let items: IGoat[] = []
 let item: IGoat = null
@@ -30,13 +31,15 @@ export function create() {
   log.x('create player goat')
   item = {
     anim: anim.create(),
+    isFree: true,
+    isPickedUp: false,
   }
   item.anim.sprite = ctx.createSprite(
     'ship-001',
     animDefault.frames[0],
     0.5,
     0.5,
-    2
+    1
   )
 
   let sprite = item.anim.sprite
@@ -46,21 +49,41 @@ export function create() {
   sprite.buttonMode = true
   sprite.on('mouseover', () => {
     sprite.tint = 0xcccccc
+    item.isPickedUp = true
   })
   sprite.on('mouseout', () => {
     sprite.tint = 0xffffffff
   })
 
-  ctx.layerUi.addChild(item.anim.sprite)
+  ctx.layerGoat.addChild(item.anim.sprite)
   anim.playAnim(item.anim, animDefault)
 
   return item
 }
 
+export function eject() {
+  item.isFree = true
+  item.anim.sprite.x = _.random(100, 200)
+  item.anim.sprite.y = _.random(100, 200)
+}
+
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
+  let mouse = ctx.sge.getMouse()
+  if (item.isFree) {
+    item.anim.sprite.rotation += Math.PI * elapsedTimeSec
+  } else {
+    item.anim.sprite.rotation = 0
+  }
 
-  item.anim.sprite.rotation += Math.PI * elapsedTimeSec
+  if (item.isPickedUp && item.isFree) {
+    let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+    let c = item
+    c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
+    c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
+  } else {
+    // part of ship
+  }
 
   //_.forEach(items, (c) => {
   anim.update(item.anim, elapsedTimeSec)
