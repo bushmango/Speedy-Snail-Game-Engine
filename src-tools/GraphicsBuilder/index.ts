@@ -57,7 +57,7 @@ console.log('outPath', outPath)
 console.log('inPathPacked', inPathPacked)
 console.log('outPathPacked', outPathPacked)
 
-let doPack = true
+let doPack = false
 let mode = 'convert-only'
 let verbose = false
 let aseSpritePath = '"C:\\Program Files\\Aseprite\\aseprite.exe"'
