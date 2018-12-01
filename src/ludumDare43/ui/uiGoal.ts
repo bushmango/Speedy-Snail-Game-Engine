@@ -107,9 +107,13 @@ function updateGoalPosition(elapsedTimeSec) {
   let ctx = getContext()
   let mass = 0
   let engines = 0
+  let hasCore = false
   _.forEach(shipParts.getAll(), (c) => {
     if (!c.isFree && !c.isDead) {
       // Count engines
+      if (c.isCore) {
+        hasCore = true
+      }
       if (c.data.enginePower) {
         engines += c.data.enginePower
       }
@@ -120,9 +124,20 @@ function updateGoalPosition(elapsedTimeSec) {
 
   let speed = engines / (mass || 1)
 
+  if (speed === 0) {
+    speed = -1 // Penalty
+  }
+  if (!hasCore) {
+    speed = -5 // Big penalty
+  }
+
   let cur = ctx.stats.getCurrentStats()
   let d = cur.distance
   d += speed * elapsedTimeSec
+  if (d <= 0) {
+    d = 0
+    speed = 0
+  }
   if (d >= cur.distanceMax) {
     d = cur.distanceMax
     // TODO: do win condition

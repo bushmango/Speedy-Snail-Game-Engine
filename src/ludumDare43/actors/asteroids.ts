@@ -13,6 +13,7 @@ interface IAsteroid {
   anim: anim.IAnim
   isDead: boolean
   data: IAsteroidData
+  vr: number
 }
 let items: IAsteroid[] = []
 
@@ -57,6 +58,7 @@ export function create(data: IAsteroidData = datas[0]) {
     anim: anim.create(),
     isDead: false,
     data: data,
+    vr: _.random(-Math.PI, Math.PI),
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -92,7 +94,7 @@ export function updateAll(elapsedTimeSec) {
 
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
-    c.anim.sprite.rotation += Math.PI * 2 * elapsedTimeSec * 0.25
+    c.anim.sprite.rotation += c.vr * elapsedTimeSec
     c.anim.sprite.x -= 50 * elapsedTimeSec
 
     if (c.anim.sprite.x < 0) {
