@@ -2,11 +2,13 @@ import { _ } from 'engine/importsEngine'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
 
-import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
 import * as asteroids from './asteroids'
 import * as smashedParts from './smashedParts'
+
+import { IShipPartData, datas, shipPart1 } from './shipPartsData'
+export { datas }
 
 interface IShipPart {
   anim: anim.IAnim
@@ -14,15 +16,11 @@ interface IShipPart {
   isDead: boolean
   isCore: boolean
   isConnectedToCore: boolean
-
-  // aLeft: IShipPart
-  // aRight: IShipPart
-  // aTop: IShipPart
-  // aBottom: IShipPart
-
   data: IShipPartData
   bx: number
   by: number
+  vx: number
+  vy: number
 }
 let items: IShipPart[] = []
 
@@ -66,57 +64,6 @@ export function safeSetShipGrid(x, y, c: IShipPart) {
   return true
 }
 
-interface IShipPartData {
-  name: string
-  frame: PIXI.Rectangle
-  noLeft?: boolean
-  noRight?: boolean
-  noTop?: boolean
-  noBottom?: boolean
-}
-
-let datas: IShipPartData[] = []
-let shipPart1: IShipPartData = {
-  name: 'part-1',
-  frame: spriteUtil.frame32(1, 1),
-}
-datas.push(shipPart1)
-let shipPart2: IShipPartData = {
-  name: 'part-2',
-  frame: spriteUtil.frame32(1, 2),
-}
-datas.push(shipPart2)
-let wing: IShipPartData = {
-  name: 'wing-1',
-  frame: spriteUtil.frame32(2, 1),
-  noRight: true,
-  noTop: true,
-}
-datas.push(wing)
-let wing2: IShipPartData = {
-  name: 'wing-2',
-  frame: spriteUtil.frame32(3, 1),
-  noRight: true,
-  noBottom: true,
-}
-datas.push(wing2)
-let cockpit: IShipPartData = {
-  name: 'cockpit-1',
-  frame: spriteUtil.frame32(2, 2),
-  noRight: true,
-  noTop: true,
-  noBottom: true,
-}
-datas.push(cockpit)
-let engine: IShipPartData = {
-  name: 'engine-1',
-  frame: spriteUtil.frame32(2, 3),
-  noLeft: true,
-}
-datas.push(engine)
-
-export { datas }
-
 export function create(data: IShipPartData = shipPart1) {
   let ctx = getContext()
 
@@ -125,15 +72,13 @@ export function create(data: IShipPartData = shipPart1) {
     anim: anim.create(),
     isFree: true,
     isDead: false,
-    // aBottom: null,
-    // aTop: null,
-    // aLeft: null,
-    // aRight: null,
     data: data,
     bx: -1,
     by: -1,
     isCore: false,
     isConnectedToCore: false,
+    vx: 0,
+    vy: 0,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -175,8 +120,6 @@ export function updateAll(elapsedTimeSec) {
 
   if (mouse.isRightDown) {
     if (hoveredPart && !hoveredPart.isDead) {
-      // smash(hoveredPart)
-      // safeSetShipGrid(hoveredPart.bx, hoveredPart.by, null)
       destroyFixedPiece(hoveredPart)
       hoveredPart = null
     }
@@ -191,7 +134,8 @@ export function updateAll(elapsedTimeSec) {
         c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
         c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
       } else {
-        c.anim.sprite.x -= elapsedTimeSec * 50
+        c.anim.sprite.x -= elapsedTimeSec * (50 + c.vx)
+        c.anim.sprite.y -= elapsedTimeSec * c.vy
 
         if (c.anim.sprite.x < 0) {
           c.isDead = true
@@ -224,8 +168,7 @@ export function updateAll(elapsedTimeSec) {
       ) {
         smash(tractoredPart)
         asteroids.smash(d)
-        // tractoredPart.isDead = true
-        // d.isDead = true
+
         cameras.shake(ctx.camera, 0.25, 2)
       }
     })
@@ -255,9 +198,6 @@ export function updateAll(elapsedTimeSec) {
 
           destroyFixedPiece(c)
           asteroids.smash(d)
-          // c.isDead = true
-          // d.isDead = true
-          // TODO break apart ship
         }
       })
 
@@ -274,7 +214,6 @@ export function updateAll(elapsedTimeSec) {
           )
         ) {
           // whats the closest side?
-          // let attach = null
           let isAllowed = true
           let ox = 0
           let obx = 0
@@ -287,14 +226,12 @@ export function updateAll(elapsedTimeSec) {
 
           if (adx > ady) {
             if (dx > 0) {
-              // attach = 'aRight'
               if (tractoredPart.data.noLeft || c.data.noRight) {
                 isAllowed = false
               }
               ox = 32
               obx = 1
             } else {
-              // attach = 'aLeft'
               if (tractoredPart.data.noRight || c.data.noLeft) {
                 isAllowed = false
               }
@@ -303,14 +240,12 @@ export function updateAll(elapsedTimeSec) {
             }
           } else {
             if (dy > 0) {
-              // attach = 'aBottom'
               if (tractoredPart.data.noTop || c.data.noBottom) {
                 isAllowed = false
               }
               oy = 32
               oby = 1
             } else {
-              // attach = 'aTop'
               if (tractoredPart.data.noBottom || c.data.noTop) {
                 isAllowed = false
               }
@@ -332,13 +267,11 @@ export function updateAll(elapsedTimeSec) {
           //   c.by + oby
           // )
 
-          //if (!c[attach] && isAllowed) {
           if (isAllowed) {
             if (null === safeGetShipGrid(c.bx + obx, c.by + oby)) {
               // valid and nothing here
               // Nothing already attached
               // connect it!
-              // c[attach] = tractoredPart
               tractoredPart.isFree = false
               tractoredPart.anim.sprite.tint = 0xff999999
               tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
@@ -358,38 +291,102 @@ export function updateAll(elapsedTimeSec) {
 export function destroyFixedPiece(c: IShipPart) {
   if (!c.isDead) {
     smash(c)
-
-    // let sg = safeGetShipGrid(c.bx - 1, c.by)
-    // if (sg) {
-    //   sg.aRight = null
-    // }
-    // sg = safeGetShipGrid(c.bx + 1, c.by)
-    // if (sg) {
-    //   sg.aLeft = null
-    // }
-    // let sg = safeGetShipGrid(c.bx, c.by - 1)
-
-    // if (sg) {
-
-    // }
-    // if (sg) {
-    //   sg.aBottom = null
-    // }
-    // sg = safeGetShipGrid(c.bx, c.by + 1)
-    // if (sg) {
-    //   sg.aTop = null
-    // }
     safeSetShipGrid(c.bx, c.by, null)
 
     // Flood fill core to make sure everything is connected
+
+    // Reset
+    _.forEach(items, (c) => {
+      c.isConnectedToCore = false
+    })
     // Get core
-    let core = _.find(items, (c: IShipPart) => c.isCore)
+    let core = _.find(
+      items,
+      (c: IShipPart) => c.isCore && !c.isFree && !c.isDead
+    )
+
     if (core) {
-      let sg = safeGetShipGrid(c.bx, c.by + 1)
-      if (sg && !sg.data.noTop) {
-      }
+      core.isConnectedToCore = true // let's hope so!
+
+      // Recursively try to connect everything
+      tryConnectToCore(core, 0)
+      tryConnectToCore(core, 1)
+      tryConnectToCore(core, 2)
+      tryConnectToCore(core, 3)
     }
+
+    _.forEach(items, (c) => {
+      if (!c.isFree && !c.isDead) {
+        if (!c.isConnectedToCore) {
+          // Free!
+          c.isFree = true
+
+          c.vy = -(c.by - maxShipGridY / 2) * 5 + _.random(-2, 2, true)
+          c.vx = _.random(-2, 2, true)
+
+          if (c === safeGetShipGrid(c.bx, c.by)) {
+            safeSetShipGrid(c.bx, c.by, null)
+          }
+        }
+      }
+    })
   }
+}
+
+function tryConnectToCore(c: IShipPart, dir) {
+  // if (!c.isConnectedToCore) {
+  //   return
+  // }
+  let ox = 0
+  let oy = 0
+  switch (dir) {
+    case 0:
+      oy = -1
+      break
+    case 1:
+      ox = 1
+      break
+    case 2:
+      oy = 1
+      break
+    case 2:
+      ox = -1
+      break
+  }
+
+  let sg = safeGetShipGrid(c.bx + ox, c.by + oy)
+  if (!sg || sg.isConnectedToCore || sg.isDead) {
+    return false // No part or already flood filled
+  }
+  switch (dir) {
+    case 0:
+      if (c.data.noTop || sg.data.noBottom) {
+        return false
+      }
+      break
+    case 1:
+      if (c.data.noRight || sg.data.noLeft) {
+        return false
+      }
+      break
+    case 2:
+      if (c.data.noBottom || sg.data.noTop) {
+        return false
+      }
+      break
+    case 3:
+      if (c.data.noLeft || sg.data.noRight) {
+        return false
+      }
+      break
+  }
+  // Everything seems good
+  sg.isConnectedToCore = true
+  // Recurse
+  tryConnectToCore(sg, 0)
+  tryConnectToCore(sg, 1)
+  tryConnectToCore(sg, 2)
+  tryConnectToCore(sg, 3)
 }
 
 export function smash(c: IShipPart) {
