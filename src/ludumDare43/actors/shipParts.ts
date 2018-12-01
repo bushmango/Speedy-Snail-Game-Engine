@@ -171,7 +171,9 @@ export function updateAll(elapsedTimeSec) {
 
   if (mouse.isRightDown) {
     if (hoveredPart && !hoveredPart.isDead) {
-      smash(hoveredPart)
+      // smash(hoveredPart)
+      // safeSetShipGrid(hoveredPart.bx, hoveredPart.by, null)
+      destroyFixedPiece(hoveredPart)
       hoveredPart = null
     }
   }
@@ -247,29 +249,11 @@ export function updateAll(elapsedTimeSec) {
         ) {
           cameras.shake(ctx.camera, 0.25, 5)
 
-          smash(c)
+          destroyFixedPiece(c)
           asteroids.smash(d)
           // c.isDead = true
           // d.isDead = true
           // TODO break apart ship
-
-          let sg = safeGetShipGrid(c.bx - 1, c.by)
-          if (sg) {
-            sg.aRight = null
-          }
-          sg = safeGetShipGrid(c.bx + 1, c.by)
-          if (sg) {
-            sg.aLeft = null
-          }
-          sg = safeGetShipGrid(c.bx, c.by - 1)
-          if (sg) {
-            sg.aBottom = null
-          }
-          sg = safeGetShipGrid(c.bx, c.by + 1)
-          if (sg) {
-            sg.aTop = null
-          }
-          safeSetShipGrid(c.bx, c.by, null)
         }
       })
 
@@ -364,6 +348,30 @@ export function updateAll(elapsedTimeSec) {
       }
     }
   })
+}
+
+export function destroyFixedPiece(c: IShipPart) {
+  if (!c.isDead) {
+    smash(c)
+
+    let sg = safeGetShipGrid(c.bx - 1, c.by)
+    if (sg) {
+      sg.aRight = null
+    }
+    sg = safeGetShipGrid(c.bx + 1, c.by)
+    if (sg) {
+      sg.aLeft = null
+    }
+    sg = safeGetShipGrid(c.bx, c.by - 1)
+    if (sg) {
+      sg.aBottom = null
+    }
+    sg = safeGetShipGrid(c.bx, c.by + 1)
+    if (sg) {
+      sg.aTop = null
+    }
+    safeSetShipGrid(c.bx, c.by, null)
+  }
 }
 
 export function smash(c: IShipPart) {
