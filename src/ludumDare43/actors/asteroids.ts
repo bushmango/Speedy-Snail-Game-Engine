@@ -24,6 +24,7 @@ export function getAll() {
 interface IAsteroidData {
   frame: PIXI.Rectangle
   size: number
+  splitInto?: IAsteroidData[]
 }
 
 let datas: IAsteroidData[] = []
@@ -32,19 +33,20 @@ let d: IAsteroidData = {
   size: 1,
 }
 datas.push(d)
-d = {
+let splitB = (d = {
   frame: spriteUtil.frame32(7, 2),
   size: 1,
-}
+})
 datas.push(d)
-d = {
+let splitA = (d = {
   frame: spriteUtil.frame32(7, 3),
   size: 1,
-}
+})
 datas.push(d)
 d = {
   frame: spriteUtil.frame32(8, 1, 2, 2),
   size: 2,
+  splitInto: [splitA, splitB],
 }
 datas.push(d)
 
@@ -123,6 +125,17 @@ export function smash(c: IAsteroid) {
   if (!c.isDead) {
     smashedParts.create(c.anim.sprite)
     c.isDead = true
+
+    if (c.data.splitInto) {
+      let ctx = getContext()
+      let view = ctx.sge.getViewSize()
+
+      _.forEach(c.data.splitInto, (d) => {
+        let asteroid = create(d)
+        asteroid.anim.sprite.x = c.anim.sprite.x + 32
+        asteroid.anim.sprite.y = c.anim.sprite.y + _.random(-32, 32)
+      })
+    }
   }
 }
 

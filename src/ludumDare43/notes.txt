@@ -1,3 +1,10 @@
+- big asteroid split
+- gun part
+- zones
+- engine particles
+- engines destroy behind
+
+
 - rotate selected parts?
 - animate snapping parts together?
 - need sound for snapping parts

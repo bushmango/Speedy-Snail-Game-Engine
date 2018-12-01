@@ -163,7 +163,7 @@ export function updateAll(elapsedTimeSec) {
   removeDead()
 
   let r = 32 / 2 - 1
-  if (tractoredPart) {
+  if (tractoredPart && !tractoredPart.isDead) {
     _.forEach(asteroids.getAll(), (d) => {
       if (d.isDead) {
         return
