@@ -55,6 +55,16 @@ async function run() {
         },
 
         {
+          label: 'publish ld43!!',
+          action: async () => {
+            await publish_ld43.build_client()
+            await publish_ld43.deploy()
+            await publish_ld43.deploy_assets()
+            await publish_ld43.deploy_website()
+          },
+        },
+
+        {
           label: 'build client prod',
           action: async () => {
             await publish_ld43.build_client()
