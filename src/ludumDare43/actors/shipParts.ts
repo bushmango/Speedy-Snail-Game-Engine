@@ -14,6 +14,7 @@ import {
   spawnableDatas,
   shipPart1,
 } from './shipPartsData'
+import { glCore } from 'pixi.js'
 export { datas, spawnableDatas }
 
 export interface IShipPart {
@@ -212,6 +213,8 @@ export function updateAll(elapsedTimeSec) {
             goat.isPickedUp = false
           }
         }
+
+        // Check for close asteroids
       }
 
       // See if we collide with asteroids
@@ -233,6 +236,26 @@ export function updateAll(elapsedTimeSec) {
 
           destroyFixedPiece(c)
           asteroids.smash(d)
+        }
+
+        // check for close asteroids
+        if (c.isCore && !c.isDead) {
+          let distanceSimple = getDistanceSimple2(
+            c.anim.sprite.x,
+            c.anim.sprite.y,
+            d.anim.sprite.x,
+            d.anim.sprite.y
+          )
+          let target = r + r * d.data.size
+          let factor = 3.5
+          let maxTarget = target * factor
+          if (distanceSimple < maxTarget) {
+            let dist = maxTarget - target
+            let z = distanceSimple - target
+            let zp = z / dist
+
+            cameras.frameSlowdown(ctx.camera, 0.1, 0.15 + zp * 0.85)
+          }
         }
       })
 
@@ -461,4 +484,16 @@ function checkCirclesCollide(x1, y1, r1, x2, y2, r2) {
   let rc2 = rc * rc
 
   return dx2 + dy2 < rc2
+}
+
+function getDistanceSimple(x1, y1, x2, y2) {
+  let dx = Math.abs(x2 - x1)
+  let dy = Math.abs(y2 - y1)
+  return dx + dy
+}
+
+function getDistanceSimple2(x1, y1, x2, y2) {
+  let dx = Math.abs(x2 - x1)
+  let dy = Math.abs(y2 - y1)
+  return dx + dy * 2
 }
