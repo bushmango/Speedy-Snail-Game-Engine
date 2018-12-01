@@ -85,6 +85,12 @@ export function addLayer(c: ICamera, container: PIXI.Container = null) {
   return container
 }
 
+export function xyToCamera(c: ICamera, obj) {
+  let cx = obj.x / c.container.scale.x - c.container.x / c.container.scale.x
+  let cy = obj.y / c.container.scale.y - c.container.y / c.container.scale.y
+  return { cx, cy }
+}
+
 export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
   _.forEach(items, (c) => {
     if (c.shakeSec > 0) {

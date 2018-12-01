@@ -1,7 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
-import * as players from './actors/players'
+// import * as players from './actors/players'
 import { KeyCodes } from 'engine/input/Keyboard'
 import * as log from '../engine/log'
 
@@ -15,8 +15,15 @@ import * as cameras from 'engine/camera/cameras'
 import * as stats from './misc/stats'
 import * as uiMode from './ui/uiMode'
 
+import * as shipParts from './actors/shipParts'
+import * as shipPartSpawners from './actors/shipPartSpawners'
+
+import * as asteroids from './actors/asteroids'
+import * as smashedParts from './actors/smashedParts'
+
 let debugCollision = false
 let skipSplashScreen = true
+let skipMainMenu = true
 let currentContext: GameContext = null
 export function getContext() {
   return currentContext
@@ -35,8 +42,10 @@ export class GameContext {
   menuStart = menuStart
 
   layerFrameRate: PIXI.Container
-  layerMap: PIXI.Container
+
+  layerParticles: PIXI.Container
   layerPlayer: PIXI.Container
+  layerAbove: PIXI.Container
   layerUi: PIXI.Container
   layerDetectors: PIXI.Container
   layerDebugGraphics: PIXI.Container
@@ -65,8 +74,9 @@ export class GameContext {
     ctx.rootContainer = new PIXI.Container()
 
     ctx.camera = cameras.create()
-    ctx.layerMap = cameras.addLayer(ctx.camera)
+    ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
+    ctx.layerAbove = cameras.addLayer(ctx.camera)
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
     ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
     ctx.addLayer(ctx.camera.container)
@@ -74,10 +84,23 @@ export class GameContext {
     ctx.layerUi = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
 
-    let player = players.create(ctx.layerPlayer)
+    // let player = players.create(ctx.layerPlayer)
 
     menuStart.create()
     menuQuickSettings.create()
+
+    let sp = shipParts.create()
+    sp.isFree = false
+    sp.anim.sprite.x = 200
+    sp.anim.sprite.y = 200
+    shipParts.setShipGridCenter(sp)
+
+    let sps = shipPartSpawners.create()
+    sps.x = 600
+    sps.y = 20
+    sps = shipPartSpawners.create()
+    sps.x = 600
+    sps.y = 400
 
     // camera?
     ctx.camera.x = 50
@@ -93,7 +116,13 @@ export class GameContext {
 
     ctx.splash = new SplashScreen()
     ctx.splash.init(this.sge, 'prariesnailgames', () => {
-      menuStart.slideIn()
+      if (skipMainMenu) {
+        menuStart.slideOut()
+        uiMode.setMode('game')
+      } else {
+        menuStart.slideIn()
+      }
+
       this.rootContainer.visible = true
       //this.rootContainerUI.visible = true
     })
@@ -104,6 +133,14 @@ export class GameContext {
 
     ctx.sge.onResize = () => {
       menuQuickSettings.onResize()
+    }
+  }
+
+  toggleZoom() {
+    let ctx = getContext()
+    ctx.camera.scale++
+    if (ctx.camera.scale === 3) {
+      ctx.camera.scale = 1
     }
   }
 
@@ -133,7 +170,12 @@ export class GameContext {
     menuQuickSettings.update(elapsedTimeSec)
     buttons.updateAll(elapsedTimeSec)
 
-    players.updateAll()
+    asteroids.updateAll(elapsedTimeSec)
+    // players.updateAll()
+
+    shipParts.updateAll(elapsedTimeSec)
+    shipPartSpawners.updateAll(elapsedTimeSec)
+    smashedParts.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

@@ -15,6 +15,8 @@ export function preload(sge) {
     'credits',
     'instructions',
     'title',
+    'ship-001',
+    'starfield-001',
   ])
   sge.preloadSpriteSheets([
     //'test-tileset',

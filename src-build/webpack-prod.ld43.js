@@ -6,6 +6,6 @@ var config = webpack_common_1.buildConfig('production', {
     port: 8889,
     debug: false,
     inScript: 'game-ludum-dare-43.ts',
-    outDir: 'shelter'
+    outDir: 'ludumDare43'
 }, currentGame_1.settings);
 exports["default"] = config;
