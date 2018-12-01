@@ -10,6 +10,11 @@ interface IShipPart {
   anim: anim.IAnim
   isFree: boolean
   isDead: boolean
+
+  aLeft: IShipPart
+  aRight: IShipPart
+  aTop: IShipPart
+  aBottom: IShipPart
 }
 let items: IShipPart[] = []
 
@@ -55,6 +60,10 @@ export function create() {
     anim: anim.create(),
     isFree: true,
     isDead: false,
+    aBottom: null,
+    aTop: null,
+    aLeft: null,
+    aRight: null,
   }
 
   let sprite = ctx.createSprite('ship-001', engine.frame, 0.5, 0.5, 1)
@@ -113,7 +122,7 @@ export function updateAll(elapsedTimeSec) {
   _.forEach(items, (c) => {
     if (!c.isFree) {
       // See if we collide with the tractored part
-      let r = 32 / 2
+      let r = 32 / 2 - 1
       if (tractoredPart) {
         if (
           checkCirclesCollide(
@@ -125,10 +134,43 @@ export function updateAll(elapsedTimeSec) {
             r
           )
         ) {
-          // connect it!
-          tractoredPart.isFree = false
-          tractoredPart.anim.sprite.tint = 0xff999999
-          tractoredPart = null
+          // whats the closest side?
+          let attach = null
+          let ox = 0
+          let oy = 0
+          let dx = tractoredPart.anim.sprite.x - c.anim.sprite.x
+          let adx = Math.abs(dx)
+          let dy = tractoredPart.anim.sprite.y - c.anim.sprite.y
+          let ady = Math.abs(dy)
+
+          if (adx > ady) {
+            if (dx > 0) {
+              attach = 'aRight'
+              ox = 32
+            } else {
+              attach = 'aLeft'
+              ox = -32
+            }
+          } else {
+            if (dy > 0) {
+              attach = 'aBottom'
+              oy = 32
+            } else {
+              attach = 'aTop'
+              oy = -32
+            }
+          }
+
+          if (!c[attach]) {
+            // Nothing already attached
+            // connect it!
+            c[attach] = tractoredPart
+            tractoredPart.isFree = false
+            tractoredPart.anim.sprite.tint = 0xff999999
+            tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
+            tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
+            tractoredPart = null
+          }
         }
       }
     }
