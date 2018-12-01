@@ -6,6 +6,7 @@ import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 import * as cameras from 'engine/camera/cameras'
 import * as asteroids from './asteroids'
+import * as smashedParts from './smashedParts'
 
 interface IShipPart {
   anim: anim.IAnim
@@ -186,6 +187,9 @@ export function updateAll(elapsedTimeSec) {
   let r = 32 / 2 - 1
   if (tractoredPart) {
     _.forEach(asteroids.getAll(), (d) => {
+      if (d.isDead) {
+        return
+      }
       if (
         checkCirclesCollide(
           tractoredPart.anim.sprite.x,
@@ -196,17 +200,25 @@ export function updateAll(elapsedTimeSec) {
           r * d.data.size
         )
       ) {
-        tractoredPart.isDead = true
-        d.isDead = true
+        smash(tractoredPart)
+        asteroids.smash(d)
+        // tractoredPart.isDead = true
+        // d.isDead = true
         cameras.shake(ctx.camera, 0.25, 2)
       }
     })
   }
 
   _.forEach(items, (c) => {
+    if (c.isDead) {
+      return
+    }
     if (!c.isFree) {
       // See if we collide with asteroids
       _.forEach(asteroids.getAll(), (d) => {
+        if (d.isDead) {
+          return
+        }
         if (
           checkCirclesCollide(
             c.anim.sprite.x,
@@ -219,8 +231,10 @@ export function updateAll(elapsedTimeSec) {
         ) {
           cameras.shake(ctx.camera, 0.25, 5)
 
-          c.isDead = true
-          d.isDead = true
+          smash(c)
+          asteroids.smash(d)
+          // c.isDead = true
+          // d.isDead = true
           // TODO break apart ship
 
           let sg = safeGetShipGrid(c.bx - 1, c.by)
@@ -334,6 +348,13 @@ export function updateAll(elapsedTimeSec) {
       }
     }
   })
+}
+
+export function smash(c: IShipPart) {
+  if (!c.isDead) {
+    smashedParts.create(c.anim.sprite)
+    c.isDead = true
+  }
 }
 
 export function removeDead() {

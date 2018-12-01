@@ -99,19 +99,21 @@ export function updateAll(elapsedTimeSec) {
   })
 
   // Testing
-  const testMode = true
+  const testMode = false
   if (testMode) {
     _.forEach(items, (c) => {
-      if (!c.isDead) {
-        if (c.anim.sprite.x < mouse.x / 2) {
-          smashedParts.create(c.anim.sprite)
-          c.isDead = true
-        }
-      }
+      smash(c)
     })
   }
 
   removeDead()
+}
+
+export function smash(c: IAsteroid) {
+  if (!c.isDead) {
+    smashedParts.create(c.anim.sprite)
+    c.isDead = true
+  }
 }
 
 let spawnTimer = 1
