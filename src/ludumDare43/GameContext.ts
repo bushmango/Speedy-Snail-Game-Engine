@@ -23,6 +23,9 @@ import * as smashedParts from './actors/smashedParts'
 
 import * as starfield from './actors/starfield'
 
+import * as goalPieces from './actors/goalPieces'
+import * as uiGoal from './ui/uiGoal'
+
 let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
@@ -90,6 +93,7 @@ export class GameContext {
 
     menuStart.create()
     menuQuickSettings.create()
+    uiGoal.create()
 
     let sp = shipParts.create()
     sp.isFree = false
@@ -163,7 +167,7 @@ export class GameContext {
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
     // TODO: Get ship velocity
-    let velocity = -0;
+    let velocity = -0
 
     // log.x('update', elapsedTime)
     // log.x('update')
@@ -177,12 +181,15 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    starfield.update(elapsedTimeSec, velocity);
+    starfield.update(elapsedTimeSec, velocity)
     // players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)
     smashedParts.updateAll(elapsedTimeSec)
+
+    uiGoal.updateAll(elapsedTimeSec)
+    goalPieces.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

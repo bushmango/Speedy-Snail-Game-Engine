@@ -23,6 +23,9 @@ interface IShipPart {
   vy: number
 }
 let items: IShipPart[] = []
+export function getAll() {
+  return items
+}
 
 let tractoredPart: IShipPart = null
 let hoveredPart: IShipPart = null
