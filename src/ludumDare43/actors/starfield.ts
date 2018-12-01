@@ -17,6 +17,23 @@ interface IItem {
 
 const items: IItem[] = []
 
+let spawnTimer = 0
+
+function cleanup() {
+  const ctx = getContext()
+
+  for (let i = 0, length = items.length; i < length; i++) {
+    const sprite = items[i].anim.sprite
+
+    if (sprite.x <= -sprite.width) {
+      ctx.layerBelow.removeChild(sprite)
+      items.splice(i, 1)
+      i--
+      length--
+    }
+  }
+}
+
 function createRandom(options) {
   // TODO: Create additional factories that build things like nebulae
   // TODO: Call a random factory, weighted heavily toward stars
@@ -33,14 +50,35 @@ function createStar(options) {
     type: EItemType.Star,
   }
 
-  // TODO: Create sprite and attach it to ctx.layerBelow
-  // TODO: Set sprite position via options.x and options.y
+  const scale = _.random(0.0125, 1),
+        spriteNumber = _.random(1, 4)
+
+  const frame = spriteUtil.frame32(1, spriteNumber),
+        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+
+  item.anim.sprite = sprite
+
+  // XXX: Placeholder
+  // TODO: Improve
+  sprite.tint = Math.random() * 0xFFFFFF
+
+  return _create(item, options)
+}
+
+function _create(item, options) {
+  const ctx = getContext(),
+        sprite = item.anim.sprite
+
+  sprite.x = options.x
+  sprite.y = options.y
+
+  ctx.layerBelow.addChild(sprite)
 
   return item
 }
 
 export function initialize() {
-  const count = _.random(0, 25)
+  const count = _.random(100, 200)
 
   for (let i = 0; i < count; i++) {
     spawnAnywhere()
@@ -77,6 +115,7 @@ function spawnAnywhere() {
 export function updateAll(elapsedTimeSec, velocity) {
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
+  cleanup()
 }
 
 function updateItems(elapsedTimeSec, velocity) {
@@ -86,7 +125,6 @@ function updateItems(elapsedTimeSec, velocity) {
   })
 }
 
-let spawnTimer = 0
 function updateSpawner(elapsedTimeSec, velocity) {
   spawnTimer += elapsedTimeSec
 
