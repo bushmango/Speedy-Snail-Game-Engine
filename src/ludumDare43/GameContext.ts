@@ -91,6 +91,7 @@ export class GameContext {
 
     let sp = shipParts.create()
     sp.isFree = false
+    sp.isCore = true // Most important piece!
     sp.anim.sprite.x = 200
     sp.anim.sprite.y = 200
     shipParts.setShipGridCenter(sp)
