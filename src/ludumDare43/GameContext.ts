@@ -21,6 +21,8 @@ import * as shipPartSpawners from './actors/shipPartSpawners'
 import * as asteroids from './actors/asteroids'
 import * as smashedParts from './actors/smashedParts'
 
+import * as starfield from './actors/starfield'
+
 let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
@@ -160,6 +162,9 @@ export class GameContext {
     let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
+    // TODO: Get ship velocity
+    let velocity = -0;
+
     // log.x('update', elapsedTime)
     // log.x('update')
 
@@ -172,6 +177,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
+    starfield.update(elapsedTimeSec, velocity);
     // players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)
