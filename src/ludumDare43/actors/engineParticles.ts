@@ -9,6 +9,7 @@ import * as log from 'engine/log'
 
 let particleEmitter1: ParticleEmitter = null
 let smokeTimeLeft = 0
+let checkDestroyTimeLeft = 0
 
 export function create() {
   let ctx = getContext()
@@ -28,6 +29,7 @@ export function updateAll(elapsedTimeSec) {
   // }
 
   smokeTimeLeft -= elapsedTimeSec
+  checkDestroyTimeLeft -= elapsedTimeSec
 
   if (smokeTimeLeft < 0) {
     _.forEach(shipParts.getAll(), (c: shipParts.IShipPart) => {
@@ -41,6 +43,20 @@ export function updateAll(elapsedTimeSec) {
       }
     })
     smokeTimeLeft = _.random(0.01, 0.3)
+  }
+
+  if (checkDestroyTimeLeft < 0) {
+    checkDestroyTimeLeft = 1
+    _.forEach(shipParts.getAll(), (c: shipParts.IShipPart) => {
+      if (!c.isDead && !c.isFree && c.data.enginePower > 0) {
+        // Get space behind
+        let sg = shipParts.safeGetShipGrid(c.bx - 1, c.by)
+        if (sg) {
+          // Heh, bad idea
+          shipParts.destroyFixedPiece(sg)
+        }
+      }
+    })
   }
 
   particleEmitter1.update(elapsedTimeSec)

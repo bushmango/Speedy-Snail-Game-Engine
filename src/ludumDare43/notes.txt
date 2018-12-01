@@ -1,7 +1,7 @@
-- big asteroid split
+x big asteroid split
 - gun part
 - zones
-- engine particles
+x engine particles
 - engines destroy behind
 
 
