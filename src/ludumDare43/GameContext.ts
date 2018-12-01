@@ -51,6 +51,7 @@ export class GameContext {
   layerParticles: PIXI.Container
   layerPlayer: PIXI.Container
   layerAbove: PIXI.Container
+  layerBelow: PIXI.Container
   layerUi: PIXI.Container
   layerDetectors: PIXI.Container
   layerDebugGraphics: PIXI.Container
@@ -79,6 +80,7 @@ export class GameContext {
     ctx.rootContainer = new PIXI.Container()
 
     ctx.camera = cameras.create()
+    ctx.layerBelow = cameras.addLayer(ctx.camera)
     ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
     ctx.layerAbove = cameras.addLayer(ctx.camera)
@@ -108,6 +110,8 @@ export class GameContext {
     sps = shipPartSpawners.create()
     sps.x = 600
     sps.y = 400
+
+    starfield.initialize()
 
     // camera?
     ctx.camera.x = 50
@@ -181,7 +185,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    starfield.update(elapsedTimeSec, velocity)
+    starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
 
     shipParts.updateAll(elapsedTimeSec)
