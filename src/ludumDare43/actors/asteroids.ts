@@ -117,16 +117,18 @@ export function smash(c: IAsteroid) {
 }
 
 let spawnTimer = 1
+let spawnerEnabled = false
 export function updateSpawner(elapsedTimeSec) {
   let ctx = getContext()
   let view = ctx.sge.getViewSize()
-
-  spawnTimer += elapsedTimeSec
-  if (spawnTimer > 1) {
-    let asteroid = create(_.sample(datas))
-    asteroid.anim.sprite.x = view.width / 2
-    asteroid.anim.sprite.y = _.random(0, view.height / 2)
-    spawnTimer = 0
+  if (spawnerEnabled) {
+    spawnTimer += elapsedTimeSec
+    if (spawnTimer > 1) {
+      let asteroid = create(_.sample(datas))
+      asteroid.anim.sprite.x = view.width / 2
+      asteroid.anim.sprite.y = _.random(0, view.height / 2)
+      spawnTimer = 0
+    }
   }
 }
 

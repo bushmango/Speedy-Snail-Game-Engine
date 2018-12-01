@@ -25,6 +25,7 @@ interface IShipPart {
 let items: IShipPart[] = []
 
 let tractoredPart: IShipPart = null
+let hoveredPart: IShipPart = null
 
 let shipGrid: IShipPart[] = []
 let maxShipGridX = 9
@@ -138,13 +139,21 @@ export function create(data: IShipPartData = shipPart1) {
   sprite.buttonMode = true
   sprite.on('mouseover', () => {
     if (item.isFree) {
-      sprite.tint = 0xcccccccc
+      sprite.tint = 0xcccccc
       tractoredPart = item
+    } else {
+      sprite.tint = 0xff0000
+      hoveredPart = item
     }
   })
   sprite.on('mouseout', () => {
     if (item.isFree) {
       sprite.tint = 0xffffffff
+    } else {
+      sprite.tint = 0xffffffff
+      if (hoveredPart === item) {
+        hoveredPart = null
+      }
     }
   })
 
@@ -159,6 +168,13 @@ export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
   let mouse = ctx.sge.getMouse()
+
+  if (mouse.isRightDown) {
+    if (hoveredPart && !hoveredPart.isDead) {
+      smash(hoveredPart)
+      hoveredPart = null
+    }
+  }
 
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
