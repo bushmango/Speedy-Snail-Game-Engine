@@ -120,7 +120,7 @@ export function updateAll(elapsedTimeSec) {
       (c: shipParts.IShipPart) =>
         c.isFree && !c.isDead && c.data.enginePower > 0
     )
-    if (engine) {
+    if (engine && !goats.getItem().isFree) {
       helpEngine.text.text = 'Drag this [ENGINE] to your ship!'
       setTarget(helpEngine, engine.anim.sprite)
     }

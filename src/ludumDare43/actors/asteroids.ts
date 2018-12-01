@@ -92,10 +92,16 @@ export function updateAll(elapsedTimeSec) {
 
   updateSpawner(elapsedTimeSec)
 
+  let stats = ctx.stats.getCurrentStats()
+  let asteroidSpeed = 0
+  if (stats.speed > 0) {
+    asteroidSpeed += stats.speed * 75
+  }
+
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
     c.anim.sprite.rotation += c.vr * elapsedTimeSec
-    c.anim.sprite.x -= 50 * elapsedTimeSec
+    c.anim.sprite.x -= asteroidSpeed * elapsedTimeSec
 
     if (c.anim.sprite.x < 0) {
       c.isDead = true
@@ -125,9 +131,10 @@ let spawnerEnabled = true
 export function updateSpawner(elapsedTimeSec) {
   let ctx = getContext()
   let view = ctx.sge.getViewSize()
+  let stats = ctx.stats.getCurrentStats()
   if (spawnerEnabled) {
     spawnTimer += elapsedTimeSec
-    if (spawnTimer > 1) {
+    if (spawnTimer > 1 && stats.speed > 0) {
       let asteroid = create(_.sample(datas))
       asteroid.anim.sprite.x = view.width / 2
       asteroid.anim.sprite.y = _.random(0, view.height / 2)
