@@ -353,7 +353,7 @@ function tryConnectToCore(c: IShipPart, dir) {
     case 2:
       oy = 1
       break
-    case 2:
+    case 3:
       ox = -1
       break
   }
