@@ -1,17 +1,17 @@
 import { _ } from 'engine/importsEngine'
-import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
-import { KeyCodes, Keyboard } from 'engine/input/Keyboard'
 
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
-import * as tween from '../../engine/anim/tween'
+import * as cameras from 'engine/camera/cameras'
 
 interface IShipPart {
   anim: anim.IAnim
 }
 let items: IShipPart[] = []
+
+let tractoredPart: IShipPart = null
 
 interface IShipPartData {
   name: string
@@ -53,13 +53,14 @@ export function create() {
     anim: anim.create(),
   }
 
-  let sprite = ctx.createSprite('ship-001', engine.frame, 0.5, 0.5, 2)
+  let sprite = ctx.createSprite('ship-001', engine.frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
   sprite.interactive = true
   sprite.buttonMode = true
   sprite.on('mouseover', () => {
     sprite.tint = 0xcccccccc
+    tractoredPart = item
   })
   sprite.on('mouseout', () => {
     sprite.tint = 0xffffffff
@@ -75,10 +76,19 @@ export function create() {
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
+  let mouse = ctx.sge.getMouse()
 
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
 
-    c.anim.sprite.x -= elapsedTimeSec * 50
+    if (tractoredPart === c) {
+      let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+      c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
+      c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
+    } else {
+      c.anim.sprite.x -= elapsedTimeSec * 50
+    }
+
+    // Destroy if off screen!!
   })
 }
