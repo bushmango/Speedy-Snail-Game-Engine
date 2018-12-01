@@ -51,7 +51,7 @@ function spawn(x, y) {
   const options = {
     x,
     y,
-  };
+  }
 
   return createRandom(options)
 }
@@ -76,17 +76,17 @@ function spawnAnywhere() {
 
 export function updateAll(elapsedTimeSec, velocity) {
   updateSpawner(elapsedTimeSec, velocity)
-  updateItems(elapsedTimeSec, velocity);
+  updateItems(elapsedTimeSec, velocity)
 }
 
 function updateItems(elapsedTimeSec, velocity) {
   _.forEach(items, (c) => {
     // TODO: Animate c.anim.sprite based on velocity / c.distance
     // TODO: Switch on c.type and perform type-specific animations
-  });
+  })
 }
 
-let spawnTimer = 0;
+let spawnTimer = 0
 function updateSpawner(elapsedTimeSec, velocity) {
   spawnTimer += elapsedTimeSec
 
@@ -96,7 +96,7 @@ function updateSpawner(elapsedTimeSec, velocity) {
 
   // XXX: Linear relationship, works best if velocity is small, e.g. 0-5
   // TODO: Smarter maths
-  const targetTime = 1 / velocity;
+  const targetTime = 1 / velocity
 
   if (elapsedTimeSec >= targetTime) {
     const item = spawnAhead()
