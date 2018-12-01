@@ -43,6 +43,7 @@ export function updateAll(elapsedTimeSec) {
   let kb = ctx.sge.keyboard
 
   _.forEach(items, (c) => {
+    
     c.elapsedSec += elapsedTimeSec
 
     c.anim.sprite.x = c.x + 20

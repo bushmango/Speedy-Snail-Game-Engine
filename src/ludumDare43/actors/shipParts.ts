@@ -8,6 +8,8 @@ import * as cameras from 'engine/camera/cameras'
 
 interface IShipPart {
   anim: anim.IAnim
+  isFree: boolean
+  isDead: boolean
 }
 let items: IShipPart[] = []
 
@@ -51,6 +53,8 @@ export function create() {
   log.x('create ship part')
   let item: IShipPart = {
     anim: anim.create(),
+    isFree: true,
+    isDead: false,
   }
 
   let sprite = ctx.createSprite('ship-001', engine.frame, 0.5, 0.5, 1)
@@ -59,11 +63,15 @@ export function create() {
   sprite.interactive = true
   sprite.buttonMode = true
   sprite.on('mouseover', () => {
-    sprite.tint = 0xcccccccc
-    tractoredPart = item
+    if (item.isFree) {
+      sprite.tint = 0xcccccccc
+      tractoredPart = item
+    }
   })
   sprite.on('mouseout', () => {
-    sprite.tint = 0xffffffff
+    if (item.isFree) {
+      sprite.tint = 0xffffffff
+    }
   })
 
   ctx.layerPlayer.addChild(sprite)
@@ -81,14 +89,73 @@ export function updateAll(elapsedTimeSec) {
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
 
-    if (tractoredPart === c) {
-      let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
-      c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
-      c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
+    if (c.isFree) {
+      if (tractoredPart === c) {
+        let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+        c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
+        c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
+      } else {
+        c.anim.sprite.x -= elapsedTimeSec * 50
+
+        if (c.anim.sprite.x < 0) {
+          c.isDead = true
+        }
+      }
     } else {
-      c.anim.sprite.x -= elapsedTimeSec * 50
+      // part of ship
     }
 
     // Destroy if off screen!!
   })
+
+  removeDead()
+
+  _.forEach(items, (c) => {
+    if (!c.isFree) {
+      // See if we collide with the tractored part
+      let r = 32 / 2
+      if (tractoredPart) {
+        if (
+          checkCirclesCollide(
+            c.anim.sprite.x,
+            c.anim.sprite.y,
+            r,
+            tractoredPart.anim.sprite.x,
+            tractoredPart.anim.sprite.y,
+            r
+          )
+        ) {
+          // connect it!
+          tractoredPart.isFree = false
+          tractoredPart.anim.sprite.tint = 0xff999999
+          tractoredPart = null
+        }
+      }
+    }
+  })
+}
+
+export function removeDead() {
+  let ctx = getContext()
+  for (let i = 0; i < items.length; i++) {
+    let c = items[i]
+    if (c.isDead) {
+      log.x('kill ship part', c)
+      ctx.layerPlayer.removeChild(c.anim.sprite)
+      items.splice(i, 1)
+      i--
+    }
+  }
+}
+
+function checkCirclesCollide(x1, y1, r1, x2, y2, r2) {
+  let dx = x2 - x1
+  let dx2 = dx * dx
+  let dy = y2 - y1
+  let dy2 = dy * dy
+
+  let rc = r1 + r2
+  let rc2 = rc * rc
+
+  return dx2 + dy2 < rc2
 }

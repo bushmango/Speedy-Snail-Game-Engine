@@ -85,6 +85,11 @@ export class GameContext {
     menuStart.create()
     menuQuickSettings.create()
 
+    let sp = shipParts.create()
+    sp.isFree = false
+    sp.anim.sprite.x = 200
+    sp.anim.sprite.y = 200
+
     let sps = shipPartSpawners.create()
     sps.x = 600
     sps.y = 20
