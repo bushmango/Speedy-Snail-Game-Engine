@@ -15,8 +15,12 @@ import * as cameras from 'engine/camera/cameras'
 import * as stats from './misc/stats'
 import * as uiMode from './ui/uiMode'
 
+import * as shipParts from './actors/shipParts'
+import * as shipPartSpawners from './actors/shipPartSpawners'
+
 let debugCollision = false
 let skipSplashScreen = true
+let skipMainMenu = true
 let currentContext: GameContext = null
 export function getContext() {
   return currentContext
@@ -79,6 +83,13 @@ export class GameContext {
     menuStart.create()
     menuQuickSettings.create()
 
+    let sps = shipPartSpawners.create()
+    sps.x = 600
+    sps.y = 200
+    sps = shipPartSpawners.create()
+    sps.x = 600
+    sps.y = 400
+
     // camera?
     ctx.camera.x = 50
     ctx.camera.y = 50
@@ -93,7 +104,13 @@ export class GameContext {
 
     ctx.splash = new SplashScreen()
     ctx.splash.init(this.sge, 'prariesnailgames', () => {
-      menuStart.slideIn()
+      if (skipMainMenu) {
+        menuStart.slideOut()
+        uiMode.setMode('game')
+      } else {
+        menuStart.slideIn()
+      }
+
       this.rootContainer.visible = true
       //this.rootContainerUI.visible = true
     })
@@ -134,6 +151,9 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     players.updateAll()
+
+    shipParts.updateAll(elapsedTimeSec)
+    shipPartSpawners.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {
