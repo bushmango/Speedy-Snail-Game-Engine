@@ -12,6 +12,7 @@ export interface IShipPartData {
   enginePower?: number
   notSpawnable?: boolean
   damagesTo?: IShipPartData
+  clickTo?: IShipPartData
   special?: string
 }
 
@@ -102,6 +103,32 @@ let crate1: IShipPartData = {
   special: 'snails',
 }
 datas.push(crate1)
+
+let rocketEmpty: IShipPartData = {
+  name: 'rocket-1e',
+  frame: spriteUtil.frame32(2, 6),
+  mass: 2,
+  notSpawnable: true,
+  special: 'rocket-spent',
+}
+datas.push(rocketEmpty)
+
+let rocket: IShipPartData = {
+  name: 'rocket-1',
+  frame: spriteUtil.frame32(2, 5),
+  mass: 2,
+  special: 'rocket',
+  clickTo: rocketEmpty,
+}
+datas.push(rocket)
+
+let laser: IShipPartData = {
+  name: 'laser-1',
+  frame: spriteUtil.frame32(2, 7),
+  mass: 2,
+  special: 'laser',
+}
+datas.push(laser)
 
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 

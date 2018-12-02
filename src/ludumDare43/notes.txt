@@ -1,9 +1,12 @@
 x big asteroid split
 - gun part
+- rocket part
 - zones
 x engine particles
-- engines destroy behind
-
+x engines destroy behind
+x crate with snails
+- deliver snails?
+- crate with potatoes?
 
 - rotate selected parts?
 - animate snapping parts together?

@@ -32,6 +32,7 @@ import * as coreSpawner from './actors/coreSpawner'
 import * as engineParticles from './actors/engineParticles'
 
 import * as debris from './actors/debris'
+import * as rockets from './actors/rockets'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -189,6 +190,15 @@ export class GameContext {
     // log.x('update', elapsedTime)
     // log.x('update')
 
+    let mouse = ctx.sge.getMouse()
+    if (mouse.isLeftJustDown) {
+      // Rocket test
+      // let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+      // let c = rockets.create()
+      // c.anim.sprite.x = cx
+      // c.anim.sprite.y = cy
+    }
+
     ctx.splash.update()
 
     // parallaxLayers.updateLayers(ctx);
@@ -216,6 +226,7 @@ export class GameContext {
     engineParticles.updateAll(elapsedTimeSec)
 
     debris.updateAll(elapsedTimeSec)
+    rockets.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

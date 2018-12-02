@@ -8,6 +8,8 @@ import * as asteroids from './asteroids'
 import * as smashedParts from './smashedParts'
 import * as goats from './goats'
 import * as debris from './debris'
+import * as utils from './utils'
+import * as rockets from './rockets'
 
 import {
   IShipPartData,
@@ -125,10 +127,34 @@ export function create(data: IShipPartData = shipPart1) {
   return item
 }
 
+export function switchDataTo(c: IShipPart, data: IShipPartData) {
+  c.data = data
+  c.anim.sprite.texture.frame = data.frame
+}
+
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
   let mouse = ctx.sge.getMouse()
+
+  if (mouse.isLeftJustDown) {
+    if (hoveredPart && !hoveredPart.isDead) {
+      //destroyFixedPiece(hoveredPart)
+      //hoveredPart = null
+
+      if (hoveredPart.data.special === 'rocket') {
+        switchDataTo(hoveredPart, hoveredPart.data.clickTo)
+        let i = rockets.create('rocket')
+        anim.copyPosition(i.anim, hoveredPart.anim)
+      }
+      if (hoveredPart.data.special === 'laser') {
+        //switchDataTo(hoveredPart, hoveredPart.data.clickTo)
+        let i = rockets.create('laser')
+        anim.copyPosition(i.anim, hoveredPart.anim)
+        i.anim.sprite.x += 16
+      }
+    }
+  }
 
   if (mouse.isRightDown) {
     if (hoveredPart && !hoveredPart.isDead) {
@@ -171,7 +197,7 @@ export function updateAll(elapsedTimeSec) {
         return
       }
       if (
-        checkCirclesCollide(
+        utils.checkCirclesCollide(
           tractoredPart.anim.sprite.x,
           tractoredPart.anim.sprite.y,
           r,
@@ -199,7 +225,7 @@ export function updateAll(elapsedTimeSec) {
         let goat = goats.getItem()
         if (goat.isPickedUp) {
           if (
-            checkCirclesCollide(
+            utils.checkCirclesCollide(
               c.anim.sprite.x,
               c.anim.sprite.y,
               r,
@@ -224,7 +250,7 @@ export function updateAll(elapsedTimeSec) {
           return
         }
         if (
-          checkCirclesCollide(
+          utils.checkCirclesCollide(
             c.anim.sprite.x,
             c.anim.sprite.y,
             r,
@@ -263,7 +289,7 @@ export function updateAll(elapsedTimeSec) {
       // See if we collide with the tractored part
       if (tractoredPart && !tractoredPart.isDead) {
         if (
-          checkCirclesCollide(
+          utils.checkCirclesCollide(
             c.anim.sprite.x,
             c.anim.sprite.y,
             r,
@@ -336,6 +362,8 @@ export function updateAll(elapsedTimeSec) {
               tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
               tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
               safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)
+
+              hoveredPart = tractoredPart
               tractoredPart = null
 
               getContext().sfx.playPartConnected()
@@ -354,8 +382,7 @@ export function destroyFixedPiece(c: IShipPart) {
     getContext().sfx.playPartDestroyed()
 
     if (c.data.damagesTo) {
-      c.data = c.data.damagesTo
-      c.anim.sprite.texture.frame = c.data.frame
+      switchDataTo(c, c.data.damagesTo)
       return
     }
 
@@ -496,24 +523,6 @@ export function removeDead() {
       i--
     }
   }
-}
-
-function checkCirclesCollide(x1, y1, r1, x2, y2, r2) {
-  let dx = x2 - x1
-  let dx2 = dx * dx
-  let dy = y2 - y1
-  let dy2 = dy * dy
-
-  let rc = r1 + r2
-  let rc2 = rc * rc
-
-  return dx2 + dy2 < rc2
-}
-
-function getDistanceSimple(x1, y1, x2, y2) {
-  let dx = Math.abs(x2 - x1)
-  let dy = Math.abs(y2 - y1)
-  return dx + dy
 }
 
 function getDistanceSimple2(x1, y1, x2, y2) {

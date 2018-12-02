@@ -25,6 +25,11 @@ export function create(sprite: PIXI.Sprite = null): IAnim {
   }
 }
 
+export function copyPosition(a: IAnim, b: IAnim) {
+  a.sprite.x = b.sprite.x
+  a.sprite.y = b.sprite.y
+}
+
 export function playAnim(anim: IAnim, animData: IAnimData, force = false) {
   if (!animData.textures) {
     animData.textures = _.map(animData.frames, (c) => {
