@@ -15,6 +15,8 @@ interface IItem {
   type: EItemType,
 }
 
+const distances = new Map();
+
 const items: IItem[] = []
 
 let spawnTimer = 0
@@ -27,7 +29,9 @@ function cleanup() {
 
     if (sprite.x <= -sprite.width) {
       ctx.layerBelow.removeChild(sprite)
+      distances.delete(sprite)
       items.splice(i, 1)
+
       i--
       length--
     }
@@ -42,7 +46,7 @@ function createRandom(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-        distance = _.random(0, 1)
+        distance = _.random(1, 64)
 
   const item : IItem = {
     anim: anim.create(),
@@ -50,17 +54,18 @@ function createStar(options) {
     type: EItemType.Star,
   }
 
-  const scale = _.random(0.0125, 1),
+  const scale = 1 / Math.max(1, distance / 8),
         spriteNumber = _.random(1, 4)
 
   const frame = spriteUtil.frame32(1, spriteNumber),
-        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
   // XXX: Placeholder
   // TODO: Improve
   sprite.tint = Math.random() * 0xFFFFFF
+  sprite.rotation = Math.random() * 2 * Math.PI
 
   return _create(item, options)
 }
@@ -72,7 +77,11 @@ function _create(item, options) {
   sprite.x = options.x
   sprite.y = options.y
 
+  distances.set(sprite, item.distance);
+
   ctx.layerBelow.addChild(sprite)
+
+  items.push(item)
 
   return item
 }
@@ -83,6 +92,17 @@ export function initialize() {
   for (let i = 0; i < count; i++) {
     spawnAnywhere()
   }
+
+  sortLayerChildren()
+}
+
+/**
+ * In lieu of creating multiple layers, we can sort children by their distances when needed.
+ */
+function sortLayerChildren() {
+  const ctx = getContext()
+
+  ctx.layerBelow.children.sort((a, b) => distances.get(a) - distances.get(b))
 }
 
 function spawn(x, y) {
@@ -120,8 +140,9 @@ export function updateAll(elapsedTimeSec, velocity) {
 
 function updateItems(elapsedTimeSec, velocity) {
   _.forEach(items, (c) => {
-    // TODO: Animate c.anim.sprite based on velocity / c.distance
-    // TODO: Switch on c.type and perform type-specific animations
+    c.anim.sprite.x -= velocity / c.distance
+
+    // TODO: Switch on c.type and perform type-specific animations, e.g. twinkle the stars
   })
 }
 
@@ -138,7 +159,7 @@ function updateSpawner(elapsedTimeSec, velocity) {
 
   if (elapsedTimeSec >= targetTime) {
     const item = spawnAhead()
-    items.push(item)
+    sortLayerChildren()
     spawnTimer = 0
   }
 }
