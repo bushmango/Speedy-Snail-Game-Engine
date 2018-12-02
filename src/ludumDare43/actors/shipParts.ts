@@ -170,6 +170,14 @@ export function updateAll(elapsedTimeSec) {
     }
   }
 
+  if (mouse.isRightDown) {
+    if (hoveredPart && !hoveredPart.isDead) {
+      // destroyFixedPiece(hoveredPart)
+      // hoveredPart = null
+      jettisonPiece(hoveredPart)
+    }
+  }
+
   // if (mouse.isRightDown) {
   //   if (hoveredPart && !hoveredPart.isDead) {
   //     destroyFixedPiece(hoveredPart)

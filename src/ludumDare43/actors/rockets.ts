@@ -80,7 +80,7 @@ export function updateAll(elapsedTimeSec) {
   let mouse = ctx.sge.getMouse()
   _.forEach(items, (c) => {
     c.elapsedSec += elapsedTimeSec
-    if (c.elapsedSec > 7) {
+    if (c.elapsedSec > 15) {
       c.isDead = true
     }
     anim.update(c.anim, elapsedTimeSec)
