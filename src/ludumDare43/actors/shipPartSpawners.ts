@@ -59,8 +59,7 @@ export function updateAll(elapsedTimeSec) {
   // Debris spawns
   if (curZone.debrisPartsList) {
     debrisSpawnTimer += elapsedTimeSec
-    if(debrisSpawnTimer > curZone.debrisSpawnTate) {
-      
+    if (debrisSpawnTimer > curZone.debrisSpawnRate) {
     }
   }
 
