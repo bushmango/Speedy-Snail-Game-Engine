@@ -10,6 +10,8 @@ import * as shipParts from './../actors/shipParts'
 import * as coreSpawner from './../actors/coreSpawner'
 import * as goats from './../actors/goats'
 
+import * as chroma from 'chroma-js'
+
 interface IGoalPieceMarker {
   anim: anim.IAnim
 }
@@ -21,8 +23,78 @@ var animDefault: anim.IAnimData = {
 }
 
 let ui = {
-  textSpeed: null as PIXI.extras.BitmapText,
-  textMass: null as PIXI.extras.BitmapText,
+  //textSpeed: null as PIXI.extras.BitmapText,
+  //textMass: null as PIXI.extras.BitmapText,
+  statSpeed: null as IStatUI,
+  statMass: null as IStatUI,
+}
+
+interface IStatUI {
+  container: PIXI.Container
+  spriteBackground: PIXI.Sprite
+  spriteUnits: PIXI.Sprite
+  spriteLabel: PIXI.Sprite
+  text: PIXI.extras.BitmapText
+}
+
+let statItems: IStatUI[] = []
+function createStatUi(x, a, b, c, d, e, f) {
+  let ctx = getContext()
+  let item: IStatUI = {
+    container: new PIXI.Container(),
+    spriteBackground: null,
+    spriteUnits: null,
+    spriteLabel: null,
+    text: null,
+  }
+
+  item.text = new PIXI.extras.BitmapText(`0.000`, {
+    font: '20px defaultfont',
+    align: 'left',
+  })
+  item.text.anchor = new PIXI.Point(0, 0)
+  item.text.x = 120
+  item.text.y = 6
+
+  item.container.x = x
+  item.container.y = 0
+
+  item.spriteBackground = ctx.createSprite(
+    '512-32-gui',
+    spriteUtil.frame32(8, 6, 8),
+    0,
+    0,
+    1
+  )
+  item.spriteBackground.tint = chroma('#8CE381').num()
+
+  item.spriteLabel = ctx.createSprite(
+    '512-32-gui',
+    spriteUtil.frame32(a, b, c),
+    0,
+    0,
+    1
+  )
+  item.spriteLabel.x = 10
+
+  item.spriteUnits = ctx.createSprite(
+    '512-32-gui',
+    spriteUtil.frame32(d, e, f),
+    1,
+    0,
+    1
+  )
+  item.spriteUnits.x = 210
+
+  item.container.addChild(item.spriteBackground)
+  item.container.addChild(item.spriteUnits)
+  item.container.addChild(item.spriteLabel)
+  item.container.addChild(item.text)
+
+  ctx.layerUi.addChild(item.container)
+
+  statItems.push(item)
+  return item
 }
 
 export function create() {
@@ -30,23 +102,26 @@ export function create() {
 
   log.x('create ui goal ui')
 
-  ui.textSpeed = new PIXI.extras.BitmapText(`Speed: xyz`, {
-    font: '20px defaultfont',
-    align: 'left',
-  })
-  ui.textSpeed.anchor = new PIXI.Point(0, 0)
-  ctx.layerUi.addChild(ui.textSpeed)
-  ui.textSpeed.x = 200
-  ui.textSpeed.y = 0
+  ui.statSpeed = createStatUi(300, 6, 6, 3, 7, 9, 2)
+  ui.statMass = createStatUi(530, 7, 6, 3, 6, 9, 2)
 
-  ui.textMass = new PIXI.extras.BitmapText(`Mass: xyz`, {
-    font: '20px defaultfont',
-    align: 'left',
-  })
-  ui.textMass.anchor = new PIXI.Point(0, 0)
-  ctx.layerUi.addChild(ui.textMass)
-  ui.textMass.x = 400
-  ui.textMass.y = 0
+  // ui.textSpeed = new PIXI.extras.BitmapText(`Speed: xyz`, {
+  //   font: '20px defaultfont',
+  //   align: 'left',
+  // })
+  // ui.textSpeed.anchor = new PIXI.Point(0, 0)
+  // ctx.layerUi.addChild(ui.textSpeed)
+  // ui.textSpeed.x = 400
+  // ui.textSpeed.y = 0
+
+  // ui.textMass = new PIXI.extras.BitmapText(`Mass: xyz`, {
+  //   font: '20px defaultfont',
+  //   align: 'left',
+  // })
+  // ui.textMass.anchor = new PIXI.Point(0, 0)
+  // ctx.layerUi.addChild(ui.textMass)
+  // ui.textMass.x = 600
+  // ui.textMass.y = 0
 
   log.x('create goal pieces')
 
@@ -85,7 +160,7 @@ export function updateAll(elapsedTimeSec) {
 
   let percentage = stats.distancePercentage
 
-  let y = 35
+  let y = 55
 
   let margin = 30
   let num = goalPieces.getAll().length
@@ -101,8 +176,12 @@ export function updateAll(elapsedTimeSec) {
   anim.update(item.anim, elapsedTimeSec)
 
   // Display stats
-  ui.textMass.text = 'Mass: ' + numeral(stats.mass).format('0.0') + ' tons'
-  ui.textSpeed.text = 'Speed: ' + numeral(stats.speed).format('0.00') + ' ly/s'
+  // ui.textMass.text = 'Mass: ' + numeral(stats.mass).format('0.0') + ' tons'
+  // ui.textSpeed.text = 'Speed: ' + numeral(stats.speed).format('0.00') + ' ly/s'
+  // ui.textMass.text = 'Mass: ' + numeral(stats.mass).format('0.0') + ' tons'
+  //ui.textSpeed.text = 'Speed: ' + numeral(stats.speed).format('0.00') + ' ly/s'
+  ui.statMass.text.text = numeral(stats.mass).format('0.00')
+  ui.statSpeed.text.text = numeral(stats.speed).format('0.00')
 }
 
 function updateGoalPosition(elapsedTimeSec) {
@@ -150,6 +229,11 @@ function updateGoalPosition(elapsedTimeSec) {
     // TODO: do win condition
   }
   let p = d / cur.distanceMax
+
+  _.forEach(statItems, (c) => {
+    //c.u
+    // update?
+  })
 
   ctx.stats.updateStats({
     speed: speed,

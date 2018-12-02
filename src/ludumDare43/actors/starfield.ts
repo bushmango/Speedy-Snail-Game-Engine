@@ -21,7 +21,7 @@ interface IItem {
   type: EItemType,
 }
 
-const distances = new Map();
+const distances = new Map()
 
 const items: IItem[] = []
 
@@ -82,9 +82,9 @@ function createDust(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-        distance = _.random(1, 64)
+    distance = _.random(1, 64)
 
-  const item : IItem = {
+  const item: IItem = {
     anim: anim.create(),
     distance,
     type: EItemType.Star,
@@ -114,12 +114,12 @@ function createStar(options) {
 
 function _create(item, options, layer) {
   const ctx = getContext(),
-        sprite = item.anim.sprite
+    sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
 
-  distances.set(sprite, item.distance);
+  distances.set(sprite, item.distance)
 
   layer.addChild(sprite)
 

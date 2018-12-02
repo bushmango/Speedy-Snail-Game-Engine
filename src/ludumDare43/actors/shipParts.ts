@@ -101,7 +101,9 @@ export function create(data: IShipPartData = shipPart1) {
   sprite.interactive = true
   sprite.buttonMode = true
   sprite.on('mouseover', () => {
-    if (item.isFree) {
+    let goat = goats.getItem()
+
+    if (item.isFree && !goat.isFree) {
       sprite.tint = 0xcccccc
       tractoredPart = item
     } else {
@@ -400,7 +402,7 @@ export function destroyFixedPiece(c: IShipPart) {
 
     // Flood fill core to make sure everything is connected
 
-    if (c.isCore) {
+    if (c.isCore) {      
       goats.eject()
     }
 
