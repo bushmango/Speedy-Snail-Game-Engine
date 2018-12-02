@@ -107,8 +107,8 @@ export function onResize() {
   let { width, height } = ctx.sge.getViewSize()
   _.forEach(item.buttons, (c, cIdx) => {
     c.placeSwitcher = placeSwitcher.create(
-      100 + 175 * cIdx,
-      height - 50,
+      10 + 175 * cIdx,
+      height - 34,
       -200,
       height - 50 + 100
     )
