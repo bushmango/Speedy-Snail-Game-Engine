@@ -402,7 +402,7 @@ export function destroyFixedPiece(c: IShipPart) {
 
     // Flood fill core to make sure everything is connected
 
-    if (c.isCore) {
+    if (c.isCore) {      
       goats.eject()
     }
 

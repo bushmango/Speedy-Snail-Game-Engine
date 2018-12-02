@@ -33,7 +33,7 @@ export function create() {
   log.x('create player goat')
   item = {
     anim: anim.create(),
-    isFree: true,
+    isFree: false,
     isPickedUp: false,
     tx: 0,
     ty: 0,
@@ -62,10 +62,15 @@ export function create() {
   ctx.layerGoat.addChild(item.anim.sprite)
   anim.playAnim(item.anim, animDefault)
 
+  eject()
+
   return item
 }
 
 export function eject() {
+  if (item.isFree) {
+    return
+  }
   item.isFree = true
   item.tx = _.random(50, 300)
 

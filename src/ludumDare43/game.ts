@@ -20,7 +20,7 @@ export function run() {
   log.x('Ludum Dare 43 Game by Prarie Snail Productions and Stevie Bushman')
 
   // Make crisp
-  //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
+  PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
   sge.init()
   sge.createRenderer()

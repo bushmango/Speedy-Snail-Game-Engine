@@ -10,12 +10,12 @@ enum EItemType {
 }
 
 interface IItem {
-  anim: anim.IAnim,
-  distance: number,
-  type: EItemType,
+  anim: anim.IAnim
+  distance: number
+  type: EItemType
 }
 
-const distances = new Map();
+const distances = new Map()
 
 const items: IItem[] = []
 
@@ -46,25 +46,25 @@ function createRandom(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-        distance = _.random(1, 64)
+    distance = _.random(1, 64)
 
-  const item : IItem = {
+  const item: IItem = {
     anim: anim.create(),
     distance,
     type: EItemType.Star,
   }
 
   const scale = 1 / Math.max(1, distance / 8),
-        spriteNumber = _.random(1, 4)
+    spriteNumber = _.random(1, 4)
 
   const frame = spriteUtil.frame32(1, spriteNumber),
-        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
+    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
   // XXX: Placeholder
   // TODO: Improve
-  sprite.tint = Math.random() * 0xFFFFFF
+  sprite.tint = Math.random() * 0xffffff
   sprite.rotation = Math.random() * 2 * Math.PI
 
   return _create(item, options)
@@ -72,12 +72,12 @@ function createStar(options) {
 
 function _create(item, options) {
   const ctx = getContext(),
-        sprite = item.anim.sprite
+    sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
 
-  distances.set(sprite, item.distance);
+  distances.set(sprite, item.distance)
 
   ctx.layerBelow.addChild(sprite)
 
@@ -116,26 +116,29 @@ function spawn(x, y) {
 
 function spawnAhead() {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = view.width + 1,
-        y = _.random(0, view.height)
+    view = ctx.sge.getViewSize(),
+    x = view.width + 1,
+    y = _.random(0, view.height)
 
   return spawn(x, y)
 }
 
 function spawnAnywhere() {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = _.random(0, view.width),
-        y = _.random(0, view.height)
+    view = ctx.sge.getViewSize(),
+    x = _.random(0, view.width),
+    y = _.random(0, view.height)
 
   return spawn(x, y)
 }
 
 export function updateAll(elapsedTimeSec) {
-  const ctx = getContext(),
-        stats = ctx.stats.getCurrentStats(),
-        velocity = stats.speed
+  let ctx = getContext(),
+    stats = ctx.stats.getCurrentStats(),
+    velocity = stats.speed
+
+  // make everything faster
+  velocity *= 4
 
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
