@@ -52,6 +52,6 @@ export function playMusic(song, loop = true, cb: () => void = null) {
 export function play(soundKey) {
   if (!devMute && !settingsGeneric.getSettings().muteSound) {
     log.x('play', soundKey)
-    soundSprite.play(soundKey)
+    return soundSprite.play(soundKey)
   }
 }
