@@ -54,18 +54,22 @@ function createStar(options) {
     type: EItemType.Star,
   }
 
-  const scale = 1 / Math.max(1, distance / 8),
-        spriteNumber = _.random(1, 4)
+  const scale = 1 / Math.max(1, distance / 4)
 
-  const frame = spriteUtil.frame32(1, spriteNumber),
+  const frame = spriteUtil.frame32(1, 1),
         sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
-  // XXX: Placeholder
-  // TODO: Improve
-  sprite.tint = Math.random() * 0xFFFFFF
+  const tint = generateStarTint()
+
   sprite.rotation = Math.random() * 2 * Math.PI
+  sprite.tint = tint
+
+  sprite.filters = [
+    // XXX: new PIXI.filters.GlowFilter(10, 4, 1, tint),
+    new PIXI.filters.BlurFilter(1, 1),
+  ];
 
   return _create(item, options)
 }
@@ -84,6 +88,12 @@ function _create(item, options) {
   items.push(item)
 
   return item
+}
+
+function generateStarTint() {
+  // XXX: Placeholder
+  // TODO: Generate more realistic colors
+  return Math.random() * 0xFFFFFF
 }
 
 export function initialize() {
