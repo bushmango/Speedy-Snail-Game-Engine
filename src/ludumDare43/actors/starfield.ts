@@ -6,6 +6,7 @@ import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 
 import { GlowFilter } from 'pixi-filters'
+import * as utils from './utils'
 
 enum EItemType {
   Dust,
@@ -31,16 +32,13 @@ let dustSpawnTimer = 0,
   starSpawnTimer = 0
 
 function cleanup() {
-  const ctx = getContext(),
-    view = ctx.sge.getViewSize()
+  const ctx = getContext()
+  let cv = ctx.getCameraView()
 
   for (let i = 0, length = items.length; i < length; i++) {
     const sprite = items[i].anim.sprite
 
-    const isAhead = sprite.x > sprite.width + view.width,
-      isBehind = sprite.x <= -sprite.width
-
-    if (isAhead || isBehind) {
+    if (utils.isOffScreen(cv, sprite)) {
       sprite.parent.removeChild(sprite)
       distances.delete(sprite)
       items.splice(i, 1)
@@ -80,7 +78,7 @@ function createDust(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-        distance = _.random(2, 64)
+    distance = _.random(2, 64)
 
   const item: IItem = {
     anim: anim.create(),
@@ -116,7 +114,7 @@ function createStar(options) {
 
 function _create(item, options, layer) {
   const ctx = getContext(),
-        sprite = item.anim.sprite
+    sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
