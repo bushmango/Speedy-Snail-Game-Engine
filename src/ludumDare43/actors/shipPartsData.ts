@@ -18,25 +18,30 @@ export interface IShipPartData {
 
 let datas: IShipPartData[] = []
 let spawnableDatas: IShipPartData[] = []
-let shipPart1: IShipPartData = {
+let core: IShipPartData = {
   name: 'core-1',
   frame: spriteUtil.frame32(1, 1),
   mass: 5,
   notSpawnable: true,
 }
-datas.push(shipPart1)
+datas.push(core)
+export { core }
+
 let shipPart2: IShipPartData = {
   name: 'part-2',
   frame: spriteUtil.frame32(1, 2),
   mass: 1,
 }
 datas.push(shipPart2)
+export { shipPart2 }
+
 let s: IShipPartData = {
   name: 'connector-1',
   frame: spriteUtil.frame32(1, 7),
   mass: 0.5,
 }
 datas.push(s)
+
 let wing: IShipPartData = {
   name: 'wing-1',
   frame: spriteUtil.frame32(2, 1),
@@ -45,6 +50,8 @@ let wing: IShipPartData = {
   mass: 0.5,
 }
 datas.push(wing)
+export { wing }
+
 let wing2: IShipPartData = {
   name: 'wing-2',
   frame: spriteUtil.frame32(3, 1),
@@ -222,4 +229,4 @@ datas.push(laser)
 
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 
-export { datas, shipPart1, spawnableDatas }
+export { datas, spawnableDatas }

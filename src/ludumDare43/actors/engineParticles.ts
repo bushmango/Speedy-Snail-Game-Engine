@@ -69,7 +69,7 @@ export function updateAll(elapsedTimeSec) {
   if (checkDestroyTimeLeft < 0) {
     checkDestroyTimeLeft = 1
     _.forEach(shipParts.getAll(), (c: shipParts.IShipPart) => {
-      if (!c.isDead && !c.isFree && c.data.enginePower > 0) {
+      if (!c.isDead && c.isAttached && c.data.enginePower > 0) {
         // Get space behind
         let sg = shipParts.safeGetShipGrid(c.bx - 1, c.by)
         if (sg) {

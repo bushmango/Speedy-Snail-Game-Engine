@@ -11,12 +11,7 @@ import * as debris from './debris'
 import * as utils from './utils'
 import * as rockets from './rockets'
 
-import {
-  IShipPartData,
-  datas,
-  spawnableDatas,
-  shipPart1,
-} from './shipPartsData'
+import { IShipPartData, datas, spawnableDatas, core } from './shipPartsData'
 import { glCore } from 'pixi.js'
 export { datas, spawnableDatas }
 
@@ -83,7 +78,7 @@ export function safeSetShipGrid(x, y, c: IShipPart) {
   return true
 }
 
-export function create(data: IShipPartData = shipPart1) {
+export function create(data: IShipPartData = core) {
   let ctx = getContext()
 
   log.x('create ship part')
