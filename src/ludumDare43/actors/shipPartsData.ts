@@ -101,7 +101,7 @@ let crate1: IShipPartData = {
   mass: 2,
   special: 'snails',
 }
-datas.push(armor1)
+datas.push(crate1)
 
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 

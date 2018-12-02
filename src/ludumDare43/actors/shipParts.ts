@@ -7,6 +7,7 @@ import * as cameras from 'engine/camera/cameras'
 import * as asteroids from './asteroids'
 import * as smashedParts from './smashedParts'
 import * as goats from './goats'
+import * as debris from './debris'
 
 import {
   IShipPartData,
@@ -356,6 +357,14 @@ export function destroyFixedPiece(c: IShipPart) {
       c.data = c.data.damagesTo
       c.anim.sprite.texture.frame = c.data.frame
       return
+    }
+
+    if (c.data.special === 'snails') {
+      for (let i = 0; i < 3; i++) {
+        let d = debris.create()
+        d.anim.sprite.x = c.anim.sprite.x
+        d.anim.sprite.y = c.anim.sprite.y
+      }
     }
 
     smash(c)

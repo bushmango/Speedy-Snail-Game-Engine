@@ -31,6 +31,8 @@ import * as helpArrows from './actors/helpArrows'
 import * as coreSpawner from './actors/coreSpawner'
 import * as engineParticles from './actors/engineParticles'
 
+import * as debris from './actors/debris'
+
 let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
@@ -108,6 +110,8 @@ export class GameContext {
 
     coreSpawner.create()
     engineParticles.create()
+
+    debris.create()
 
     let sps = shipPartSpawners.create()
     sps.x = 600
@@ -210,6 +214,8 @@ export class GameContext {
     helpArrows.updateAll(elapsedTimeSec)
 
     engineParticles.updateAll(elapsedTimeSec)
+
+    debris.updateAll(elapsedTimeSec)
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {
