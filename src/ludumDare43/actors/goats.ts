@@ -67,8 +67,14 @@ export function create() {
 
 export function eject() {
   item.isFree = true
-  item.tx = _.random(50, 250)
-  item.ty = _.random(50, 250)
+  item.tx = _.random(50, 300)
+
+  if (_.random(true) > 0.5) {
+    item.ty = _.random(50, 130)
+  } else {
+    item.ty = _.random(220, 300)
+  }
+
   // item.anim.sprite.x = _.random(100, 200)
   // item.anim.sprite.y = _.random(100, 200)
 }

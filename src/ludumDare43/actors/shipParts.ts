@@ -351,8 +351,22 @@ export function updateAll(elapsedTimeSec) {
 export function destroyFixedPiece(c: IShipPart) {
   if (!c.isDead) {
     getContext().sfx.playPartDestroyed()
+
+    if (c.data.damagesTo) {
+      c.data = c.data.damagesTo
+      c.anim.sprite.texture.frame = c.data.frame
+      return
+    }
+
     smash(c)
     safeSetShipGrid(c.bx, c.by, null)
+
+    // if (c.data.damagesTo) {
+    //   let dp = create(c.data.damagesTo)
+    //   dp.anim.sprite.x =
+    //   safeSetShipGrid(c.bx, c.by, dp)
+    //   return
+    // }
 
     // Flood fill core to make sure everything is connected
 

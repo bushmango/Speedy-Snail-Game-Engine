@@ -11,14 +11,16 @@ export interface IShipPartData {
   mass: number
   enginePower?: number
   notSpawnable?: boolean
+  damagesTo?: IShipPartData
+  special?: string
 }
 
 let datas: IShipPartData[] = []
 let spawnableDatas: IShipPartData[] = []
 let shipPart1: IShipPartData = {
-  name: 'part-1',
+  name: 'core-1',
   frame: spriteUtil.frame32(1, 1),
-  mass: 2,
+  mass: 5,
   notSpawnable: true,
 }
 datas.push(shipPart1)
@@ -28,6 +30,12 @@ let shipPart2: IShipPartData = {
   mass: 1,
 }
 datas.push(shipPart2)
+let s: IShipPartData = {
+  name: 'connector-1',
+  frame: spriteUtil.frame32(1, 7),
+  mass: 0.5,
+}
+datas.push(s)
 let wing: IShipPartData = {
   name: 'wing-1',
   frame: spriteUtil.frame32(2, 1),
@@ -69,6 +77,32 @@ let engine2: IShipPartData = {
   enginePower: 2,
 }
 datas.push(engine2)
+
+let armor1d: IShipPartData = {
+  name: 'armor-1d',
+  frame: spriteUtil.frame32(1, 6),
+  noRight: true,
+  mass: 1.5,
+  notSpawnable: true,
+}
+datas.push(armor1d)
+let armor1: IShipPartData = {
+  name: 'armor-1',
+  frame: spriteUtil.frame32(1, 5),
+  noRight: true,
+  mass: 2,
+  damagesTo: armor1d,
+}
+datas.push(armor1)
+
+let crate1: IShipPartData = {
+  name: 'crate-1',
+  frame: spriteUtil.frame32(3, 3),
+  mass: 2,
+  special: 'snails',
+}
+datas.push(armor1)
+
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 
 export { datas, shipPart1, spawnableDatas }
