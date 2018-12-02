@@ -208,8 +208,8 @@ export function updateAll(elapsedTimeSec) {
             )
           ) {
             goat.isFree = false
-            goat.anim.sprite.x = c.anim.sprite.x
-            goat.anim.sprite.y = c.anim.sprite.y
+            goat.tx = c.anim.sprite.x
+            goat.ty = c.anim.sprite.y
             goat.isPickedUp = false
           }
         }

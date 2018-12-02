@@ -11,6 +11,8 @@ export interface IGoat {
   anim: anim.IAnim
   isFree: boolean
   isPickedUp: boolean
+  tx: number
+  ty: number
 }
 //let items: IGoat[] = []
 let item: IGoat = null
@@ -33,6 +35,8 @@ export function create() {
     anim: anim.create(),
     isFree: true,
     isPickedUp: false,
+    tx: 0,
+    ty: 0,
   }
   item.anim.sprite = ctx.createSprite(
     'ship-001',
@@ -63,8 +67,10 @@ export function create() {
 
 export function eject() {
   item.isFree = true
-  item.anim.sprite.x = _.random(100, 200)
-  item.anim.sprite.y = _.random(100, 200)
+  item.tx = _.random(50, 250)
+  item.ty = _.random(50, 250)
+  // item.anim.sprite.x = _.random(100, 200)
+  // item.anim.sprite.y = _.random(100, 200)
 }
 
 export function updateAll(elapsedTimeSec) {
@@ -78,12 +84,15 @@ export function updateAll(elapsedTimeSec) {
 
   if (item.isPickedUp && item.isFree) {
     let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
-    let c = item
-    c.anim.sprite.x += (cx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
-    c.anim.sprite.y += (cy - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
+    item.tx = cx
+    item.ty = cy
   } else {
     // part of ship
   }
+
+  let c = item
+  c.anim.sprite.x += (c.tx - c.anim.sprite.x) * 0.1 * elapsedTimeSec * 60.0
+  c.anim.sprite.y += (c.ty - c.anim.sprite.y) * 0.1 * elapsedTimeSec * 60.0
 
   //_.forEach(items, (c) => {
   anim.update(item.anim, elapsedTimeSec)
