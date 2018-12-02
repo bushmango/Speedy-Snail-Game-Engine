@@ -132,9 +132,14 @@ function spawnAnywhere() {
   return spawn(x, y)
 }
 
-export function updateAll(elapsedTimeSec, velocity) {
+export function updateAll(elapsedTimeSec) {
+  const ctx = getContext(),
+        stats = ctx.stats.getCurrentStats(),
+        velocity = stats.speed
+
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
+
   cleanup()
 }
 
