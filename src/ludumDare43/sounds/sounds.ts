@@ -24,10 +24,6 @@ export function load(sge: SimpleGameEngine) {
   playMusic1()
 }
 
-export function stopAllSoundEffects() {
-  // TODO: Nic
-}
-
 // TODO: replace all of these
 
 export function playMusic1() {
@@ -147,8 +143,4 @@ export function playClick() {
 // Links to other systems
 pubSub.on('gui:click-button', () => {
   playClick()
-})
-
-pubSub.on('gui:toggle-music', () => {
-  playMusic1()
 })

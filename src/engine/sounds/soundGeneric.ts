@@ -2,7 +2,14 @@ import * as howler from 'howler'
 import * as log from 'engine/log'
 let devMute = false
 
+import * as pubSub from 'engine/common/pubSub'
+
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
+
+const muteState = {
+  music: false,
+  sound: false,
+}
 
 let soundSprite = null
 let musicSprite = null
@@ -26,8 +33,6 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
   soundSprite.on('loaderror', (id, err) => {
     // console.log('howl', 'loaderror', id, err)
   })
-
-  // soundSprite.mute(settingsGeneric.getSettings().muteSound)
 }
 
 export function playMusic(song, loop = true, cb: () => void = null) {
@@ -35,16 +40,15 @@ export function playMusic(song, loop = true, cb: () => void = null) {
     musicSprite.stop()
     musicSprite = null
   }
+
   musicSprite = new howler.Howl({
     src: [song + '.ogg', song + 'mp3'],
     autoplay: true,
     loop: loop,
     volume: 0.75,
+    mute: muteState.music,
   })
 
-  if (settingsGeneric.getSettings().muteMusic) {
-    musicSprite.mute(true)
-  }
   //musicSprite.once('load', () => {
   //musicSprite.play()
   //})
@@ -59,8 +63,39 @@ export function playMusic(song, loop = true, cb: () => void = null) {
 }
 
 export function play(soundKey) {
-  if (!devMute && !settingsGeneric.getSettings().muteSound) {
-    log.x('play', soundKey)
-    return soundSprite.play(soundKey)
+  if (devMute || muteState.sound) {
+    return
+  }
+
+  log.x('play', soundKey)
+  return soundSprite.play(soundKey)
+}
+
+export function stopAllSounds() {
+  if (soundSprite) {
+    soundSprite.stop()
   }
 }
+
+function updateMusicMute() {
+  if (!musicSprite) {
+    return
+  }
+
+  musicSprite.mute(muteState.music)
+}
+
+pubSub.on('settings:update', (settings) => {
+  if (settings.muteMusic != muteState.music) {
+    muteState.music = settings.muteMusic
+    updateMusicMute()
+  }
+
+  if (settings.muteSound != muteState.sound) {
+    muteState.sound = settings.muteSound
+
+    if (muteState.sound) {
+      stopAllSounds()
+    }
+  }
+})
