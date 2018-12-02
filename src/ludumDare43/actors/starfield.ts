@@ -82,7 +82,7 @@ function createDust(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-    distance = _.random(1, 64)
+    distance = _.random(2, 64)
 
   const item: IItem = {
     anim: anim.create(),
@@ -131,7 +131,7 @@ function _create(item, options, layer) {
 function generateStarTint() {
   // XXX: Placeholder
   // TODO: Generate more realistic colors
-  return Math.random() * 0xFFFFFF
+  return 0xDDDDDD + (Math.random() * 0x2222)
 }
 
 export function initialize() {
