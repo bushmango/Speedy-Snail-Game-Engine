@@ -359,14 +359,6 @@ export function destroyFixedPiece(c: IShipPart) {
       return
     }
 
-    if (c.data.special === 'snails') {
-      for (let i = 0; i < 3; i++) {
-        let d = debris.create()
-        d.anim.sprite.x = c.anim.sprite.x
-        d.anim.sprite.y = c.anim.sprite.y
-      }
-    }
-
     smash(c)
     safeSetShipGrid(c.bx, c.by, null)
 
@@ -480,6 +472,15 @@ function tryConnectToCore(c: IShipPart, dir) {
 export function smash(c: IShipPart) {
   if (!c.isDead) {
     smashedParts.create(c.anim.sprite)
+
+    if (c.data.special === 'snails') {
+      for (let i = 0; i < 3; i++) {
+        let d = debris.create()
+        d.anim.sprite.x = c.anim.sprite.x
+        d.anim.sprite.y = c.anim.sprite.y
+      }
+    }
+
     c.isDead = true
   }
 }
