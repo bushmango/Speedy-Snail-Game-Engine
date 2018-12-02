@@ -1,6 +1,8 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
+import * as pubSub from 'engine/common/pubSub'
+
 import * as Lockr from 'lockr'
 
 interface IBasicSettings {
@@ -18,7 +20,6 @@ let settings = {
   brenden: 'Brenden B.',
 }
 
-let loaded = false
 let settingsKey = null
 
 export function load(savedSettingsKey) {
@@ -31,6 +32,7 @@ export function load(savedSettingsKey) {
     if (loadedSettings) {
       let json = JSON.parse(loadedSettings)
       _.merge(settings, json)
+      pubSub.emit('settings:update', settings)
     }
   } catch (err) {
     // console.error('Error loading menu settings')
@@ -50,4 +52,5 @@ export function getSettings() {
 export function updateSettings(newSettings: Partial<IBasicSettings>) {
   _.merge(settings, newSettings)
   save()
+  pubSub.emit('settings:update', settings)
 }

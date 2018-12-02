@@ -4,8 +4,6 @@ import * as log from '../../engine/log'
 
 import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
-import * as pubSub from 'engine/common/pubSub'
-
 import * as placeSwitcher from 'engine/anim/placeSwitcher'
 import * as buttons from './buttons'
 import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
@@ -49,8 +47,6 @@ export function create() {
     settingsGeneric.updateSettings({
       muteMusic: !settingsGeneric.getSettings().muteMusic,
     })
-
-    pubSub.emit('gui:toggle-music')
   }
   item.buttons.push(item.buttonMusic)
   item.buttonSound = buttons.createWithSprite(12, 1) // buttons.create('Sound!!')
@@ -58,10 +54,6 @@ export function create() {
     //slideOut()
 
     let mute = !settingsGeneric.getSettings().muteSound
-
-    if (mute) {
-      sounds.stopAllSoundEffects()
-    }
 
     settingsGeneric.updateSettings({
       muteSound: mute,
