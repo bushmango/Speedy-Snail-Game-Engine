@@ -67,6 +67,10 @@ export function frameSlowdown(c: ICamera, frameSlowdownSec, frameSlowdownRate) {
     c.frameSlowdownRate = frameSlowdownRate
   }
 }
+export function getIsSlowed(c: ICamera) {
+  return c.frameSlowdownSec > 0
+}
+
 export function applySlowdown(c: ICamera, elapsedTimeSec) {
   if (c.frameDelaySec > 0) {
     elapsedTimeSec = 0

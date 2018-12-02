@@ -360,8 +360,10 @@ export function updateAll(elapsedTimeSec) {
             let z = distanceSimple - target
             let zp = z / dist
 
+            if (!cameras.getIsSlowed(ctx.camera)) {
+              getContext().sfx.playSlowdown() // d.anim.sprite)
+            }
             cameras.frameSlowdown(ctx.camera, 0.1, 0.15 + zp * 0.85)
-            getContext().sfx.playSlowdown(d.anim.sprite)
           }
         }
       })
@@ -493,7 +495,6 @@ export function destroyFixedPiece(c: IShipPart) {
 
     if (c.isCore) {
       goats.eject()
-      getContext().sfx.stopSlowdown()
     }
 
     updateWhatsAttached()

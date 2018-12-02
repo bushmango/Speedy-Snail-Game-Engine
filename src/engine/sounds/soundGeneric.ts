@@ -71,6 +71,10 @@ export function play(soundKey) {
   return soundSprite.play(soundKey)
 }
 
+export function stop(soundKey) {
+  soundSprite.stop(soundKey)
+}
+
 export function stopAllSounds() {
   if (soundSprite) {
     soundSprite.stop()

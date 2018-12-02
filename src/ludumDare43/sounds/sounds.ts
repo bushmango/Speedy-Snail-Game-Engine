@@ -83,37 +83,33 @@ export function playLoaded() {
 //   soundsGeneric.play('hurt001')
 // }
 
+let goatId = null
 export function playGoatFloating() {
-  return soundsGeneric.play('goat001')
+  goatId = soundsGeneric.play('goat001')
+  return goatId
+}
+export function stopGoatFloating() {
+  if (goatId) {
+    soundsGeneric.stop(goatId)
+    goatId = null
+  }
 }
 
-const slowdownCause = []
-let slowdownInit = false
-
-export function playSlowdown(cause) {
-  const id = 'slowdown001',
-        sprite = soundsGeneric.getSoundSprite()
-
-  // XXX: There has to be a better way
-  if (!slowdownInit) {
-    slowdownInit = true
-    sprite.on('end', () => {
-      slowdownCause.shift()
-    }, id)
-  }
-
-  if (slowdownCause.includes(cause)) {
-    return
-  }
-
-  slowdownCause.push(cause)
-  soundsGeneric.play(id)
+// const slowdownCause = []
+// let slowdownInit = false
+// let slowdownSprite = null
+let slowdownId = null
+export function playSlowdown() {
+  stopSlowdown
+  slowdownId = soundsGeneric.play('slowdown001')
+  return slowdownId
 }
-
 export function stopSlowdown() {
-  const sprite = soundsGeneric.getSoundSprite()
-
-  sprite.stop('slowdown001')
+  if (slowdownId) {
+    soundsGeneric.stop(slowdownId)
+    // Possibly fade out volue
+    slowdownId = null
+  }
 }
 
 export function playPartDestroyed() {
