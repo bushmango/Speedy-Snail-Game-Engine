@@ -102,6 +102,7 @@ function floating() {
 
     if (!item.isFree) {
       sprite.stop(id)
+      sprite.off('end', id)
     }
   }, id)
 }
