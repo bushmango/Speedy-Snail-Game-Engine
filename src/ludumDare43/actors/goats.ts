@@ -6,6 +6,7 @@ import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 
 import * as cameras from 'engine/camera/cameras'
+import * as soundsGeneric from 'engine/sounds/soundGeneric'
 
 export interface IGoat {
   anim: anim.IAnim
@@ -80,8 +81,30 @@ export function eject() {
     item.ty = _.random(220, 300)
   }
 
+  floating()
+
   // item.anim.sprite.x = _.random(100, 200)
   // item.anim.sprite.y = _.random(100, 200)
+}
+
+function floating() {
+  const id = getContext().sfx.playGoatFloating(),
+        sprite = soundsGeneric.getSoundSprite()
+
+  sprite.loop(true, id)
+    .volume(1, id)
+
+  sprite.on('end', () => {
+    let volume = sprite.volume(id) / 2;
+    volume = volume >= 1/8 ? volume : 1;
+
+    sprite.volume(volume, id)
+
+    if (!item.isFree) {
+      sprite.stop(id)
+      sprite.off('end', id)
+    }
+  }, id)
 }
 
 export function updateAll(elapsedTimeSec) {

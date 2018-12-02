@@ -6,6 +6,15 @@ import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 let soundSprite = null
 let musicSprite = null
+
+export function getMusicSprite() {
+  return musicSprite
+}
+
+export function getSoundSprite() {
+  return soundSprite
+}
+
 export function load(jsonAudioSprite, callbackOnLoaded) {
   soundSprite = new howler.Howl({
     src: jsonAudioSprite.urls,
@@ -52,6 +61,6 @@ export function playMusic(song, loop = true, cb: () => void = null) {
 export function play(soundKey) {
   if (!devMute && !settingsGeneric.getSettings().muteSound) {
     log.x('play', soundKey)
-    soundSprite.play(soundKey)
+    return soundSprite.play(soundKey)
   }
 }
