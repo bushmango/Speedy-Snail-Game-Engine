@@ -2,7 +2,7 @@ x big asteroid split
 x gun part
 x rocket part
 - mouse and hold to fire weapons?
-- rocket turn toward mouse
+x rocket turn toward mouse
 - batteries for lasers?
 - reactors?
 - zones
