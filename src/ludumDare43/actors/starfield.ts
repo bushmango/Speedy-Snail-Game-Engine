@@ -156,7 +156,7 @@ function sortLayerChildren() {
 function spawnAhead(factory) {
   const ctx = getContext(),
     cv = ctx.getCameraView(),
-    x = cv.cameraHeight,
+    x = cv.cameraWidth,
     y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)

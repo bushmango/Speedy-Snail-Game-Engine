@@ -191,7 +191,7 @@ function updateGoalPosition(elapsedTimeSec) {
   let engines = 0
   let hasCore = false
   _.forEach(shipParts.getAll(), (c) => {
-    if (!c.isFree && !c.isDead) {
+    if (c.isAttached && !c.isDead) {
       // Count engines
       if (c.isCore) {
         hasCore = true
