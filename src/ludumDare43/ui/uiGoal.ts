@@ -242,8 +242,10 @@ function updateGoalPosition(elapsedTimeSec) {
   })
 
   // Get our current zone
+  zones.updateCurrentZone(d)
   let curZone = zones.getCurrentZone()
-  ui.textGameName.text = curZone.name
+  ui.textGameName.text =
+    curZone.name + ' - ' + numeral(d).format('0.000') + ' lightyears'
 
   ctx.stats.updateStats({
     speed: speed,

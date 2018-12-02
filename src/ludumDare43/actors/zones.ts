@@ -93,15 +93,21 @@ function createZone(name: string) {
 }
 
 let z: IZone = null
+
+// let zone0 = (z = createZone('Intro Zone'))
+
 let zone1 = (z = createZone('Tutorial Zone'))
+z.topSupply = true
+z.supplyPartsList = ['engine-1']
 z.debrisPartsList = connectors
 z.distance = 10
 z.debrisSpawnRate = 5
+z.supplySpawnRate = 5
 
 let zone2 = (z = createZone('Build Zone'))
 //z.debrisPartsList = connectors
 z.distance = 10
-z.topSupply = true
+z.topSupply = false
 z.bottomSupply = true
 z.debrisPartsList = connectors
 z.supplyPartsList = allParts

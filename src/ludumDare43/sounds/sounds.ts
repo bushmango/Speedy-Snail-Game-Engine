@@ -28,31 +28,28 @@ export function load(sge: SimpleGameEngine) {
 
 export function playMusic1() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'dungeon1')
+  soundsGeneric.playMusic(musicDir + 'loop')
 }
 export function playMusicMenu() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'menu1')
+  soundsGeneric.playMusic(musicDir + 'loop')
 }
 export function playMusicDie() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'dead1', false, () => {
-    soundsGeneric.playMusic(musicDir + 'theme1')
-  })
+  // soundsGeneric.playMusic(musicDir + 'dead1', false, () => {
+  //   soundsGeneric.playMusic(musicDir + 'theme1')
+  // })
 }
-export function playMusicDungeon() {
-  // need new!
-  soundsGeneric.playMusic(musicDir + 'dungeon1')
-}
+
 export function playMusicBoss() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'boss1')
+  //soundsGeneric.playMusic(musicDir + 'boss1')
 }
 export function playMusicWin() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'winner1', false, () => {
-    soundsGeneric.playMusic(musicDir + 'theme1')
-  })
+  // soundsGeneric.playMusic(musicDir + 'winner1', false, () => {
+  //   soundsGeneric.playMusic(musicDir + 'theme1')
+  // })
 }
 
 export function playLoaded() {

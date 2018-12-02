@@ -60,6 +60,14 @@ export function updateAll(elapsedTimeSec) {
   if (curZone.debrisPartsList) {
     debrisSpawnTimer += elapsedTimeSec
     if (debrisSpawnTimer > curZone.debrisSpawnRate) {
+      debrisSpawnTimer = 0
+
+      let nextPart = _.sample(curZone.debrisPartsListCalc)
+      let shipPart = shipParts.create(nextPart)
+      shipPart.anim.sprite.x = cv.cameraWidth
+
+      let margin = 50
+      shipPart.anim.sprite.y = _.random(margin, cv.cameraHeight - margin)
     }
   }
 
@@ -74,7 +82,7 @@ export function updateAll(elapsedTimeSec) {
       }
     }
     if (c.position === 'bottom') {
-      if (curZone.topSupply) {
+      if (curZone.bottomSupply) {
         smoothMoves.moveTo(
           c.smoothMover,
           cv.cameraWidth - 75,
@@ -94,16 +102,16 @@ export function updateAll(elapsedTimeSec) {
     c.anim.sprite.x = c.x + 20
     c.anim.sprite.y = c.y
 
-    if (c.elapsedSec > 1) {
+    if (c.elapsedSec > curZone.supplySpawnRate) {
       c.elapsedSec = 0
 
-      if (!goat.isFree) {
-        let nextPart = _.sample(shipParts.spawnableDatas)
+      // if (!goat.isFree) {
+      let nextPart = _.sample(curZone.supplyPartsListCalc)
 
-        let shipPart = shipParts.create(nextPart)
-        shipPart.anim.sprite.x = c.x
-        shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
-      }
+      let shipPart = shipParts.create(nextPart)
+      shipPart.anim.sprite.x = c.x
+      shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
+      //  }
     }
   })
 }
