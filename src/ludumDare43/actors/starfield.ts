@@ -80,7 +80,7 @@ function createDust(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-    distance = _.random(2, 64)
+        distance = _.random(2, 64)
 
   const item: IItem = {
     anim: anim.create(),
@@ -102,7 +102,7 @@ function createStar(options) {
 
   sprite.filters = [
     new PIXI.filters.BlurFilter(1, 1),
-    new GlowFilter(10, 4, 1, tint),
+    new GlowFilter(scale * 32, 8, 1, tint),
   ];
 
   ctx.layerBelow.addChild(sprite)
@@ -112,7 +112,7 @@ function createStar(options) {
 
 function _create(item, options, layer) {
   const ctx = getContext(),
-    sprite = item.anim.sprite
+        sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
