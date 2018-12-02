@@ -27,7 +27,7 @@ let ui = {
   //textMass: null as PIXI.extras.BitmapText,
   statSpeed: null as IStatUI,
   statMass: null as IStatUI,
-  textMass: null as PIXI.extras.BitmapText,
+  textGameName: null as PIXI.extras.BitmapText,
 }
 
 interface IStatUI {
@@ -103,17 +103,17 @@ export function create() {
 
   log.x('create ui goal ui')
 
-  ui.statSpeed = createStatUi(300, 6, 6, 3, 7, 9, 2)
-  ui.statMass = createStatUi(530, 7, 6, 3, 6, 9, 2)
+  ui.statSpeed = createStatUi(150, 6, 6, 3, 7, 9, 2)
+  ui.statMass = createStatUi(530 - 150, 7, 6, 3, 6, 9, 2)
 
-  // ui.textSpeed = new PIXI.extras.BitmapText(`Speed: xyz`, {
-  //   font: '20px defaultfont',
-  //   align: 'left',
-  // })
-  // ui.textSpeed.anchor = new PIXI.Point(0, 0)
-  // ctx.layerUi.addChild(ui.textSpeed)
-  // ui.textSpeed.x = 400
-  // ui.textSpeed.y = 0
+  ui.textGameName = new PIXI.extras.BitmapText(`Space Goat - Coast to Coast`, {
+    font: '24px tahoma24',
+    align: 'left',
+  })
+  ui.textGameName.anchor = new PIXI.Point(0, 0)
+  ctx.layerUi.addChild(ui.textGameName)
+  ui.textGameName.x = 620
+  ui.textGameName.y = 3
 
   // ui.textMass = new PIXI.extras.BitmapText(`Mass: xyz`, {
   //   font: '20px defaultfont',

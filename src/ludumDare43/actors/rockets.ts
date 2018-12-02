@@ -18,6 +18,7 @@ interface IRocket {
   isDead: boolean
   launchedFrom: shipParts.IShipPart
   type: 'rocket' | 'laser'
+  isFriendlyGoatFire?: boolean
 }
 let items: IRocket[] = []
 export function getAll() {
@@ -173,7 +174,7 @@ export function updateAll(elapsedTimeSec) {
         //   d.data.special !== 'rocket-spent' &&
         //   d.data.special !== 'laser'
         // )
-        if (d !== c.launchedFrom) {
+        if (d !== c.launchedFrom && !c.isFriendlyGoatFire) {
           getContext().sfx.playPartDestroyed()
           smash(c)
           if (!d.isFree) {

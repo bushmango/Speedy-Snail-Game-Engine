@@ -97,6 +97,12 @@ export function cameraToXY(c: ICamera, obj) {
   return { x, y }
 }
 
+export function viewToCameraView(c: ICamera, w, h) {
+  let cameraWidth = w / c.container.scale.x
+  let cameraHeight = h / c.container.scale.y
+  return { cameraWidth, cameraHeight }
+}
+
 //export function getCameraView() {}
 
 export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {

@@ -4,10 +4,11 @@ export { settingsPath, preloadPath }
 export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
   sge.preloadBitmapFonts([
-    'defaultfont',
+    //'defaultfont',
     'tahoma24',
     'tahoma12',
     'tahoma20',
+    //'tahoma48',
     'tahoma16',
   ])
   sge.preloadSprites([

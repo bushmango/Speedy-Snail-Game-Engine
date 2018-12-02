@@ -44,6 +44,8 @@ let hoveredPart: IShipPart = null
 let shipGrid: IShipPart[] = []
 let maxShipGridX = 9
 let maxShipGridY = 9
+let centerShipGridX = 2
+let centerShipGridY = 4
 for (let j = 0; j < maxShipGridY; j++) {
   for (let i = 0; i < maxShipGridX; i++) {
     shipGrid.push(null)
@@ -59,7 +61,7 @@ export function safeGetShipGrid(x, y) {
   return shipGrid[y * maxShipGridX + x]
 }
 export function setShipGridCenter(c: IShipPart) {
-  safeSetShipGrid(Math.floor(maxShipGridX / 2), Math.floor(maxShipGridY / 2), c)
+  safeSetShipGrid(centerShipGridX, centerShipGridY, c)
   log.x(shipGrid)
 }
 export function safeSetShipGrid(x, y, c: IShipPart) {
@@ -402,7 +404,7 @@ export function destroyFixedPiece(c: IShipPart) {
 
     // Flood fill core to make sure everything is connected
 
-    if (c.isCore) {      
+    if (c.isCore) {
       goats.eject()
     }
 

@@ -5,7 +5,7 @@ import * as log from '../../engine/log'
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 
-import {GlowFilter} from 'pixi-filters';
+import { GlowFilter } from 'pixi-filters'
 
 enum EItemType {
   Dust,
@@ -17,10 +17,10 @@ interface IObject {
 }
 
 interface IItem {
-  anim: anim.IAnim,
-  data?: IObject,
-  distance: number,
-  type: EItemType,
+  anim: anim.IAnim
+  data?: IObject
+  distance: number
+  type: EItemType
 }
 
 const distances = new Map()
@@ -28,17 +28,17 @@ const distances = new Map()
 const items: IItem[] = []
 
 let dustSpawnTimer = 0,
-    starSpawnTimer = 0
+  starSpawnTimer = 0
 
 function cleanup() {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize()
+    view = ctx.sge.getViewSize()
 
   for (let i = 0, length = items.length; i < length; i++) {
     const sprite = items[i].anim.sprite
 
     const isAhead = sprite.x > sprite.width + view.width,
-          isBehind = sprite.x <= -sprite.width
+      isBehind = sprite.x <= -sprite.width
 
     if (isAhead || isBehind) {
       sprite.parent.removeChild(sprite)
@@ -56,7 +56,7 @@ function createDust(options) {
 
   const rotationSpeed = _.random(-Math.PI, Math.PI) * 0.5
 
-  const item : IItem = {
+  const item: IItem = {
     anim: anim.create(),
     data: {
       rotationSpeed,
@@ -66,7 +66,7 @@ function createDust(options) {
   }
 
   const frame = spriteUtil.frame32(1, 2),
-        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
 
   item.anim.sprite = sprite
 
@@ -91,7 +91,7 @@ function createStar(options) {
   const scale = 1 / Math.max(1, distance / 16)
 
   const frame = spriteUtil.frame32(1, 1),
-        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
+    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
@@ -100,10 +100,14 @@ function createStar(options) {
   sprite.rotation = Math.random() * 2 * Math.PI
   sprite.tint = tint
 
-  sprite.filters = [
-    new PIXI.filters.BlurFilter(1, 1),
-    new GlowFilter(10, 4, 1, tint),
-  ];
+  let graphicsMode = 'normal' as 'extreme' | 'normal'
+
+  if (graphicsMode === 'extreme') {
+    sprite.filters = [
+      new PIXI.filters.BlurFilter(1, 1),
+      new GlowFilter(10, 4, 1, tint),
+    ]
+  }
 
   ctx.layerBelow.addChild(sprite)
 
@@ -129,7 +133,7 @@ function _create(item, options, layer) {
 function generateStarTint() {
   // XXX: Placeholder
   // TODO: Generate more realistic colors
-  return 0xDDDDDD + (Math.random() * 0x2222)
+  return 0xdddddd + Math.random() * 0x2222
 }
 
 export function initialize() {
@@ -153,27 +157,27 @@ function sortLayerChildren() {
 
 function spawnAhead(factory) {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = view.width,
-        y = _.random(0, view.height / 2)
+    view = ctx.sge.getViewSize(),
+    x = view.width,
+    y = _.random(0, view.height / 2)
 
   return _spawn(x, y, factory)
 }
 
 function spawnBehind(factory) {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = 0,
-        y = _.random(0, view.height / 2)
+    view = ctx.sge.getViewSize(),
+    x = 0,
+    y = _.random(0, view.height / 2)
 
   return _spawn(x, y, factory)
 }
 
 function spawnAnywhere(factory) {
   const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = _.random(0, view.width / 2),
-        y = _.random(0, view.height / 2)
+    view = ctx.sge.getViewSize(),
+    x = _.random(0, view.width / 2),
+    y = _.random(0, view.height / 2)
 
   return _spawn(x, y, factory)
 }
@@ -189,8 +193,8 @@ function _spawn(x, y, factory) {
 
 export function updateAll(elapsedTimeSec) {
   const ctx = getContext(),
-        stats = ctx.stats.getCurrentStats(),
-        velocity = stats.speed * 20
+    stats = ctx.stats.getCurrentStats(),
+    velocity = stats.speed * 20
 
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)

@@ -8,13 +8,14 @@ import * as spriteUtil from 'engine/anim/spriteUtil'
 
 import * as goats from './goats'
 
-interface IShipParSpawner {
+interface IShipPartSpawner {
   x: number
   y: number
   elapsedSec: number
   anim: anim.IAnim
+  position: string
 }
-let items: IShipParSpawner[] = []
+let items: IShipPartSpawner[] = []
 
 var animDefault: anim.IAnimData = {
   frames: [spriteUtil.frame32(5, 1, 2, 2), spriteUtil.frame32(5, 2, 2, 2)],
@@ -25,11 +26,12 @@ export function create() {
   let ctx = getContext()
 
   log.x('create ship part spawner')
-  let item: IShipParSpawner = {
+  let item: IShipPartSpawner = {
     x: 600,
     y: 200,
     elapsedSec: 0,
     anim: anim.create(),
+    position: 'top',
   }
 
   let sprite = ctx.createSprite('ship-001', animDefault.frames[0], 0.5, 0.5, 1)
@@ -43,13 +45,24 @@ export function create() {
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
+  let cv = ctx.getCameraView()
 
   let goat = goats.getItem()
 
   _.forEach(items, (c) => {
     c.elapsedSec += elapsedTimeSec
 
+    c.x = cv.cameraWidth - 75
+
     c.anim.sprite.x = c.x + 20
+
+    if (c.position === 'top') {
+      c.y = 50 + 20
+    }
+    if (c.position === 'bottom') {
+      c.y = cv.cameraHeight - 50
+    }
+
     c.anim.sprite.y = c.y
 
     if (c.elapsedSec > 1) {

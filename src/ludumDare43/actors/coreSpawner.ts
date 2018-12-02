@@ -7,6 +7,7 @@ import * as anim from 'engine/anim/anim'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
 import * as rockets from './rockets'
+import * as cameras from 'engine/camera/cameras'
 
 interface ICoreSpawner {
   x: number
@@ -44,12 +45,17 @@ export function create() {
 
 export function launch() {
   if (!item.hasPayload) {
+    let ctx = getContext()
+    let cv = ctx.getCameraView()
+    item.y = cv.cameraHeight / 2
     item.x = -250
     item.hasPayload = true
 
     // A bunch of lasers
     for (let i = 0; i < 10; i++) {
       let r = rockets.create('laser')
+
+      r.isFriendlyGoatFire = true
       r.vx = 250 + 150
       r.anim.sprite.x = item.x
       r.anim.sprite.y = item.y
@@ -63,6 +69,7 @@ export function launch() {
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
+  let cv = ctx.getCameraView()
 
   //_.forEach(items, (c) => {
   let c = item
@@ -72,14 +79,16 @@ export function updateAll(elapsedTimeSec) {
   c.anim.sprite.x = c.x + 20
   c.anim.sprite.y = c.y
 
-  if (c.hasPayload && c.x > 200) {
+  let coreX = 32 * 3 + 10
+
+  if (c.hasPayload && c.x > coreX - 16) {
     // drop core
 
     let sp = shipParts.create()
     sp.isFree = false
     sp.isCore = true // Most important piece!
-    sp.anim.sprite.x = 200
-    sp.anim.sprite.y = 200
+    sp.anim.sprite.x = coreX
+    sp.anim.sprite.y = cv.cameraHeight / 2
     shipParts.setShipGridCenter(sp)
 
     c.hasPayload = false

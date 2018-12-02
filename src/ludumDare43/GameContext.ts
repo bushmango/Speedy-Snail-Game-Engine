@@ -115,11 +115,12 @@ export class GameContext {
     debris.create()
 
     let sps = shipPartSpawners.create()
-    sps.x = 600
-    sps.y = 20
+    //sps.x = 600
+    //sps.y = 20
     sps = shipPartSpawners.create()
-    sps.x = 600
-    sps.y = 400
+    sps.position = 'bottom'
+    //sps.x = 600
+    //sps.y = 400
 
     goats.create()
     goats.eject()
@@ -128,8 +129,8 @@ export class GameContext {
     starfield.initialize()
 
     // camera?
-    ctx.camera.x = 50
-    ctx.camera.y = 50
+    ctx.camera.x = 0
+    ctx.camera.y = 0
     ctx.camera.scale = 2
 
     ctx.sge.stage.addChild(ctx.rootContainer)
@@ -177,6 +178,12 @@ export class GameContext {
     return container
   }
 
+  getCameraView() {
+    let ctx = getContext()
+    let view = ctx.sge.getViewSize()
+    return cameras.viewToCameraView(ctx.camera, view.width, view.height)
+  }
+
   onUpdate() {
     let ctx = this
     log.x('update')
@@ -205,7 +212,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    starfield.updateAll(elapsedTimeSec);
+    starfield.updateAll(elapsedTimeSec)
     // players.updateAll()
     // let curStats = ctx.stats.getCurrentStats()
     //starfield.updateAll(elapsedTimeSec, curStats.speed * 100)
