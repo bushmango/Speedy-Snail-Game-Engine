@@ -21,7 +21,7 @@ import * as shipPartSpawners from './actors/shipPartSpawners'
 import * as asteroids from './actors/asteroids'
 import * as smashedParts from './actors/smashedParts'
 
-//import * as starfield from './actors/starfield'
+import * as starfield from './actors/starfield'
 
 import * as goalPieces from './actors/goalPieces'
 import * as uiGoal from './ui/uiGoal'
@@ -125,7 +125,7 @@ export class GameContext {
     goats.eject()
 
     helpArrows.createAll()
-    // starfield.initialize()
+    starfield.initialize()
 
     // camera?
     ctx.camera.x = 50
@@ -184,9 +184,6 @@ export class GameContext {
     let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
-    // TODO: Get ship velocity
-    let velocity = -0
-
     // log.x('update', elapsedTime)
     // log.x('update')
 
@@ -208,7 +205,7 @@ export class GameContext {
     buttons.updateAll(elapsedTimeSec)
 
     asteroids.updateAll(elapsedTimeSec)
-    // starfield.updateAll(elapsedTimeSec, velocity);
+    starfield.updateAll(elapsedTimeSec);
     // players.updateAll()
     // let curStats = ctx.stats.getCurrentStats()
     //starfield.updateAll(elapsedTimeSec, curStats.speed * 100)
