@@ -1,6 +1,10 @@
 x big asteroid split
-- gun part
-- rocket part
+x gun part
+x rocket part
+- mouse and hold to fire weapons?
+- rocket turn toward mouse
+- batteries for lasers?
+- reactors?
 - zones
 x engine particles
 x engines destroy behind

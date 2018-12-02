@@ -14,8 +14,10 @@ interface IRocket {
   anim: anim.IAnim
   vx: number
   vy: number
-  lifeLeft: number
+  elapsedSec: number
   isDead: boolean
+  launchedFrom: shipParts.IShipPart
+  type: 'rocket' | 'laser'
 }
 let items: IRocket[] = []
 export function getAll() {
@@ -44,8 +46,10 @@ export function create(type: 'rocket' | 'laser') {
     vx: 150, //_.random(-150, -50),
     vy: 0,
     //vy: _.random(-50, 50),
-    lifeLeft: 5,
+    elapsedSec: 0,
     isDead: false,
+    type: type,
+    launchedFrom: null,
   }
 
   item.anim.sprite = ctx.createSprite(
@@ -71,15 +75,58 @@ export function create(type: 'rocket' | 'laser') {
 
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
-  let kb = ctx.sge.keyboard
-
+  //let kb = ctx.sge.keyboard
+  let mouse = ctx.sge.getMouse()
   _.forEach(items, (c) => {
-    c.lifeLeft -= elapsedTimeSec
-    if (c.lifeLeft < 0) {
+    c.elapsedSec += elapsedTimeSec
+    if (c.elapsedSec > 7) {
       c.isDead = true
     }
     anim.update(c.anim, elapsedTimeSec)
     // c.anim.sprite.rotation += Math.PI * elapsedTimeSec
+
+    if (c.type === 'rocket') {
+      let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+      let dx = c.anim.sprite.x - cx
+      let dy = -(c.anim.sprite.y - cy)
+
+      if (c.elapsedSec > 0.5) {
+        if (Math.abs(dx) + Math.abs(dy) > 10) {
+          //let angle = Math.atan2(cy, cx)
+          let angle = -Math.atan2(dy, dx) + Math.PI
+          let dAngle = angle - c.anim.sprite.rotation
+          if (dAngle < -Math.PI) {
+            dAngle += Math.PI * 2
+          }
+          if (dAngle > Math.PI) {
+            dAngle -= Math.PI * 2
+          }
+          // log.x('dAngle', dAngle, (dAngle / Math.PI) * 180)
+
+          let angleChange = Math.PI * 2 * elapsedTimeSec * 0.25
+
+          if (Math.abs(dAngle) < angleChange) {
+            c.anim.sprite.rotation = angle
+          } else {
+            if (dAngle > 0) {
+              c.anim.sprite.rotation += angleChange
+            } else {
+              c.anim.sprite.rotation -= angleChange
+            }
+          }
+
+          let rot = c.anim.sprite.rotation
+
+          let x = 150
+          let y = 0
+          let xp = x * Math.cos(rot) - y * Math.sin(rot)
+          let yp = y * Math.cos(rot) + x * Math.sin(rot)
+          c.vx = xp
+          c.vy = yp
+        }
+      }
+    }
+
     c.anim.sprite.x += c.vx * elapsedTimeSec
     c.anim.sprite.y += c.vy * elapsedTimeSec
 
@@ -121,11 +168,12 @@ export function updateAll(elapsedTimeSec) {
           r
         )
       ) {
-        if (
-          d.data.special !== 'rocket' &&
-          d.data.special !== 'rocket-spent' &&
-          d.data.special !== 'laser'
-        ) {
+        // if (
+        //   d.data.special !== 'rocket' &&
+        //   d.data.special !== 'rocket-spent' &&
+        //   d.data.special !== 'laser'
+        // )
+        if (d !== c.launchedFrom) {
           getContext().sfx.playPartDestroyed()
           smash(c)
           if (!d.isFree) {

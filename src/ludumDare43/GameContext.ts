@@ -194,7 +194,7 @@ export class GameContext {
     if (mouse.isLeftJustDown) {
       // Rocket test
       // let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
-      // let c = rockets.create()
+      // let c = rockets.create('rocket')
       // c.anim.sprite.x = cx
       // c.anim.sprite.y = cy
     }
@@ -210,7 +210,7 @@ export class GameContext {
     asteroids.updateAll(elapsedTimeSec)
     // starfield.updateAll(elapsedTimeSec, velocity);
     // players.updateAll()
-    let curStats = ctx.stats.getCurrentStats()
+    // let curStats = ctx.stats.getCurrentStats()
     //starfield.updateAll(elapsedTimeSec, curStats.speed * 100)
     goats.updateAll(elapsedTimeSec)
     coreSpawner.updateAll(elapsedTimeSec)

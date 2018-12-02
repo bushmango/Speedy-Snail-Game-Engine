@@ -145,11 +145,13 @@ export function updateAll(elapsedTimeSec) {
       if (hoveredPart.data.special === 'rocket') {
         switchDataTo(hoveredPart, hoveredPart.data.clickTo)
         let i = rockets.create('rocket')
+        i.launchedFrom = hoveredPart
         anim.copyPosition(i.anim, hoveredPart.anim)
       }
       if (hoveredPart.data.special === 'laser') {
         //switchDataTo(hoveredPart, hoveredPart.data.clickTo)
         let i = rockets.create('laser')
+        i.launchedFrom = hoveredPart
         anim.copyPosition(i.anim, hoveredPart.anim)
         i.anim.sprite.x += 16
       }
