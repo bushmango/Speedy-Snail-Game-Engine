@@ -5,6 +5,8 @@ import * as log from '../../engine/log'
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 
+import {GlowFilter} from 'pixi-filters';
+
 enum EItemType {
   Dust,
   Star,
@@ -71,10 +73,6 @@ function createDust(options) {
   sprite.alpha = 0.5 + Math.random() * 0.5
   sprite.rotation = Math.random() * 2 * Math.PI
 
-  sprite.filters = [
-    // XXX: new PIXI.filters.MotionBlurFilter(),
-  ];
-
   const layer = Math.random() > 0.5 ? ctx.layerAbove : ctx.layerBelow
 
   return _create(item, options, layer)
@@ -103,8 +101,8 @@ function createStar(options) {
   sprite.tint = tint
 
   sprite.filters = [
-    // XXX: new PIXI.filters.GlowFilter(10, 4, 1, tint),
     new PIXI.filters.BlurFilter(1, 1),
+    new GlowFilter(10, 4, 1, tint),
   ];
 
   ctx.layerBelow.addChild(sprite)
