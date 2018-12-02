@@ -83,6 +83,10 @@ export function playLoaded() {
 //   soundsGeneric.play('hurt001')
 // }
 
+export function playGoatFloating() {
+  return soundsGeneric.play('goat001')
+}
+
 export function playPartDestroyed() {
   // need new!
   soundsGeneric.play('smash001')
