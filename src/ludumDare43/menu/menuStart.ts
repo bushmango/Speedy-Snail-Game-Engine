@@ -95,20 +95,20 @@ export function create() {
   placeSwitcher.startOut(item.instructionsSwitch, item.instructionsSprite)
   // placeSwitcher.moveIn(item.instructionsSwitch)
 
-  let button = buttons.create('Play!')
+  let button = buttons.createWithSprite(10, 1, 3) //buttons.create('Play!')
   button.onClick = () => {
     slideOut()
     placeSwitcher.moveOut(item.instructionsSwitch)
     placeSwitcher.moveOut(item.creditsSwitch)
   }
   item.buttons.push(button)
-  button = buttons.create('Instructions')
+  button = buttons.createWithSprite(10, 6, 5) // buttons.create('Instructions')
   button.onClick = () => {
     placeSwitcher.moveIn(item.instructionsSwitch)
     placeSwitcher.moveOut(item.creditsSwitch)
   }
   item.buttons.push(button)
-  button = buttons.create('Credits')
+  button = buttons.createWithSprite(11, 6, 3) //buttons.create('Credits')
   button.onClick = () => {
     placeSwitcher.moveIn(item.creditsSwitch)
     placeSwitcher.moveOut(item.instructionsSwitch)

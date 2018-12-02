@@ -37,7 +37,7 @@ console.log('watchPath', watchPath);
 console.log('outPath', outPath);
 console.log('inPathPacked', inPathPacked);
 console.log('outPathPacked', outPathPacked);
-var doPack = true;
+var doPack = false;
 var mode = 'convert-only';
 var verbose = false;
 var aseSpritePath = '"C:\\Program Files\\Aseprite\\aseprite.exe"';

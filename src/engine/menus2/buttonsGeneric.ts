@@ -89,7 +89,7 @@ export function create(
   if (frameTextSprite) {
     item.textSprite = createSpriteFunc(
       spritesheetName,
-      spriteUtil.frame32(1, 5, 5, 1),
+      frameTextSprite,
       0,
       0,
       1
@@ -120,10 +120,10 @@ export function updateAll(elapsedTimeSec) {
     }
 
     if (c.textSprite) {
-      c.textSprite.x = 0
+      c.textSprite.x = 4
       c.textSprite.y = 0
       if (c.state === 1) {
-        c.textSprite.y = -2
+        c.textSprite.y = -1
       }
       if (c.state === 2) {
         c.textSprite.y = 1
