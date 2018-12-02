@@ -155,27 +155,27 @@ function sortLayerChildren() {
 
 function spawnAhead(factory) {
   const ctx = getContext(),
-    view = ctx.sge.getViewSize(),
-    x = view.width,
-    y = _.random(0, view.height / 2)
+    cv = ctx.getCameraView(),
+    x = cv.cameraHeight,
+    y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)
 }
 
 function spawnBehind(factory) {
   const ctx = getContext(),
-    view = ctx.sge.getViewSize(),
+    cv = ctx.getCameraView(),
     x = 0,
-    y = _.random(0, view.height / 2)
+    y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)
 }
 
 function spawnAnywhere(factory) {
   const ctx = getContext(),
-    view = ctx.sge.getViewSize(),
-    x = _.random(0, view.width / 2),
-    y = _.random(0, view.height / 2)
+    cv = ctx.getCameraView(),
+    x = _.random(0, cv.cameraWidth),
+    y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)
 }
