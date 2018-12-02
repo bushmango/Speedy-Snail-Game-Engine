@@ -138,7 +138,7 @@ export function updateAll(elapsedTimeSec) {
   let mouse = ctx.sge.getMouse()
 
   if (mouse.isLeftJustDown) {
-    if (hoveredPart && !hoveredPart.isDead) {
+    if (hoveredPart && !hoveredPart.isDead && !hoveredPart.isFree) {
       //destroyFixedPiece(hoveredPart)
       //hoveredPart = null
 
