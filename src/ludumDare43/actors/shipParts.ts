@@ -113,8 +113,8 @@ export function create(data: IShipPartData = shipPart1) {
     if (item.isFree && !goat.isFree && !item.isJettisoned) {
       sprite.tint = 0xcccccc
       tractoredPart = item
-    } else if (item.isAttached) {
-      sprite.tint = 0xff0000
+    } else if (item.isAttached && !item.isCore) {
+      sprite.tint = 0x84d67a
       hoveredPart = item
     }
   })
