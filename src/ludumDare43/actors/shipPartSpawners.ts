@@ -7,6 +7,8 @@ import * as anim from 'engine/anim/anim'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
 import * as goats from './goats'
+import * as zones from './zones'
+import * as smoothMoves from 'engine/anim/smoothMover'
 
 interface IShipPartSpawner {
   x: number
@@ -14,6 +16,7 @@ interface IShipPartSpawner {
   elapsedSec: number
   anim: anim.IAnim
   position: string
+  smoothMover: smoothMoves.ISmoothMover
 }
 let items: IShipPartSpawner[] = []
 
@@ -27,11 +30,12 @@ export function create() {
 
   log.x('create ship part spawner')
   let item: IShipPartSpawner = {
-    x: 600,
-    y: 200,
+    x: 0,
+    y: 0,
     elapsedSec: 0,
     anim: anim.create(),
     position: 'top',
+    smoothMover: smoothMoves.create(600, 200),
   }
 
   let sprite = ctx.createSprite('ship-001', animDefault.frames[0], 0.5, 0.5, 1)
@@ -42,6 +46,7 @@ export function create() {
   return item
 }
 
+let debrisSpawnTimer = 0
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
@@ -49,20 +54,45 @@ export function updateAll(elapsedTimeSec) {
 
   let goat = goats.getItem()
 
+  let curZone = zones.getCurrentZone()
+
+  // Debris spawns
+  if (curZone.debrisPartsList) {
+    debrisSpawnTimer += elapsedTimeSec
+    if(debrisSpawnTimer > curZone.debrisSpawnTate) {
+      
+    }
+  }
+
   _.forEach(items, (c) => {
     c.elapsedSec += elapsedTimeSec
 
-    c.x = cv.cameraWidth - 75
-
-    c.anim.sprite.x = c.x + 20
-
     if (c.position === 'top') {
-      c.y = 50 + 20
+      if (curZone.topSupply) {
+        smoothMoves.moveTo(c.smoothMover, cv.cameraWidth - 75, 50)
+      } else {
+        smoothMoves.moveTo(c.smoothMover, cv.cameraWidth / 2, -50)
+      }
     }
     if (c.position === 'bottom') {
-      c.y = cv.cameraHeight - 50
+      if (curZone.topSupply) {
+        smoothMoves.moveTo(
+          c.smoothMover,
+          cv.cameraWidth - 75,
+          cv.cameraHeight - 50
+        )
+      } else {
+        smoothMoves.moveTo(
+          c.smoothMover,
+          cv.cameraWidth / 2,
+          cv.cameraHeight + 50
+        )
+      }
     }
 
+    smoothMoves.update(c.smoothMover, c, elapsedTimeSec)
+
+    c.anim.sprite.x = c.x + 20
     c.anim.sprite.y = c.y
 
     if (c.elapsedSec > 1) {

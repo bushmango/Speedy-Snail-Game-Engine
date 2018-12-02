@@ -8,6 +8,7 @@ import * as cameras from 'engine/camera/cameras'
 import * as smashedParts from './smashedParts'
 
 import * as sounds from './../sounds/sounds'
+import * as zones from './zones'
 
 interface IAsteroid {
   anim: anim.IAnim
@@ -27,32 +28,33 @@ interface IAsteroidData {
   splitInto?: IAsteroidData[]
 }
 
-let datas: IAsteroidData[] = []
+let datas_small: IAsteroidData[] = []
+let datas_large: IAsteroidData[] = []
 let d: IAsteroidData = {
   frame: spriteUtil.frame32(7, 1),
   size: 1,
 }
-datas.push(d)
+datas_small.push(d)
 let splitB = (d = {
   frame: spriteUtil.frame32(7, 2),
   size: 1,
 })
-datas.push(d)
+datas_small.push(d)
 let splitA = (d = {
   frame: spriteUtil.frame32(7, 3),
   size: 1,
 })
-datas.push(d)
+datas_small.push(d)
 d = {
   frame: spriteUtil.frame32(8, 1, 2, 2),
   size: 2,
   splitInto: [splitA, splitB],
 }
-datas.push(d)
+datas_large.push(d)
 
-export { datas }
+export { datas_small, datas_large }
 
-export function create(data: IAsteroidData = datas[0]) {
+export function create(data: IAsteroidData = datas_small[0]) {
   let ctx = getContext()
 
   log.x('create asteroid')
@@ -141,21 +143,45 @@ export function smash(c: IAsteroid) {
   }
 }
 
-let spawnTimer = 1
+let spawnTimer_small = 0
+let spawnTimer_large = 0
+
 let spawnerEnabled = true
 export function updateSpawner(elapsedTimeSec) {
   let ctx = getContext()
-  let view = ctx.sge.getViewSize()
+
   let stats = ctx.stats.getCurrentStats()
+
   if (spawnerEnabled) {
-    spawnTimer += elapsedTimeSec
-    if (spawnTimer > 1 && stats.speed > 0) {
-      let asteroid = create(_.sample(datas))
-      asteroid.anim.sprite.x = view.width / 2
-      asteroid.anim.sprite.y = _.random(0, view.height / 2)
-      spawnTimer = 0
+    let curZone = zones.getCurrentZone()
+
+    if (curZone.smallAsteroidRate) {
+      spawnTimer_small += elapsedTimeSec
+
+      if (spawnTimer_small > curZone.smallAsteroidRate && stats.speed > 0) {
+        spawn(datas_small)
+        spawnTimer_small = 0
+      }
+    }
+    if (curZone.largeAsteroidRate) {
+      spawnTimer_large += elapsedTimeSec
+
+      if (spawnTimer_large > curZone.largeAsteroidRate && stats.speed > 0) {
+        spawn(datas_large)
+        spawnTimer_large = 0
+      }
     }
   }
+}
+
+export function spawn(datas: IAsteroidData[]) {
+  let ctx = getContext()
+  let cv = ctx.getCameraView()
+
+  let asteroid = create(_.sample(datas))
+  asteroid.anim.sprite.x = cv.cameraWidth
+  let margin = 50
+  asteroid.anim.sprite.y = _.random(margin, cv.cameraHeight - margin)
 }
 
 // todo genericize

@@ -12,6 +12,8 @@ import * as goats from './../actors/goats'
 
 import * as chroma from 'chroma-js'
 
+import * as zones from './../actors/zones'
+
 interface IGoalPieceMarker {
   anim: anim.IAnim
 }
@@ -225,16 +227,23 @@ function updateGoalPosition(elapsedTimeSec) {
     d = 0
     speed = 0
   }
-  if (d >= cur.distanceMax) {
-    d = cur.distanceMax
+
+  let zi = zones.getZoneInfo()
+
+  if (d >= zi.maxDistance) {
+    d = zi.maxDistance
     // TODO: do win condition
   }
-  let p = d / cur.distanceMax
+  let p = d / zi.maxDistance
 
   _.forEach(statItems, (c) => {
     //c.u
     // update?
   })
+
+  // Get our current zone
+  let curZone = zones.getCurrentZone()
+  ui.textGameName.text = curZone.name
 
   ctx.stats.updateStats({
     speed: speed,

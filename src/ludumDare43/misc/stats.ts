@@ -6,7 +6,7 @@ interface IStats {
   speed: number
   distancePercentage: number
   distance: number
-  distanceMax: number
+  //distanceMax: number
 }
 
 let stats: IStats = {
@@ -14,7 +14,7 @@ let stats: IStats = {
   speed: 0,
   distancePercentage: 0,
   distance: 0,
-  distanceMax: 100,
+  // distanceMax: 100,
 }
 
 export function getCurrentStats() {
