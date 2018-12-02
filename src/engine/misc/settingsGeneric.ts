@@ -1,6 +1,8 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
 
+import * as pubSub from 'engine/common/pubSub'
+
 import * as Lockr from 'lockr'
 
 interface IBasicSettings {
@@ -50,4 +52,5 @@ export function getSettings() {
 export function updateSettings(newSettings: Partial<IBasicSettings>) {
   _.merge(settings, newSettings)
   save()
+  pubSub.emit('settings:update')
 }
