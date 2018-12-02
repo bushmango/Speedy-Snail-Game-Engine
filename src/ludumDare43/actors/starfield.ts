@@ -6,11 +6,17 @@ import * as spriteUtil from '../../engine/anim/spriteUtil'
 import * as anim from '../../engine/anim/anim'
 
 enum EItemType {
+  Dust,
   Star,
+}
+
+interface IObject {
+  [key: string]: any
 }
 
 interface IItem {
   anim: anim.IAnim,
+  data?: IObject,
   distance: number,
   type: EItemType,
 }
@@ -39,9 +45,44 @@ function cleanup() {
 }
 
 function createRandom(options) {
-  // TODO: Create additional factories that build things like nebulae
-  // TODO: Call a random factory, weighted heavily toward stars
-  return createStar(options)
+  const diceroll = Math.random();
+
+  if (diceroll > 0.75) {
+    return createStar(options)
+  }
+
+  return createDust(options)
+}
+
+function createDust(options) {
+  const ctx = getContext()
+
+  const rotationSpeed = _.random(-Math.PI, Math.PI) * 0.5
+
+  const item : IItem = {
+    anim: anim.create(),
+    data: {
+      rotationSpeed,
+    },
+    distance: 1,
+    type: EItemType.Dust,
+  }
+
+  const frame = spriteUtil.frame32(1, 2),
+        sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+
+  item.anim.sprite = sprite
+
+  sprite.alpha = 0.5 + Math.random() * 0.5
+  sprite.rotation = Math.random() * 2 * Math.PI
+
+  sprite.filters = [
+    // XXX: new PIXI.filters.MotionBlurFilter(),
+  ];
+
+  const layer = Math.random() > 0.5 ? ctx.layerAbove : ctx.layerBelow
+
+  return _create(item, options, layer)
 }
 
 function createStar(options) {
@@ -71,10 +112,12 @@ function createStar(options) {
     new PIXI.filters.BlurFilter(1, 1),
   ];
 
-  return _create(item, options)
+  ctx.layerBelow.addChild(sprite)
+
+  return _create(item, options, ctx.layerBelow)
 }
 
-function _create(item, options) {
+function _create(item, options, layer) {
   const ctx = getContext(),
         sprite = item.anim.sprite
 
@@ -83,7 +126,7 @@ function _create(item, options) {
 
   distances.set(sprite, item.distance);
 
-  ctx.layerBelow.addChild(sprite)
+  layer.addChild(sprite)
 
   items.push(item)
 
@@ -155,9 +198,13 @@ export function updateAll(elapsedTimeSec) {
 
 function updateItems(elapsedTimeSec, velocity) {
   _.forEach(items, (c) => {
-    c.anim.sprite.x -= velocity / c.distance
+    const sprite = c.anim.sprite
 
-    // TODO: Switch on c.type and perform type-specific animations, e.g. twinkle the stars
+    sprite.x -= velocity / c.distance
+
+    if (c.type == EItemType.Dust) {
+      sprite.rotation += c.data.rotationSpeed * elapsedTimeSec
+    }
   })
 }
 
