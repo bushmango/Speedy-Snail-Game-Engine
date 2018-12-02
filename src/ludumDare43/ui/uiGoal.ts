@@ -54,7 +54,7 @@ function createStatUi(x, a, b, c, d, e, f) {
     align: 'left',
   })
   item.text.anchor = new PIXI.Point(0, 0)
-  item.text.x = 120
+  item.text.x = 120 - 5
   item.text.y = 6 + 2
 
   item.container.x = x

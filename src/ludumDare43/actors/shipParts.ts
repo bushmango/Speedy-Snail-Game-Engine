@@ -24,6 +24,8 @@ export interface IShipPart {
   anim: anim.IAnim
   isFree: boolean
   isDead: boolean
+  isAttached: boolean
+  isJettisoned: boolean
   isCore: boolean
   isConnectedToCore: boolean
   data: IShipPartData
@@ -76,6 +78,7 @@ export function safeSetShipGrid(x, y, c: IShipPart) {
     c.bx = x
     c.by = y
     c.isFree = false
+    c.isAttached = true
   }
   return true
 }
@@ -87,7 +90,9 @@ export function create(data: IShipPartData = shipPart1) {
   let item: IShipPart = {
     anim: anim.create(),
     isFree: true,
+    isAttached: false,
     isDead: false,
+    isJettisoned: false,
     data: data,
     bx: -1,
     by: -1,
@@ -105,22 +110,23 @@ export function create(data: IShipPartData = shipPart1) {
   sprite.on('mouseover', () => {
     let goat = goats.getItem()
 
-    if (item.isFree && !goat.isFree) {
+    if (item.isFree && !goat.isFree && !item.isJettisoned) {
       sprite.tint = 0xcccccc
       tractoredPart = item
-    } else {
+    } else if (item.isAttached) {
       sprite.tint = 0xff0000
       hoveredPart = item
     }
   })
   sprite.on('mouseout', () => {
+    if (hoveredPart === item) {
+      hoveredPart = null
+    }
+
     if (item.isFree) {
       sprite.tint = 0xffffffff
     } else {
       sprite.tint = 0xffffffff
-      if (hoveredPart === item) {
-        hoveredPart = null
-      }
     }
   })
 
@@ -140,9 +146,10 @@ export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
   let mouse = ctx.sge.getMouse()
+  let cv = ctx.getCameraView()
 
   if (mouse.isLeftJustDown) {
-    if (hoveredPart && !hoveredPart.isDead && !hoveredPart.isFree) {
+    if (hoveredPart && !hoveredPart.isDead && hoveredPart.isAttached) {
       //destroyFixedPiece(hoveredPart)
       //hoveredPart = null
 
@@ -151,23 +158,32 @@ export function updateAll(elapsedTimeSec) {
         let i = rockets.create('rocket')
         i.launchedFrom = hoveredPart
         anim.copyPosition(i.anim, hoveredPart.anim)
-      }
-      if (hoveredPart.data.special === 'laser') {
+      } else if (hoveredPart.data.special === 'laser') {
         //switchDataTo(hoveredPart, hoveredPart.data.clickTo)
         let i = rockets.create('laser')
         i.launchedFrom = hoveredPart
         anim.copyPosition(i.anim, hoveredPart.anim)
         i.anim.sprite.x += 16
+      } else {
+        jettisonPiece(hoveredPart)
       }
     }
   }
 
   if (mouse.isRightDown) {
     if (hoveredPart && !hoveredPart.isDead) {
-      destroyFixedPiece(hoveredPart)
-      hoveredPart = null
+      // destroyFixedPiece(hoveredPart)
+      // hoveredPart = null
+      jettisonPiece(hoveredPart)
     }
   }
+
+  // if (mouse.isRightDown) {
+  //   if (hoveredPart && !hoveredPart.isDead) {
+  //     destroyFixedPiece(hoveredPart)
+  //     hoveredPart = null
+  //   }
+  // }
 
   let goat = goats.getItem()
 
@@ -189,9 +205,20 @@ export function updateAll(elapsedTimeSec) {
       }
     } else {
       // part of ship
+      if (c.isJettisoned) {
+        c.anim.sprite.x += elapsedTimeSec * c.vx
+        c.anim.sprite.y += elapsedTimeSec * c.vy
+      }
     }
 
+    // if (c.isJettisoned) {
+    //   c.anim.sprite.x += 150 * elapsedTimeSec
+    // }
+
     // Destroy if off screen!!
+    if (utils.isOffScreen(cv, c.anim.sprite)) {
+      c.isDead = true
+    }
   })
 
   removeDead()
@@ -225,7 +252,31 @@ export function updateAll(elapsedTimeSec) {
     if (c.isDead) {
       return
     }
-    if (!c.isFree) {
+
+    if (c.isJettisoned) {
+      _.forEach(asteroids.getAll(), (d) => {
+        if (d.isDead) {
+          return
+        }
+        if (
+          utils.checkCirclesCollide(
+            c.anim.sprite.x,
+            c.anim.sprite.y,
+            r,
+            d.anim.sprite.x,
+            d.anim.sprite.y,
+            r * d.data.size
+          )
+        ) {
+          getContext().sfx.playPartDestroyed()
+          smash(c)
+          asteroids.smash(d)
+          cameras.shake(ctx.camera, 0.25, 2)
+        }
+      })
+    }
+
+    if (c.isAttached) {
       if (c.isCore) {
         // Connect with goat
         let goat = goats.getItem()
@@ -321,13 +372,13 @@ export function updateAll(elapsedTimeSec) {
               if (tractoredPart.data.noLeft || c.data.noRight) {
                 isAllowed = false
               }
-              ox = 32
+              ox = 32 - 2
               obx = 1
             } else {
               if (tractoredPart.data.noRight || c.data.noLeft) {
                 isAllowed = false
               }
-              ox = -32
+              ox = -32 + 2
               obx = -1
             }
           } else {
@@ -335,13 +386,13 @@ export function updateAll(elapsedTimeSec) {
               if (tractoredPart.data.noTop || c.data.noBottom) {
                 isAllowed = false
               }
-              oy = 32
+              oy = 32 - 2
               oby = 1
             } else {
               if (tractoredPart.data.noBottom || c.data.noTop) {
                 isAllowed = false
               }
-              oy = -32
+              oy = -32 + 2
               oby = -1
             }
           }
@@ -365,6 +416,7 @@ export function updateAll(elapsedTimeSec) {
               // Nothing already attached
               // connect it!
               tractoredPart.isFree = false
+              tractoredPart.isAttached = true
               tractoredPart.anim.sprite.tint = 0xff999999
               tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
               tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
@@ -384,8 +436,27 @@ export function updateAll(elapsedTimeSec) {
   })
 }
 
+export function jettisonPiece(c: IShipPart) {
+  if (!c.isDead && c.isAttached && !c.isCore) {
+    getContext().sfx.playPartDestroyed()
+
+    c.isJettisoned = true
+    c.isAttached = false
+    c.isFree = false
+
+    c.vx = _.random(100, 200)
+    c.vy = _.random(-5, 5)
+
+    if (hoveredPart === c) {
+      hoveredPart = null
+    }
+    safeSetShipGrid(c.bx, c.by, null)
+    updateWhatsAttached()
+  }
+}
+
 export function destroyFixedPiece(c: IShipPart) {
-  if (!c.isDead) {
+  if (!c.isDead && c.isAttached) {
     getContext().sfx.playPartDestroyed()
 
     if (c.data.damagesTo) {
@@ -396,13 +467,6 @@ export function destroyFixedPiece(c: IShipPart) {
     smash(c)
     safeSetShipGrid(c.bx, c.by, null)
 
-    // if (c.data.damagesTo) {
-    //   let dp = create(c.data.damagesTo)
-    //   dp.anim.sprite.x =
-    //   safeSetShipGrid(c.bx, c.by, dp)
-    //   return
-    // }
-
     // Flood fill core to make sure everything is connected
 
     if (c.isCore) {
@@ -410,42 +474,49 @@ export function destroyFixedPiece(c: IShipPart) {
       getContext().sfx.stopSlowdown()
     }
 
-    // Reset
-    _.forEach(items, (c) => {
-      c.isConnectedToCore = false
-    })
-    // Get core
-    let core = _.find(
-      items,
-      (c: IShipPart) => c.isCore && !c.isFree && !c.isDead
-    )
+    updateWhatsAttached()
+  }
+}
 
-    if (core) {
-      core.isConnectedToCore = true // let's hope so!
+function updateWhatsAttached() {
+  // Reset
+  _.forEach(items, (c) => {
+    c.isConnectedToCore = false
+  })
+  // Get core
+  let core = _.find(
+    items,
+    (c: IShipPart) => c.isCore && c.isAttached && !c.isDead
+  )
 
-      // Recursively try to connect everything
-      tryConnectToCore(core, 0)
-      tryConnectToCore(core, 1)
-      tryConnectToCore(core, 2)
-      tryConnectToCore(core, 3)
-    }
+  if (core) {
+    core.isConnectedToCore = true // let's hope so!
 
-    _.forEach(items, (c) => {
-      if (!c.isFree && !c.isDead) {
-        if (!c.isConnectedToCore) {
-          // Free!
-          c.isFree = true
+    // Recursively try to connect everything
+    tryConnectToCore(core, 0)
+    tryConnectToCore(core, 1)
+    tryConnectToCore(core, 2)
+    tryConnectToCore(core, 3)
+  } else {
+    goats.eject()
+  }
 
-          c.vy = -(c.by - maxShipGridY / 2) * 5 + _.random(-2, 2, true)
-          c.vx = _.random(-2, 2, true)
+  _.forEach(items, (c) => {
+    if (c.isAttached && !c.isDead) {
+      if (!c.isConnectedToCore) {
+        // Free!
+        c.isFree = true
+        c.isAttached = false
 
-          if (c === safeGetShipGrid(c.bx, c.by)) {
-            safeSetShipGrid(c.bx, c.by, null)
-          }
+        c.vy = -(c.by - maxShipGridY / 2) * 5 + _.random(-2, 2, true)
+        c.vx = _.random(-2, 2, true)
+
+        if (c === safeGetShipGrid(c.bx, c.by)) {
+          safeSetShipGrid(c.bx, c.by, null)
         }
       }
-    })
-  }
+    }
+  })
 }
 
 function tryConnectToCore(c: IShipPart, dir) {

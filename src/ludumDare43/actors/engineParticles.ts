@@ -33,13 +33,18 @@ export function updateAll(elapsedTimeSec) {
 
   if (smokeTimeLeft < 0) {
     _.forEach(shipParts.getAll(), (c: shipParts.IShipPart) => {
-      if (!c.isDead && !c.isFree && c.data.enginePower > 0) {
+      if (c.isDead) {
+        return
+      }
+      if ((c.isAttached || c.isJettisoned) && c.data.enginePower > 0) {
         if (c.data.enginePower > 1) {
           emit(c.anim.sprite.x - 10, c.anim.sprite.y - 8)
           emit(c.anim.sprite.x - 10, c.anim.sprite.y + 8)
         } else {
           emit(c.anim.sprite.x - 10, c.anim.sprite.y)
         }
+      } else if (c.isJettisoned) {
+        emit(c.anim.sprite.x - 10, c.anim.sprite.y)
       }
     })
     smokeTimeLeft = _.random(0.01, 0.3)

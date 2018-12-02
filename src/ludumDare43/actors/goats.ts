@@ -69,16 +69,23 @@ export function create() {
 }
 
 export function eject() {
+  let ctx = getContext()
+  let cv = ctx.getCameraView()
+
+  let band = cv.cameraHeight / 3
+  let middle = cv.cameraHeight / 2
+
   if (item.isFree) {
     return
   }
   item.isFree = true
-  item.tx = _.random(50, 300)
+  item.tx = _.random(50, cv.cameraWidth / 2)
+  item.ty = middle
 
   if (_.random(true) > 0.5) {
-    item.ty = _.random(50, 130)
+    item.ty -= 32 + _.random(32, band)
   } else {
-    item.ty = _.random(220, 300)
+    item.ty += 32 + _.random(32, band)
   }
 
   floating()
@@ -89,22 +96,25 @@ export function eject() {
 
 function floating() {
   const id = getContext().sfx.playGoatFloating(),
-        sprite = soundsGeneric.getSoundSprite()
+    sprite = soundsGeneric.getSoundSprite()
 
-  sprite.loop(true, id)
-    .volume(1, id)
+  sprite.loop(true, id).volume(1, id)
 
-  sprite.on('end', () => {
-    let volume = sprite.volume(id) / 2;
-    volume = volume >= 1/8 ? volume : 1;
+  sprite.on(
+    'end',
+    () => {
+      let volume = sprite.volume(id) / 2
+      volume = volume >= 1 / 8 ? volume : 1
 
-    sprite.volume(volume, id)
+      sprite.volume(volume, id)
 
-    if (!item.isFree) {
-      sprite.stop(id)
-      sprite.off('end', id)
-    }
-  }, id)
+      if (!item.isFree) {
+        sprite.stop(id)
+        sprite.off('end', id)
+      }
+    },
+    id
+  )
 }
 
 export function updateAll(elapsedTimeSec) {

@@ -90,6 +90,12 @@ export class GameContext {
     ctx.rootContainer = new PIXI.Container()
 
     ctx.camera = cameras.create()
+    // camera settings
+    ctx.camera.x = 0
+    ctx.camera.y = 0
+    ctx.camera.scale = 2
+    cameras.updateAll(0, 0) // Camera hack
+
     ctx.layerBelow = cameras.addLayer(ctx.camera)
     ctx.layerParticles = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
@@ -115,23 +121,14 @@ export class GameContext {
     debris.create()
 
     let sps = shipPartSpawners.create()
-    //sps.x = 600
-    //sps.y = 20
     sps = shipPartSpawners.create()
     sps.position = 'bottom'
-    //sps.x = 600
-    //sps.y = 400
 
     goats.create()
     goats.eject()
 
     helpArrows.createAll()
     starfield.initialize()
-
-    // camera?
-    ctx.camera.x = 0
-    ctx.camera.y = 0
-    ctx.camera.scale = 2
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer
