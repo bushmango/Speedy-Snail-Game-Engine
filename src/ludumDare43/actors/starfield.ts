@@ -47,7 +47,7 @@ function cleanup() {
 function createRandom(options) {
   const diceroll = Math.random();
 
-  if (diceroll > 0.75) {
+  if (diceroll > 0.5) {
     return createStar(options)
   }
 
@@ -176,6 +176,15 @@ function spawnAhead() {
   return spawn(x, y)
 }
 
+function spawnBehind() {
+  const ctx = getContext(),
+        view = ctx.sge.getViewSize(),
+        x = -1,
+        y = _.random(0, view.height)
+
+  return spawn(x, y)
+}
+
 function spawnAnywhere() {
   const ctx = getContext(),
         view = ctx.sge.getViewSize(),
@@ -215,12 +224,14 @@ function updateSpawner(elapsedTimeSec, velocity) {
     return
   }
 
+  const factory = velocity > 0 ? spawnAhead : spawnBehind
+
   // XXX: Linear relationship, works best if velocity is small, e.g. 0-5
   // TODO: Smarter maths
-  const targetTime = 1 / velocity
+  const targetTime = 0.5 / velocity
 
   if (elapsedTimeSec >= targetTime) {
-    const item = spawnAhead()
+    const item = factory()
     sortLayerChildren()
     spawnTimer = 0
   }
