@@ -44,3 +44,21 @@ export function getDistanceSimple(x1, y1, x2, y2) {
   let dy = Math.abs(y2 - y1)
   return dx + dy
 }
+
+export function isOffScreen(
+  cv: { cameraWidth: number; cameraHeight: number },
+  sprite: PIXI.Sprite
+) {
+  if (
+    sprite.x + sprite.texture.frame.width < 0 ||
+    sprite.x - sprite.texture.frame.width > cv.cameraWidth
+  ) {
+    if (
+      sprite.y + sprite.texture.frame.height < 0 ||
+      sprite.y - sprite.texture.frame.height > cv.cameraHeight
+    ) {
+      return true
+    }
+  }
+  return false
+}
