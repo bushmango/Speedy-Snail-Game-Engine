@@ -286,6 +286,7 @@ export function updateAll(elapsedTimeSec) {
             let zp = z / dist
 
             cameras.frameSlowdown(ctx.camera, 0.1, 0.15 + zp * 0.85)
+            getContext().sfx.playFrameSlowdown()
           }
         }
       })
@@ -402,8 +403,9 @@ export function destroyFixedPiece(c: IShipPart) {
 
     // Flood fill core to make sure everything is connected
 
-    if (c.isCore) {      
+    if (c.isCore) {
       goats.eject()
+      getContext().sfx.stopFrameSlowdown()
     }
 
     // Reset

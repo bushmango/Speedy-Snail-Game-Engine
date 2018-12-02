@@ -83,6 +83,23 @@ export function playLoaded() {
 //   soundsGeneric.play('hurt001')
 // }
 
+export function playFrameSlowdown() {
+  const id = 'slowdown001',
+        sprite = soundsGeneric.getSoundSprite()
+
+  if (sprite.playing(id)) {
+    return id
+  }
+
+  return soundsGeneric.play(id)
+}
+
+export function stopFrameSlowdown() {
+  const sprite = soundsGeneric.getSoundSprite()
+
+  sprite.stop('slowdown001')
+}
+
 export function playGoatFloating() {
   return soundsGeneric.play('goat001')
 }
