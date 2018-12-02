@@ -25,16 +25,21 @@ const distances = new Map();
 
 const items: IItem[] = []
 
-let spawnTimer = 0
+let dustSpawnTimer = 0,
+    starSpawnTimer = 0
 
 function cleanup() {
-  const ctx = getContext()
+  const ctx = getContext(),
+        view = ctx.sge.getViewSize()
 
   for (let i = 0, length = items.length; i < length; i++) {
     const sprite = items[i].anim.sprite
 
-    if (sprite.x <= -sprite.width) {
-      ctx.layerBelow.removeChild(sprite)
+    const isAhead = sprite.x > sprite.width + view.width,
+          isBehind = sprite.x <= -sprite.width
+
+    if (isAhead || isBehind) {
+      sprite.parent.removeChild(sprite)
       distances.delete(sprite)
       items.splice(i, 1)
 
@@ -42,16 +47,6 @@ function cleanup() {
       length--
     }
   }
-}
-
-function createRandom(options) {
-  const diceroll = Math.random();
-
-  if (diceroll > 0.5) {
-    return createStar(options)
-  }
-
-  return createDust(options)
 }
 
 function createDust(options) {
@@ -95,7 +90,7 @@ function createStar(options) {
     type: EItemType.Star,
   }
 
-  const scale = 1 / Math.max(1, distance / 4)
+  const scale = 1 / Math.max(1, distance / 16)
 
   const frame = spriteUtil.frame32(1, 1),
         sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
@@ -140,10 +135,10 @@ function generateStarTint() {
 }
 
 export function initialize() {
-  const count = _.random(100, 200)
+  const count = _.random(10, 20)
 
   for (let i = 0; i < count; i++) {
-    spawnAnywhere()
+    spawnAnywhere(createStar)
   }
 
   sortLayerChildren()
@@ -158,46 +153,46 @@ function sortLayerChildren() {
   ctx.layerBelow.children.sort((a, b) => distances.get(a) - distances.get(b))
 }
 
-function spawn(x, y) {
+function spawnAhead(factory) {
+  const ctx = getContext(),
+        view = ctx.sge.getViewSize(),
+        x = view.width,
+        y = _.random(0, view.height / 2)
+
+  return _spawn(x, y, factory)
+}
+
+function spawnBehind(factory) {
+  const ctx = getContext(),
+        view = ctx.sge.getViewSize(),
+        x = 0,
+        y = _.random(0, view.height / 2)
+
+  return _spawn(x, y, factory)
+}
+
+function spawnAnywhere(factory) {
+  const ctx = getContext(),
+        view = ctx.sge.getViewSize(),
+        x = _.random(0, view.width / 2),
+        y = _.random(0, view.height / 2)
+
+  return _spawn(x, y, factory)
+}
+
+function _spawn(x, y, factory) {
   const options = {
     x,
     y,
   }
 
-  return createRandom(options)
-}
-
-function spawnAhead() {
-  const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = view.width + 1,
-        y = _.random(0, view.height)
-
-  return spawn(x, y)
-}
-
-function spawnBehind() {
-  const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = -1,
-        y = _.random(0, view.height)
-
-  return spawn(x, y)
-}
-
-function spawnAnywhere() {
-  const ctx = getContext(),
-        view = ctx.sge.getViewSize(),
-        x = _.random(0, view.width),
-        y = _.random(0, view.height)
-
-  return spawn(x, y)
+  return factory(options)
 }
 
 export function updateAll(elapsedTimeSec) {
   const ctx = getContext(),
         stats = ctx.stats.getCurrentStats(),
-        velocity = stats.speed
+        velocity = stats.speed * 20
 
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
@@ -218,21 +213,29 @@ function updateItems(elapsedTimeSec, velocity) {
 }
 
 function updateSpawner(elapsedTimeSec, velocity) {
-  spawnTimer += elapsedTimeSec
-
   if (velocity == 0) {
     return
   }
 
+  dustSpawnTimer += elapsedTimeSec
+  starSpawnTimer += elapsedTimeSec
+
   const factory = velocity > 0 ? spawnAhead : spawnBehind
+  let itemsCreated = false
 
-  // XXX: Linear relationship, works best if velocity is small, e.g. 0-5
-  // TODO: Smarter maths
-  const targetTime = 0.5 / velocity
+  if (dustSpawnTimer > 0.25) {
+    factory(createDust)
+    itemsCreated = true
+    dustSpawnTimer -= Math.random() * 0.25
+  }
 
-  if (elapsedTimeSec >= targetTime) {
-    const item = factory()
+  if (starSpawnTimer > 0.5) {
+    factory(createStar)
+    itemsCreated = true
+    starSpawnTimer -= Math.random()
+  }
+
+  if (itemsCreated) {
     sortLayerChildren()
-    spawnTimer = 0
   }
 }
