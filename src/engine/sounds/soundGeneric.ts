@@ -6,6 +6,15 @@ import * as settingsGeneric from 'engine/misc/settingsGeneric'
 
 let soundSprite = null
 let musicSprite = null
+
+export function getMusicSprite() {
+  return musicSprite
+}
+
+export function getSoundSprite() {
+  return soundSprite
+}
+
 export function load(jsonAudioSprite, callbackOnLoaded) {
   soundSprite = new howler.Howl({
     src: jsonAudioSprite.urls,
