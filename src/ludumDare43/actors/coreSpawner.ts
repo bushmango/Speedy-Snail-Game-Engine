@@ -6,6 +6,8 @@ import * as shipParts from './shipParts'
 import * as anim from 'engine/anim/anim'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
+import * as rockets from './rockets'
+
 interface ICoreSpawner {
   x: number
   y: number
@@ -25,7 +27,7 @@ export function create() {
 
   log.x('create core ship part spawner')
   item = {
-    x: 0,
+    x: -250,
     y: 200,
     elapsedSec: 0,
     anim: anim.create(),
@@ -42,8 +44,19 @@ export function create() {
 
 export function launch() {
   if (!item.hasPayload) {
-    item.x = 0
+    item.x = -250
     item.hasPayload = true
+
+    // A bunch of lasers
+    for (let i = 0; i < 10; i++) {
+      let r = rockets.create('laser')
+      r.vx = 250 + 150
+      r.anim.sprite.x = item.x
+      r.anim.sprite.y = item.y
+
+      r.anim.sprite.y += _.random(-75, 75)
+      r.anim.sprite.x += _.random(-100, 150)
+    }
   }
 }
 

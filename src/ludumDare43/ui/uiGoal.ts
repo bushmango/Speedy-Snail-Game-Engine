@@ -27,6 +27,7 @@ let ui = {
   //textMass: null as PIXI.extras.BitmapText,
   statSpeed: null as IStatUI,
   statMass: null as IStatUI,
+  textMass: null as PIXI.extras.BitmapText,
 }
 
 interface IStatUI {
@@ -49,12 +50,12 @@ function createStatUi(x, a, b, c, d, e, f) {
   }
 
   item.text = new PIXI.extras.BitmapText(`0.000`, {
-    font: '20px defaultfont',
+    font: '16px tahoma16',
     align: 'left',
   })
   item.text.anchor = new PIXI.Point(0, 0)
   item.text.x = 120
-  item.text.y = 6
+  item.text.y = 6 + 2
 
   item.container.x = x
   item.container.y = 0

@@ -51,7 +51,7 @@ export function create() {
     target: null,
   }
   item.text = new PIXI.extras.BitmapText(`helper arrow`, {
-    font: '20px defaultfont',
+    font: '24px tahoma24',
     align: 'left',
   })
   item.text.anchor = new PIXI.Point(0, 0.5)

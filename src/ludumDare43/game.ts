@@ -22,7 +22,7 @@ export function run() {
   // Make crisp
   PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
-  sge.init()
+  sge.init('12px tahoma12', 'lite')
   sge.createRenderer()
 
   settingsGeneric.load(gamePreload.settingsPath)

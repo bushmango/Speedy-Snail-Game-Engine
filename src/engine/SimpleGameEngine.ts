@@ -24,8 +24,14 @@ export class SimpleGameEngine {
 
   keyboard = new Keyboard()
 
-  init() {
+  _defaultFont = '16px defaultfont'
+  _frameMode = 'full'
+
+  init(defaultFont = '16px defaultfont', frameMode = 'full') {
     log.x('starting SGE')
+
+    this._defaultFont = defaultFont
+    this._frameMode = frameMode
 
     let type = 'WebGL'
     if (!PIXI.utils.isWebGLSupported()) {
@@ -187,7 +193,7 @@ export class SimpleGameEngine {
         this.loadingMessage.visible = false
         let frameRateText = (this.frameRateText = new PIXI.extras.BitmapText(
           '',
-          { font: '16px defaultfont' }
+          { font: this._defaultFont }
         ))
         frameRateText.position.set(0, 2)
         this.stage.addChild(frameRateText)
@@ -299,6 +305,22 @@ export class SimpleGameEngine {
     )} | ${numeral(this.frameMaxLoad).format('0')}ms | ${this.frameNum % 60} ${
       this.frameMaxLoad / maxMsPerFrame > 0.5 ? 'WARNING' : ''
     } `
+
+    if (this._frameMode === 'full') {
+      this.frameRateText.text = `${this.framesPerSecond || '--'} | ${numeral(
+        this.frameAverageLoad / maxMsPerFrame
+      ).format('0%')} | ${numeral(this.frameMaxLoad / maxMsPerFrame).format(
+        '0%'
+      )} | ${numeral(this.frameMaxLoad).format('0')}ms | ${this.frameNum %
+        60} ${this.frameMaxLoad / maxMsPerFrame > 0.5 ? 'WARNING' : ''} `
+    } else if (this._frameMode === 'lite') {
+      this.frameRateText.text = `${this.framesPerSecond || '--'} | ${numeral(
+        this.frameAverageLoad / maxMsPerFrame
+      ).format('0%')} | ${numeral(this.frameMaxLoad).format('0')}ms`
+    } else {
+      this.frameRateText.text = `${this.framesPerSecond || '--'}`
+    }
+
     this.onUpdate()
 
     // FPS counter

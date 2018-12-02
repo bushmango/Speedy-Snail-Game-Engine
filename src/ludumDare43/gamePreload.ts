@@ -3,7 +3,13 @@ const preloadPath = '/public/ludumDare43'
 export { settingsPath, preloadPath }
 export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
-  sge.preloadBitmapFonts(['defaultfont'])
+  sge.preloadBitmapFonts([
+    'defaultfont',
+    'tahoma24',
+    'tahoma12',
+    'tahoma20',
+    'tahoma16',
+  ])
   sge.preloadSprites([
     // 'test-ship',
     'prariesnailgames',
