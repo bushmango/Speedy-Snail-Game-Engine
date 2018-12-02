@@ -6,6 +6,7 @@ import { getContext } from '../GameContext'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 import * as shipParts from './shipParts'
 import * as log from 'engine/log'
+import * as rockets from './rockets'
 
 let particleEmitter1: ParticleEmitter = null
 let smokeTimeLeft = 0
@@ -32,6 +33,21 @@ export function updateAll(elapsedTimeSec) {
   checkDestroyTimeLeft -= elapsedTimeSec
 
   if (smokeTimeLeft < 0) {
+    _.forEach(rockets.getAll(), (c: rockets.IRocket) => {
+      if (c.isDead) {
+        return
+      }
+      if (c.type === 'rocket') {
+        let x = 16
+        let y = 0
+        let rot = c.anim.sprite.rotation
+        let xp = x * Math.cos(rot) - y * Math.sin(rot)
+        let yp = y * Math.cos(rot) + x * Math.sin(rot)
+
+        emit(c.anim.sprite.x - xp, c.anim.sprite.y - yp)
+      }
+    })
+
     _.forEach(shipParts.getAll(), (c: shipParts.IShipPart) => {
       if (c.isDead) {
         return

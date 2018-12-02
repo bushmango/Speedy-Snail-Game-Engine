@@ -10,7 +10,7 @@ import * as cameras from 'engine/camera/cameras'
 import * as smashedParts from './smashedParts'
 import * as shipParts from './shipParts'
 
-interface IRocket {
+export interface IRocket {
   anim: anim.IAnim
   vx: number
   vy: number
@@ -78,6 +78,8 @@ export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   //let kb = ctx.sge.keyboard
   let mouse = ctx.sge.getMouse()
+  let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
+
   _.forEach(items, (c) => {
     c.elapsedSec += elapsedTimeSec
     if (c.elapsedSec > 15) {
@@ -87,7 +89,6 @@ export function updateAll(elapsedTimeSec) {
     // c.anim.sprite.rotation += Math.PI * elapsedTimeSec
 
     if (c.type === 'rocket') {
-      let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
       let dx = c.anim.sprite.x - cx
       let dy = -(c.anim.sprite.y - cy)
 
@@ -177,7 +178,7 @@ export function updateAll(elapsedTimeSec) {
         if (d !== c.launchedFrom && !c.isFriendlyGoatFire) {
           getContext().sfx.playPartDestroyed()
           smash(c)
-          if (!d.isFree) {
+          if (d.isAttached) {
             shipParts.destroyFixedPiece(d)
           } else {
             shipParts.smash(d)

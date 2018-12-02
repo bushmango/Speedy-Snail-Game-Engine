@@ -186,6 +186,7 @@ export function updateAll(elapsedTimeSec) {
   // }
 
   let goat = goats.getItem()
+  let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
 
   _.forEach(items, (c) => {
     anim.update(c.anim, elapsedTimeSec)
@@ -205,7 +206,28 @@ export function updateAll(elapsedTimeSec) {
       }
     } else {
       // part of ship
+      let accel = 380
+      let d = Math.abs(cy - c.vy)
+      if (accel > d) {
+        accel = d
+      }
       if (c.isJettisoned) {
+        if (cy > c.anim.sprite.y) {
+          c.vy += accel * elapsedTimeSec
+        } else {
+          c.vy -= accel * elapsedTimeSec
+        }
+        let maxCy = 100
+        if (d < maxCy) {
+          maxCy = d
+        }
+        if (c.vy > maxCy) {
+          c.vy = maxCy
+        }
+        if (c.vy < -maxCy) {
+          c.vy = -maxCy
+        }
+
         c.anim.sprite.x += elapsedTimeSec * c.vx
         c.anim.sprite.y += elapsedTimeSec * c.vy
       }
@@ -444,7 +466,7 @@ export function jettisonPiece(c: IShipPart) {
     c.isFree = false
 
     c.vx = _.random(100, 200)
-    c.vy = _.random(-5, 5)
+    // c.vy = _.random(-5, 5)
 
     if (hoveredPart === c) {
       hoveredPart = null
