@@ -87,6 +87,35 @@ export function playGoatFloating() {
   return soundsGeneric.play('goat001')
 }
 
+const slowdownCause = []
+let slowdownInit = false
+
+export function playSlowdown(cause) {
+  const id = 'slowdown001',
+        sprite = soundsGeneric.getSoundSprite()
+
+  // XXX: There has to be a better way
+  if (!slowdownInit) {
+    slowdownInit = true
+    sprite.on('end', () => {
+      slowdownCause.shift()
+    }, id)
+  }
+
+  if (slowdownCause.includes(cause)) {
+    return
+  }
+
+  slowdownCause.push(cause)
+  soundsGeneric.play(id)
+}
+
+export function stopSlowdown() {
+  const sprite = soundsGeneric.getSoundSprite()
+
+  sprite.stop('slowdown001')
+}
+
 export function playPartDestroyed() {
   // need new!
   soundsGeneric.play('smash001')
