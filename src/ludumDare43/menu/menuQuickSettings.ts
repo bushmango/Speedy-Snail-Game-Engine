@@ -11,6 +11,7 @@ import * as buttons from './buttons'
 import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 
 import * as spriteUtil from 'engine/anim/spriteUtil'
+import * as sounds from './../sounds/sounds'
 
 export interface IMenuQuickSettings {
   buttonSound: buttonsGeneric.IMenuButton
@@ -56,8 +57,14 @@ export function create() {
   item.buttonSound.onClick = () => {
     //slideOut()
 
+    let mute = !settingsGeneric.getSettings().muteSound
+
+    if (mute) {
+      sounds.stopAllSoundEffects()
+    }
+
     settingsGeneric.updateSettings({
-      muteSound: !settingsGeneric.getSettings().muteSound,
+      muteSound: mute,
     })
   }
   item.buttons.push(item.buttonSound)

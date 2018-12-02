@@ -24,6 +24,10 @@ export function load(sge: SimpleGameEngine) {
   playMusic1()
 }
 
+export function stopAllSoundEffects() {
+  // TODO: Nic
+}
+
 // TODO: replace all of these
 
 export function playMusic1() {
