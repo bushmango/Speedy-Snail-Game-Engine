@@ -53,6 +53,96 @@ let wing2: IShipPartData = {
   mass: 0.5,
 }
 datas.push(wing2)
+
+let sd: IShipPartData = {
+  name: 'wing-armor-1d',
+  frame: spriteUtil.frame32(2, 9),
+  noTop: true,
+  noRight: true,
+  mass: 0.75,
+  notSpawnable: true,
+}
+datas.push(sd)
+s = {
+  name: 'wing-armor-1',
+  frame: spriteUtil.frame32(2, 8),
+  noTop: true,
+  noRight: true,
+  mass: 1,
+  damagesTo: sd,
+}
+datas.push(s)
+
+sd = {
+  name: 'wing-armor-2d',
+  frame: spriteUtil.frame32(3, 9),
+  noBottom: true,
+  noRight: true,
+  mass: 0.75,
+  notSpawnable: true,
+}
+datas.push(sd)
+s = {
+  name: 'wing-armor-2',
+  frame: spriteUtil.frame32(3, 8),
+  noBottom: true,
+  noRight: true,
+  mass: 1,
+  damagesTo: sd,
+}
+datas.push(s)
+
+s = {
+  name: 'tr',
+  frame: spriteUtil.frame32(1, 8),
+  noBottom: true,
+  noLeft: true,
+  mass: 0.25,
+}
+datas.push(s)
+s = {
+  name: 'br',
+  frame: spriteUtil.frame32(1, 9),
+  noTop: true,
+  noLeft: true,
+  mass: 0.25,
+}
+datas.push(s)
+s = {
+  name: 'bl',
+  frame: spriteUtil.frame32(1, 10),
+  noTop: true,
+  noRight: true,
+  mass: 0.25,
+}
+datas.push(s)
+s = {
+  name: 'tl',
+  frame: spriteUtil.frame32(1, 11),
+  noBottom: true,
+  noRight: true,
+  mass: 0.25,
+}
+datas.push(s)
+
+s = {
+  name: 'h',
+  frame: spriteUtil.frame32(1, 12),
+  noBottom: true,
+  noTop: true,
+  mass: 0.25,
+}
+datas.push(s)
+
+s = {
+  name: 'v',
+  frame: spriteUtil.frame32(1, 13),
+  noLeft: true,
+  noRight: true,
+  mass: 0.25,
+}
+datas.push(s)
+
 let cockpit: IShipPartData = {
   name: 'cockpit-1',
   frame: spriteUtil.frame32(2, 2),
