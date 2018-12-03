@@ -42,6 +42,11 @@ export function create(type: 'rocket' | 'laser') {
   let ctx = getContext()
 
   log.x('create goal piece')
+
+  if (type === 'laser') {
+    ctx.sfx.playLaser()
+  }
+
   let item: IRocket = {
     anim: anim.create(),
     vx: 150, //_.random(-150, -50),

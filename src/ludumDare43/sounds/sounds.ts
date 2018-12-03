@@ -92,6 +92,12 @@ export function stopGoatFloating() {
   }
 }
 
+export function playGoatRescued() {
+  // need new!
+  // soundsGeneric.play('pickup001')
+  soundsGeneric.play('goat')
+}
+
 // const slowdownCause = []
 // let slowdownInit = false
 // let slowdownSprite = null
@@ -122,6 +128,11 @@ export function playPartConnected() {
 export function playClick() {
   // need new!
   soundsGeneric.play('hurt001')
+}
+
+export function playLaser() {
+  // need new!
+  soundsGeneric.play('lazer')
 }
 
 // export function playSmash() {

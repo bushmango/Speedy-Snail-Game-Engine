@@ -28,7 +28,7 @@ datas.push(core)
 export { core }
 
 let shipPart2: IShipPartData = {
-  name: 'part-2',
+  name: 'body',
   frame: spriteUtil.frame32(1, 2),
   mass: 1,
 }
@@ -36,7 +36,7 @@ datas.push(shipPart2)
 export { shipPart2 }
 
 let s: IShipPartData = {
-  name: 'connector-1',
+  name: 'cross',
   frame: spriteUtil.frame32(1, 7),
   mass: 0.5,
 }

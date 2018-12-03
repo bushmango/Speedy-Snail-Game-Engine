@@ -77,7 +77,7 @@ export function create() {
   ctx.layerUi.addChild(item.creditsSprite)
   item.creditsSprite.interactive = true
   item.creditsSprite.buttonMode = true
-  item.creditsSprite.on('mouseup', () => {
+  item.creditsSprite.on('pointerup', () => {
     placeSwitcher.moveOut(item.creditsSwitch)
     pubSub.emit('gui:click-button')
   })
@@ -87,7 +87,7 @@ export function create() {
   item.instructionsSprite = ctx.createSprite('instructions', null, 0, 0, 2)
   item.instructionsSprite.interactive = true
   item.instructionsSprite.buttonMode = true
-  item.instructionsSprite.on('mouseup', () => {
+  item.instructionsSprite.on('pointerup', () => {
     placeSwitcher.moveOut(item.instructionsSwitch)
     pubSub.emit('gui:click-button')
   })

@@ -30,6 +30,7 @@ let ui = {
   statSpeed: null as IStatUI,
   statMass: null as IStatUI,
   textGameName: null as PIXI.extras.BitmapText,
+  textTip: null as PIXI.extras.BitmapText,
 }
 
 interface IStatUI {
@@ -117,6 +118,15 @@ export function create() {
   ui.textGameName.x = 620
   ui.textGameName.y = 3
 
+  ui.textTip = new PIXI.extras.BitmapText(`TIPZ`, {
+    font: '24px tahoma24',
+    align: 'left',
+  })
+  ui.textTip.anchor = new PIXI.Point(0, 0)
+  ctx.layerUi.addChild(ui.textTip)
+  ui.textTip.x = 50
+  ui.textTip.y = 500
+
   // ui.textMass = new PIXI.extras.BitmapText(`Mass: xyz`, {
   //   font: '20px defaultfont',
   //   align: 'left',
@@ -189,6 +199,8 @@ export function updateAll(elapsedTimeSec) {
 
 function updateGoalPosition(elapsedTimeSec) {
   let ctx = getContext()
+  let cv = ctx.getCameraView()
+  let view = ctx.sge.getViewSize()
   let mass = 0
   let engines = 0
   let hasCore = false
@@ -209,7 +221,7 @@ function updateGoalPosition(elapsedTimeSec) {
   let speed = (engines * 5) / (mass || 1)
 
   if (speed === 0) {
-    speed = -1 // Penalty
+    speed = -2.5 // Penalty
   }
   if (!hasCore) {
     speed = -5 // Big penalty
@@ -230,6 +242,9 @@ function updateGoalPosition(elapsedTimeSec) {
 
   let zi = zones.getZoneInfo()
 
+  ui.textTip.text = zi.currentZone.tip ? zi.currentZone.tip : ''
+  ui.textTip.y = view.height - 70
+
   if (d >= zi.maxDistance) {
     d = zi.maxDistance
     // TODO: do win condition
@@ -245,7 +260,7 @@ function updateGoalPosition(elapsedTimeSec) {
   zones.updateCurrentZone(d)
   let curZone = zones.getCurrentZone()
   ui.textGameName.text =
-    curZone.name + ' - ' + numeral(d).format('0.000') + ' lightyears'
+    curZone.name + ' - ' + numeral(d).format('0.00') + ' lightyears'
 
   ctx.stats.updateStats({
     speed: speed,

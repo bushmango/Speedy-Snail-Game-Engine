@@ -76,7 +76,7 @@ export function updateAll(elapsedTimeSec) {
 
     if (c.position === 'top') {
       if (curZone.topSupply) {
-        smoothMoves.moveTo(c.smoothMover, cv.cameraWidth - 75, 50)
+        smoothMoves.moveTo(c.smoothMover, cv.cameraWidth - 75, 75)
       } else {
         smoothMoves.moveTo(c.smoothMover, cv.cameraWidth / 2, -50)
       }
