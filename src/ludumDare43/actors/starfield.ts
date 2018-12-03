@@ -88,11 +88,12 @@ function createPlanet(options) {
 
   const dimension = _.random(0, 5),
     distance = 34 + (dimension * 5),
-    layer = 2 + dimension
+    layer = 2 + dimension,
+    scale = _.random(0.5, 1, true)
 
   const frame = spriteUtil.frame32(1, 1, 14, 14),
     sheet = _.sample(['planet-001','planet-002','planet-003']),
-    sprite = ctx.createSprite(sheet, frame, 0.5, 0.5, 1)
+    sprite = ctx.createSprite(sheet, frame, 0.5, 0.5, scale)
 
   const item: IItem = {
     anim: anim.create(),
