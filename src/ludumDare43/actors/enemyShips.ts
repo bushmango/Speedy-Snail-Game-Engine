@@ -7,11 +7,19 @@ import * as smoothMoves from 'engine/anim/smoothMover'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
 
+import * as anim from '../../engine/anim/anim'
+import * as rockets from './rockets'
+import * as chroma from 'chroma-js'
+
 export interface IEnemyShip {
   shipGrid: shipParts.IShipPart[]
   smoothMover: smoothMoves.ISmoothMover
   x: number
   y: number
+  dir: number
+  v: number
+  isDead: boolean
+  tint: number
 }
 
 let items: IEnemyShip[] = []
@@ -29,6 +37,13 @@ export function create() {
     x: x,
     y: y,
     smoothMover: smoothMoves.create(x, y),
+    dir: _.random(0, 1, false),
+    v: _.random(5, 50),
+    isDead: false,
+    tint: chroma
+      .random()
+      .brighten(1)
+      .num(),
   }
   for (let j = 0; j < maxShipGridY; j++) {
     for (let i = 0; i < maxShipGridX; i++) {
@@ -78,6 +93,8 @@ export function updateWhatsAttached(enemyShip: IEnemyShip) {
   } else {
     // goats.eject()
     // Eject babies?
+
+    enemyShip.isDead = true
   }
 
   _.forEach(enemyShip.shipGrid, (c) => {
@@ -157,7 +174,13 @@ function tryConnectToCore(enemyShip: IEnemyShip, c: IShipPart, dir) {
   tryConnectToCore(enemyShip, sg, 3)
 }
 
-export function attachNewPart(c: IEnemyShip, name: string, bx, by) {
+export function attachNewPart(
+  c: IEnemyShip,
+  name: string,
+  bx,
+  by,
+  flip: boolean = false
+) {
   let f = _.find(
     shipPartsData.datas,
     (c: shipPartsData.IShipPartData) => c.name === name
@@ -165,7 +188,12 @@ export function attachNewPart(c: IEnemyShip, name: string, bx, by) {
   if (!f) {
     throw 'cant find part ' + name
   }
-  let sp = shipParts.create(f)
+  let sp = shipParts.create(f, c.tint)
+
+  if (flip) {
+    shipParts.flip(sp)
+  }
+
   safeSetShipGrid(c, bx, by, sp)
 
   if (name === 'core-1') {
@@ -217,10 +245,24 @@ export function updateAll(elapsedTimeSec: number) {
     )
     smoothMoves.update(c.smoothMover, c, elapsedTimeSec)
 
+    let numParts = 0
     // Update all pieces
     _.forEach(c.shipGrid, (sp) => {
       if (sp) {
-        sp.elapsedSec = 10
+        numParts++
+
+        if (sp.data.special === 'laser') {
+          if (sp.isReadyToFire) {
+            sp.isReadyToFire = false
+            sp.elapsedRecharge = 0 - _.random(0, 1, true)
+            let i = rockets.create('laser', true)
+            i.launchedFrom = sp
+            anim.copyPosition(i.anim, sp.anim)
+            i.anim.sprite.x -= 16
+          }
+        }
+
+        // 33sp.elapsedSec = 10
         // log.x('xy', c.x, c.y)
 
         // sp.anim.sprite.x = c.x
@@ -235,6 +277,8 @@ export function updateAll(elapsedTimeSec: number) {
           _.forEach(sp.safeDebris, (deb) => {
             deb.tx = sp.anim.sprite.x + deb.ox
             deb.ty = sp.anim.sprite.y + deb.oy
+            deb.anim.sprite.x = deb.tx
+            deb.anim.sprite.y = deb.ty
           })
         }
 
@@ -242,7 +286,23 @@ export function updateAll(elapsedTimeSec: number) {
         // sp.anim.sprite.y = sp.by //+ sp.by
       }
     })
+    if (!numParts) {
+      c.isDead = true // no parts!
+    }
   })
+
+  removeDead()
 }
 
-export function update() {}
+export function removeDead() {
+  let ctx = getContext()
+  for (let i = 0; i < items.length; i++) {
+    let c = items[i]
+    if (c.isDead) {
+      log.x('kill enemy ship', c)
+      //ctx.layerPlayer.removeChild(c.anim.sprite)
+      items.splice(i, 1)
+      i--
+    }
+  }
+}

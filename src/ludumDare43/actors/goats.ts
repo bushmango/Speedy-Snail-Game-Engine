@@ -61,7 +61,7 @@ export function create() {
 
   let onOver = () => {
     sprite.tint = 0xcccccc
-    item.isPickedUp = true   
+    item.isPickedUp = true
     ctx.sfx.playGoatPickedUp()
   }
   let onOut = () => {
@@ -89,7 +89,7 @@ export function eject() {
   let ctx = getContext()
   let cv = ctx.getCameraView()
 
-  let band = cv.cameraHeight / 3
+  let band = cv.cameraHeight / 4
   let middle = cv.cameraHeight / 2
 
   if (item.isFree) {

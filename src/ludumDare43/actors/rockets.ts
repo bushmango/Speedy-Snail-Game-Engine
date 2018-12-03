@@ -21,6 +21,7 @@ export interface IRocket {
   launchedFrom: shipParts.IShipPart
   type: 'rocket' | 'laser'
   isFriendlyGoatFire?: boolean
+  flipped: boolean
 }
 let items: IRocket[] = []
 export function getAll() {
@@ -40,7 +41,7 @@ var animDefault = animRocket
 
 export { animRocket }
 
-export function create(type: 'rocket' | 'laser') {
+export function create(type: 'rocket' | 'laser', flipped = false) {
   let ctx = getContext()
 
   log.x('create goal piece')
@@ -51,13 +52,14 @@ export function create(type: 'rocket' | 'laser') {
 
   let item: IRocket = {
     anim: anim.create(),
-    vx: 150, //_.random(-150, -50),
+    vx: flipped ? -150 : 150, //_.random(-150, -50),
     vy: 0,
     //vy: _.random(-50, 50),
     elapsedSec: 0,
     isDead: false,
     type: type,
     launchedFrom: null,
+    flipped: flipped,
   }
 
   item.anim.sprite = ctx.createSprite(
@@ -157,6 +159,29 @@ export function updateAll(elapsedTimeSec) {
         getContext().sfx.playPartDestroyed()
         smash(c)
         asteroids.smash(d)
+
+        cameras.shake(ctx.camera, 0.25, 4)
+      }
+    })
+
+    _.forEach(items, (d) => {
+      if (d.isDead || d === c) {
+        return
+      }
+      let r = 16 - 2
+      if (
+        utils.checkCirclesCollide(
+          c.anim.sprite.x,
+          c.anim.sprite.y,
+          r,
+          d.anim.sprite.x,
+          d.anim.sprite.y,
+          r
+        )
+      ) {
+        getContext().sfx.playPartDestroyed()
+        smash(c)
+        smash(d)
 
         cameras.shake(ctx.camera, 0.25, 4)
       }

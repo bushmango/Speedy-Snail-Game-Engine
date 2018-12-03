@@ -91,7 +91,10 @@ export function updateAll(elapsedTimeSec) {
     setTarget(helpGoat, null)
   }
 
-  let core = _.find(shipParts.getAll(), (c) => c.isCore)
+  let core = _.find(
+    shipParts.getAll(),
+    (c: shipParts.IShipPart) => c.isCore && c.isAttached
+  )
   if (core) {
     if (goats.getItem().isFree) {
       helpCore.text.text = 'This is your core. Drag your goat here.'

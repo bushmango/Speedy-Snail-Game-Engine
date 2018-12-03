@@ -40,6 +40,7 @@ export interface IShipPart {
   elapsedSec: number
   isReadyToFire: boolean
   safeDebris: debris.IDebris[]
+  flipped: boolean
 }
 let items: IShipPart[] = []
 export function getAll() {
@@ -68,6 +69,11 @@ var animHovered_fire: anim.IAnimData = {
 }
 var animHovered_jettison: anim.IAnimData = {
   frames: [spriteUtil.frame32(14, 6), spriteUtil.frame32(14, 7)],
+  frameTime: 20 / 60,
+  loop: true,
+}
+var animHovered_open: anim.IAnimData = {
+  frames: [spriteUtil.frame32(14, 10), spriteUtil.frame32(14, 11)],
   frameTime: 20 / 60,
   loop: true,
 }
@@ -122,7 +128,11 @@ export function updateSelectors(elapsedTimeSec) {
     ) {
       anim.playAnim(selectors.animHovered, animHovered_fire)
     } else {
-      anim.playAnim(selectors.animHovered, animHovered_jettison)
+      if (hoveredPart.data.isFragile) {
+        anim.playAnim(selectors.animHovered, animHovered_open)
+      } else {
+        anim.playAnim(selectors.animHovered, animHovered_jettison)
+      }
     }
 
     selectors.animHovered.sprite.visible = true
@@ -249,7 +259,7 @@ export function safeSetShipGrid(x, y, c: IShipPart) {
   return true
 }
 
-export function create(data: IShipPartData = core) {
+export function create(data: IShipPartData = core, tint = null) {
   let ctx = getContext()
 
   log.x('create ship part')
@@ -273,6 +283,7 @@ export function create(data: IShipPartData = core) {
     elapsedSec: 0,
     safeDebris: [],
     enemyShip: null,
+    flipped: false,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -289,10 +300,14 @@ export function create(data: IShipPartData = core) {
       b = 2
     }
 
-    item.tint = chroma
-      .random()
-      .brighten(b)
-      .num()
+    if (!tint) {
+      tint = chroma
+        .random()
+        .brighten(b)
+        .num()
+    }
+
+    item.tint = tint
   } else {
     item.tint = 0xffffff
   }
@@ -345,6 +360,10 @@ export function switchDataTo(c: IShipPart, data: IShipPartData) {
   } else {
     c.anim.sprite.texture.frame = data.frame
   }
+}
+
+export function flip(c: IShipPart) {
+  c.flipped = !c.flipped
 }
 
 export function updateAll(elapsedTimeSec) {
@@ -415,6 +434,10 @@ export function updateAll(elapsedTimeSec) {
       c.anim.sprite.scale.set(1)
     }
 
+    if (c.flipped) {
+      c.anim.sprite.scale.x = -c.anim.sprite.scale.x
+    }
+
     if (c.isJettisoned) {
       if (utils.isOffScreen(cv, c.anim.sprite)) {
         c.isDead = true
@@ -435,7 +458,7 @@ export function updateAll(elapsedTimeSec) {
         }
       }
     } else {
-      if (c.isAttached) {
+      if (c.isAttached || c.isAttachedToEnemy) {
         if (c.data.special === 'laser') {
           c.elapsedRecharge += elapsedTimeSec
           if (c.elapsedRecharge > 2) {
@@ -448,18 +471,20 @@ export function updateAll(elapsedTimeSec) {
           }
         }
 
-        if (c.data.special === 'baby') {
-          c.elapsedRecharge += elapsedTimeSec
-          anim.playAnim(c.anim, c.data.anim2)
+        if (c.isAttached) {
+          if (c.data.special === 'baby') {
+            c.elapsedRecharge += elapsedTimeSec
+            anim.playAnim(c.anim, c.data.anim2)
 
-          if (c.elapsedRecharge > 3) {
-            let bx = c.bx
-            let by = c.by
-            tryBomb(bx - 1, by)
-            tryBomb(bx + 1, by)
-            tryBomb(bx, by + 1)
-            tryBomb(bx, by - 1)
-            destroyFixedPiece(c)
+            if (c.elapsedRecharge > 3) {
+              let bx = c.bx
+              let by = c.by
+              tryBomb(bx - 1, by)
+              tryBomb(bx + 1, by)
+              tryBomb(bx, by + 1)
+              tryBomb(bx, by - 1)
+              destroyFixedPiece(c)
+            }
           }
         }
       }
@@ -577,7 +602,7 @@ export function updateAll(elapsedTimeSec) {
       })
     }
 
-    if (c.isAttached) {
+    if (c.isAttached || c.isAttachedToEnemy) {
       if (c.data.special === 'habitat' && c.safeDebris.length < 2) {
         // Connect with critters
         _.forEach(debris.getAll(), (d) => {
@@ -602,7 +627,7 @@ export function updateAll(elapsedTimeSec) {
         // Check for close asteroids
       }
 
-      if (c.isCore) {
+      if (c.isCore && c.isAttached) {
         // Connect with goat
         let goat = goats.getItem()
         if (goat.isPickedUp && goat.isFree) {
@@ -648,7 +673,7 @@ export function updateAll(elapsedTimeSec) {
         }
 
         // check for close asteroids
-        if (c.isCore && !c.isDead) {
+        if (c.isCore && !c.isDead && c.isAttached) {
           let distanceSimple = getDistanceSimple2(
             c.anim.sprite.x,
             c.anim.sprite.y,
@@ -672,7 +697,7 @@ export function updateAll(elapsedTimeSec) {
       })
 
       // See if we collide with the tractored part
-      if (tractoredPart && !tractoredPart.isDead) {
+      if (tractoredPart && !tractoredPart.isDead && c.isAttached) {
         if (
           utils.checkCirclesCollide(
             c.anim.sprite.x,
