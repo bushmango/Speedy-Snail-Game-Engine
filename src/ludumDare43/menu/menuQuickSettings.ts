@@ -88,6 +88,10 @@ export function create() {
   item.buttonReset = buttons.create('Reset')
   item.buttonReset.onClick = () => {
     //asteroids.
+
+    let ctx = getContext()
+    ctx.stats.updateStats({ isResetting: true })
+
     goats.eject()
     // TODO: destroy all asteroids
     // reset distance and score

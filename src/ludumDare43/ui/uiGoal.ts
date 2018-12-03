@@ -233,11 +233,19 @@ function updateGoalPosition(elapsedTimeSec) {
   }
 
   let cur = ctx.stats.getCurrentStats()
+
+  if (cur.isResetting) {
+    speed = -50
+  }
+
   let d = cur.distance
   d += speed * elapsedTimeSec
   if (d <= 0) {
     d = 0
     speed = 0
+    if (cur.isResetting) {
+      ctx.stats.updateStats({ isResetting: false })
+    }
   }
 
   let zi = zones.getZoneInfo()

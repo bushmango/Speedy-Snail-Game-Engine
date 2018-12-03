@@ -7,6 +7,8 @@ interface IStats {
   distancePercentage: number
   distance: number
   //distanceMax: number
+  difficulty: 'easy' | 'hard' | 'test' | 'fee-build' | 'endless'
+  isResetting: boolean
 }
 
 let stats: IStats = {
@@ -14,6 +16,8 @@ let stats: IStats = {
   speed: 0,
   distancePercentage: 0,
   distance: 0,
+  difficulty: 'easy',
+  isResetting: false,
   // distanceMax: 100,
 }
 
