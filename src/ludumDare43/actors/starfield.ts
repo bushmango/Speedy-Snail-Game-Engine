@@ -22,27 +22,30 @@ interface IItem {
   anim: anim.IAnim
   data?: IObject
   distance: number
+  layer: number
   type: EItemType
 }
 
-const distances = new Map()
-
-const items: IItem[] = []
+const items: IItem[] = [],
+  layers = new Map()
 
 let dustSpawnTimer = 0,
   planetSpawnTimer = 0,
   starSpawnTimer = 0
 
 function cleanup() {
-  const ctx = getContext()
-  let cv = ctx.getCameraView()
+  const cv = getContext().getCameraView()
 
   for (let i = 0, length = items.length; i < length; i++) {
     const sprite = items[i].anim.sprite
 
-    if (utils.isOffScreen(cv, sprite)) {
+    const isAhead = sprite.x > sprite.width + cv.cameraWidth,
+      isBehind = sprite.x <= -sprite.width
+
+    // XXX: Deliberately not utils.isOffScreen
+    if (isAhead || isBehind) {
       sprite.parent.removeChild(sprite)
-      distances.delete(sprite)
+      layers.delete(sprite)
       items.splice(i, 1)
 
       i--
@@ -62,6 +65,7 @@ function createDust(options) {
       rotationSpeed,
     },
     distance: 1,
+    layer: 1,
     type: EItemType.Dust,
   }
 
@@ -82,19 +86,24 @@ function createDust(options) {
 function createPlanet(options) {
   const ctx = getContext()
 
+  const dimension = _.random(0, 5),
+    distance = 34 + (dimension * 5),
+    layer = 2 + dimension
+
   const frame = spriteUtil.frame32(1, 1, 14, 14),
     sheet = _.sample(['planet-001']),
     sprite = ctx.createSprite(sheet, frame, 0.5, 0.5, 1)
 
   const item: IItem = {
     anim: anim.create(),
-    distance: 1,
+    distance,
+    layer,
     type: EItemType.Planet,
   }
 
   item.anim.sprite = sprite
 
-  const tint = generateStarTint()
+  const tint = generatePlanetTint()
 
   sprite.rotation = Math.random() * 2 * Math.PI
   sprite.tint = tint
@@ -106,15 +115,18 @@ function createPlanet(options) {
 
 function createStar(options) {
   const ctx = getContext(),
-    distance = _.random(2, 64)
+    dimension = _.random(0, 49),
+    distance = 8 + dimension,
+    layer = distance
 
   const item: IItem = {
     anim: anim.create(),
     distance,
+    layer,
     type: EItemType.Star,
   }
 
-  const scale = 1 / Math.max(1, distance / 16)
+  const scale = 0.5 / Math.max(1, dimension / 15)
 
   const frame = spriteUtil.frame32(1, 1),
     sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
@@ -147,56 +159,57 @@ function _create(item, options, layer) {
   sprite.y = options.y
 
   layer.addChild(sprite)
-  distances.set(sprite, item.distance)
+  layers.set(sprite, item.layer)
   items.push(item)
 
   return item
 }
 
+function generatePlanetTint() {
+  return 0xdddddd + Math.random() * 0x11111
+}
+
 function generateStarTint() {
-  // XXX: Placeholder
-  // TODO: Generate more realistic colors
   return 0xdddddd + Math.random() * 0x2222
 }
 
-function hasPlanet() {
-  return _.filter(items, (c) => c.type == EItemType.Planet).length > 0
+function getPlanetCount() {
+  return _.filter(items, (c) => c.type == EItemType.Planet).length
 }
 
 export function initialize() {
-  const count = _.random(10, 20)
+  const planetCount = 1,
+    starCount = _.random(10, 20)
 
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < planetCount; i++) {
+    spawnAnywhere(createPlanet)
+  }
+  for (let i = 0; i < starCount; i++) {
     spawnAnywhere(createStar)
   }
-
-  spawnAnywhere(createPlanet)
 
   sortLayerChildren()
 }
 
-/**
- * In lieu of creating multiple layers, we can sort children by their distances when needed.
- */
 function sortLayerChildren() {
   const ctx = getContext()
 
-  ctx.layerBelow.children.sort((a, b) => distances.get(b) - distances.get(a))
+  ctx.layerBelow.children.sort((a, b) => layers.get(b) - layers.get(a))
 }
 
-function spawnAhead(factory) {
+function spawnAhead(factory, offset: number = 0) {
   const ctx = getContext(),
     cv = ctx.getCameraView(),
-    x = cv.cameraWidth,
+    x = cv.cameraWidth + offset,
     y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)
 }
 
-function spawnBehind(factory) {
+function spawnBehind(factory, offset: number = 0) {
   const ctx = getContext(),
     cv = ctx.getCameraView(),
-    x = 0,
+    x = -offset,
     y = _.random(0, cv.cameraHeight)
 
   return _spawn(x, y, factory)
@@ -228,17 +241,16 @@ export function updateAll(elapsedTimeSec) {
   updateSpawner(elapsedTimeSec, velocity)
   updateItems(elapsedTimeSec, velocity)
 
-  cleanup()
+  if (velocity) {
+    cleanup()
+  }
 }
 
 function updateItems(elapsedTimeSec, velocity) {
   _.forEach(items, (c) => {
     const sprite = c.anim.sprite
 
-    // XXX: Special case to give planets more screen time
-    const distance = c.type == EItemType.Planet ? 64 : c.distance
-
-    sprite.x -= velocity / distance
+    sprite.x -= velocity / c.distance
 
     if (c.type == EItemType.Dust) {
       sprite.rotation += c.data.rotationSpeed * elapsedTimeSec
@@ -264,9 +276,9 @@ function updateSpawner(elapsedTimeSec, velocity) {
     dustSpawnTimer -= Math.random() * 0.25
   }
 
-  if (planetSpawnTimer > 15) {
-    if (!hasPlanet()) {
-      factory(createPlanet)
+  if (planetSpawnTimer > 10) {
+    if (getPlanetCount() < 2) {
+      factory(createPlanet, 224)
     }
     planetSpawnTimer = 0
   }
