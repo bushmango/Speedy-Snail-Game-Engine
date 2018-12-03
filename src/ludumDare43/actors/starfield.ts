@@ -91,7 +91,7 @@ function createPlanet(options) {
     layer = 2 + dimension
 
   const frame = spriteUtil.frame32(1, 1, 14, 14),
-    sheet = _.sample(['planet-001']),
+    sheet = _.sample(['planet-001','planet-002','planet-003']),
     sprite = ctx.createSprite(sheet, frame, 0.5, 0.5, 1)
 
   const item: IItem = {
