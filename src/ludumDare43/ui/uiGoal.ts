@@ -10,6 +10,8 @@ import * as shipParts from './../actors/shipParts'
 import * as coreSpawner from './../actors/coreSpawner'
 import * as goats from './../actors/goats'
 
+import * as enemyShips from './../actors/enemyShips'
+
 import * as chroma from 'chroma-js'
 
 import * as zones from './../actors/zones'
@@ -239,6 +241,16 @@ function updateGoalPosition(elapsedTimeSec) {
     speed = -10 // Big penalty
   }
 
+  let zi = zones.getZoneInfo()
+  if (
+    speed > 0.01 &&
+    enemyShips.getAll().length > 0 &&
+    zi.currentZone.bossSpawn
+  ) {
+    // Slow down while fighting boss
+    speed = 0.01
+  }
+
   let cur = ctx.stats.getCurrentStats()
 
   if (cur.isResetting) {
@@ -255,14 +267,16 @@ function updateGoalPosition(elapsedTimeSec) {
     }
   }
 
-  let zi = zones.getZoneInfo()
-
   ui.textTip.text = zi.currentZone.tip ? zi.currentZone.tip : ''
   ui.textTip.y = view.height - 70
 
   if (d >= zi.currentZoneSet.maxDistance) {
     d = zi.currentZoneSet.maxDistance
     // TODO: do win condition
+
+    ctx.stats.updateStats({ victory: true })
+  } else {
+    ctx.stats.updateStats({ victory: false })
   }
   let p = d / zi.currentZoneSet.maxDistance
 
@@ -272,7 +286,8 @@ function updateGoalPosition(elapsedTimeSec) {
   // })
 
   // Get our current zone
-  zones.updateCurrentZone(d)
+  zones.updateCurrentZone(d, speed)
+
   let curZone = zones.getCurrentZone()
   ui.textGameName.text =
     curZone.name + ' - ' + numeral(d).format('0.00') + ' lightyears'

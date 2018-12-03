@@ -12,6 +12,7 @@ interface IStats {
   difficulty: TDiff
   difficultyLabel: string
   isResetting: boolean
+  victory: boolean
 }
 
 let stats: IStats = {
@@ -22,6 +23,7 @@ let stats: IStats = {
   difficulty: 'easy',
   difficultyLabel: 'Easy',
   isResetting: false,
+  victory: false,
   // distanceMax: 100,
 }
 
