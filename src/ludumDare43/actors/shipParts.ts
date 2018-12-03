@@ -555,6 +555,26 @@ export function updateAll(elapsedTimeSec) {
           cameras.shake(ctx.camera, 0.25, 2)
         }
       })
+
+      _.forEach(items, (d) => {
+        if (d.isAttachedToEnemy && !d.isDead) {
+          if (
+            utils.checkCirclesCollide(
+              c.anim.sprite.x,
+              c.anim.sprite.y,
+              r,
+              d.anim.sprite.x,
+              d.anim.sprite.y,
+              r
+            )
+          ) {
+            getContext().sfx.playPartDestroyed()
+            smash(c)
+            destroyFixedPiece(d)
+            cameras.shake(ctx.camera, 0.25, 2)
+          }
+        }
+      })
     }
 
     if (c.isAttached) {
