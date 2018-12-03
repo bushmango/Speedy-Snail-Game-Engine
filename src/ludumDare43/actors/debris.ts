@@ -10,6 +10,7 @@ interface IDebris {
   vy: number
   lifeLeft: number
   isDead: boolean
+  elapsedEjectTime: number
 }
 let items: IDebris[] = []
 export function getAll() {
@@ -33,6 +34,7 @@ export function create() {
     vy: _.random(-50, 50),
     lifeLeft: 5,
     isDead: false,
+    elapsedEjectTime: 0,
   }
 
   item.anim.sprite = ctx.createSprite(
@@ -59,6 +61,16 @@ export function updateAll(elapsedTimeSec) {
     if (c.lifeLeft < 0) {
       c.isDead = true
     }
+
+    let maxEjectTime = 2
+    if (c.elapsedEjectTime < maxEjectTime) {
+      c.elapsedEjectTime += elapsedTimeSec
+      let p = c.elapsedEjectTime / maxEjectTime
+      c.anim.sprite.scale.set(Math.sin(p * Math.PI) * 3 + 1)
+    } else {
+      c.anim.sprite.scale.set(1)
+    }
+
     anim.update(c.anim, elapsedTimeSec)
     c.anim.sprite.rotation += Math.PI * elapsedTimeSec
     c.anim.sprite.x += c.vx * elapsedTimeSec

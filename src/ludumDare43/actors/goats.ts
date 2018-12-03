@@ -14,6 +14,7 @@ export interface IGoat {
   isPickedUp: boolean
   tx: number
   ty: number
+  elapsedEjectTime: 0
 }
 //let items: IGoat[] = []
 let item: IGoat = null
@@ -42,6 +43,7 @@ export function create() {
     isPickedUp: false,
     tx: 0,
     ty: 0,
+    elapsedEjectTime: 0,
   }
   item.anim.sprite = ctx.createSprite(
     'ship-001',
@@ -95,6 +97,8 @@ export function eject() {
   if (item.isFree) {
     return
   }
+
+  item.elapsedEjectTime = 0
   item.isFree = true
   item.tx = _.random(50, cv.cameraWidth / 2)
   item.ty = middle
@@ -123,10 +127,20 @@ export function catchGoat() {
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let mouse = ctx.sge.getMouse()
+
   if (item.isFree) {
     item.anim.sprite.rotation += Math.PI * elapsedTimeSec
   } else {
     item.anim.sprite.rotation = 0
+  }
+
+  let maxEjectTime = 2
+  if (item.elapsedEjectTime < maxEjectTime) {
+    item.elapsedEjectTime += elapsedTimeSec
+    let p = item.elapsedEjectTime / maxEjectTime
+    item.anim.sprite.scale.set(Math.sin(p * Math.PI) * 3 + 1)
+  } else {
+    item.anim.sprite.scale.set(1)
   }
 
   if (item.isPickedUp && item.isFree) {
