@@ -45,7 +45,7 @@ export function playMusic(song, loop = true, cb: () => void = null) {
     src: [song + '.ogg', song + 'mp3'],
     autoplay: true,
     loop: loop,
-    volume: 0.5,
+    volume: 0.33,
     mute: muteState.music,
   })
 
