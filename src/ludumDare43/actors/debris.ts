@@ -7,8 +7,9 @@ import * as anim from 'engine/anim/anim'
 import * as utils from './utils'
 
 import * as cameras from 'engine/camera/cameras'
+import * as shipParts from './shipParts'
 
-interface IDebris {
+export interface IDebris {
   anim: anim.IAnim
   vx: number
   vy: number
@@ -37,6 +38,7 @@ var animCat: anim.IAnimData = {
 var animCatSafe: anim.IAnimData = {
   frames: spriteUtil.frame32runH(7, 5, 2),
   frameTime: 20 / 60,
+  loop: true,
 }
 var animDefault = animSnail
 
@@ -101,6 +103,28 @@ export function create() {
   return item
 }
 
+export function catchDebris(c: IDebris, shipPart: shipParts.IShipPart) {
+  let ctx = getContext()
+  c.tx = shipPart.anim.sprite.x + _.random(-6, 6)
+  c.ty = shipPart.anim.sprite.y + _.random(-2, 7)
+  c.isSafe = true
+  shipPart.safeDebris.push(c)
+  if (c.type === 'cat') {
+    ctx.sfx.playCatRescued()
+  } else {
+    ctx.sfx.playSnailRescued()
+  }
+}
+export function ejectDebris(c: IDebris) {
+  c.isSafe = false
+  c.isPickedUp = false
+  c.elapsedEjectTime = 0
+
+  if (c.type === 'cat') {
+    anim.playAnim(c.anim, animCat)
+  }
+}
+
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
@@ -121,7 +145,10 @@ export function updateAll(elapsedTimeSec) {
 
     let baseSize = 0.25
     if (c.type === 'cat') {
-      baseSize = 1
+      baseSize = 0.5
+    }
+    if (c.isSafe) {
+      baseSize *= 2
     }
 
     if (c.elapsedEjectTime < maxEjectTime) {
@@ -147,12 +174,12 @@ export function updateAll(elapsedTimeSec) {
         let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
         c.tx = cx
         c.ty = cy
-
-        c.anim.sprite.x +=
-          (c.tx - c.anim.sprite.x) * elapsedTimeSec * 60.0 * c.smoothMoveRate
-        c.anim.sprite.y +=
-          (c.ty - c.anim.sprite.y) * elapsedTimeSec * 60.0 * c.smoothMoveRate
       }
+
+      c.anim.sprite.x +=
+        (c.tx - c.anim.sprite.x) * elapsedTimeSec * 60.0 * c.smoothMoveRate
+      c.anim.sprite.y +=
+        (c.ty - c.anim.sprite.y) * elapsedTimeSec * 60.0 * c.smoothMoveRate
     } else {
       c.anim.sprite.rotation += Math.PI * elapsedTimeSec
       c.anim.sprite.x += c.vx * elapsedTimeSec

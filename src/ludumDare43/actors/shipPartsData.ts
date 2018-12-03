@@ -323,9 +323,20 @@ let laser: IShipPartData = {
 }
 datas.push(laser)
 
+var animH1: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(6, 6)],
+}
+var animH2: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(6, 7)],
+}
+
 let habitat: IShipPartData = {
   name: 'habitat',
   frame: spriteUtil.frame31p1(6, 6),
+
+  anim: animH1,
+  anim2: animH2,
+
   mass: 1,
   special: 'habitat',
   noColorSwap: true,

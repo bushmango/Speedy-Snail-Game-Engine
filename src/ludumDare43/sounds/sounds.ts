@@ -187,6 +187,14 @@ export function playGoatPickedUp() {
   soundsGeneric.play('goat')
 }
 
+export function playCatRescued() {
+  soundsGeneric.play('phew')
+}
+
+export function playSnailRescued() {
+  soundsGeneric.play('phew')
+}
+
 // const slowdownCause = []
 // let slowdownInit = false
 // let slowdownSprite = null

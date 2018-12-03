@@ -36,6 +36,7 @@ export interface IShipPart {
   elapsedRecharge: number
   elapsedSec: number
   isReadyToFire: boolean
+  safeDebris: debris.IDebris[]
 }
 let items: IShipPart[] = []
 export function getAll() {
@@ -267,6 +268,7 @@ export function create(data: IShipPartData = core) {
     elapsedRecharge: 0,
     isReadyToFire: false,
     elapsedSec: 0,
+    safeDebris: [],
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -535,6 +537,30 @@ export function updateAll(elapsedTimeSec) {
     }
 
     if (c.isAttached) {
+      if (c.data.special === 'habitat' && c.safeDebris.length < 2) {
+        // Connect with critters
+        _.forEach(debris.getAll(), (d) => {
+          if (d.isPickedUp && !d.isSafe && !d.isDead) {
+            if (
+              utils.checkCirclesCollide(
+                c.anim.sprite.x,
+                c.anim.sprite.y,
+                r,
+                d.anim.sprite.x,
+                d.anim.sprite.y,
+                r
+              )
+            ) {
+              debris.catchDebris(d, c)
+              anim.playAnim(c.anim, c.data.anim2)
+            }
+          }
+        })
+        let debri = goats.getItem()
+
+        // Check for close asteroids
+      }
+
       if (c.isCore) {
         // Connect with goat
         let goat = goats.getItem()
@@ -702,6 +728,8 @@ export function jettisonPiece(c: IShipPart) {
   if (!c.isDead && !c.isCore) {
     // c.vy = _.random(-5, 5)
 
+    tryEject(c)
+
     if (c.data.isFragile) {
       getContext().sfx.playPartDestroyed()
       if (c.isAttached) {
@@ -785,7 +813,9 @@ function updateWhatsAttached() {
       if (!c.isConnectedToCore) {
         // Free!
         c.isFree = true
+
         c.isAttached = false
+        tryEject(c)
 
         c.vy = -(c.by - maxShipGridY / 2) * 5 + _.random(-2, 2, true)
         c.vx = _.random(-2, 2, true)
@@ -859,14 +889,27 @@ export function smash(c: IShipPart) {
     smashedParts.create(c.anim.sprite)
 
     if (c.data.special === 'snails') {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 1; i++) {
         let d = debris.create()
         d.anim.sprite.x = c.anim.sprite.x
         d.anim.sprite.y = c.anim.sprite.y
       }
     }
 
+    tryEject(c)
+
     c.isDead = true
+  }
+}
+
+function tryEject(c: IShipPart) {
+  if (c.safeDebris && c.safeDebris.length > 0) {
+    _.forEach(c.safeDebris, (c) => {
+      debris.ejectDebris(c)
+    })
+
+    anim.playAnim(c.anim, c.data.anim2)
+    c.safeDebris = []
   }
 }
 
