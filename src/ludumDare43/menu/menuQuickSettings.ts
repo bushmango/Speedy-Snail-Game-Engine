@@ -11,11 +11,20 @@ import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 import * as sounds from './../sounds/sounds'
 
+import * as shipParts from './../actors/shipParts'
+import * as goats from './../actors/goats'
+import * as asteroids from './../actors/asteroids'
+
 export interface IMenuQuickSettings {
   buttonSound: buttonsGeneric.IMenuButton
   buttonMusic: buttonsGeneric.IMenuButton
   buttonMainMenu: buttonsGeneric.IMenuButton
   buttonZoom: buttonsGeneric.IMenuButton
+  buttonDifficulty: buttonsGeneric.IMenuButton
+  buttonFullScreen: buttonsGeneric.IMenuButton
+  buttonColorMode: buttonsGeneric.IMenuButton
+  buttonReset: buttonsGeneric.IMenuButton
+
   buttons: buttonsGeneric.IMenuButton[]
 }
 
@@ -38,6 +47,10 @@ export function create() {
     buttonMusic: null,
     buttonMainMenu: null,
     buttonZoom: null,
+    buttonDifficulty: null,
+    buttonFullScreen: null,
+    buttonColorMode: null,
+    buttonReset: null,
     buttons: [],
   }
 
@@ -68,6 +81,40 @@ export function create() {
   }
   item.buttons.push(item.buttonMainMenu)
 
+  item.buttonDifficulty = buttons.create('Difficulty')
+  item.buttonDifficulty.onClick = () => {}
+  item.buttons.push(item.buttonDifficulty)
+
+  item.buttonReset = buttons.create('Reset')
+  item.buttonReset.onClick = () => {
+    //asteroids.
+    goats.eject()
+    // TODO: destroy all asteroids
+    // reset distance and score
+    // destroy all ship parts
+    _.forEach(asteroids.getAll(), (c) => {
+      asteroids.smash(c)
+    })
+    _.forEach(shipParts.getAll(), (c) => {
+      if (c.isAttached) {
+        shipParts.destroyFixedPiece(c)
+      } else {
+        shipParts.smash(c)
+      }
+    })
+  }
+  item.buttons.push(item.buttonReset)
+
+  item.buttonColorMode = buttons.create('Color Mode')
+  item.buttonColorMode.onClick = () => {}
+  item.buttons.push(item.buttonColorMode)
+
+  item.buttonFullScreen = buttons.create('Full Screen')
+  item.buttonFullScreen.onClick = () => {
+    toggleFullscreen()
+  }
+  item.buttons.push(item.buttonFullScreen)
+
   // item.buttonZoom = buttons.createWithSprite(11, 1) // buttons.create('Zoom')
   // item.buttonZoom.onClick = () => {
   //   //let ctx = getContext()
@@ -79,6 +126,47 @@ export function create() {
   onResize()
 
   return item
+}
+
+let fullScreenOpen = false
+function toggleFullscreen() {
+  if (fullScreenOpen) {
+    closeFullscreen()
+  } else {
+    openFullscreen()
+  }
+}
+function openFullscreen() {
+  var elem = document.documentElement as any
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen()
+  } else if (elem.mozRequestFullScreen) {
+    /* Firefox */
+    elem.mozRequestFullScreen()
+  } else if (elem.webkitRequestFullscreen) {
+    /* Chrome, Safari and Opera */
+    elem.webkitRequestFullscreen()
+  } else if (elem.msRequestFullscreen) {
+    /* IE/Edge */
+    elem.msRequestFullscreen()
+  }
+  fullScreenOpen = true
+}
+function closeFullscreen() {
+  let doc = document as any
+  if (doc.exitFullscreen) {
+    doc.exitFullscreen()
+  } else if (doc.mozCancelFullScreen) {
+    /* Firefox */
+    doc.mozCancelFullScreen()
+  } else if (doc.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    doc.webkitExitFullscreen()
+  } else if (doc.msExitFullscreen) {
+    /* IE/Edge */
+    doc.msExitFullscreen()
+  }
+  fullScreenOpen = false
 }
 
 export function update(elapsedTimeSec) {

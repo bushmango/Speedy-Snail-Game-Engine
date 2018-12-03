@@ -1,10 +1,14 @@
 
 
 // Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
-
+-- bug engine sound when speed is negative XD
+-- bug goat stops complaining when picked up
 - difficulty selector (scale rates of items)
 - reset button
 - instructions button always visible??
+- more things to sacrifice
+- rescue cats
+- cat pods - rescue cat and snail mode
 
 x tips
 x basic menu

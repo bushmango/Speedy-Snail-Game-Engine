@@ -24,6 +24,7 @@ export function create(text: string = '') {
 
   return buttonsGeneric.create(
     text,
+    '24px tahoma24',
     '512-32-gui',
     null,
     animDefault,
@@ -41,6 +42,7 @@ export function createSmaller(text: string = '') {
 
   return buttonsGeneric.create(
     text,
+    '24px tahoma24',
     '512-32-gui',
     null,
     animDefault,

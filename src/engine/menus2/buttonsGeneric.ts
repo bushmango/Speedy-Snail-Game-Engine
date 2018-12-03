@@ -26,6 +26,7 @@ let items: IMenuButton[] = []
 
 export function create(
   text: string = null,
+  font: string = null,
   spritesheetName,
   frameTextSprite: PIXI.Rectangle,
   animDefault,
@@ -99,7 +100,7 @@ export function create(
 
   if (null !== text) {
     item.text = new PIXI.extras.BitmapText(`${text}`, {
-      font: '24px defaultfont',
+      font: font,
       align: 'left',
     })
     item.text.anchor = new PIXI.Point(0, 0)

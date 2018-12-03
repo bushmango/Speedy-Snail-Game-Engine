@@ -25,6 +25,7 @@ export function create(text: string = '') {
 
   let item = buttonsGeneric.create(
     text,
+    '24px tahoma24',
     '512-32-gui',
     null,
     animDefault,
@@ -45,6 +46,7 @@ export function createWithSprite(y, x, w = 4) {
   log.x('create button')
 
   let item = buttonsGeneric.create(
+    null,
     null,
     '512-32-gui',
     spriteUtil.frame32(y, x, w),
@@ -69,22 +71,23 @@ export function createWithSprite(y, x, w = 4) {
 
 createWithSprite
 
-export function createSmaller(text: string = '') {
-  let ctx = getContext()
+// export function createSmaller(text: string = '') {
+//   let ctx = getContext()
 
-  log.x('create button')
+//   log.x('create button')
 
-  return buttonsGeneric.create(
-    text,
-    '512-32-gui',
-    null,
-    animDefault,
-    animHover,
-    animDown,
-    ctx.createSprite,
-    ctx.layerUi
-  )
-}
+//   return buttonsGeneric.create(
+//     text,
+//     '20px tahoma20',
+//     '512-32-gui',
+//     null,
+//     animDefault,
+//     animHover,
+//     animDown,
+//     ctx.createSprite,
+//     ctx.layerUi
+//   )
+// }
 
 export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
