@@ -180,19 +180,19 @@ export function playGoatRescued() {
   // soundsGeneric.play('pickup001')
   stopGoatFloating()
 
-  soundsGeneric.play('phew')
+  playWithRandomRate('phew')
 }
 
 export function playGoatPickedUp() {
-  soundsGeneric.play('goat')
+  playWithRandomRate('goat')
 }
 
 export function playCatRescued() {
-  soundsGeneric.play('phew')
+  playWithRandomRate('phew')
 }
 
 export function playSnailRescued() {
-  soundsGeneric.play('phew')
+  playWithRandomRate('phew')
 }
 
 // const slowdownCause = []
@@ -214,12 +214,12 @@ export function stopSlowdown() {
 
 export function playPartDestroyed() {
   // need new!
-  soundsGeneric.play('smash001')
+  playWithRandomRate('smash001')
 }
 
 export function playPartConnected() {
   // need new!
-  soundsGeneric.play('hurt001')
+  playWithRandomRate('hurt001')
 }
 
 export function playClick() {
@@ -229,7 +229,7 @@ export function playClick() {
 
 export function playLaser() {
   // need new!
-  soundsGeneric.play('lazer')
+  playWithRandomRate('lazer')
 }
 
 export function updateAll() {
@@ -243,6 +243,24 @@ function updateSlowdown() {
   if (!cameras.getIsSlowed(ctx.camera)) {
     ctx.sfx.stopSlowdown()
   }
+}
+
+function applyRate(id, rate: number) {
+  soundsGeneric.getSoundSprite().rate(rate, id)
+}
+function applyRandomRate(id, rate: number = 1, variance: number = 0.125) {
+  rate += _.random(-variance, variance, true)
+  applyRate(id, rate)
+}
+function playWithRate(name, rate: number = 1) {
+  const id = soundsGeneric.play(name)
+  applyRate(id, rate)
+  return id
+}
+function playWithRandomRate(name, rate?: number, variance?: number) {
+  const id = soundsGeneric.play(name)
+  applyRandomRate(id, rate, variance)
+  return playWithRate(name, rate)
 }
 
 // export function playSmash() {
