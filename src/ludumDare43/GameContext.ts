@@ -126,7 +126,7 @@ export class GameContext {
     coreSpawner.create()
     engineParticles.create()
 
-    debris.create()
+    // debris.create()
 
     let sps = shipPartSpawners.create()
     sps = shipPartSpawners.create()

@@ -945,7 +945,7 @@ export function smash(c: IShipPart) {
 
     if (c.data.special === 'snails') {
       for (let i = 0; i < 1; i++) {
-        let d = debris.create()
+        let d = debris.create(_.random() < 0.5 ? 'snail' : 'cat')
         d.anim.sprite.x = c.anim.sprite.x
         d.anim.sprite.y = c.anim.sprite.y
       }
@@ -965,7 +965,9 @@ function tryEject(c: IShipPart) {
       debris.ejectDebris(c)
     })
 
-    anim.playAnim(c.anim, c.data.anim2)
+    if (c.data.anim2) {
+      anim.playAnim(c.anim, c.data.anim2)
+    }
     c.safeDebris = []
   }
 }

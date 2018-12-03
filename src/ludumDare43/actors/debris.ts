@@ -15,6 +15,8 @@ export interface IDebris {
   vy: number
   tx: number
   ty: number
+  ox: number
+  oy: number
   lifeLeft: number
   isDead: boolean
   elapsedEjectTime: number
@@ -40,16 +42,23 @@ var animCatSafe: anim.IAnimData = {
   frameTime: 20 / 60,
   loop: true,
 }
+var animBaby: anim.IAnimData = {
+  frames: spriteUtil.frame32runH(10, 4, 2),
+  frameTime: 15 / 60,
+  loop: true, 
+}
 var animDefault = animSnail
 
 export { animSnail }
 
-export function create() {
+export function create(type: string) {
   let ctx = getContext()
 
   log.x('create goal piece')
   let item: IDebris = {
     anim: anim.create(),
+    ox: 0,
+    oy: 0,
     vx: _.random(-150, -50),
     vy: _.random(-50, 50),
     lifeLeft: 15,
@@ -58,7 +67,7 @@ export function create() {
     isPickedUp: false,
     isSafe: false,
     smoothMoveRate: _.random(0.04, 0.09),
-    type: '',
+    type: type,
     tx: 0,
     ty: 0,
   }
@@ -90,12 +99,12 @@ export function create() {
   sprite.on('mouseout', onOut)
   sprite.on('pointerupoutside', onOut)
 
-  if (_.random() < 0.5) {
+  if (type === 'snail') {
     anim.playAnim(item.anim, animSnail)
-    item.type = 'snail'
-  } else {
+  } else if (type === 'cat') {
     anim.playAnim(item.anim, animCat)
-    item.type = 'cat'
+  } else if (type === 'baby') {
+    anim.playAnim(item.anim, animBaby)
   }
 
   items.push(item)
@@ -103,16 +112,26 @@ export function create() {
   return item
 }
 
-export function catchDebris(c: IDebris, shipPart: shipParts.IShipPart) {
+export function catchDebris(
+  c: IDebris,
+  shipPart: shipParts.IShipPart,
+  skipSound = false
+) {
   let ctx = getContext()
-  c.tx = shipPart.anim.sprite.x + _.random(-6, 6)
-  c.ty = shipPart.anim.sprite.y + _.random(-2, 7)
+  let ox = _.random(-6, 6)
+  let oy = _.random(-2, 7)
+  c.tx = shipPart.anim.sprite.x + ox
+  c.ty = shipPart.anim.sprite.y + oy
   c.isSafe = true
+  c.isPickedUp = true
   shipPart.safeDebris.push(c)
-  if (c.type === 'cat') {
-    ctx.sfx.playCatRescued()
-  } else {
-    ctx.sfx.playSnailRescued()
+
+  if (!skipSound) {
+    if (c.type === 'cat') {
+      ctx.sfx.playCatRescued()
+    } else {
+      ctx.sfx.playSnailRescued()
+    }
   }
 }
 export function ejectDebris(c: IDebris) {
@@ -145,6 +164,9 @@ export function updateAll(elapsedTimeSec) {
 
     let baseSize = 0.25
     if (c.type === 'cat') {
+      baseSize = 0.5
+    }
+    if (c.type === 'baby') {
       baseSize = 0.5
     }
     if (c.isSafe) {

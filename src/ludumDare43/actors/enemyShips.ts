@@ -231,9 +231,18 @@ export function updateAll(elapsedTimeSec: number) {
         sp.anim.sprite.x = c.x + (sp.bx - centerShipGridX) * 28
         sp.anim.sprite.y = c.y + (sp.by - centerShipGridY) * 28
 
+        if (sp.safeDebris.length > 0) {
+          _.forEach(sp.safeDebris, (deb) => {
+            deb.tx = sp.anim.sprite.x + deb.ox
+            deb.ty = sp.anim.sprite.y + deb.oy
+          })
+        }
+
         // sp.anim.sprite.x = sp.bx + 32 //+ sp.bx
         // sp.anim.sprite.y = sp.by //+ sp.by
       }
     })
   })
 }
+
+export function update() {}
