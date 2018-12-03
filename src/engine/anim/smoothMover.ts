@@ -31,7 +31,7 @@ export function update(c: ISmoothMover, t: ITarget, elapsedSec: number) {
   if (c.delay > 0) {
     c.delay -= elapsedSec
   } else {
-    t.y += (c.ty - t.y) * c.factor * elapsedSec * 60.0
     t.x += (c.tx - t.x) * c.factor * elapsedSec * 60.0
+    t.y += (c.ty - t.y) * c.factor * elapsedSec * 60.0
   }
 }

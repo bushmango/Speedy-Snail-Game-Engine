@@ -10,6 +10,8 @@ import * as cameras from 'engine/camera/cameras'
 import * as smashedParts from './smashedParts'
 import * as shipParts from './shipParts'
 
+import * as enemyShips from './enemyShips'
+
 export interface IRocket {
   anim: anim.IAnim
   vx: number
@@ -186,7 +188,11 @@ export function updateAll(elapsedTimeSec) {
           if (d.isAttached) {
             shipParts.destroyFixedPiece(d)
           } else {
-            shipParts.smash(d)
+            if (d.isAttachedToEnemy) {
+              shipParts.destroyFixedPiece(d)
+            } else {
+              shipParts.smash(d)
+            }
           }
           cameras.shake(ctx.camera, 0.25, 4)
         }

@@ -10,6 +10,7 @@ import * as goats from './goats'
 import * as debris from './debris'
 import * as utils from './utils'
 import * as rockets from './rockets'
+import * as enemyShips from './enemyShips'
 
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
@@ -24,6 +25,8 @@ export interface IShipPart {
   isFree: boolean
   isDead: boolean
   isAttached: boolean
+  isAttachedToEnemy: boolean
+  enemyShip: enemyShips.IEnemyShip
   isJettisoned: boolean
   isCore: boolean
   isConnectedToCore: boolean
@@ -228,7 +231,6 @@ export function safeGetShipGrid(x, y) {
 }
 export function setShipGridCenter(c: IShipPart) {
   safeSetShipGrid(centerShipGridX, centerShipGridY, c)
-  log.x(shipGrid)
 }
 export function safeSetShipGrid(x, y, c: IShipPart) {
   if (x < 0 || x >= maxShipGridX) {
@@ -255,6 +257,7 @@ export function create(data: IShipPartData = core) {
     anim: anim.create(),
     isFree: true,
     isAttached: false,
+    isAttachedToEnemy: false,
     isDead: false,
     isJettisoned: false,
     data: data,
@@ -269,6 +272,7 @@ export function create(data: IShipPartData = core) {
     isReadyToFire: false,
     elapsedSec: 0,
     safeDebris: [],
+    enemyShip: null,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -788,8 +792,21 @@ export function tryBomb(bx, by) {
 }
 
 export function destroyFixedPiece(c: IShipPart, doNotUpdate = false) {
-  if (!c.isDead && c.isAttached) {
+  if (c.isDead) {
+    return false
+  }
+
+  if (c.isFree || c.isJettisoned) {
+    smash(c)
+    return
+  }
+
+  if (c.isAttached || c.isAttachedToEnemy) {
     getContext().sfx.playPartDestroyed()
+
+    let attachedToMain = c.isAttached
+    let attachedToEnemy = c.isAttachedToEnemy
+    let enemyShip = c.enemyShip
 
     if (c.data.damagesTo) {
       switchDataTo(c, c.data.damagesTo)
@@ -797,15 +814,26 @@ export function destroyFixedPiece(c: IShipPart, doNotUpdate = false) {
     }
 
     smash(c)
-    safeSetShipGrid(c.bx, c.by, null)
+
+    if (attachedToMain) {
+      safeSetShipGrid(c.bx, c.by, null)
+    }
+    if (attachedToEnemy) {
+      enemyShips.safeSetShipGrid(enemyShip, c.bx, c.by, null)
+    }
 
     // Flood fill core to make sure everything is connected
 
-    if (c.isCore) {
+    if (attachedToMain && c.isCore) {
       goats.eject()
     }
     if (!doNotUpdate) {
-      updateWhatsAttached()
+      if (attachedToMain) {
+        updateWhatsAttached()
+      }
+      if (attachedToEnemy) {
+        enemyShips.updateWhatsAttached(enemyShip)
+      }
     }
   }
 }
@@ -813,7 +841,9 @@ export function destroyFixedPiece(c: IShipPart, doNotUpdate = false) {
 function updateWhatsAttached() {
   // Reset
   _.forEach(items, (c) => {
-    c.isConnectedToCore = false
+    if (c.isAttached) {
+      c.isConnectedToCore = false
+    }
   })
   // Get core
   let core = _.find(
@@ -923,6 +953,8 @@ export function smash(c: IShipPart) {
 
     tryEject(c)
 
+    c.isAttached = false
+    c.isAttachedToEnemy = false
     c.isDead = true
   }
 }

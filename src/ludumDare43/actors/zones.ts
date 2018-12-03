@@ -139,8 +139,8 @@ z.debrisPartsList = connectors
 z.distance = 10000
 z.debrisSpawnRate = 2
 z.supplySpawnRate = 1
-z.smallAsteroidRate = 2
-z.largeAsteroidRate = 4
+//z.smallAsteroidRate = 2
+//z.largeAsteroidRate = 4
 
 // let zone0 = (z = createZone('Intro Zone'))
 

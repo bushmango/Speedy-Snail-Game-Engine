@@ -33,6 +33,8 @@ import * as engineParticles from './actors/engineParticles'
 
 import * as debris from './actors/debris'
 import * as rockets from './actors/rockets'
+import * as enemyShips from './actors/enemyShips'
+import * as enemyShipsSpawns from './actors/enemyShipsSpawns'
 
 let debugCollision = false
 let skipSplashScreen = true
@@ -138,10 +140,12 @@ export class GameContext {
 
     stats.setEasyDifficulty()
 
-    if(doTestDifficulty) {
+    // let c = enemyShips.create()
+    // enemyShips.spawn1(c)
+
+    if (doTestDifficulty) {
       stats.setDifficulty(testDifficulty)
     }
-   
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer
@@ -196,13 +200,21 @@ export class GameContext {
 
   onUpdate() {
     let ctx = this
-    log.x('update')
+
+    let kb = ctx.sge.keyboard
+
+    // log.x('update')
 
     let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
     // log.x('update', elapsedTime)
     // log.x('update')
+
+    if (kb.justPressed(KeyCodes.space)) {
+      let c = enemyShips.create()
+      enemyShipsSpawns.spawn1(c)
+    }
 
     let mouse = ctx.sge.getMouse()
     if (mouse.isLeftJustDown) {
@@ -229,6 +241,8 @@ export class GameContext {
     //starfield.updateAll(elapsedTimeSec, curStats.speed * 100)
     goats.updateAll(elapsedTimeSec)
     coreSpawner.updateAll(elapsedTimeSec)
+
+    enemyShips.updateAll(elapsedTimeSec)
 
     shipParts.updateAll(elapsedTimeSec)
     shipPartSpawners.updateAll(elapsedTimeSec)
