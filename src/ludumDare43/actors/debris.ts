@@ -45,7 +45,7 @@ var animCatSafe: anim.IAnimData = {
 var animBaby: anim.IAnimData = {
   frames: spriteUtil.frame32runH(10, 4, 2),
   frameTime: 15 / 60,
-  loop: true, 
+  loop: true,
 }
 var animDefault = animSnail
 
@@ -194,8 +194,8 @@ export function updateAll(elapsedTimeSec) {
         c.anim.sprite.rotation += Math.PI * elapsedTimeSec
 
         let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
-        c.tx = cx
-        c.ty = cy
+        c.tx = cx - 20
+        c.ty = cy - 20
       }
 
       c.anim.sprite.x +=

@@ -211,9 +211,32 @@ export class GameContext {
     // log.x('update', elapsedTime)
     // log.x('update')
 
-    if (kb.justPressed(KeyCodes.space)) {
-      let c = enemyShips.create()
-      enemyShipsSpawns.spawn1(c)
+    if (kb.justPressed(KeyCodes.n1)) {
+      enemyShipsSpawns.spawn1()
+    }
+    if (kb.justPressed(KeyCodes.n2)) {
+      enemyShipsSpawns.spawn2()
+    }
+    if (kb.justPressed(KeyCodes.n3)) {
+      enemyShipsSpawns.spawn3()
+    }
+    if (kb.justPressed(KeyCodes.n4)) {
+      enemyShipsSpawns.spawn4()
+    }
+    if (kb.justPressed(KeyCodes.n5)) {
+      enemyShipsSpawns.spawn5()
+    }
+    if (kb.justPressed(KeyCodes.n6)) {
+      enemyShipsSpawns.spawn6()
+    }
+    if (kb.justPressed(KeyCodes.n7)) {
+      enemyShipsSpawns.spawn7()
+    }
+    if (kb.justPressed(KeyCodes.n8)) {
+      enemyShipsSpawns.spawn8()
+    }
+    if (kb.justPressed(KeyCodes.n9)) {
+      enemyShipsSpawns.spawn9()
     }
 
     let mouse = ctx.sge.getMouse()

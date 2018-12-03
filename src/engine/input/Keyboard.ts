@@ -12,6 +12,17 @@ export interface IKey {
 
 // see: http://keycode.info/
 export enum KeyCodes {
+  n1 = 49,
+  n2 = 50,
+  n3 = 51,
+  n4 = 52,
+  n5 = 53,
+  n6 = 54,
+  n7 = 55,
+  n8 = 56,
+  n9 = 57,
+  n0 = 48,
+
   escape = 27,
   w = 87,
   a = 65,
@@ -48,7 +59,7 @@ export class Keyboard {
     key._delay_isPressed = true
     event.preventDefault()
   }
-  onKeyUp(ev) {   
+  onKeyUp(ev) {
     let key = this.keys[ev.keyCode]
     if (!key) {
       return
