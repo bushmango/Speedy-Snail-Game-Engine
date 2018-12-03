@@ -1,5 +1,7 @@
 import { _ } from 'engine/importsEngine'
 import { SimpleGameEngine } from 'engine/SimpleGameEngine'
+import { getContext } from '../GameContext'
+import * as cameras from 'engine/camera/cameras'
 import * as soundsGeneric from 'engine/sounds/soundGeneric'
 import * as pubSub from 'engine/common/pubSub'
 
@@ -83,6 +85,58 @@ export function playLoaded() {
 //   soundsGeneric.play('hurt001')
 // }
 
+let engineId,
+    engineState = false
+
+function initEngine() {
+  engineId = soundsGeneric.play('engine001')
+  soundsGeneric.getSoundSprite()
+    .loop(true, engineId)
+    .once(
+      'stop',
+      () => {
+        engineId = null
+      },
+      engineId
+    )
+}
+function updateEngine() {
+  if (!engineId) {
+    initEngine()
+  }
+
+  updateEngineState()
+  updateEngineRate()
+}
+function updateEngineRate() {
+  const rate = _getVelocity()
+  soundsGeneric.getSoundSprite().rate(rate, engineId)
+}
+function updateEngineState() {
+  const oldState = engineState,
+        velocity = _getVelocity()
+
+  if (velocity > 0) {
+    engineState = true
+  } else {
+    engineState = false
+  }
+
+  if (engineState == oldState) {
+    return
+  }
+
+  const sprite = soundsGeneric.getSoundSprite()
+
+  const from = engineState ? 0 : 0.75,
+        to = engineState ? sprite.volume(engineId) : 0
+
+  sprite.fade(from, to, 0.25, engineId)
+}
+function _getVelocity() {
+  return getContext().stats.getCurrentStats().speed
+}
+
 let goatId = null
 export function playGoatFloating() {
   goatId = soundsGeneric.play('goat001')
@@ -125,6 +179,19 @@ export function playPartConnected() {
 export function playClick() {
   // need new!
   soundsGeneric.play('hurt001')
+}
+
+export function updateAll() {
+  updateEngine()
+  updateSlowdown()
+}
+
+function updateSlowdown() {
+  const ctx = getContext()
+
+  if (!cameras.getIsSlowed(ctx.camera)) {
+    ctx.sfx.stopSlowdown()
+  }
 }
 
 // export function playSmash() {
