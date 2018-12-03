@@ -128,12 +128,15 @@ function floating() {
   sprite.on(
     'end',
     () => {
-      let volume = sprite.volume(id) / 2
-      volume = volume >= 1 / 8 ? volume : 1
+      let volume = sprite.volume(id)
+
+      if (volume > 0.25) {
+        volume *= 0.5
+      }
 
       sprite.volume(volume, id)
 
-      if (!item.isFree) {
+      if (!item.isFree || item.isPickedUp) {
         sprite.stop(id)
         sprite.off('end', id)
       }

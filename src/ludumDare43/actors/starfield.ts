@@ -10,6 +10,7 @@ import * as utils from './utils'
 
 enum EItemType {
   Dust,
+  Planet,
   Star,
 }
 
@@ -29,6 +30,7 @@ const distances = new Map()
 const items: IItem[] = []
 
 let dustSpawnTimer = 0,
+  planetSpawnTimer = 0,
   starSpawnTimer = 0
 
 function cleanup() {
@@ -64,7 +66,8 @@ function createDust(options) {
   }
 
   const frame = spriteUtil.frame32(1, 2),
-    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+    scale = _.random(0.5, 1.5, true),
+    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
@@ -74,6 +77,31 @@ function createDust(options) {
   const layer = Math.random() > 0.5 ? ctx.layerAbove : ctx.layerBelow
 
   return _create(item, options, layer)
+}
+
+function createPlanet(options) {
+  const ctx = getContext()
+
+  const frame = spriteUtil.frame32(1, 1, 14, 14),
+    sheet = _.sample(['planet-001']),
+    sprite = ctx.createSprite(sheet, frame, 0.5, 0.5, 1)
+
+  const item: IItem = {
+    anim: anim.create(),
+    distance: 1,
+    type: EItemType.Planet,
+  }
+
+  item.anim.sprite = sprite
+
+  const tint = generateStarTint()
+
+  sprite.rotation = Math.random() * 2 * Math.PI
+  sprite.tint = tint
+
+  ctx.layerBelow.addChild(sprite)
+
+  return _create(item, options, ctx.layerBelow)
 }
 
 function createStar(options) {
@@ -113,16 +141,13 @@ function createStar(options) {
 }
 
 function _create(item, options, layer) {
-  const ctx = getContext(),
-    sprite = item.anim.sprite
+  const sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
 
-  distances.set(sprite, item.distance)
-
   layer.addChild(sprite)
-
+  distances.set(sprite, item.distance)
   items.push(item)
 
   return item
@@ -134,12 +159,18 @@ function generateStarTint() {
   return 0xdddddd + Math.random() * 0x2222
 }
 
+function hasPlanet() {
+  return _.filter(items, (c) => c.type == EItemType.Planet).length > 0
+}
+
 export function initialize() {
   const count = _.random(10, 20)
 
   for (let i = 0; i < count; i++) {
     spawnAnywhere(createStar)
   }
+
+  spawnAnywhere(createPlanet)
 
   sortLayerChildren()
 }
@@ -150,7 +181,7 @@ export function initialize() {
 function sortLayerChildren() {
   const ctx = getContext()
 
-  ctx.layerBelow.children.sort((a, b) => distances.get(a) - distances.get(b))
+  ctx.layerBelow.children.sort((a, b) => distances.get(b) - distances.get(a))
 }
 
 function spawnAhead(factory) {
@@ -204,7 +235,10 @@ function updateItems(elapsedTimeSec, velocity) {
   _.forEach(items, (c) => {
     const sprite = c.anim.sprite
 
-    sprite.x -= velocity / c.distance
+    // XXX: Special case to give planets more screen time
+    const distance = c.type == EItemType.Planet ? 64 : c.distance
+
+    sprite.x -= velocity / distance
 
     if (c.type == EItemType.Dust) {
       sprite.rotation += c.data.rotationSpeed * elapsedTimeSec
@@ -218,6 +252,7 @@ function updateSpawner(elapsedTimeSec, velocity) {
   }
 
   dustSpawnTimer += elapsedTimeSec
+  planetSpawnTimer += elapsedTimeSec
   starSpawnTimer += elapsedTimeSec
 
   const factory = velocity > 0 ? spawnAhead : spawnBehind
@@ -227,6 +262,13 @@ function updateSpawner(elapsedTimeSec, velocity) {
     factory(createDust)
     itemsCreated = true
     dustSpawnTimer -= Math.random() * 0.25
+  }
+
+  if (planetSpawnTimer > 15) {
+    if (!hasPlanet()) {
+      factory(createPlanet)
+    }
+    planetSpawnTimer = 0
   }
 
   if (starSpawnTimer > 0.5) {
