@@ -64,7 +64,8 @@ function createDust(options) {
   }
 
   const frame = spriteUtil.frame32(1, 2),
-    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, 1)
+    scale = _.random(0.5, 1.5, true),
+    sprite = ctx.createSprite('starfield-001', frame, 0.5, 0.5, scale)
 
   item.anim.sprite = sprite
 
@@ -113,16 +114,13 @@ function createStar(options) {
 }
 
 function _create(item, options, layer) {
-  const ctx = getContext(),
-    sprite = item.anim.sprite
+  const sprite = item.anim.sprite
 
   sprite.x = options.x
   sprite.y = options.y
 
-  distances.set(sprite, item.distance)
-
   layer.addChild(sprite)
-
+  distances.set(sprite, item.distance)
   items.push(item)
 
   return item
