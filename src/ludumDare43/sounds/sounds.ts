@@ -125,7 +125,7 @@ function updateEngineState() {
 
   const sprite = soundsGeneric.getSoundSprite()
 
-  const from = engineState ? 0 : 0.75,
+  const from = engineState ? 0 : 0.5,
         to = engineState ? sprite.volume(engineId) : 0
 
   sprite.fade(from, to, 0.25, engineId)
