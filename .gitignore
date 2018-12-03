@@ -20,3 +20,9 @@ src-deploy/public/ludumDare43/sounds/audioSprite\.ogg
 dist/src-deploy/public/js/ludumDare43/game\.bundle\.js\.map
 
 src-website/jams/ludum-dare-43\.html
+
+*.ogg
+
+src-deploy/public/ludumDare43/sounds/audioSprite\.json
+
+src-deploy/public/ludumDare43/sounds/audioSprite\.ac3
