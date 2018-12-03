@@ -1,5 +1,6 @@
 import * as shipPartsData from './shipPartsData'
 import { _ } from 'engine/importsEngine'
+import * as enemyShipSpawns from './enemyShipsSpawns'
 
 export interface IZone {
   distance: number
@@ -18,30 +19,32 @@ export interface IZone {
 
   smallAsteroidRate?: number
   largeAsteroidRate?: number
+
+  bossSpawn?: () => void
 }
 
 export interface IZoneSet {
   difficulty: string
   items: IZone[]
+  maxDistance: 0
 }
 
 let zoneSets: IZoneSet[] = []
-let currentZoneSet: IZoneSet = null
-//let items: IZone[] = []
 
 function createZoneSet(difficulty: string) {
   let zoneSet: IZoneSet = {
     difficulty,
     items: [],
+    maxDistance: 0,
   }
   zoneSets.push(zoneSet)
   return zoneSet
 }
 
 let zoneInfo = {
-  maxDistance: 0,
   curDistance: 0,
   currentZone: null as IZone,
+  currentZoneSet: null as IZoneSet,
 }
 
 let allParts = _.map(shipPartsData.spawnableDatas, (c) => c.name)
@@ -54,10 +57,10 @@ let weapons = ['laser-1', 'rocket-1', 'rocket-2', 'rocket-3']
 let basic = _.concat(connectors, decor, 'engine-1', 'rocket-1', 'rocket-2')
 
 function calculateZones() {
-  zoneInfo.maxDistance = 0
   _.forEach(zoneSets, (zoneSet) => {
+    zoneSet.maxDistance = 0
     _.forEach(zoneSet.items, (c) => {
-      zoneInfo.maxDistance += c.distance
+      zoneSet.maxDistance += c.distance
 
       _.forEach(c.debrisPartsList, (d) => {
         let found = _.find(
@@ -83,14 +86,14 @@ function calculateZones() {
     })
   })
 
-  currentZoneSet = zoneSets[0]
+  zoneInfo.currentZoneSet = zoneSets[0]
   updateCurrentZone(0)
 }
 
 export function updateCurrentZone(distance) {
   let di = 0
   let currentZone = null
-  _.forEach(currentZoneSet.items, (c) => {
+  _.forEach(zoneInfo.currentZoneSet.items, (c) => {
     di += c.distance
     currentZone = c
     if (distance < di) {
@@ -110,7 +113,7 @@ export function getCurrentZone() {
 export function setCurrentZoneSet(diff) {
   let f = _.find(zoneSets, (c: IZoneSet) => c.difficulty === diff)
   if (f) {
-    currentZoneSet = f
+    zoneInfo.currentZoneSet = f
     //updateCurrentZone(0)
   }
 }
@@ -266,7 +269,7 @@ z.supplyPartsList = allParts
 z.debrisSpawnRate = 2
 z.supplySpawnRate = 2
 
-let zoneB = (z = createZone(zs, 'Boss Zone'))
+let zoneB = (z = createZone(zs, 'Asteroid Mega Zone'))
 //z.debrisPartsList = connectors
 z.distance = 20
 z.debrisPartsList = connectors
@@ -276,6 +279,17 @@ z.supplyPartsList = connectors
 z.debrisSpawnRate = 2
 z.largeAsteroidRate = 4
 z.smallAsteroidRate = 0.75
+z.tip = 'The final sacrifice'
+
+let zoneB2 = (z = createZone(zs, 'Boss'))
+//z.debrisPartsList = connectors
+z.distance = 10
+//z.debrisPartsList = connectors
+z.topSupply = true
+
+z.supplyPartsList = allParts
+z.debrisSpawnRate = 2
+z.bossSpawn = enemyShipSpawns.spawn4
 z.tip = 'The final sacrifice'
 
 let zoneV = (z = createZone(zs, 'Victory Zone'))

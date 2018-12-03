@@ -260,16 +260,16 @@ function updateGoalPosition(elapsedTimeSec) {
   ui.textTip.text = zi.currentZone.tip ? zi.currentZone.tip : ''
   ui.textTip.y = view.height - 70
 
-  if (d >= zi.maxDistance) {
-    d = zi.maxDistance
+  if (d >= zi.currentZoneSet.maxDistance) {
+    d = zi.currentZoneSet.maxDistance
     // TODO: do win condition
   }
-  let p = d / zi.maxDistance
+  let p = d / zi.currentZoneSet.maxDistance
 
-  _.forEach(statItems, (c) => {
-    //c.u
-    // update?
-  })
+  // _.forEach(statItems, (c) => {
+  //   //c.u
+  //   // update?
+  // })
 
   // Get our current zone
   zones.updateCurrentZone(d)

@@ -960,7 +960,13 @@ function tryConnectToCore(c: IShipPart, dir) {
       }
       break
     case 1:
-      if (c.data.noRight || sg.data.noLeft) {
+      if (
+        c.flipped
+          ? c.data.noLeft
+          : c.data.noRight || sg.flipped
+          ? sg.data.noRight
+          : sg.data.noLeft
+      ) {
         return false
       }
       break
@@ -970,7 +976,13 @@ function tryConnectToCore(c: IShipPart, dir) {
       }
       break
     case 3:
-      if (c.data.noLeft || sg.data.noRight) {
+      if (
+        c.flipped
+          ? c.data.noRight
+          : c.data.noLeft || sg.flipped
+          ? sg.data.noLeft
+          : sg.data.noRight
+      ) {
         return false
       }
       break
