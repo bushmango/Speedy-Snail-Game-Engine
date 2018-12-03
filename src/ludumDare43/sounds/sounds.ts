@@ -130,16 +130,16 @@ function updateEngineState() {
 
   const sprite = soundsGeneric.getSoundSprite()
 
-  const from = engineState ? 0 : 0.25,
+  const from = engineState ? 0 : 0.33,
         to = engineState ? sprite.volume(engineId) : 0
 
-  sprite.fade(from, to, 0.25, engineId)
+  sprite.fade(from, to, 0.33, engineId)
 }
 function _getVelocity() {
   return getContext().stats.getCurrentStats().speed
 }
 function _engineRateToVolume(rate) {
-  const initial = 0.2
+  const initial = 0.33
   return rate < 1 ? initial : initial / Math.sqrt(rate)
 }
 
