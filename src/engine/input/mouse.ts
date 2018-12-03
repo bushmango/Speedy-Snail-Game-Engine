@@ -8,6 +8,7 @@ document.body.onmouseup = (evt) => {
   // console.log('onmouseup')
   mouseDown[evt.button] = false
 }
+
 document.body.oncontextmenu = () => {
   // Disable right click context menu
   return false
@@ -26,10 +27,20 @@ let y = 0
 
 let isConsumedThisFrame = false
 
+document.body.addEventListener('touchstart', updateMousePosition, true)
+document.body.addEventListener('touchend', updateMousePosition, true)
+document.body.addEventListener('touchmove', updateMousePosition, true)
+document.body.addEventListener('mousemove', updateMousePosition, true)
+
+function updateMousePosition(evt) {
+  x = evt.pageX
+  y = evt.pageY
+}
+
 // Call once per update cycle
 export function scan(mouseX, mouseY) {
-  x = mouseX
-  y = mouseY
+  // x = mouseX
+  // y = mouseY
 
   // reset consumption
   isConsumedThisFrame = false

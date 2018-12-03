@@ -59,20 +59,20 @@ export function create(
       item.onOver(item)
     }
   })
-  item.container.on('mousemove', () => {
-    if (item.state > 0 && item.onOver) {
-      item.onOver(item)
-    }
-  })
+  // item.container.on('pointermove', () => {
+  //   if (item.state > 0 && item.onOver) {
+  //     item.onOver(item)
+  //   }
+  // })
   item.container.on('mouseout', () => {
     anim.playAnim(item.anim, item.animDefault)
     item.state = 0
   })
-  item.container.on('mousedown', () => {
+  item.container.on('pointerdown', () => {
     anim.playAnim(item.anim, item.animDown)
     item.state = 2
   })
-  item.container.on('mouseup', () => {
+  item.container.on('pointerup', () => {
     anim.playAnim(item.anim, item.animHover)
     item.state = 1
     item.onClick(item)

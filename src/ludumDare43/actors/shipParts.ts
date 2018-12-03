@@ -113,7 +113,44 @@ export function create(data: IShipPartData = core) {
       hoveredPart = item
     }
   })
+
+  // sprite.on('pointermove', () => {
+  //   let goat = goats.getItem()
+
+  //   if (item.isFree && !goat.isFree && !item.isJettisoned) {
+  //     sprite.tint = 0xcccccc
+  //     tractoredPart = item
+  //   } else if (item.isAttached && !item.isCore) {
+  //     sprite.tint = 0x84d67a
+  //     hoveredPart = item
+  //   }
+  // })
+
+  sprite.on('pointerdown', () => {
+    let goat = goats.getItem()
+
+    if (item.isFree && !goat.isFree && !item.isJettisoned) {
+      sprite.tint = 0xcccccc
+      tractoredPart = item
+    } else if (item.isAttached && !item.isCore) {
+      sprite.tint = 0x84d67a
+      hoveredPart = item
+    }
+  })
+
   sprite.on('mouseout', () => {
+    if (hoveredPart === item) {
+      hoveredPart = null
+    }
+
+    if (item.isFree) {
+      sprite.tint = 0xffffffff
+    } else {
+      sprite.tint = 0xffffffff
+    }
+  })
+
+  sprite.on('pointerupoutside', () => {
     if (hoveredPart === item) {
       hoveredPart = null
     }
@@ -297,7 +334,7 @@ export function updateAll(elapsedTimeSec) {
       if (c.isCore) {
         // Connect with goat
         let goat = goats.getItem()
-        if (goat.isPickedUp) {
+        if (goat.isPickedUp && goat.isFree) {
           if (
             utils.checkCirclesCollide(
               c.anim.sprite.x,
@@ -308,6 +345,7 @@ export function updateAll(elapsedTimeSec) {
               r
             )
           ) {
+            ctx.sfx.playGoatRescued()
             goat.isFree = false
             goat.tx = c.anim.sprite.x
             goat.ty = c.anim.sprite.y
