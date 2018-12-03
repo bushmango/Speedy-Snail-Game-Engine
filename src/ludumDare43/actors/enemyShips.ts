@@ -16,8 +16,11 @@ export interface IEnemyShip {
   smoothMover: smoothMoves.ISmoothMover
   x: number
   y: number
+
   dir: number
   v: number
+  yo: number
+  xo: number
   isDead: boolean
   tint: number
 }
@@ -32,6 +35,8 @@ export function create() {
   let cv = ctx.getCameraView()
   let x = cv.cameraWidth - 100
   let y = cv.cameraHeight / 2
+  let yo = _.random(150, cv.cameraHeight - 150)
+  let xo = _.random(-50, 50)
   let item: IEnemyShip = {
     shipGrid: [],
     x: x,
@@ -39,6 +44,9 @@ export function create() {
     smoothMover: smoothMoves.create(x, y),
     dir: _.random(0, 1, false),
     v: _.random(5, 50),
+    yo: yo,
+    xo: xo,
+
     isDead: false,
     tint: chroma
       .random()
@@ -250,10 +258,25 @@ export function updateAll(elapsedTimeSec: number) {
   let cv = ctx.getCameraView()
 
   _.forEach(items, (c) => {
+    let margin = 150
+    if (c.dir === 0) {
+      4
+      c.yo += c.v * elapsedTimeSec
+      if (c.yo > cv.cameraHeight - margin) {
+        c.dir = 1
+      }
+    } else {
+      c.yo -= c.v * elapsedTimeSec
+      if (c.yo < margin) {
+        c.dir = 0
+      }
+    }
+
     smoothMoves.moveTo(
       c.smoothMover,
-      cv.cameraWidth / 2 - 50 + 200,
-      cv.cameraHeight / 2
+      cv.cameraWidth / 2 - 50 + 200 + c.xo,
+      //cv.cameraHeight / 2 +
+      c.yo
     )
     smoothMoves.update(c.smoothMover, c, elapsedTimeSec)
 
@@ -266,7 +289,7 @@ export function updateAll(elapsedTimeSec: number) {
         if (sp.data.special === 'laser') {
           if (sp.isReadyToFire) {
             sp.isReadyToFire = false
-            sp.elapsedRecharge = 0 - _.random(0, 1, true)
+            sp.elapsedRecharge = 0 - _.random(1, 3, true)
             let i = rockets.create('laser', true)
             i.launchedFrom = sp
             anim.copyPosition(i.anim, sp.anim)
