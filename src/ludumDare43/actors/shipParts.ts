@@ -33,6 +33,8 @@ export interface IShipPart {
   vx: number
   vy: number
   tint: number
+  elapsedRecharge: number
+  isReadyToFire: boolean
 }
 let items: IShipPart[] = []
 export function getAll() {
@@ -261,6 +263,8 @@ export function create(data: IShipPartData = core) {
     vx: 0,
     vy: 0,
     tint: 0xffffff,
+    elapsedRecharge: 0,
+    isReadyToFire: false,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
@@ -326,7 +330,12 @@ export function create(data: IShipPartData = core) {
 
 export function switchDataTo(c: IShipPart, data: IShipPartData) {
   c.data = data
-  c.anim.sprite.texture.frame = data.frame
+
+  if (c.data.anim) {
+    anim.playAnim(c.anim, c.data.anim)
+  } else {
+    c.anim.sprite.texture.frame = data.frame
+  }
 }
 
 export function updateAll(elapsedTimeSec) {
@@ -349,10 +358,15 @@ export function updateAll(elapsedTimeSec) {
         anim.copyPosition(i.anim, hoveredPart.anim)
       } else if (hoveredPart.data.special === 'laser') {
         //switchDataTo(hoveredPart, hoveredPart.data.clickTo)
-        let i = rockets.create('laser')
-        i.launchedFrom = hoveredPart
-        anim.copyPosition(i.anim, hoveredPart.anim)
-        i.anim.sprite.x += 16
+
+        if (hoveredPart.isReadyToFire) {
+          hoveredPart.isReadyToFire = false
+          hoveredPart.elapsedRecharge = 0
+          let i = rockets.create('laser')
+          i.launchedFrom = hoveredPart
+          anim.copyPosition(i.anim, hoveredPart.anim)
+          i.anim.sprite.x += 16
+        }
       } else {
         jettisonPiece(hoveredPart)
       }
@@ -394,6 +408,18 @@ export function updateAll(elapsedTimeSec) {
         }
       }
     } else {
+      if (c.data.special === 'laser') {
+        c.elapsedRecharge += elapsedTimeSec
+        if (c.elapsedRecharge > 2) {
+          c.isReadyToFire = true
+          anim.playAnim(c.anim, c.data.anim2)
+          //.sprite.texture.frame = c.data.frame2
+        } else {
+          anim.playAnim(c.anim, c.data.anim)
+          //..c.anim.sprite.texture.frame = c.data.frame
+        }
+      }
+
       // part of ship
       let accel = 380
       let d = Math.abs(cy - c.vy)

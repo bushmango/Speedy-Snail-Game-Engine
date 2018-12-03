@@ -32,7 +32,7 @@ export function create() {
     anim: anim.create(),
     vx: _.random(-150, -50),
     vy: _.random(-50, 50),
-    lifeLeft: 5,
+    lifeLeft: 15,
     isDead: false,
     elapsedEjectTime: 0,
   }

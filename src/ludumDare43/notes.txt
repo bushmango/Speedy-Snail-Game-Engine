@@ -1,3 +1,26 @@
+- rescue cats
+- cat pods - rescue cat and snail mode
+- win station / planet image / animate
+- start planet / station?
+
+- enemies made out of parts
+- bomb piece
+
+- test click-drag method?
+- laser delay
+
+x bug engine sound when speed is negative XD
+x bug goat stops complaining when picked up
+x engine sounds could be louder now
+x indicator to click on laser / rocket
+x difficulty selector (scale rates of items)
+x reset button
+- instructions button always visible??
+- more things to sacrifice
+
+x test mode
+
+
 x big asteroid split
 x gun part
 x rocket part

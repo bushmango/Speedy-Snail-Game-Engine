@@ -5,7 +5,9 @@ import * as anim from '../../engine/anim/anim'
 export interface IShipPartData {
   name: string
   frame: PIXI.Rectangle
+  //frame2?: PIXI.Rectangle
   anim?: anim.IAnimData
+  anim2?: anim.IAnimData
   noLeft?: boolean
   noRight?: boolean
   noTop?: boolean
@@ -242,6 +244,9 @@ datas.push(crate1)
 let rocketEmpty: IShipPartData = {
   name: 'rocket-1e',
   frame: spriteUtil.frame31p1(2, 6),
+  anim: {
+    frames: [spriteUtil.frame31p1(2, 6)],
+  },
   mass: 2,
   notSpawnable: true,
   special: 'rocket-spent',
@@ -252,6 +257,11 @@ datas.push(rocketEmpty)
 let rocket: IShipPartData = {
   name: 'rocket-1',
   frame: spriteUtil.frame31p1(2, 5),
+  anim: {
+    frames: [spriteUtil.frame31p1(2, 5), spriteUtil.frame31p1(5, 8)],
+    frameTime: 20 / 60,
+    loop: true,
+  },
   mass: 2,
   special: 'rocket',
   clickTo: rocketEmpty,
@@ -262,6 +272,11 @@ datas.push(rocket)
 let rocket2: IShipPartData = {
   name: 'rocket-2',
   frame: spriteUtil.frame31p1(4, 2),
+  anim: {
+    frames: [spriteUtil.frame31p1(4, 2), spriteUtil.frame31p1(5, 7)],
+    frameTime: 20 / 60,
+    loop: true,
+  },
   mass: 2,
   special: 'rocket',
   clickTo: rocket,
@@ -272,6 +287,11 @@ datas.push(rocket2)
 let rocket3: IShipPartData = {
   name: 'rocket-3',
   frame: spriteUtil.frame31p1(4, 5),
+  anim: {
+    frames: [spriteUtil.frame31p1(4, 5), spriteUtil.frame31p1(5, 6)],
+    frameTime: 20 / 60,
+    loop: true,
+  },
   mass: 2,
   special: 'rocket',
   clickTo: rocket2,
@@ -279,9 +299,22 @@ let rocket3: IShipPartData = {
 }
 datas.push(rocket3)
 
+var animL1: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(2, 10)],
+  frameTime: 30 / 60,
+  loop: true,
+}
+var animL2: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(2, 7), spriteUtil.frame31p1(3, 10)],
+  frameTime: 20 / 60,
+  loop: true,
+}
+
 let laser: IShipPartData = {
   name: 'laser-1',
-  frame: spriteUtil.frame31p1(2, 7),
+  frame: spriteUtil.frame31p1(2, 10),
+  anim: animL1,
+  anim2: animL2,
   mass: 2,
   special: 'laser',
   noColorSwap: true,
