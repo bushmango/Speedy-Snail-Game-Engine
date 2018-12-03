@@ -168,6 +168,8 @@ export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let view = ctx.sge.getViewSize()
 
+  zones.setCurrentZoneSet(ctx.stats.getCurrentStats().difficulty)
+
   updateGoalPosition(elapsedTimeSec)
   let stats = ctx.stats.getCurrentStats()
 

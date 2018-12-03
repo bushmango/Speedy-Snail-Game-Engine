@@ -38,6 +38,10 @@ let debugCollision = false
 let skipSplashScreen = true
 let skipMainMenu = true
 let currentContext: GameContext = null
+
+let doTestDifficulty = true
+let testDifficulty = 'test'
+
 export function getContext() {
   return currentContext
 }
@@ -131,6 +135,13 @@ export class GameContext {
 
     helpArrows.createAll()
     starfield.initialize()
+
+    stats.setEasyDifficulty()
+
+    if(doTestDifficulty) {
+      stats.setDifficulty(testDifficulty)
+    }
+   
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer

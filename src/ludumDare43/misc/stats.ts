@@ -52,15 +52,33 @@ let difficulties: IDiff[] = [
   },
 ]
 
+export function setEasyDifficulty() {
+  updateStats({
+    difficulty: difficulties[0].val,
+    difficultyLabel: difficulties[0].label,
+  })
+}
+
 export function nextDifficulty() {
   let i = _.findIndex(difficulties, (c) => c.val == stats.difficulty)
-  if (!i || i >= difficulties.length) {
+  i++
+  if (i >= difficulties.length) {
     i = 0
   }
   updateStats({
     difficulty: difficulties[i].val,
     difficultyLabel: difficulties[i].label,
   })
+}
+
+export function setDifficulty(diff) {
+  let i = _.findIndex(difficulties, (c) => c.val == diff)
+  if (i !== -1) {
+    updateStats({
+      difficulty: difficulties[i].val,
+      difficultyLabel: difficulties[i].label,
+    })
+  }
 }
 
 export function getCurrentStats() {

@@ -637,7 +637,7 @@ export function updateAll(elapsedTimeSec) {
               tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
               safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)
 
-              hoveredPart = tractoredPart
+              // hoveredPart = tractoredPart
               tractoredPart = null
 
               getContext().sfx.playPartConnected()
