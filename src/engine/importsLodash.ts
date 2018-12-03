@@ -17,6 +17,7 @@ import find from 'lodash/find'
 import filter from 'lodash/filter'
 import findIndex from 'lodash/findIndex'
 import concat from 'lodash/concat'
+import uniq from 'lodash/uniq'
 const _ = {
   forEach,
   some,
@@ -37,6 +38,7 @@ const _ = {
   findIndex,
   filter,
   concat,
+  uniq,
 }
 
 export { _ }

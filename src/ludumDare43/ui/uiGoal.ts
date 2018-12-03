@@ -19,7 +19,12 @@ interface IGoalPieceMarker {
 }
 let item: IGoalPieceMarker = null
 var animDefault: anim.IAnimData = {
-  frames: spriteUtil.frame32runH(11, 3, 2),
+  frames: [
+    spriteUtil.frame32(11, 3, 2),
+    spriteUtil.frame32(11, 5, 2),
+    spriteUtil.frame32(11, 7, 2),
+    spriteUtil.frame32(11, 9, 2),
+  ], // spriteUtil.frame32runH(11, 3, 2),
   frameTime: 10 / 60,
   loop: true,
 }

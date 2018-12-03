@@ -15,11 +15,25 @@ var animDefault: anim.IAnimData = {
   frames: [spriteUtil.frame32(10, 1)],
   frameTime: 10 / 60,
 }
+// var animFlag: anim.IAnimData = {
+//   frames: spriteUtil.frame32runH(10, 2, 2),
+//   frameTime: 10 / 60,
+//   loop: true,
+// }
+
+let framesFlag = []
+for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 3; i++) {
+    framesFlag.push(spriteUtil.frame32(8 + j, 11 - i))
+  }
+}
+
 var animFlag: anim.IAnimData = {
-  frames: spriteUtil.frame32runH(10, 2, 2),
+  frames: framesFlag,
   frameTime: 10 / 60,
   loop: true,
 }
+
 var animAsteroid: anim.IAnimData = {
   frames: [spriteUtil.frame32(11, 1)],
   frameTime: 10 / 60,

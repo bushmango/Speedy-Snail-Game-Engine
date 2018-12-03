@@ -431,15 +431,32 @@ export function updateAll(elapsedTimeSec) {
         }
       }
     } else {
-      if (c.data.special === 'laser') {
-        c.elapsedRecharge += elapsedTimeSec
-        if (c.elapsedRecharge > 2) {
-          c.isReadyToFire = true
+      if (c.isAttached) {
+        if (c.data.special === 'laser') {
+          c.elapsedRecharge += elapsedTimeSec
+          if (c.elapsedRecharge > 2) {
+            c.isReadyToFire = true
+            anim.playAnim(c.anim, c.data.anim2)
+            //.sprite.texture.frame = c.data.frame2
+          } else {
+            anim.playAnim(c.anim, c.data.anim)
+            //..c.anim.sprite.texture.frame = c.data.frame
+          }
+        }
+
+        if (c.data.special === 'baby') {
+          c.elapsedRecharge += elapsedTimeSec
           anim.playAnim(c.anim, c.data.anim2)
-          //.sprite.texture.frame = c.data.frame2
-        } else {
-          anim.playAnim(c.anim, c.data.anim)
-          //..c.anim.sprite.texture.frame = c.data.frame
+
+          if (c.elapsedRecharge > 3) {
+            let bx = c.bx
+            let by = c.by
+            tryBomb(bx - 1, by)
+            tryBomb(bx + 1, by)
+            tryBomb(bx, by + 1)
+            tryBomb(bx, by - 1)
+            destroyFixedPiece(c)
+          }
         }
       }
 
@@ -763,7 +780,14 @@ export function jettisonPiece(c: IShipPart) {
   }
 }
 
-export function destroyFixedPiece(c: IShipPart) {
+export function tryBomb(bx, by) {
+  let c = safeGetShipGrid(bx, by)
+  if (c && c.isAttached && !c.isDead) {
+    destroyFixedPiece(c, true)
+  }
+}
+
+export function destroyFixedPiece(c: IShipPart, doNotUpdate = false) {
   if (!c.isDead && c.isAttached) {
     getContext().sfx.playPartDestroyed()
 
@@ -780,8 +804,9 @@ export function destroyFixedPiece(c: IShipPart) {
     if (c.isCore) {
       goats.eject()
     }
-
-    updateWhatsAttached()
+    if (!doNotUpdate) {
+      updateWhatsAttached()
+    }
   }
 }
 

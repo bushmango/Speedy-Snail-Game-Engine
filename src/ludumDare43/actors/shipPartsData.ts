@@ -343,6 +343,36 @@ let habitat: IShipPartData = {
 }
 datas.push(habitat)
 
+var animB1: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(2, 13)],
+}
+var animB2: anim.IAnimData = {
+  frames: [
+    spriteUtil.frame31p1(2, 14),
+    spriteUtil.frame31p1(3, 13),
+    spriteUtil.frame31p1(3, 14),
+  ],
+  frameTime: 10 / 60,
+  loop: true,
+}
+
+let babyHead: IShipPartData = {
+  name: 'baby-head',
+  frame: spriteUtil.frame31p1(2, 13),
+  anim: animB1,
+  anim2: animB2,
+  mass: 1,
+  noTop: false,
+  special: 'baby',
+}
+datas.push(babyHead)
+
+// Check
+let uniq = _.uniq(datas)
+if (uniq.length !== datas.length) {
+  throw 'something isnt unique!'
+}
+
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 
 export { datas, spawnableDatas }
