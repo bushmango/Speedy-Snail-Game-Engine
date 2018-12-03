@@ -188,11 +188,6 @@ export class GameContext {
     let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
-    if (!cameras.getIsSlowed(ctx.camera)) {
-      // Stop any bass drop
-      getContext().sfx.stopSlowdown()
-    }
-
     // log.x('update', elapsedTime)
     // log.x('update')
 
@@ -212,6 +207,7 @@ export class GameContext {
     menuStart.update(elapsedTimeSec)
     menuQuickSettings.update(elapsedTimeSec)
     buttons.updateAll(elapsedTimeSec)
+    sounds.updateAll()
 
     asteroids.updateAll(elapsedTimeSec)
     starfield.updateAll(elapsedTimeSec)
