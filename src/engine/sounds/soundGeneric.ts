@@ -12,6 +12,7 @@ const muteState = {
 }
 
 let soundSprite = null
+let engineSprite = null
 let musicSprite = null
 
 export function getMusicSprite() {
@@ -20,6 +21,10 @@ export function getMusicSprite() {
 
 export function getSoundSprite() {
   return soundSprite
+}
+
+export function getEngineSprite() {
+  return engineSprite
 }
 
 export function load(jsonAudioSprite, callbackOnLoaded) {
@@ -32,6 +37,11 @@ export function load(jsonAudioSprite, callbackOnLoaded) {
   })
   soundSprite.on('loaderror', (id, err) => {
     // console.log('howl', 'loaderror', id, err)
+  })
+
+  engineSprite = new howler.Howl({
+    src: jsonAudioSprite.urls,
+    sprite: jsonAudioSprite.sprite,
   })
 }
 
@@ -62,8 +72,24 @@ export function playMusic(song, loop = true, cb: () => void = null) {
   }
 }
 
-export function play(soundKey) {
+export function isSoundMuted() {
   if (devMute || muteState.sound) {
+    return true
+  }
+  return false
+}
+
+export function playOn(_soundSprite, soundKey) {
+  if (isSoundMuted()) {
+    return
+  }
+
+  log.x('play on', soundKey)
+  return _soundSprite.play(soundKey)
+}
+
+export function play(soundKey) {
+  if (isSoundMuted()) {
     return
   }
 
@@ -78,6 +104,9 @@ export function stop(soundKey) {
 export function stopAllSounds() {
   if (soundSprite) {
     soundSprite.stop()
+  }
+  if (engineSprite) {
+    engineSprite.stop()
   }
 }
 

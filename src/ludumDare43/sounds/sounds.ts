@@ -86,9 +86,9 @@ let engineId,
   engineState = false
 
 function initEngine() {
-  engineId = soundsGeneric.play('engine001')
+  engineId = soundsGeneric.playOn(soundsGeneric.getEngineSprite(), 'engine001')
   soundsGeneric
-    .getSoundSprite()
+    .getEngineSprite()
     .loop(true, engineId)
     .once(
       'stop',
@@ -110,7 +110,8 @@ function updateEngineRate() {
   const rate = _getVelocity(),
     volume = _engineRateToVolume(rate)
 
-  soundsGeneric.getSoundSprite()
+  soundsGeneric
+    .getEngineSprite()
     .rate(rate, engineId)
     .volume(volume, engineId)
 }
@@ -128,10 +129,10 @@ function updateEngineState() {
     return
   }
 
-  const sprite = soundsGeneric.getSoundSprite()
+  const sprite = soundsGeneric.getEngineSprite()
 
   const from = engineState ? 0 : 0.33,
-        to = engineState ? sprite.volume(engineId) : 0
+    to = engineState ? sprite.volume(engineId) : 0
 
   sprite.fade(from, to, 0.33, engineId)
 }
@@ -152,18 +153,18 @@ export function playGoatFloating() {
   goatId = soundsGeneric.play('goat001')
 
   sprite.loop(true, goatId).volume(1, goatId)
-  sprite.on(
-    'end',
-    () => {
-      let volume = sprite.volume(goatId)
+  // sprite.on(
+  //   'end',
+  //   () => {
+  //     let volume = sprite.volume(goatId)
 
-      if (volume > 0.25) {
-        volume *= 0.5
-        sprite.volume(volume, goatId)
-      }
-    },
-    goatId
-  )
+  //     if (volume > 0.25) {
+  //       volume *= 0.5
+  //       sprite.volume(volume, goatId)
+  //     }
+  //   },
+  //   goatId
+  // )
 
   return goatId
 }

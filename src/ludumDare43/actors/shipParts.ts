@@ -125,7 +125,8 @@ export function create(data: IShipPartData = core) {
 
   sprite.interactive = true
   sprite.buttonMode = true
-  sprite.on('mouseover', () => {
+
+  let onDown = () => {
     let goat = goats.getItem()
 
     if (item.isFree && !goat.isFree && !item.isJettisoned) {
@@ -139,49 +140,20 @@ export function create(data: IShipPartData = core) {
         .num()
       hoveredPart = item
     }
-  })
+  }
 
-  // sprite.on('pointermove', () => {
-  //   let goat = goats.getItem()
+  sprite.on('mouseover', onDown)
+  sprite.on('pointerdown', onDown)
 
-  //   if (item.isFree && !goat.isFree && !item.isJettisoned) {
-  //     sprite.tint = 0xcccccc
-  //     tractoredPart = item
-  //   } else if (item.isAttached && !item.isCore) {
-  //     sprite.tint = 0x84d67a
-  //     hoveredPart = item
-  //   }
-  // })
-
-  sprite.on('pointerdown', () => {
-    let goat = goats.getItem()
-
-    if (item.isFree && !goat.isFree && !item.isJettisoned) {
-      sprite.tint = chroma(item.tint)
-        .darken()
-        .num()
-      tractoredPart = item
-    } else if (item.isAttached && !item.isCore) {
-      sprite.tint = chroma(item.tint)
-        .darken()
-        .num()
-      hoveredPart = item
-    }
-  })
-
-  sprite.on('mouseout', () => {
+  let onOut = () => {
     if (hoveredPart === item) {
       hoveredPart = null
     }
     sprite.tint = item.tint
-  })
+  }
 
-  sprite.on('pointerupoutside', () => {
-    if (hoveredPart === item) {
-      hoveredPart = null
-    }
-    sprite.tint = item.tint
-  })
+  sprite.on('mouseout', onOut)
+  sprite.on('pointerupoutside', onOut)
 
   ctx.layerPlayer.addChild(sprite)
 
