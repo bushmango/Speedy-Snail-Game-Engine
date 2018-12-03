@@ -130,22 +130,41 @@ function updateEngineState() {
 
   const sprite = soundsGeneric.getSoundSprite()
 
-  const from = engineState ? 0 : 0.2,
+  const from = engineState ? 0 : 0.33,
         to = engineState ? sprite.volume(engineId) : 0
 
-  sprite.fade(from, to, 0.25, engineId)
+  sprite.fade(from, to, 0.33, engineId)
 }
 function _getVelocity() {
   return getContext().stats.getCurrentStats().speed
 }
 function _engineRateToVolume(rate) {
-  const initial = 0.2
+  const initial = 0.33
   return rate < 1 ? initial : initial / Math.sqrt(rate)
 }
 
 let goatId = null
 export function playGoatFloating() {
+  stopGoatFloating()
+
+  const sprite = soundsGeneric.getSoundSprite()
+
   goatId = soundsGeneric.play('goat001')
+
+  sprite.loop(true, goatId).volume(1, goatId)
+  sprite.on(
+    'end',
+    () => {
+      let volume = sprite.volume(goatId)
+
+      if (volume > 0.25) {
+        volume *= 0.5
+        sprite.volume(volume, goatId)
+      }
+    },
+    goatId
+  )
+
   return goatId
 }
 export function stopGoatFloating() {
@@ -166,7 +185,7 @@ export function playGoatRescued() {
 // let slowdownSprite = null
 let slowdownId = null
 export function playSlowdown() {
-  stopSlowdown
+  stopSlowdown()
   slowdownId = soundsGeneric.play('slowdown001')
   return slowdownId
 }

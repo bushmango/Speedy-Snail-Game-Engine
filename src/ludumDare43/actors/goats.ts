@@ -59,10 +59,12 @@ export function create() {
   sprite.on('pointerdown', () => {
     sprite.tint = 0xcccccc
     item.isPickedUp = true
+    ctx.sfx.stopGoatFloating()
   })
   sprite.on('mouseover', () => {
     sprite.tint = 0xcccccc
     item.isPickedUp = true
+    ctx.sfx.stopGoatFloating()
   })
   // sprite.on('pointermove', () => {
   //   sprite.tint = 0xcccccc
@@ -104,8 +106,7 @@ export function eject() {
   }
 
   anim.playAnim(item.anim, animEjected)
-
-  floating()
+  ctx.sfx.playGoatFloating()
 
   // item.anim.sprite.x = _.random(100, 200)
   // item.anim.sprite.y = _.random(100, 200)
@@ -117,32 +118,6 @@ export function catchGoat() {
   item.isFree = false
   item.isPickedUp = false
   ctx.sfx.playGoatRescued()
-}
-
-function floating() {
-  const id = getContext().sfx.playGoatFloating(),
-    sprite = soundsGeneric.getSoundSprite()
-
-  sprite.loop(true, id).volume(1, id)
-
-  sprite.on(
-    'end',
-    () => {
-      let volume = sprite.volume(id)
-
-      if (volume > 0.25) {
-        volume *= 0.5
-      }
-
-      sprite.volume(volume, id)
-
-      if (!item.isFree || item.isPickedUp) {
-        sprite.stop(id)
-        sprite.off('end', id)
-      }
-    },
-    id
-  )
 }
 
 export function updateAll(elapsedTimeSec) {
