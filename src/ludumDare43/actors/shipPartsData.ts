@@ -1,9 +1,11 @@
 import * as spriteUtil from '../../engine/anim/spriteUtil'
 import { _ } from 'engine/importsEngine'
+import * as anim from '../../engine/anim/anim'
 
 export interface IShipPartData {
   name: string
   frame: PIXI.Rectangle
+  anim?: anim.IAnimData
   noLeft?: boolean
   noRight?: boolean
   noTop?: boolean
@@ -154,9 +156,26 @@ s = {
 }
 datas.push(s)
 
+s = {
+  name: 't',
+  frame: spriteUtil.frame31p1(1, 14),
+  noLeft: true,
+  mass: 0.35,
+}
+datas.push(s)
+
+var animCa: anim.IAnimData = {
+  frames: [spriteUtil.frame31p1(2, 2), spriteUtil.frame31p1(3, 2)],
+  frameTime: 30 / 60,
+  loop: true,
+}
+
 let cockpit: IShipPartData = {
   name: 'cockpit-1',
   frame: spriteUtil.frame31p1(2, 2),
+  //frame2: spriteUtil.frame31p1(3, 2),
+  anim: animCa,
+
   noRight: true,
   noTop: true,
   noBottom: true,

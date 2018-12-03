@@ -150,7 +150,7 @@ z.topSupply = true
 z.debrisPartsList = armor
 z.supplyPartsList = allParts
 z.largeAsteroidRate = 2
-z.debrisSpawnRate = 5
+z.debrisSpawnRate = 2
 z.supplySpawnRate = 3
 z.tip = 'Keep flying!'
 
@@ -172,7 +172,7 @@ z.debrisPartsList = connectors
 z.supplyPartsList = allParts
 z.largeAsteroidRate = 2
 z.smallAsteroidRate = 2
-//z.debrisSpawnRate = 10
+z.debrisSpawnRate = 2
 //z.supplySpawnRate = 5
 z.tip = 'In space, goat sacrifices you!'
 
@@ -190,7 +190,10 @@ let zoneB = (z = createZone('Boss Zone'))
 //z.debrisPartsList = connectors
 z.distance = 20
 z.debrisPartsList = connectors
+z.topSupply = true
+
 z.supplyPartsList = connectors
+z.debrisSpawnRate = 2
 z.largeAsteroidRate = 2
 z.smallAsteroidRate = 0.25
 z.tip = 'The final sacrifice'

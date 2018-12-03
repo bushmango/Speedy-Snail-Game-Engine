@@ -68,13 +68,13 @@ export function create() {
   }
   item.buttons.push(item.buttonMainMenu)
 
-  item.buttonZoom = buttons.createWithSprite(11, 1) // buttons.create('Zoom')
-  item.buttonZoom.onClick = () => {
-    //let ctx = getContext()
-    //ctx.menuStart.slideIn()
-    ctx.toggleZoom()
-  }
-  item.buttons.push(item.buttonZoom)
+  // item.buttonZoom = buttons.createWithSprite(11, 1) // buttons.create('Zoom')
+  // item.buttonZoom.onClick = () => {
+  //   //let ctx = getContext()
+  //   //ctx.menuStart.slideIn()
+  //   ctx.toggleZoom()
+  // }
+  // item.buttons.push(item.buttonZoom)
 
   onResize()
 

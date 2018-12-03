@@ -104,6 +104,10 @@ export function create(data: IShipPartData = core) {
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
+  if (data.anim) {
+    anim.playAnim(item.anim, data.anim)
+  }
+
   if (!data.noColorSwap) {
     let b = 1
     if (data.extraBright) {
@@ -238,7 +242,7 @@ export function updateAll(elapsedTimeSec) {
   let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
 
   _.forEach(items, (c) => {
-    anim.update(c.anim, elapsedTimeSec)
+    anim.update(c.anim, c.isAttached ? elapsedTimeSec : 0)
 
     if (c.isFree) {
       if (tractoredPart === c && !goat.isFree) {
