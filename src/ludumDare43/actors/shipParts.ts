@@ -11,6 +11,8 @@ import * as debris from './debris'
 import * as utils from './utils'
 import * as rockets from './rockets'
 
+import * as spriteUtil from 'engine/anim/spriteUtil'
+
 import { IShipPartData, datas, spawnableDatas, core } from './shipPartsData'
 
 export { datas, spawnableDatas }
@@ -40,6 +42,67 @@ export function getAll() {
 let hoveredGoat: goats.IGoat = null
 let tractoredPart: IShipPart = null
 let hoveredPart: IShipPart = null
+
+export interface ISelectors {
+  animHovered: anim.IAnim
+}
+let selectors: ISelectors = null
+
+var animHovered: anim.IAnimData = {
+  frames: [spriteUtil.frame32(15, 7)],
+  frameTime: 10 / 60,
+}
+var animHovered_fire: anim.IAnimData = {
+  frames: [spriteUtil.frame32(14, 8), spriteUtil.frame32(14, 9)],
+  frameTime: 10 / 60,
+  loop: true,
+}
+var animHovered_jettison: anim.IAnimData = {
+  frames: [spriteUtil.frame32(14, 6), spriteUtil.frame32(14, 7)],
+  frameTime: 20 / 60,
+  loop: true,
+}
+export function createSelectors() {
+  let ctx = getContext()
+  selectors = {
+    animHovered: anim.create(),
+  }
+  selectors.animHovered.sprite = ctx.createSprite(
+    'ship-001',
+    animHovered.frames[0],
+    0.5,
+    0.5,
+    1
+  )
+
+  ctx.layerAbove.addChild(selectors.animHovered.sprite)
+  anim.playAnim(selectors.animHovered, animHovered)
+  //items.push(item)
+}
+export function updateSelectors(elapsedTimeSec) {
+  anim.update(selectors.animHovered, elapsedTimeSec)
+
+  if (hoveredPart) {
+    anim.copyPosition(selectors.animHovered, hoveredPart.anim)
+
+    if (
+      hoveredPart.data.special === 'rocket' ||
+      hoveredPart.data.special === 'laser'
+    ) {
+      anim.playAnim(selectors.animHovered, animHovered_fire)
+    } else {
+      anim.playAnim(selectors.animHovered, animHovered_jettison)
+    }
+
+    selectors.animHovered.sprite.visible = true
+
+    if (hoveredPart.isCore) {
+      selectors.animHovered.sprite.visible = false
+    }
+  } else {
+    selectors.animHovered.sprite.visible = false
+  }
+}
 
 let shipGrid: IShipPart[] = []
 let maxShipGridX = 16
@@ -172,6 +235,8 @@ export function updateAll(elapsedTimeSec) {
   let kb = ctx.sge.keyboard
   let mouse = ctx.sge.getMouse()
   let cv = ctx.getCameraView()
+
+  updateSelectors(elapsedTimeSec)
 
   if (mouse.isLeftJustDown) {
     if (hoveredPart && !hoveredPart.isDead && hoveredPart.isAttached) {

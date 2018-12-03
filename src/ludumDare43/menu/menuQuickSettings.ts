@@ -14,6 +14,7 @@ import * as sounds from './../sounds/sounds'
 import * as shipParts from './../actors/shipParts'
 import * as goats from './../actors/goats'
 import * as asteroids from './../actors/asteroids'
+import * as zones from './../actors/zones'
 
 export interface IMenuQuickSettings {
   buttonSound: buttonsGeneric.IMenuButton
@@ -81,14 +82,7 @@ export function create() {
   }
   item.buttons.push(item.buttonMainMenu)
 
-  item.buttonDifficulty = buttons.create('Difficulty')
-  item.buttonDifficulty.onClick = () => {}
-  item.buttons.push(item.buttonDifficulty)
-
-  item.buttonReset = buttons.create('Reset')
-  item.buttonReset.onClick = () => {
-    //asteroids.
-
+  let onReset = () => {
     let ctx = getContext()
     ctx.stats.updateStats({ isResetting: true })
 
@@ -106,6 +100,20 @@ export function create() {
         shipParts.smash(c)
       }
     })
+  }
+
+  item.buttonDifficulty = buttons.create('Difficulty')
+  item.buttonDifficulty.onClick = () => {
+    ctx.stats.nextDifficulty()
+    zones.setCurrentZoneSet(ctx.stats.getCurrentStats().difficulty)
+    onReset()
+  }
+  item.buttons.push(item.buttonDifficulty)
+
+  item.buttonReset = buttons.create('Reset')
+  item.buttonReset.onClick = () => {
+    //asteroids.
+    onReset()
   }
   item.buttons.push(item.buttonReset)
 
@@ -188,6 +196,9 @@ export function update(elapsedTimeSec) {
   item.buttonMusic.textSprite.texture.frame = settings.muteMusic
     ? spriteUtil.frame32(13, 1, 4)
     : spriteUtil.frame32(12, 1, 4)
+
+  item.buttonDifficulty.text.text = ctx.stats.getCurrentStats().difficultyLabel
+
   // item.buttonMusic.text.text = settings.muteMusic ? 'Music off' : 'Music on'
 
   // placeSwitcher.update(item.bu, item.logoSprite, elapsedTimeSec)

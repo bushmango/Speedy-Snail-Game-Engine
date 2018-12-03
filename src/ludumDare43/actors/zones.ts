@@ -40,6 +40,7 @@ function createZoneSet(difficulty: string) {
 
 let zoneInfo = {
   maxDistance: 0,
+  curDistance: 0,
   currentZone: null as IZone,
 }
 
@@ -106,6 +107,14 @@ export function getCurrentZone() {
   return zoneInfo.currentZone
 }
 
+export function setCurrentZoneSet(diff) {
+  let f = _.find(zoneSets, (c: IZoneSet) => c.difficulty === diff)
+  if (f) {
+    currentZoneSet = f
+    //updateCurrentZone(0)
+  }
+}
+
 function createZone(zoneSet: IZoneSet, name: string) {
   let zone: IZone = {
     name,
@@ -145,6 +154,31 @@ z.debrisPartsList = connectors
 z.distance = 10000
 z.debrisSpawnRate = 2
 z.supplySpawnRate = 1
+
+// -- HARD --
+zs = createZoneSet('hard')
+let zoneHard = (z = createZone(zs, 'Hard Zone'))
+z.topSupply = true
+z.bottomSupply = true
+z.supplyPartsList = allParts
+z.debrisPartsList = connectors
+z.distance = 10000
+z.debrisSpawnRate = 2
+z.supplySpawnRate = 1
+
+// -- Endless --
+zs = createZoneSet('endless')
+let zoneEndless = (z = createZone(zs, 'Endless Zone'))
+z.topSupply = true
+z.bottomSupply = false
+z.supplyPartsList = allParts
+z.debrisPartsList = basic
+z.distance = 10000
+z.debrisSpawnRate = 2
+z.supplySpawnRate = 5
+// Todo slowly increase
+z.smallAsteroidRate = 2
+z.largeAsteroidRate = 4
 
 // -- EASY --
 zs = createZoneSet('easy')

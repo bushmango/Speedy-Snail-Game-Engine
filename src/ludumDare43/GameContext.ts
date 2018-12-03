@@ -111,6 +111,8 @@ export class GameContext {
 
     // let player = players.create(ctx.layerPlayer)
 
+    shipParts.createSelectors()
+
     menuStart.create()
     menuQuickSettings.create()
     uiGoal.create()
