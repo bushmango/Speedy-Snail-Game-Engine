@@ -45,7 +45,7 @@ let zoneInfo = {
 }
 
 let allParts = _.map(shipPartsData.spawnableDatas, (c) => c.name)
-let connectors = ['cross', 'h', 'v', 'tl', 'tr', 'bl', 'br']
+let connectors = ['cross', 'h', 'v', 'tl', 'tr', 'bl', 'br', 'habitat']
 let decor = ['wing-1', 'wing-2', 'cockpit-1']
 // let mids = ['body']
 let armor = ['armor-1', 'wing-armor-1', 'wing-armor-2']

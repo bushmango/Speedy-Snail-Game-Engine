@@ -34,6 +34,7 @@ export interface IShipPart {
   vy: number
   tint: number
   elapsedRecharge: number
+  elapsedSec: number
   isReadyToFire: boolean
 }
 let items: IShipPart[] = []
@@ -53,7 +54,7 @@ export interface ISelectors {
 let selectors: ISelectors = null
 
 var animHovered: anim.IAnimData = {
-  frames: [spriteUtil.frame32(15, 7)],
+  frames: [spriteUtil.frame32(13, 7)],
   frameTime: 10 / 60,
 }
 var animHovered_fire: anim.IAnimData = {
@@ -265,11 +266,13 @@ export function create(data: IShipPartData = core) {
     tint: 0xffffff,
     elapsedRecharge: 0,
     isReadyToFire: false,
+    elapsedSec: 0,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
+  item.anim.sprite.scale.set(0.01)
   if (data.anim) {
     anim.playAnim(item.anim, data.anim)
   }
@@ -300,7 +303,7 @@ export function create(data: IShipPartData = core) {
         .darken()
         .num()
       tractoredPart = item
-    } else if (item.isAttached && !item.isCore) {
+    } else if (item.isAttached) {
       sprite.tint = chroma(item.tint)
         .darken()
         .num()
@@ -397,6 +400,14 @@ export function updateAll(elapsedTimeSec) {
 
   _.forEach(items, (c) => {
     anim.update(c.anim, c.isAttached ? elapsedTimeSec : 0)
+
+    let spawnTime = 0.5
+    if (c.elapsedSec < spawnTime) {
+      c.elapsedSec += elapsedTimeSec
+      c.anim.sprite.scale.set(c.elapsedSec / spawnTime)
+    } else {
+      c.anim.sprite.scale.set(1)
+    }
 
     if (c.isJettisoned) {
       if (utils.isOffScreen(cv, c.anim.sprite)) {
@@ -691,7 +702,14 @@ export function jettisonPiece(c: IShipPart) {
   if (!c.isDead && !c.isCore) {
     // c.vy = _.random(-5, 5)
 
-    if (c.isJettisoned) {
+    if (c.data.isFragile) {
+      getContext().sfx.playPartDestroyed()
+      if (c.isAttached) {
+        destroyFixedPiece(c)
+      } else {
+        smash(c)
+      }
+    } else if (c.isJettisoned) {
       // un-jettison
       c.isJettisoned = false
       c.isFree = true

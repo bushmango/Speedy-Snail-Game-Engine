@@ -4,8 +4,14 @@
  - jettison 
  - boss riff
 
+
+
 - rescue cats
 - cat pods - rescue cat and snail mode
+x images
+
+- bugged victory when switching modes
+
 - win station / planet image / animate
 - start planet / station?
 

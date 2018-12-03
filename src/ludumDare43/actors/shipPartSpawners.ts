@@ -115,7 +115,7 @@ export function updateAll(elapsedTimeSec) {
       let nextPart = _.sample(curZone.supplyPartsListCalc)
 
       let shipPart = shipParts.create(nextPart)
-      shipPart.anim.sprite.x = c.x
+      shipPart.anim.sprite.x = c.x + 16
       shipPart.anim.sprite.y = c.y + _.random(-5, 5, true)
       //  }
     }

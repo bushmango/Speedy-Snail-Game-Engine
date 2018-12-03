@@ -20,6 +20,7 @@ export interface IShipPartData {
   special?: string
   noColorSwap?: boolean
   extraBright?: boolean
+  isFragile?: boolean
 }
 
 let datas: IShipPartData[] = []
@@ -236,6 +237,7 @@ let crate1: IShipPartData = {
   name: 'crate-1',
   frame: spriteUtil.frame31p1(3, 3),
   mass: 2,
+  isFragile: true,
   special: 'snails',
   noColorSwap: true,
 }
@@ -320,6 +322,15 @@ let laser: IShipPartData = {
   noColorSwap: true,
 }
 datas.push(laser)
+
+let habitat: IShipPartData = {
+  name: 'habitat',
+  frame: spriteUtil.frame31p1(6, 6),
+  mass: 1,
+  special: 'habitat',
+  noColorSwap: true,
+}
+datas.push(habitat)
 
 spawnableDatas = _.filter(datas, (c: IShipPartData) => !c.notSpawnable)
 
