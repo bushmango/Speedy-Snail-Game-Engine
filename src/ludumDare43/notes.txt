@@ -1,3 +1,9 @@
+- missing sounds
+ - rocket
+ - rocket launch
+ - jettison 
+ - boss riff
+
 - rescue cats
 - cat pods - rescue cat and snail mode
 - win station / planet image / animate

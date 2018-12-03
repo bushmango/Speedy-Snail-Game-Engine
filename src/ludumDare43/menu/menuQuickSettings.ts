@@ -117,9 +117,9 @@ export function create() {
   }
   item.buttons.push(item.buttonReset)
 
-  item.buttonColorMode = buttons.create('Color Mode')
-  item.buttonColorMode.onClick = () => {}
-  item.buttons.push(item.buttonColorMode)
+  // item.buttonColorMode = buttons.create('Color Mode')
+  // item.buttonColorMode.onClick = () => {}
+  // item.buttons.push(item.buttonColorMode)
 
   item.buttonFullScreen = buttons.create('Full Screen')
   item.buttonFullScreen.onClick = () => {

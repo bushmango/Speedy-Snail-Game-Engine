@@ -58,26 +58,24 @@ export function create() {
   sprite.y = 200
   sprite.interactive = true
   sprite.buttonMode = true
-  sprite.on('pointerdown', () => {
+
+  let onOver = () => {
     sprite.tint = 0xcccccc
-    item.isPickedUp = true
-    ctx.sfx.stopGoatFloating()
-  })
-  sprite.on('mouseover', () => {
-    sprite.tint = 0xcccccc
-    item.isPickedUp = true
-    ctx.sfx.stopGoatFloating()
-  })
+    item.isPickedUp = true   
+    ctx.sfx.playGoatPickedUp()
+  }
+  let onOut = () => {
+    sprite.tint = 0xffffffff
+  }
+
+  sprite.on('pointerdown', onOver)
+  sprite.on('mouseover', onOver)
   // sprite.on('pointermove', () => {
   //   sprite.tint = 0xcccccc
   //   item.isPickedUp = true
   // })
-  sprite.on('mouseout', () => {
-    sprite.tint = 0xffffffff
-  })
-  sprite.on('pointerupoutside', () => {
-    sprite.tint = 0xffffffff
-  })
+  sprite.on('mouseout', onOut)
+  sprite.on('pointerupoutside', onOut)
 
   ctx.layerGoat.addChild(item.anim.sprite)
   anim.playAnim(item.anim, animDefault)

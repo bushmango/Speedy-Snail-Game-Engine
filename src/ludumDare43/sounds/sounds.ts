@@ -178,6 +178,12 @@ export function stopGoatFloating() {
 export function playGoatRescued() {
   // need new!
   // soundsGeneric.play('pickup001')
+  stopGoatFloating()
+
+  soundsGeneric.play('phew')
+}
+
+export function playGoatPickedUp() {
   soundsGeneric.play('goat')
 }
 
@@ -209,8 +215,8 @@ export function playPartConnected() {
 }
 
 export function playClick() {
-  // need new!
-  soundsGeneric.play('hurt001')
+  //soundsGeneric.play('hurt001')
+  soundsGeneric.play('button')
 }
 
 export function playLaser() {
