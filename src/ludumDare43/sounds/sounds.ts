@@ -102,12 +102,16 @@ function updateEngine() {
     initEngine()
   }
 
-  updateEngineState()
   updateEngineRate()
+  updateEngineState()
 }
 function updateEngineRate() {
-  const rate = _getVelocity()
-  soundsGeneric.getSoundSprite().rate(rate, engineId)
+  const rate = _getVelocity(),
+    volume = _engineRateToVolume(rate)
+
+  soundsGeneric.getSoundSprite()
+    .rate(rate, engineId)
+    .volume(volume, engineId)
 }
 function updateEngineState() {
   const oldState = engineState,
@@ -125,13 +129,17 @@ function updateEngineState() {
 
   const sprite = soundsGeneric.getSoundSprite()
 
-  const from = engineState ? 0 : 0.125,
+  const from = engineState ? 0 : 0.2,
         to = engineState ? sprite.volume(engineId) : 0
 
   sprite.fade(from, to, 0.25, engineId)
 }
 function _getVelocity() {
   return getContext().stats.getCurrentStats().speed
+}
+function _engineRateToVolume(rate) {
+  const initial = 0.2
+  return rate < 1 ? initial : initial / Math.sqrt(rate)
 }
 
 let goatId = null
