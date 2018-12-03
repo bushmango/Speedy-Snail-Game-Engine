@@ -21,8 +21,9 @@ interface IShipPartSpawner {
 let items: IShipPartSpawner[] = []
 
 var animDefault: anim.IAnimData = {
-  frames: [spriteUtil.frame32(5, 1, 2, 2), spriteUtil.frame32(5, 2, 2, 2)],
+  frames: [spriteUtil.frame32(5, 1, 2, 2), spriteUtil.frame32(5, 3, 2, 2)],
   frameTime: 10 / 60,
+  loop: true,
 }
 
 export function create() {
@@ -40,6 +41,9 @@ export function create() {
 
   let sprite = ctx.createSprite('ship-001', animDefault.frames[0], 0.5, 0.5, 1)
   item.anim.sprite = sprite
+
+  anim.playAnim(item.anim, animDefault)
+
   ctx.layerAbove.addChild(sprite)
 
   items.push(item)
@@ -101,6 +105,8 @@ export function updateAll(elapsedTimeSec) {
 
     c.anim.sprite.x = c.x + 20
     c.anim.sprite.y = c.y
+
+    anim.update(c.anim, elapsedTimeSec)
 
     if (c.elapsedSec > curZone.supplySpawnRate) {
       c.elapsedSec = 0

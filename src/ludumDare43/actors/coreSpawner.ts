@@ -19,8 +19,9 @@ interface ICoreSpawner {
 let item: ICoreSpawner = null
 
 var animDefault: anim.IAnimData = {
-  frames: [spriteUtil.frame32(5, 1, 2, 2), spriteUtil.frame32(5, 2, 2, 2)],
+  frames: [spriteUtil.frame32(5, 1, 2, 2), spriteUtil.frame32(5, 3, 2, 2)],
   frameTime: 10 / 60,
+  loop: true,
 }
 
 export function create() {
@@ -38,6 +39,8 @@ export function create() {
   let sprite = ctx.createSprite('ship-001', animDefault.frames[0], 0.5, 0.5, 1)
   item.anim.sprite = sprite
   ctx.layerAbove.addChild(sprite)
+
+  anim.playAnim(item.anim, animDefault)
 
   //items.push(item)
   return item
@@ -80,6 +83,8 @@ export function updateAll(elapsedTimeSec) {
   c.anim.sprite.y = c.y
 
   let coreX = 32 * 3 + 10
+
+  anim.update(item.anim, elapsedTimeSec)
 
   if (c.hasPayload && c.x > coreX - 16) {
     // drop core

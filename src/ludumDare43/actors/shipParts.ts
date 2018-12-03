@@ -42,7 +42,7 @@ let tractoredPart: IShipPart = null
 let hoveredPart: IShipPart = null
 
 let shipGrid: IShipPart[] = []
-let maxShipGridX = 9
+let maxShipGridX = 16
 let maxShipGridY = 9
 let centerShipGridX = 2
 let centerShipGridY = 4

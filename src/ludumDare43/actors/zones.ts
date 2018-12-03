@@ -34,7 +34,7 @@ let decor = ['wing-1', 'wing-2', 'cockpit-1']
 let armor = ['armor-1', 'wing-armor-1', 'wing-armor-2']
 let engines = ['engine-1', 'engine-2']
 let weapons = ['laser-1', 'rocket-1', 'rocket-2', 'rocket-3']
-let basic = _.concat(connectors, decor, 'engine-1', 'rocket-1')
+let basic = _.concat(connectors, decor, 'engine-1', 'rocket-1', 'rocket-2')
 
 function calculateZones() {
   zoneInfo.maxDistance = 0
@@ -127,9 +127,9 @@ z.distance = 20
 z.topSupply = true
 z.debrisPartsList = connectors
 z.supplyPartsList = basic
-z.smallAsteroidRate = 0.75
+z.smallAsteroidRate = 2
 z.tip = 'Click on your ship to jettison parts!'
-//z.debrisSpawnRate = 10
+z.debrisSpawnRate = 3
 //z.supplySpawnRate = 5
 
 let zone3b = (z = createZone('Rebuild Zone'))
@@ -147,7 +147,7 @@ let zone4 = (z = createZone('Large Asteroid Zone'))
 //z.debrisPartsList = connectors
 z.distance = 25
 z.topSupply = true
-z.debrisPartsList = armor
+z.debrisPartsList = basic
 z.supplyPartsList = allParts
 z.largeAsteroidRate = 2
 z.debrisSpawnRate = 2
@@ -168,11 +168,11 @@ z.tip = 'Phew!'
 let zone5 = (z = createZone('Hard Asteroid Zone'))
 //z.debrisPartsList = connectors
 z.distance = 20
-z.debrisPartsList = connectors
+z.debrisPartsList = basic
 z.supplyPartsList = allParts
-z.largeAsteroidRate = 2
+z.largeAsteroidRate = 3
 z.smallAsteroidRate = 2
-z.debrisSpawnRate = 2
+z.debrisSpawnRate = 1
 //z.supplySpawnRate = 5
 z.tip = 'In space, goat sacrifices you!'
 
@@ -194,8 +194,8 @@ z.topSupply = true
 
 z.supplyPartsList = connectors
 z.debrisSpawnRate = 2
-z.largeAsteroidRate = 2
-z.smallAsteroidRate = 0.25
+z.largeAsteroidRate = 4
+z.smallAsteroidRate = 0.75
 z.tip = 'The final sacrifice'
 
 let zoneV = (z = createZone('Victory Zone'))

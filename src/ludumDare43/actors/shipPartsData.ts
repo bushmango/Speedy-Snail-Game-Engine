@@ -172,6 +172,17 @@ var animCa: anim.IAnimData = {
 
 let cockpit: IShipPartData = {
   name: 'cockpit-1',
+  frame: spriteUtil.frame31p1(4, 1),
+
+  noRight: true,
+  noTop: true,
+  noBottom: true,
+  mass: 1,
+}
+datas.push(cockpit)
+
+let eye: IShipPartData = {
+  name: 'eye-1',
   frame: spriteUtil.frame31p1(2, 2),
   //frame2: spriteUtil.frame31p1(3, 2),
   anim: animCa,
@@ -181,7 +192,8 @@ let cockpit: IShipPartData = {
   noBottom: true,
   mass: 1,
 }
-datas.push(cockpit)
+datas.push(eye)
+
 let engine: IShipPartData = {
   name: 'engine-1',
   frame: spriteUtil.frame31p1(2, 3),
@@ -255,7 +267,7 @@ let rocket2: IShipPartData = {
   clickTo: rocket,
   noColorSwap: true,
 }
-datas.push(rocket)
+datas.push(rocket2)
 
 let rocket3: IShipPartData = {
   name: 'rocket-3',
@@ -265,7 +277,7 @@ let rocket3: IShipPartData = {
   clickTo: rocket2,
   noColorSwap: true,
 }
-datas.push(rocket)
+datas.push(rocket3)
 
 let laser: IShipPartData = {
   name: 'laser-1',

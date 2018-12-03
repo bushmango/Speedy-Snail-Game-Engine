@@ -2,7 +2,11 @@
 
 // Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
 
-- tips
+- difficulty selector (scale rates of items)
+- reset button
+- instructions button always visible??
+
+x tips
 x basic menu
 x sound/music mute buttons
 x slidy menus
