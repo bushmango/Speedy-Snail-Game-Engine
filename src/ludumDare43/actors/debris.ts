@@ -66,9 +66,9 @@ export function updateAll(elapsedTimeSec) {
     if (c.elapsedEjectTime < maxEjectTime) {
       c.elapsedEjectTime += elapsedTimeSec
       let p = c.elapsedEjectTime / maxEjectTime
-      c.anim.sprite.scale.set(Math.sin(p * Math.PI) * 3 + 1)
+      c.anim.sprite.scale.set(Math.sin(p * Math.PI) * 3 + 0.25)
     } else {
-      c.anim.sprite.scale.set(1)
+      c.anim.sprite.scale.set(0.25)
     }
 
     anim.update(c.anim, elapsedTimeSec)

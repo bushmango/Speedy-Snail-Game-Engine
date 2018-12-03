@@ -1,16 +1,17 @@
 
 
 // Look at https://pixijs.io/examples/#/demos/mouse-trail.js for ideas!
--- bug engine sound when speed is negative XD
+x bug engine sound when speed is negative XD
 -- bug goat stops complaining when picked up
--- engine sounds could be louder now
+x engine sounds could be louder now
 - indicator to click on laser / rocket
 - difficulty selector (scale rates of items)
-- reset button
+x reset button
 - instructions button always visible??
 - more things to sacrifice
 - rescue cats
 - cat pods - rescue cat and snail mode
+- test mode
 
 x tips
 x basic menu
