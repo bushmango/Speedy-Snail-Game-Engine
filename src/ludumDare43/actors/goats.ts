@@ -122,7 +122,7 @@ function floating() {
 
       sprite.volume(volume, id)
 
-      if (!item.isFree) {
+      if (!item.isFree || item.isPickedUp) {
         sprite.stop(id)
         sprite.off('end', id)
       }
