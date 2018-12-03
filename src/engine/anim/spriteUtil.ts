@@ -14,6 +14,15 @@ export function frame31p1(y, x, w = 1, h = 1) {
   return new PIXI.Rectangle(32 * x + 1, 32 * y + 1, 32 * w - 2, 32 * h - 2)
 }
 
+export function frame32p(p, y, x, w = 1, h = 1) {
+  return new PIXI.Rectangle(
+    32 * x + p,
+    32 * y + p,
+    32 * w - p * 2,
+    32 * h - p * 2
+  )
+}
+
 export function frame32runH(y, x, w = 1) {
   let frames = []
   for (let i = 0; i < w; i++) {

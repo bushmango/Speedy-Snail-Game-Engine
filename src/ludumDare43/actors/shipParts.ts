@@ -45,6 +45,8 @@ let hoveredPart: IShipPart = null
 
 export interface ISelectors {
   animHovered: anim.IAnim
+  connectorsA: PIXI.Sprite[]
+  connectorsB: PIXI.Sprite[]
 }
 let selectors: ISelectors = null
 
@@ -66,6 +68,8 @@ export function createSelectors() {
   let ctx = getContext()
   selectors = {
     animHovered: anim.create(),
+    connectorsA: [],
+    connectorsB: [],
   }
   selectors.animHovered.sprite = ctx.createSprite(
     'ship-001',
@@ -74,15 +78,35 @@ export function createSelectors() {
     0.5,
     1
   )
-
   ctx.layerAbove.addChild(selectors.animHovered.sprite)
+  for (let i = 0; i < 4; i++) {
+    let csp = ctx.createSprite(
+      'ship-001',
+      spriteUtil.frame32p(6, 14, 5),
+      0.5,
+      0.5,
+      1
+    )
+    selectors.connectorsA.push(csp)
+    ctx.layerAbove.addChild(csp)
+    let csp2 = ctx.createSprite(
+      'ship-001',
+      spriteUtil.frame32p(6, 14, 5),
+      0.5,
+      0.5,
+      1
+    )
+    selectors.connectorsB.push(csp2)
+    ctx.layerAbove.addChild(csp2)
+  }
+
   anim.playAnim(selectors.animHovered, animHovered)
   //items.push(item)
 }
 export function updateSelectors(elapsedTimeSec) {
   anim.update(selectors.animHovered, elapsedTimeSec)
 
-  if (hoveredPart) {
+  if (hoveredPart && hoveredPart.isAttached && !hoveredPart.isDead) {
     anim.copyPosition(selectors.animHovered, hoveredPart.anim)
 
     if (
@@ -97,10 +121,85 @@ export function updateSelectors(elapsedTimeSec) {
     selectors.animHovered.sprite.visible = true
 
     if (hoveredPart.isCore) {
-      selectors.animHovered.sprite.visible = false
+      anim.playAnim(selectors.animHovered, animHovered)
     }
+
+    setConnector(
+      selectors.connectorsA[0],
+      hoveredPart.anim.sprite,
+      -16,
+      0,
+      !!!hoveredPart.data.noLeft
+    )
+    setConnector(
+      selectors.connectorsA[1],
+      hoveredPart.anim.sprite,
+      16,
+      0,
+      !!!hoveredPart.data.noRight
+    )
+    setConnector(
+      selectors.connectorsA[2],
+      hoveredPart.anim.sprite,
+      0,
+      -16,
+      !!!hoveredPart.data.noTop
+    )
+    setConnector(
+      selectors.connectorsA[3],
+      hoveredPart.anim.sprite,
+      0,
+      16,
+      !!!hoveredPart.data.noBottom
+    )
   } else {
     selectors.animHovered.sprite.visible = false
+    _.forEach(selectors.connectorsA, (c) => {
+      c.visible = false
+    })
+  }
+
+  if (tractoredPart && tractoredPart.isFree && !tractoredPart.isDead) {
+    setConnector(
+      selectors.connectorsB[0],
+      tractoredPart.anim.sprite,
+      -16,
+      0,
+      !!!tractoredPart.data.noLeft
+    )
+    setConnector(
+      selectors.connectorsB[1],
+      tractoredPart.anim.sprite,
+      16,
+      0,
+      !!!tractoredPart.data.noRight
+    )
+    setConnector(
+      selectors.connectorsB[2],
+      tractoredPart.anim.sprite,
+      0,
+      -16,
+      !!!tractoredPart.data.noTop
+    )
+    setConnector(
+      selectors.connectorsB[3],
+      tractoredPart.anim.sprite,
+      0,
+      16,
+      !!!tractoredPart.data.noBottom
+    )
+  } else {
+    _.forEach(selectors.connectorsB, (c) => {
+      c.visible = false
+    })
+  }
+}
+
+function setConnector(c: PIXI.Sprite, t: PIXI.Sprite, ox, oy, isOn) {
+  c.visible = !!isOn
+  if (isOn) {
+    c.x = t.x + ox
+    c.y = t.y + oy
   }
 }
 
