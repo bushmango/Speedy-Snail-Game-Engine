@@ -295,7 +295,7 @@ export function create(data: IShipPartData = core) {
   let onDown = () => {
     let goat = goats.getItem()
 
-    if (item.isFree && !goat.isFree && !item.isJettisoned) {
+    if ((item.isFree || item.isJettisoned) && !goat.isFree) {
       sprite.tint = chroma(item.tint)
         .darken()
         .num()
@@ -371,13 +371,17 @@ export function updateAll(elapsedTimeSec) {
         jettisonPiece(hoveredPart)
       }
     }
+    if (tractoredPart && !tractoredPart.isDead) {
+      jettisonPiece(tractoredPart)
+    }
   }
 
-  if (mouse.isRightDown) {
+  if (mouse.isRightJustDown) {
     if (hoveredPart && !hoveredPart.isDead) {
-      // destroyFixedPiece(hoveredPart)
-      // hoveredPart = null
       jettisonPiece(hoveredPart)
+    }
+    if (tractoredPart && !tractoredPart.isDead) {
+      jettisonPiece(tractoredPart)
     }
   }
 
@@ -394,6 +398,12 @@ export function updateAll(elapsedTimeSec) {
   _.forEach(items, (c) => {
     anim.update(c.anim, c.isAttached ? elapsedTimeSec : 0)
 
+    if (c.isJettisoned) {
+      if (utils.isOffScreen(cv, c.anim.sprite)) {
+        c.isDead = true
+      }
+    }
+
     if (c.isFree) {
       if (tractoredPart === c && !goat.isFree) {
         let { cx, cy } = cameras.xyToCamera(ctx.camera, mouse)
@@ -403,7 +413,7 @@ export function updateAll(elapsedTimeSec) {
         c.anim.sprite.x -= elapsedTimeSec * (50 + c.vx)
         c.anim.sprite.y -= elapsedTimeSec * c.vy
 
-        if (c.anim.sprite.x < 0) {
+        if (utils.isOffScreen(cv, c.anim.sprite)) {
           c.isDead = true
         }
       }
@@ -678,21 +688,32 @@ export function updateAll(elapsedTimeSec) {
 }
 
 export function jettisonPiece(c: IShipPart) {
-  if (!c.isDead && c.isAttached && !c.isCore) {
-    getContext().sfx.playPartDestroyed()
-
-    c.isJettisoned = true
-    c.isAttached = false
-    c.isFree = false
-
-    c.vx = _.random(100, 200)
+  if (!c.isDead && !c.isCore) {
     // c.vy = _.random(-5, 5)
 
-    if (hoveredPart === c) {
-      hoveredPart = null
+    if (c.isJettisoned) {
+      // un-jettison
+      c.isJettisoned = false
+      c.isFree = true
+      c.vx = 0
+      c.vy = 0
+    } else {
+      if (hoveredPart === c) {
+        hoveredPart = null
+      }
+      if (tractoredPart === c) {
+        tractoredPart = null
+      }
+      if (c.isAttached) {
+        getContext().sfx.playPartDestroyed()
+        safeSetShipGrid(c.bx, c.by, null)
+        updateWhatsAttached()
+      }
+      c.vx = _.random(100, 200)
+      c.isJettisoned = true
+      c.isAttached = false
+      c.isFree = false
     }
-    safeSetShipGrid(c.bx, c.by, null)
-    updateWhatsAttached()
   }
 }
 

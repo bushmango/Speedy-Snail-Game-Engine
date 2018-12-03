@@ -97,7 +97,7 @@ export function updateAll(elapsedTimeSec) {
       let dx = c.anim.sprite.x - cx
       let dy = -(c.anim.sprite.y - cy)
 
-      if (c.elapsedSec > 0.5) {
+      if (c.elapsedSec > 0.35) {
         if (Math.abs(dx) + Math.abs(dy) > 10) {
           //let angle = Math.atan2(cy, cx)
           let angle = -Math.atan2(dy, dx) + Math.PI
