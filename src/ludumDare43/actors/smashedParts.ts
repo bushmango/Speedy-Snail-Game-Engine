@@ -51,6 +51,7 @@ export function create(sourceSprite: PIXI.Sprite) {
         }
         item.sprite = ctx.createSprite('ship-001', newFrame, 0.5, 0.5, 1)
       }
+      item.sprite.tint = sourceSprite.tint || 0xffffff
       item.sprite.visible = true
       item.vx = _.random(-50, 2)
       item.vy = _.random(-50, 50)

@@ -12,8 +12,10 @@ import * as utils from './utils'
 import * as rockets from './rockets'
 
 import { IShipPartData, datas, spawnableDatas, core } from './shipPartsData'
-import { glCore } from 'pixi.js'
+
 export { datas, spawnableDatas }
+
+import * as chroma from 'chroma-js'
 
 export interface IShipPart {
   anim: anim.IAnim
@@ -28,6 +30,7 @@ export interface IShipPart {
   by: number
   vx: number
   vy: number
+  tint: number
 }
 let items: IShipPart[] = []
 export function getAll() {
@@ -95,10 +98,26 @@ export function create(data: IShipPartData = core) {
     isConnectedToCore: false,
     vx: 0,
     vy: 0,
+    tint: 0xffffff,
   }
 
   let sprite = ctx.createSprite('ship-001', data.frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
+
+  if (!data.noColorSwap) {
+    let b = 1
+    if (data.extraBright) {
+      b = 2
+    }
+
+    item.tint = chroma
+      .random()
+      .brighten(b)
+      .num()
+  } else {
+    item.tint = 0xffffff
+  }
+  sprite.tint = item.tint
 
   sprite.interactive = true
   sprite.buttonMode = true
@@ -106,10 +125,14 @@ export function create(data: IShipPartData = core) {
     let goat = goats.getItem()
 
     if (item.isFree && !goat.isFree && !item.isJettisoned) {
-      sprite.tint = 0xcccccc
+      sprite.tint = chroma(item.tint)
+        .darken()
+        .num()
       tractoredPart = item
     } else if (item.isAttached && !item.isCore) {
-      sprite.tint = 0x84d67a
+      sprite.tint = chroma(item.tint)
+        .darken()
+        .num()
       hoveredPart = item
     }
   })
@@ -130,10 +153,14 @@ export function create(data: IShipPartData = core) {
     let goat = goats.getItem()
 
     if (item.isFree && !goat.isFree && !item.isJettisoned) {
-      sprite.tint = 0xcccccc
+      sprite.tint = chroma(item.tint)
+        .darken()
+        .num()
       tractoredPart = item
     } else if (item.isAttached && !item.isCore) {
-      sprite.tint = 0x84d67a
+      sprite.tint = chroma(item.tint)
+        .darken()
+        .num()
       hoveredPart = item
     }
   })
@@ -142,24 +169,14 @@ export function create(data: IShipPartData = core) {
     if (hoveredPart === item) {
       hoveredPart = null
     }
-
-    if (item.isFree) {
-      sprite.tint = 0xffffffff
-    } else {
-      sprite.tint = 0xffffffff
-    }
+    sprite.tint = item.tint
   })
 
   sprite.on('pointerupoutside', () => {
     if (hoveredPart === item) {
       hoveredPart = null
     }
-
-    if (item.isFree) {
-      sprite.tint = 0xffffffff
-    } else {
-      sprite.tint = 0xffffffff
-    }
+    sprite.tint = item.tint
   })
 
   ctx.layerPlayer.addChild(sprite)
@@ -345,11 +362,10 @@ export function updateAll(elapsedTimeSec) {
               r
             )
           ) {
-            ctx.sfx.playGoatRescued()
-            goat.isFree = false
-            goat.tx = c.anim.sprite.x
-            goat.ty = c.anim.sprite.y
-            goat.isPickedUp = false
+            goat.tx = c.anim.sprite.x - 4
+            goat.ty = c.anim.sprite.y + 4
+
+            goats.catchGoat()
           }
         }
 
@@ -424,18 +440,20 @@ export function updateAll(elapsedTimeSec) {
           let dy = tractoredPart.anim.sprite.y - c.anim.sprite.y
           let ady = Math.abs(dy)
 
+          let size = 32 - 4
+
           if (adx > ady) {
             if (dx > 0) {
               if (tractoredPart.data.noLeft || c.data.noRight) {
                 isAllowed = false
               }
-              ox = 32 - 2
+              ox = size
               obx = 1
             } else {
               if (tractoredPart.data.noRight || c.data.noLeft) {
                 isAllowed = false
               }
-              ox = -32 + 2
+              ox = -size
               obx = -1
             }
           } else {
@@ -443,13 +461,13 @@ export function updateAll(elapsedTimeSec) {
               if (tractoredPart.data.noTop || c.data.noBottom) {
                 isAllowed = false
               }
-              oy = 32 - 2
+              oy = size
               oby = 1
             } else {
               if (tractoredPart.data.noBottom || c.data.noTop) {
                 isAllowed = false
               }
-              oy = -32 + 2
+              oy = -size
               oby = -1
             }
           }
@@ -474,7 +492,7 @@ export function updateAll(elapsedTimeSec) {
               // connect it!
               tractoredPart.isFree = false
               tractoredPart.isAttached = true
-              tractoredPart.anim.sprite.tint = 0xff999999
+              tractoredPart.anim.sprite.tint = tractoredPart.tint
               tractoredPart.anim.sprite.x = c.anim.sprite.x + ox
               tractoredPart.anim.sprite.y = c.anim.sprite.y + oy
               safeSetShipGrid(c.bx + obx, c.by + oby, tractoredPart)

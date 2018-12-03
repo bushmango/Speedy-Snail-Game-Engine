@@ -23,9 +23,13 @@ export function getItem() {
 }
 
 var animDefault: anim.IAnimData = {
+  frames: [spriteUtil.frame32(12, 2)],
+  frameTime: 10 / 60,
+}
+
+var animEjected: anim.IAnimData = {
   frames: [spriteUtil.frame32(12, 1)],
   frameTime: 10 / 60,
-  loop: true,
 }
 
 export function create() {
@@ -99,10 +103,20 @@ export function eject() {
     item.ty += 32 + _.random(32, band)
   }
 
+  anim.playAnim(item.anim, animEjected)
+
   floating()
 
   // item.anim.sprite.x = _.random(100, 200)
   // item.anim.sprite.y = _.random(100, 200)
+}
+
+export function catchGoat() {
+  let ctx = getContext()
+  anim.playAnim(item.anim, animDefault)
+  item.isFree = false
+  item.isPickedUp = false
+  ctx.sfx.playGoatRescued()
 }
 
 function floating() {

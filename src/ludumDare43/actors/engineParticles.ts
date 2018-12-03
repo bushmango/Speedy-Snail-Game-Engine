@@ -54,8 +54,9 @@ export function updateAll(elapsedTimeSec) {
       }
       if ((c.isAttached || c.isJettisoned) && c.data.enginePower > 0) {
         if (c.data.enginePower > 1) {
-          emit(c.anim.sprite.x - 10, c.anim.sprite.y - 8)
-          emit(c.anim.sprite.x - 10, c.anim.sprite.y + 8)
+          emit(c.anim.sprite.x - 5, c.anim.sprite.y - 8)
+          emit(c.anim.sprite.x - 10, c.anim.sprite.y + 0)
+          emit(c.anim.sprite.x - 5, c.anim.sprite.y + 8)
         } else {
           emit(c.anim.sprite.x - 10, c.anim.sprite.y)
         }

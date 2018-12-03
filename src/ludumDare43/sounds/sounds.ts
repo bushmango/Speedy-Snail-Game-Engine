@@ -83,11 +83,12 @@ export function playLoaded() {
 // }
 
 let engineId,
-    engineState = false
+  engineState = false
 
 function initEngine() {
   engineId = soundsGeneric.play('engine001')
-  soundsGeneric.getSoundSprite()
+  soundsGeneric
+    .getSoundSprite()
     .loop(true, engineId)
     .once(
       'stop',
@@ -111,7 +112,7 @@ function updateEngineRate() {
 }
 function updateEngineState() {
   const oldState = engineState,
-        velocity = _getVelocity()
+    velocity = _getVelocity()
 
   if (velocity > 0) {
     engineState = true
@@ -126,7 +127,7 @@ function updateEngineState() {
   const sprite = soundsGeneric.getSoundSprite()
 
   const from = engineState ? 0 : 0.5,
-        to = engineState ? sprite.volume(engineId) : 0
+    to = engineState ? sprite.volume(engineId) : 0
 
   sprite.fade(from, to, 0.25, engineId)
 }

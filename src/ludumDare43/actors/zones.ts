@@ -30,11 +30,11 @@ let zoneInfo = {
 let allParts = _.map(shipPartsData.spawnableDatas, (c) => c.name)
 let connectors = ['cross', 'h', 'v', 'tl', 'tr', 'bl', 'br']
 let decor = ['wing-1', 'wing-2', 'cockpit-1']
-let mids = ['body']
+// let mids = ['body']
 let armor = ['armor-1', 'wing-armor-1', 'wing-armor-2']
 let engines = ['engine-1', 'engine-2']
-let weapons = ['laser-1', 'rocket-1']
-let basic = _.concat(connectors, decor, mids, 'engine-1')
+let weapons = ['laser-1', 'rocket-1', 'rocket-2', 'rocket-3']
+let basic = _.concat(connectors, decor, 'engine-1', 'rocket-1')
 
 function calculateZones() {
   zoneInfo.maxDistance = 0

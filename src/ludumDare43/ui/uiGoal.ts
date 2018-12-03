@@ -221,15 +221,15 @@ function updateGoalPosition(elapsedTimeSec) {
   let speed = (engines * 5) / (mass || 1)
 
   if (speed === 0) {
-    speed = -2.5 // Penalty
+    speed = -5 // Penalty
   }
   if (!hasCore) {
-    speed = -5 // Big penalty
+    speed = -10 // Big penalty
     // Try to launch new core
     coreSpawner.launch()
   }
   if (goats.getItem().isFree) {
-    speed = -5 // Big penalty
+    speed = -10 // Big penalty
   }
 
   let cur = ctx.stats.getCurrentStats()
