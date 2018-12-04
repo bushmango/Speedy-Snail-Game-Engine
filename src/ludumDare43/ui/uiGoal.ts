@@ -408,6 +408,12 @@ function updateGoalPosition(elapsedTimeSec) {
     ui.textTime.text = `${numeral(curStats.totalTime).format(
       '0.0'
     )} seconds flown`
+
+    let score =
+      (numCats + numSnails + numBabies + numChickens) * 500 +
+      curStats.blocksDestroyed
+
+    ui.textScore.text = `Score: ${score}`
   }
 
   ctx.stats.updateStats({
