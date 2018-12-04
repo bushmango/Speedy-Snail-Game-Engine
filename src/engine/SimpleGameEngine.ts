@@ -11,6 +11,8 @@ import * as mouse from 'engine/input/mouse'
 //   }
 // }
 
+import isElectron from 'is-electron'
+
 import * as log from './log'
 
 export class SimpleGameEngine {
@@ -148,6 +150,11 @@ export class SimpleGameEngine {
       fontSize: 64,
       fill: 'white',
     }))
+
+    console.log('electron?', isElectron())
+    if (isElectron) {
+      rootDirectory = '.' + rootDirectory
+    }
 
     let loader = (this.loader = new PIXI.loaders.Loader())
     loader.on('progress', (loader, resource) => {

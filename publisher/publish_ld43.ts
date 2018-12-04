@@ -66,10 +66,9 @@ export async function deploy_assets() {
 }
 
 let rootDir = 'C:\\dev\\Speedy-Snail-Game-Engine'
-let electronDir = `${rootDir}\\electron\\electron-quick-start`
+let gameDir = 'ludumDare43'
+let electronDir = `${rootDir}\\electron\\electron-${gameDir}`
 export async function deploy_to_electron() {
-  let gameDir = 'ludumDare43'
-
   let src = `${rootDir}\\src-deploy\\public\\${gameDir}\\`
   let dest = path.join(electronDir, `web\\public\\${gameDir}\\`)
   //let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`

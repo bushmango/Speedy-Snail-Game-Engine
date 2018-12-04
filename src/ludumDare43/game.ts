@@ -39,7 +39,7 @@ export function run() {
     sge.onUpdateCallback = onUpdate
 
     // Now load sounds & music
-    sounds.load(sge)
+    sounds.load(sge, gamePreload.musicPath)
     ctx.onLoaded(sge)
     sge.startGameLoop()
   }

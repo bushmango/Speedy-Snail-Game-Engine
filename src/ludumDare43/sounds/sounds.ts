@@ -7,11 +7,18 @@ import * as pubSub from 'engine/common/pubSub'
 
 let doPlayLoaded = false
 let soundTest = false
-const musicDir = '/public/ludumDare43/music/'
 
 import * as log from 'engine/log'
+import isElectron from 'is-electron'
 
-export function load(sge: SimpleGameEngine) {
+let _musicPath = ''
+
+export function load(sge: SimpleGameEngine, musicPath) {
+  _musicPath = musicPath
+  if (isElectron()) {
+    _musicPath = '.' + _musicPath
+  }
+
   soundsGeneric.load(sge.getJson('audioSprite'), () => {
     if (doPlayLoaded) {
       playLoaded()
@@ -30,11 +37,11 @@ export function load(sge: SimpleGameEngine) {
 
 export function playMusic1() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'loop')
+  soundsGeneric.playMusic(_musicPath + 'loop')
 }
 export function playMusicMenu() {
   // need new!
-  soundsGeneric.playMusic(musicDir + 'loop')
+  soundsGeneric.playMusic(_musicPath + 'loop')
 }
 export function playMusicDie() {
   // need new!

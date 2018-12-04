@@ -1,6 +1,8 @@
 const settingsPath = 'ld43-v001'
 const preloadPath = '/public/ludumDare43'
-export { settingsPath, preloadPath }
+const musicPath = preloadPath + '/music/'
+
+export { settingsPath, preloadPath, musicPath }
 export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
   sge.preloadBitmapFonts([
