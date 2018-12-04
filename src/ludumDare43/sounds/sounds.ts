@@ -260,7 +260,7 @@ function playWithRate(name, rate: number = 1) {
 function playWithRandomRate(name, rate?: number, variance?: number) {
   const id = soundsGeneric.play(name)
   applyRandomRate(id, rate, variance)
-  return playWithRate(name, rate)
+  return id
 }
 
 // export function playSmash() {
