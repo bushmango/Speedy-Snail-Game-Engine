@@ -36,7 +36,7 @@ import * as rockets from './actors/rockets'
 import * as enemyShips from './actors/enemyShips'
 import * as enemyShipsSpawns from './actors/enemyShipsSpawns'
 
-let final = false
+let final = true
 
 export function getIsFinal() {
   return final

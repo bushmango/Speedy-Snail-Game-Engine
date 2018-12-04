@@ -257,7 +257,7 @@ z.supplySpawnRate = 2
 
 let zone2h = (z = createZone(zs, 'Build Zone'))
 //z.debrisPartsList = connectors
-z.distance = 20
+z.distance = 12
 z.topSupply = false
 z.bottomSupply = true
 z.debrisPartsList = basic
@@ -268,13 +268,13 @@ z.tip = 'Keep dragging parts onto your ship'
 
 let zone3h = (z = createZone(zs, 'Small Asteroid Zone'))
 //z.debrisPartsList = connectors
-z.distance = 20
+z.distance = 24
 z.topSupply = true
 z.debrisPartsList = connectors
 z.supplyPartsList = basic
-z.smallAsteroidRate = 2
+z.smallAsteroidRate = 2.5
 z.tip = 'Click on your ship to jettison parts!'
-z.debrisSpawnRate = 3
+z.debrisSpawnRate = 2
 
 z.enemySpawn = enemyShipSpawns.spawn2
 
@@ -282,7 +282,7 @@ z.enemySpawn = enemyShipSpawns.spawn2
 
 let zone3bh = (z = createZone(zs, 'Rebuild Zone'))
 //z.debrisPartsList = connectors
-z.distance = 30
+z.distance = 15
 z.topSupply = true
 z.bottomSupply = true
 z.debrisPartsList = basic
@@ -305,7 +305,7 @@ z.enemySpawn = enemyShipSpawns.spawn2
 
 let zone4bh = (z = createZone(zs, 'Rebuild Zone 2'))
 //z.debrisPartsList = connectors
-z.distance = 30
+z.distance = 15
 z.topSupply = true
 z.bottomSupply = true
 z.debrisPartsList = basic
@@ -316,7 +316,7 @@ z.tip = 'Phew!'
 
 let zone5h = (z = createZone(zs, 'Hard Asteroid Zone'))
 //z.debrisPartsList = connectors
-z.distance = 20
+z.distance = 25
 z.debrisPartsList = basic
 z.supplyPartsList = allParts
 z.largeAsteroidRate = 3
@@ -327,7 +327,7 @@ z.tip = 'In space, goat sacrifices you!'
 
 let zone6h = (z = createZone(zs, 'Scrapyard Zone'))
 //z.debrisPartsList = connectors
-z.distance = 30
+z.distance = 20
 z.topSupply = true
 z.bottomSupply = true
 z.debrisPartsList = allParts
@@ -343,8 +343,8 @@ z.topSupply = true
 
 z.supplyPartsList = connectors
 z.debrisSpawnRate = 2
-z.largeAsteroidRate = 4
-z.smallAsteroidRate = 0.75
+z.largeAsteroidRate = 4.25
+z.smallAsteroidRate = 1
 z.tip = 'The final sacrifice'
 
 z = createZone(zs, 'Boss')
@@ -354,7 +354,7 @@ z.distance = 10
 z.topSupply = true
 
 z.supplyPartsList = allParts
-z.debrisSpawnRate = 2
+z.debrisSpawnRate = 1
 z.bossSpawn = enemyShipSpawns.spawn4
 z.tip = 'Sacrifice that ship!'
 

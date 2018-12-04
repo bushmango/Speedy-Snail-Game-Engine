@@ -67,6 +67,9 @@ var animHovered_fire: anim.IAnimData = {
   frameTime: 10 / 60,
   loop: true,
 }
+var animHovered_loadin: anim.IAnimData = {
+  frames: [spriteUtil.frame32(13, 9)],
+}
 var animHovered_jettison: anim.IAnimData = {
   frames: [spriteUtil.frame32(14, 6), spriteUtil.frame32(14, 7)],
   frameTime: 20 / 60,
@@ -127,6 +130,9 @@ export function updateSelectors(elapsedTimeSec) {
       hoveredPart.data.special === 'laser'
     ) {
       anim.playAnim(selectors.animHovered, animHovered_fire)
+      if (hoveredPart.data.special === 'laser' && !hoveredPart.isReadyToFire) {
+        anim.playAnim(selectors.animHovered, animHovered_loadin)
+      }
     } else {
       if (hoveredPart.data.isFragile) {
         anim.playAnim(selectors.animHovered, animHovered_open)
