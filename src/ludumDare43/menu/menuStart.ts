@@ -9,6 +9,15 @@ import * as buttonsGeneric from 'engine/menus2/buttonsGeneric'
 
 import * as pubSub from 'engine/common/pubSub'
 
+import * as settingsGeneric from 'engine/misc/settingsGeneric'
+
+import * as sounds from './../sounds/sounds'
+
+import * as shipParts from './../actors/shipParts'
+import * as goats from './../actors/goats'
+import * as asteroids from './../actors/asteroids'
+import * as zones from './../actors/zones'
+
 export interface IMenuStart {
   logoSwitch: placeSwitcher.IPlaceSwitcher
   logoSprite: PIXI.Sprite
@@ -16,8 +25,9 @@ export interface IMenuStart {
   creditsSwitch: placeSwitcher.IPlaceSwitcher
   creditsSprite: PIXI.Sprite
 
-  instructionsSwitch: placeSwitcher.IPlaceSwitcher
-  instructionsSprite: PIXI.Sprite
+  buttonDifficulty: buttonsGeneric.IMenuButton
+  // instructionsSwitch: placeSwitcher.IPlaceSwitcher
+  // instructionsSprite: PIXI.Sprite
 
   buttons: buttonsGeneric.IMenuButton[]
 }
@@ -49,15 +59,15 @@ export function create() {
   log.x('create menu start')
 
   item = {
-    logoSwitch: placeSwitcher.create(230, 50, 100, -300),
+    logoSwitch: placeSwitcher.create(230, 50, 100, -800),
     logoSprite: null,
 
     creditsSwitch: placeSwitcher.create(250, 200, 2000, -100),
     creditsSprite: null,
 
-    instructionsSwitch: placeSwitcher.create(250, 200, 2000, -100),
-    instructionsSprite: null,
-
+    // instructionsSwitch: placeSwitcher.create(250, 200, 2000, -100),
+    // instructionsSprite: null,
+    buttonDifficulty: null,
     buttons: [],
   }
 
@@ -84,34 +94,68 @@ export function create() {
   placeSwitcher.startOut(item.creditsSwitch, item.creditsSprite)
   // placeSwitcher.moveIn(item.creditsSwitch)
 
-  item.instructionsSprite = ctx.createSprite('instructions', null, 0, 0, 2)
-  item.instructionsSprite.interactive = true
-  item.instructionsSprite.buttonMode = true
-  item.instructionsSprite.on('pointerup', () => {
-    placeSwitcher.moveOut(item.instructionsSwitch)
-    pubSub.emit('gui:click-button')
-  })
-  ctx.layerUi.addChild(item.instructionsSprite)
-  placeSwitcher.startOut(item.instructionsSwitch, item.instructionsSprite)
+  // item.instructionsSprite = ctx.createSprite('instructions', null, 0, 0, 2)
+  // item.instructionsSprite.interactive = true
+  // item.instructionsSprite.buttonMode = true
+  // item.instructionsSprite.on('pointerup', () => {
+  //   placeSwitcher.moveOut(item.instructionsSwitch)
+  //   pubSub.emit('gui:click-button')
+  // })
+  // ctx.layerUi.addChild(item.instructionsSprite)
+  // placeSwitcher.startOut(item.instructionsSwitch, item.instructionsSprite)
   // placeSwitcher.moveIn(item.instructionsSwitch)
 
   let button = buttons.createWithSprite(10, 1, 3) //buttons.create('Play!')
   button.onClick = () => {
     slideOut()
-    placeSwitcher.moveOut(item.instructionsSwitch)
+    //placeSwitcher.moveOut(item.instructionsSwitch)
     placeSwitcher.moveOut(item.creditsSwitch)
   }
   item.buttons.push(button)
-  button = buttons.createWithSprite(10, 6, 5) // buttons.create('Instructions')
-  button.onClick = () => {
-    placeSwitcher.moveIn(item.instructionsSwitch)
-    placeSwitcher.moveOut(item.creditsSwitch)
+  // button = buttons.createWithSprite(10, 6, 5) // buttons.create('Instructions')
+  // button.onClick = () => {
+  //   placeSwitcher.moveIn(item.instructionsSwitch)
+  //   placeSwitcher.moveOut(item.creditsSwitch)
+  // }
+  // item.buttons.push(button)
+  item.buttonDifficulty = buttons.create(
+    'Difficulty',
+    0x009933,
+    '20px tahoma20'
+  )
+  item.buttonDifficulty.onClick = () => {
+    ctx.stats.nextDifficulty()
+    zones.setCurrentZoneSet(ctx.stats.getCurrentStats().difficulty)
+    onReset()
   }
-  item.buttons.push(button)
+
+  item.buttons.push(item.buttonDifficulty)
+
+  let onReset = () => {
+    let ctx = getContext()
+    ctx.stats.updateStats({ isResetting: true })
+    ctx.stats.reset()
+
+    goats.eject()
+    // TODO: destroy all asteroids
+    // reset distance and score
+    // destroy all ship parts
+    _.forEach(asteroids.getAll(), (c) => {
+      asteroids.smash(c)
+    })
+    _.forEach(shipParts.getAll(), (c) => {
+      if (c.isAttached) {
+        shipParts.destroyFixedPiece(c)
+      } else {
+        shipParts.smash(c)
+      }
+    })
+  }
+
   button = buttons.createWithSprite(11, 6, 3) //buttons.create('Credits')
   button.onClick = () => {
     placeSwitcher.moveIn(item.creditsSwitch)
-    placeSwitcher.moveOut(item.instructionsSwitch)
+    //placeSwitcher.moveOut(item.instructionsSwitch)
   }
   item.buttons.push(button)
 
@@ -136,9 +180,13 @@ export function update(elapsedTimeSec) {
 
   placeSwitcher.update(item.logoSwitch, item.logoSprite, elapsedTimeSec)
   placeSwitcher.update(item.creditsSwitch, item.creditsSprite, elapsedTimeSec)
-  placeSwitcher.update(
-    item.instructionsSwitch,
-    item.instructionsSprite,
-    elapsedTimeSec
-  )
+
+  item.buttonDifficulty.text.text =
+    'Mode: ' + ctx.stats.getCurrentStats().difficultyLabel
+
+  // placeSwitcher.update(
+  //   item.instructionsSwitch,
+  //   item.instructionsSprite,
+  //   elapsedTimeSec
+  // )
 }

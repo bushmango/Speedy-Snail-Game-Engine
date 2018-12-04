@@ -11,7 +11,7 @@ import * as debris from './debris'
 import * as utils from './utils'
 import * as rockets from './rockets'
 import * as enemyShips from './enemyShips'
-
+import * as stats from './../misc/stats'
 import * as spriteUtil from 'engine/anim/spriteUtil'
 
 import { IShipPartData, datas, spawnableDatas, core } from './shipPartsData'
@@ -1007,6 +1007,8 @@ export function smash(c: IShipPart) {
         d.anim.sprite.y = c.anim.sprite.y
       }
     }
+
+    stats.addSmashedBlock()
 
     tryEject(c)
 

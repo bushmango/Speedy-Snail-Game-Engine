@@ -18,14 +18,14 @@ var animDown: anim.IAnimData = {
   frames: [spriteUtil.frame32(8, 1, 5, 1)],
 }
 
-export function create(text: string = '') {
+export function create(text: string = '', tint = null, font = '24px tahoma24') {
   let ctx = getContext()
 
   log.x('create button')
 
   let item = buttonsGeneric.create(
     text,
-    '24px tahoma24',
+    font,
     '512-32-gui',
     null,
     animDefault,
@@ -35,7 +35,7 @@ export function create(text: string = '') {
     ctx.layerUi
   )
 
-  item.anim.sprite.tint = chroma('#0F6BA8').num()
+  item.anim.sprite.tint = tint || chroma('#0F6BA8').num()
 
   return item
 }

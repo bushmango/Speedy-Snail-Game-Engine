@@ -112,7 +112,7 @@ export function viewToCameraView(c: ICamera, w, h) {
 export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
   _.forEach(items, (c) => {
     if (c.shakeSec > 0) {
-      c.shakeSec -= elapsedTimeSec
+      c.shakeSec -= elapsedTimeSecRaw
       c.shakeX = _.random(-1, 1, true) * c.shakeFactor
       c.shakeY = _.random(-1, 1, true) * c.shakeFactor
     } else {

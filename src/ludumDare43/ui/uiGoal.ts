@@ -9,7 +9,7 @@ import * as goalPieces from './../actors/goalPieces'
 import * as shipParts from './../actors/shipParts'
 import * as coreSpawner from './../actors/coreSpawner'
 import * as goats from './../actors/goats'
-
+import * as debris from './../actors/debris'
 import * as enemyShips from './../actors/enemyShips'
 
 import * as chroma from 'chroma-js'
@@ -38,6 +38,16 @@ let ui = {
   statMass: null as IStatUI,
   textGameName: null as PIXI.extras.BitmapText,
   textTip: null as PIXI.extras.BitmapText,
+
+  containerVictory: new PIXI.Container(),
+  spriteVictory: null as PIXI.Sprite,
+  textRescuedCats: null as PIXI.extras.BitmapText,
+  textRescuedSnails: null as PIXI.extras.BitmapText,
+  textRescuedChickens: null as PIXI.extras.BitmapText,
+  textRescuedBabies: null as PIXI.extras.BitmapText,
+  textScore: null as PIXI.extras.BitmapText,
+  textBlocksDestroyed: null as PIXI.extras.BitmapText,
+  textTime: null as PIXI.extras.BitmapText,
 }
 
 interface IStatUI {
@@ -133,6 +143,73 @@ export function create() {
   ctx.layerUi.addChild(ui.textTip)
   ui.textTip.x = 50
   ui.textTip.y = 500
+
+  ui.spriteVictory = ctx.createSprite(
+    'victory',
+    null, //spriteUtil.frame32(8, 6, 8),
+    0,
+    0,
+    1
+  )
+
+  let y = 400
+  let size = 24
+  ui.textRescuedCats = new PIXI.extras.BitmapText(`Cats`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textRescuedCats.y = y
+  y += size
+  ui.textRescuedSnails = new PIXI.extras.BitmapText(`Snails`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textRescuedSnails.y = y
+  y += size
+  ui.textRescuedChickens = new PIXI.extras.BitmapText(`Chickens`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textRescuedChickens.y = y
+  y += size
+  ui.textRescuedBabies = new PIXI.extras.BitmapText(`Babies`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textRescuedBabies.y = y
+
+  y += size
+  ui.textBlocksDestroyed = new PIXI.extras.BitmapText(`Blocks Destroyed`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textBlocksDestroyed.y = y
+  y += size
+  ui.textTime = new PIXI.extras.BitmapText(`Time`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textTime.y = y
+  y += size
+  ui.textScore = new PIXI.extras.BitmapText(`Score`, {
+    font: '20px tahoma20',
+    align: 'left',
+  })
+  ui.textScore.y = y
+  y += size
+
+  ui.containerVictory.addChild(ui.spriteVictory)
+
+  ui.containerVictory.addChild(ui.textRescuedCats)
+  ui.containerVictory.addChild(ui.textRescuedSnails)
+  ui.containerVictory.addChild(ui.textRescuedChickens)
+  ui.containerVictory.addChild(ui.textRescuedBabies)
+  ui.containerVictory.addChild(ui.textBlocksDestroyed)
+  ui.containerVictory.addChild(ui.textScore)
+  ui.containerVictory.addChild(ui.textTime)
+
+  ctx.layerUi.addChild(ui.containerVictory)
+  //em.spriteBackground.tint = chroma('#8CE381').num()
 
   // ui.textMass = new PIXI.extras.BitmapText(`Mass: xyz`, {
   //   font: '20px defaultfont',
@@ -291,6 +368,47 @@ function updateGoalPosition(elapsedTimeSec) {
   let curZone = zones.getCurrentZone()
   ui.textGameName.text =
     curZone.name + ' - ' + numeral(d).format('0.00') + ' lightyears'
+
+  ui.containerVictory.x =
+    view.width -
+    ui.spriteVictory.texture.width +
+    (zi.currentZoneSet.maxDistance - d) * 500
+  ui.containerVictory.y = 75
+
+  log.x('left: ', zi.currentZoneSet.maxDistance - d)
+
+  ui.containerVictory.visible = ui.containerVictory.x < view.width
+
+  if (ui.containerVictory.visible) {
+    let curStats = ctx.stats.getCurrentStats()
+
+    let numChickens = 0
+    let numSnails = 0
+    let numBabies = 0
+    let numCats = 0
+    _.forEach(debris.getAll(), (c) => {
+      if (c.type === 'cat') {
+        numCats++
+      }
+      if (c.type === 'snail') {
+        numSnails++
+      }
+      if (c.type === 'baby') {
+        numBabies++
+      }
+      if (c.type === 'chicken') {
+        numChickens++
+      }
+    })
+    ui.textRescuedCats.text = `${numCats} cats rescued`
+    ui.textRescuedChickens.text = `${numChickens} chickens rescued`
+    ui.textRescuedSnails.text = `${numSnails} snails rescued`
+    ui.textRescuedBabies.text = `${numBabies} babies rescued`
+    ui.textBlocksDestroyed.text = `${curStats.blocksDestroyed} blocks destroyed`
+    ui.textTime.text = `${numeral(curStats.totalTime).format(
+      '0.0'
+    )} seconds flown`
+  }
 
   ctx.stats.updateStats({
     speed: speed,

@@ -184,7 +184,9 @@ export function playGoatRescued() {
 }
 
 export function playGoatPickedUp() {
-  playWithRandomRate('goat')
+  soundsGeneric.play('goat')
+
+  //playWithRandomRate('goat')
 }
 
 export function playCatRescued() {

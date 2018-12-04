@@ -1,6 +1,8 @@
 // stats?
 import { _ } from 'engine/importsEngine'
 
+import { getIsFinal } from './../GameContext'
+
 type TDiff = 'easy' | 'hard' | 'test' | 'free-build' | 'endless'
 
 interface IStats {
@@ -13,6 +15,8 @@ interface IStats {
   difficultyLabel: string
   isResetting: boolean
   victory: boolean
+  totalTime: number
+  blocksDestroyed: number
 }
 
 let stats: IStats = {
@@ -24,7 +28,23 @@ let stats: IStats = {
   difficultyLabel: 'Easy',
   isResetting: false,
   victory: false,
+  totalTime: 0,
+  blocksDestroyed: 0,
   // distanceMax: 100,
+}
+
+export function reset() {
+  updateStats({
+    totalTime: 0,
+    blocksDestroyed: 0,
+  })
+}
+
+export function addSmashedBlock() {
+  stats.blocksDestroyed++
+}
+export function addTime(time) {
+  stats.totalTime += time
 }
 
 interface IDiff {
@@ -48,11 +68,14 @@ let difficulties: IDiff[] = [
     val: 'free-build',
     label: 'Free Build',
   },
-  {
+]
+
+if (!getIsFinal()) {
+  difficulties.push({
     val: 'test',
     label: 'Test',
-  },
-]
+  })
+}
 
 export function setEasyDifficulty() {
   updateStats({

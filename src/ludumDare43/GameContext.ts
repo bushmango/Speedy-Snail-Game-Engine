@@ -36,12 +36,18 @@ import * as rockets from './actors/rockets'
 import * as enemyShips from './actors/enemyShips'
 import * as enemyShipsSpawns from './actors/enemyShipsSpawns'
 
+let final = false
+
+export function getIsFinal() {
+  return final
+}
+
 let debugCollision = false
-let skipSplashScreen = true
-let skipMainMenu = true
+let skipSplashScreen = true && !final
+let skipMainMenu = true && !final
 let currentContext: GameContext = null
 
-let doTestDifficulty = true
+let doTestDifficulty = true && !final
 let testDifficulty = 'test'
 
 export function getContext() {
@@ -155,6 +161,8 @@ export class GameContext {
     //this.rootContainer.addChild(this.modeBar.container)
 
     ctx.splash = new SplashScreen()
+
+    uiMode.setMode('splash')
     ctx.splash.init(this.sge, 'prariesnailgames', () => {
       if (skipMainMenu) {
         menuStart.slideOut()
@@ -208,6 +216,12 @@ export class GameContext {
     let elapsedTimeSecRaw = ctx.sge.elapsedTimeSec
     let elapsedTimeSec = cameras.applySlowdown(ctx.camera, elapsedTimeSecRaw)
 
+    if (uiMode.getMode() !== 'game') {
+      elapsedTimeSec = 0
+    }
+
+    ctx.stats.addTime(elapsedTimeSec)
+
     // log.x('update', elapsedTime)
     // log.x('update')
 
@@ -252,9 +266,9 @@ export class GameContext {
 
     // parallaxLayers.updateLayers(ctx);
     cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
-    menuStart.update(elapsedTimeSec)
-    menuQuickSettings.update(elapsedTimeSec)
-    buttons.updateAll(elapsedTimeSec)
+    menuStart.update(elapsedTimeSecRaw)
+    menuQuickSettings.update(elapsedTimeSecRaw)
+    buttons.updateAll(elapsedTimeSecRaw)
     sounds.updateAll()
 
     asteroids.updateAll(elapsedTimeSec)
@@ -271,9 +285,9 @@ export class GameContext {
     shipPartSpawners.updateAll(elapsedTimeSec)
     smashedParts.updateAll(elapsedTimeSec)
 
-    uiGoal.updateAll(elapsedTimeSec)
+    uiGoal.updateAll(elapsedTimeSecRaw)
     goalPieces.updateAll(elapsedTimeSec)
-    helpArrows.updateAll(elapsedTimeSec)
+    helpArrows.updateAll(elapsedTimeSecRaw)
 
     engineParticles.updateAll(elapsedTimeSec)
 

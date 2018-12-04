@@ -55,7 +55,19 @@ export function create() {
     buttons: [],
   }
 
-  item.buttonMusic = buttons.createWithSprite(12, 1)
+  item.buttonDifficulty = buttons.create(
+    'Difficulty',
+    0x009933,
+    '20px tahoma20'
+  )
+  item.buttonDifficulty.onClick = () => {
+    ctx.stats.nextDifficulty()
+    zones.setCurrentZoneSet(ctx.stats.getCurrentStats().difficulty)
+    onReset()
+  }
+  item.buttons.push(item.buttonDifficulty)
+
+  item.buttonMusic = buttons.create('Music!!') // buttons.createWithSprite(12, 1)
   item.buttonMusic.onClick = () => {
     //slideOut()
     settingsGeneric.updateSettings({
@@ -63,7 +75,7 @@ export function create() {
     })
   }
   item.buttons.push(item.buttonMusic)
-  item.buttonSound = buttons.createWithSprite(12, 1) // buttons.create('Sound!!')
+  item.buttonSound = buttons.create('Sound!!') // buttons.createWithSprite(12, 1) // buttons.create('Sound!!')
   item.buttonSound.onClick = () => {
     //slideOut()
 
@@ -75,7 +87,7 @@ export function create() {
   }
   item.buttons.push(item.buttonSound)
 
-  item.buttonMainMenu = buttons.createWithSprite(9, 1) //buttons.create('Main menu')
+  item.buttonMainMenu = buttons.create('Main menu') //  buttons.createWithSprite(9, 1)
   item.buttonMainMenu.onClick = () => {
     let ctx = getContext()
     ctx.menuStart.slideIn()
@@ -85,6 +97,7 @@ export function create() {
   let onReset = () => {
     let ctx = getContext()
     ctx.stats.updateStats({ isResetting: true })
+    ctx.stats.reset()
 
     goats.eject()
     // TODO: destroy all asteroids
@@ -101,14 +114,6 @@ export function create() {
       }
     })
   }
-
-  item.buttonDifficulty = buttons.create('Difficulty')
-  item.buttonDifficulty.onClick = () => {
-    ctx.stats.nextDifficulty()
-    zones.setCurrentZoneSet(ctx.stats.getCurrentStats().difficulty)
-    onReset()
-  }
-  item.buttons.push(item.buttonDifficulty)
 
   item.buttonReset = buttons.create('Reset')
   item.buttonReset.onClick = () => {
@@ -189,17 +194,18 @@ export function update(elapsedTimeSec) {
   })
 
   let settings = settingsGeneric.getSettings()
-  //item.buttonSound.text.text = settings.muteSound ? 'Sound off' : 'Sound on'
-  item.buttonSound.textSprite.texture.frame = settings.muteSound
-    ? spriteUtil.frame32(9, 6, 4)
-    : spriteUtil.frame32(14, 1, 4)
-  item.buttonMusic.textSprite.texture.frame = settings.muteMusic
-    ? spriteUtil.frame32(13, 1, 4)
-    : spriteUtil.frame32(12, 1, 4)
+  item.buttonSound.text.text = settings.muteSound ? 'Sound off' : 'Sound on'
+  // item.buttonSound.textSprite.texture.frame = settings.muteSound
+  //   ? spriteUtil.frame32(9, 6, 4)
+  //   : spriteUtil.frame32(14, 1, 4)
+  // item.buttonMusic.textSprite.texture.frame = settings.muteMusic
+  //   ? spriteUtil.frame32(13, 1, 4)
+  //   : spriteUtil.frame32(12, 1, 4)
 
-  item.buttonDifficulty.text.text = ctx.stats.getCurrentStats().difficultyLabel
+  item.buttonDifficulty.text.text =
+    'Mode: ' + ctx.stats.getCurrentStats().difficultyLabel
 
-  // item.buttonMusic.text.text = settings.muteMusic ? 'Music off' : 'Music on'
+  item.buttonMusic.text.text = settings.muteMusic ? 'Music off' : 'Music on'
 
   // placeSwitcher.update(item.bu, item.logoSprite, elapsedTimeSec)
 }
