@@ -1,0 +1,26 @@
+12/4/2018 for LD 43
+
+Team asset contributors! (Abigal, Brenden, Casey, Nic)
+
+I'd like to put our game on itch.io and possibly eventually Steam and maybe tablet devices (iOS and Android).
+
+For that to happen I'd need for you to agree that I (Stevie Bushman) and Praire Snail Games can use your copyrighted contributions during Ludum Dare 43 royalty free for any use.
+
+Anyone who contributed sound effects, music, and graphics assets keeps their original copyright to these items for their own use but grants me (Stevie Bushman) and Prarie Snail games unlimited royalty free use of them.
+
+All code copyright will be assigned to me, which is also available under Creative Commons license here:
+
+License: CC BY-NC 3.0 US https://creativecommons.org/licenses/by-nc/3.0/us/
+https://github.com/bushmango/Speedy-Snail-Game-Engine
+
+Also, commercial use of the Speedy-Snail-Game-Engine is available with attribution to all contributors with no royalties. 
+Just contact me and we will work out the finer details!
+
+(The main goal of the CC license above is to stop someone else from using our assets in a commercial game of their own)
+
+Let me know if you agree to this and if you have any questions, concerns, changes, etc.
+
+Thanks for helping making this game a reality from nothing in 72 hours!
+
+Best,
+Stevie Bushman
