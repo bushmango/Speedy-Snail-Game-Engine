@@ -26,3 +26,5 @@ src-website/jams/ludum-dare-43\.html
 src-deploy/public/ludumDare43/sounds/audioSprite\.json
 
 src-deploy/public/ludumDare43/sounds/audioSprite\.ac3
+
+electron/electron-quick-start
