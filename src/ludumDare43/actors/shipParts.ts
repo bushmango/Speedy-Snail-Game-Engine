@@ -1001,8 +1001,10 @@ export function smash(c: IShipPart) {
     smashedParts.create(c.anim.sprite)
 
     if (c.data.special === 'snails') {
+      let options = ['cat', 'snail', 'chicken']
+
       for (let i = 0; i < 1; i++) {
-        let d = debris.create(_.random() < 0.5 ? 'snail' : 'cat')
+        let d = debris.create(_.sample(options))
         d.anim.sprite.x = c.anim.sprite.x
         d.anim.sprite.y = c.anim.sprite.y
       }

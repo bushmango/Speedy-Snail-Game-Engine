@@ -47,6 +47,11 @@ var animBaby: anim.IAnimData = {
   frameTime: 15 / 60,
   loop: true,
 }
+var animChicken: anim.IAnimData = {
+  frames: spriteUtil.frame32runH(12, 10, 3),
+  frameTime: 10 / 60,
+  loop: true,
+}
 var animDefault = animSnail
 
 export { animSnail }
@@ -105,6 +110,8 @@ export function create(type: string) {
     anim.playAnim(item.anim, animCat)
   } else if (type === 'baby') {
     anim.playAnim(item.anim, animBaby)
+  } else if (type === 'chicken') {
+    anim.playAnim(item.anim, animChicken)
   }
 
   items.push(item)
@@ -167,6 +174,12 @@ export function updateAll(elapsedTimeSec) {
       baseSize = 0.5
     }
     if (c.type === 'baby') {
+      baseSize = 0.5
+    }
+    if (c.type === 'chicken') {
+      baseSize = 0.5
+    }
+    if (c.type === 'snail') {
       baseSize = 0.5
     }
     if (c.isSafe) {
