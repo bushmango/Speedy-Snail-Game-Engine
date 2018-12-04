@@ -28,3 +28,7 @@ src-deploy/public/ludumDare43/sounds/audioSprite\.json
 src-deploy/public/ludumDare43/sounds/audioSprite\.ac3
 
 electron/electron-quick-start
+
+electron/electron-ludumDare43/archive/
+
+electron/electron-ludumDare43/web/public/js/ludumDare43/
