@@ -55,6 +55,14 @@ async function run() {
         },
 
         {
+          label: 'deploy + run ld43 electron',
+          action: async () => {
+            await publish_ld43.deploy_to_electron()
+            await publish_ld43.run_electron()
+          },
+        },
+
+        {
           label: 'publish ld43!!',
           action: async () => {
             await publish_ld43.build_client()

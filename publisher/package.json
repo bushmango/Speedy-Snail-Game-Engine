@@ -4,15 +4,19 @@
   "description": "simple pixi game engine",
   "main": "index.js",
   "scripts": {
-    "publish": "ts-node publish.ts"
+    "publish": "ts-node publish.ts",
+    "start": "ts-node publish.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/fs-extra": "^5.0.4",
     "@types/lodash": "^4.14.118",
     "@types/node": "^10.12.11",
     "bluebird": "^3.5.3",
     "child-process-promise": "^2.2.1",
+    "copy-dir": "^0.4.0",
+    "fs-extra": "^7.0.1",
     "moment": "^2.22.2",
     "node-ssh": "^5.1.2",
     "terminal-kit": "^1.26.5",

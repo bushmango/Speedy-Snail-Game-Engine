@@ -11,6 +11,7 @@ import * as PromiseBluebird from 'bluebird'
 
 import * as publishLib from './publish_lib'
 import * as fs from 'fs'
+import * as fse from 'fs-extra'
 
 export async function build_client() {
   log('build_client')
@@ -62,4 +63,46 @@ export async function deploy_assets() {
   //let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`
   //let wwwDir = `/var/www/jams/public/shelter/`
   await publishLib.putDirectory(src, wwwDir)
+}
+
+let rootDir = 'C:\\dev\\Speedy-Snail-Game-Engine'
+let electronDir = `${rootDir}\\electron\\electron-quick-start`
+export async function deploy_to_electron() {
+  let gameDir = 'ludumDare43'
+
+  let src = `${rootDir}\\src-deploy\\public\\${gameDir}\\`
+  let dest = path.join(electronDir, `web\\public\\${gameDir}\\`)
+  //let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`
+  //let wwwDir = `/var/www/jams/public/shelter/`
+  // await publishLib.putDirectory(src, dest)
+  await localCopyDir(src, dest)
+
+  let src2 = `${rootDir}\\dist\\src-deploy\\public\\js\\${gameDir}\\`
+  let dest2 = path.join(electronDir, `web\\public\\js\\${gameDir}\\`)
+
+  await localCopyDir(src2, dest2)
+}
+
+import * as copydir from 'copy-dir'
+import * as util from 'util'
+const copydirPromise = util.promisify(copydir)
+
+async function localCopyDir(src, dest) {
+  try {
+    await copydirPromise(src, dest, (stat, filepath, filename) => {
+      console.log('->', filename, filepath, stat)
+      return true
+    })
+    console.error('sucess')
+  } catch (err) {
+    console.error('couldnt copy directory')
+  }
+}
+
+export async function run_electron() {
+  await publishLib.npmRun(
+    //'build-prod-shelter',
+    'start',
+    electronDir
+  )
 }
