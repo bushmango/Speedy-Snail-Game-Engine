@@ -60,9 +60,11 @@ export function create() {
   sprite.buttonMode = true
 
   let onOver = () => {
-    sprite.tint = 0xcccccc
-    item.isPickedUp = true
-    ctx.sfx.playGoatPickedUp()
+    if (ctx.uiMode.getMode() === 'game') {
+      sprite.tint = 0xcccccc
+      item.isPickedUp = true
+      ctx.sfx.playGoatPickedUp()
+    }
   }
   let onOut = () => {
     sprite.tint = 0xffffffff
