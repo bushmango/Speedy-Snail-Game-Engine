@@ -165,7 +165,8 @@ export class SimpleGameEngine {
       loader.add(c, rootDirectory + '/sounds/' + c + '.json')
     })
     _.forEach(this._preloadBitmapFonts, (c) => {
-      loader.add(c, rootDirectory + '/fonts/' + c + '.fnt.xml')
+      loader.add(c + '-font', rootDirectory + '/fonts/' + c + '.txt')
+      loader.add(c, rootDirectory + '/fonts/' + c + '.png')
     })
     _.forEach(this._preloadSprites, (c) => {
       loader.add(c, rootDirectory + '/images/' + c + '.png')
@@ -197,6 +198,12 @@ export class SimpleGameEngine {
             PIXI.SCALE_MODES.NEAREST
         })
 
+        _.forEach(this._preloadBitmapFonts, (c) => {
+          let xml = this.getXml(c + '-font')
+          let tex = this.getTexture(c)
+          PIXI.extras.BitmapText.registerFont(xml, tex)
+        })
+
         this.loadingMessage.visible = false
         let frameRateText = (this.frameRateText = new PIXI.extras.BitmapText(
           '',
@@ -222,6 +229,21 @@ export class SimpleGameEngine {
     assert.exists(res.data, `is not json ${key}`)
     return res.data
   }
+
+  getXml(key: string) {
+    // console.log('get json', key)
+    let res = this.loader.resources[key]
+    console.log(key, res)
+    console.log(key, res.data)
+    assert.exists(res, `xml not loaded ${key}`)
+    assert.exists(res.data, `is not xml ${key}`)
+
+    let parser = new DOMParser()
+    let xmlDoc = parser.parseFromString(res.data, 'text/xml')
+
+    return xmlDoc
+  }
+
   getTexture(key: string) {
     let res = this.loader.resources[key]
     assert.exists(res, `tex not loaded ${key}`)
