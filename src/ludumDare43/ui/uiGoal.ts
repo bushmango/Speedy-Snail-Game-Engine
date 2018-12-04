@@ -36,6 +36,8 @@ let ui = {
   //textMass: null as PIXI.extras.BitmapText,
   statSpeed: null as IStatUI,
   statMass: null as IStatUI,
+  statDist: null as IStatUI,
+
   textGameName: null as PIXI.extras.BitmapText,
   textTip: null as PIXI.extras.BitmapText,
 
@@ -125,6 +127,8 @@ export function create() {
 
   ui.statSpeed = createStatUi(150, 6, 6, 3, 7, 9, 2)
   ui.statMass = createStatUi(530 - 150, 7, 6, 3, 6, 9, 2)
+
+  ui.statDist = createStatUi(850, 13, 6, 4, 13, 10, 1)
 
   ui.textGameName = new PIXI.extras.BitmapText(`Space Goat - Coast to Coast`, {
     font: '24px tahoma24',
@@ -281,6 +285,8 @@ export function updateAll(elapsedTimeSec) {
   //ui.textSpeed.text = 'Speed: ' + numeral(stats.speed).format('0.00') + ' ly/s'
   ui.statMass.text.text = numeral(stats.mass).format('0.00')
   ui.statSpeed.text.text = numeral(stats.speed).format('0.00')
+
+  ui.statDist.text.text = numeral(stats.distance).format('0.00')
 }
 
 function updateGoalPosition(elapsedTimeSec) {
@@ -366,8 +372,7 @@ function updateGoalPosition(elapsedTimeSec) {
   zones.updateCurrentZone(d, speed)
 
   let curZone = zones.getCurrentZone()
-  ui.textGameName.text =
-    curZone.name + ' - ' + numeral(d).format('0.00') + ' lightyears'
+  ui.textGameName.text = curZone.name // + ' - ' + numeral(d).format('0.00') + ' lightyears'
 
   ui.containerVictory.x =
     view.width -

@@ -62,7 +62,7 @@ export function create() {
     logoSwitch: placeSwitcher.create(230, 50, 100, -800),
     logoSprite: null,
 
-    creditsSwitch: placeSwitcher.create(250, 200, 2000, -100),
+    creditsSwitch: placeSwitcher.create(230, 25, 2000, -100),
     creditsSprite: null,
 
     // instructionsSwitch: placeSwitcher.create(250, 200, 2000, -100),
