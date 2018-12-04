@@ -150,7 +150,7 @@ export function setCurrentZoneSet(diff) {
 function createZone(zoneSet: IZoneSet, name: string) {
   let zone: IZone = {
     name,
-    debrisPartsList: ['engine-1'],
+    debrisPartsList: allParts,
     distance: 100,
     startDistance: 0,
     debrisPartsListCalc: [],
@@ -234,18 +234,26 @@ for (let i = 0; i < 100; i++) {
   z.debrisSpawnRate = 2
   z.supplySpawnRate = 2
   // Todo slowly increase
-  z.smallAsteroidRate = 0.5 + 0.5 * i
-  z.largeAsteroidRate = 0 + 0.2 * i
+  z.smallAsteroidRate = 3 - 0.05 * i
+  z.largeAsteroidRate = 10 - 0.02 * i
+  if (z.smallAsteroidRate < 0.05) {
+    z.smallAsteroidRate = 0.05
+  }
+  if (z.largeAsteroidRate < 0.05) {
+    z.largeAsteroidRate = 0.05
+  }
 
   if (i % 5 === 3 && i > 1) {
-    z.bossSpawn = enemyShipSpawns.spawn2
+    z.enemySpawn = enemyShipSpawns.spawn2
   }
   if (i % 5 === 0 && i > 1) {
     z.bossSpawn = enemyShipSpawns.spawn4
+    z.largeAsteroidRate = 0
+    z.smallAsteroidRate = 0
   }
 }
 
-// -- EASY --
+// -- HARD --
 zs = createZoneSet('hard')
 let zone1h = (z = createZone(zs, 'Tutorial Zone'))
 z.topSupply = true
@@ -293,7 +301,7 @@ z.tip = 'Never stop building!'
 
 let zone4h = (z = createZone(zs, 'Large Asteroid Zone'))
 //z.debrisPartsList = connectors
-z.distance = 25
+z.distance = 35
 z.topSupply = true
 z.debrisPartsList = basic
 z.supplyPartsList = allParts
@@ -316,7 +324,7 @@ z.tip = 'Phew!'
 
 let zone5h = (z = createZone(zs, 'Hard Asteroid Zone'))
 //z.debrisPartsList = connectors
-z.distance = 25
+z.distance = 35
 z.debrisPartsList = basic
 z.supplyPartsList = allParts
 z.largeAsteroidRate = 3
@@ -337,7 +345,7 @@ z.supplySpawnRate = 2
 
 z = createZone(zs, 'Asteroid Mega Zone')
 //z.debrisPartsList = connectors
-z.distance = 20
+z.distance = 30
 z.debrisPartsList = connectors
 z.topSupply = true
 
@@ -354,8 +362,10 @@ z.distance = 10
 z.topSupply = true
 
 z.supplyPartsList = allParts
+z.supplySpawnRate = 5
 z.debrisSpawnRate = 1
-z.bossSpawn = enemyShipSpawns.spawn4
+z.debrisPartsList = allParts
+z.bossSpawn = enemyShipSpawns.spawn5
 z.tip = 'Sacrifice that ship!'
 
 z = createZone(zs, 'Victory Zone')
@@ -476,9 +486,10 @@ let zoneB2 = (z = createZone(zs, 'Boss'))
 z.distance = 10
 //z.debrisPartsList = connectors
 z.topSupply = true
-
+z.debrisPartsList = allParts
 z.supplyPartsList = allParts
 z.debrisSpawnRate = 2
+z.supplySpawnRate = 3
 z.bossSpawn = enemyShipSpawns.spawn4
 z.tip = 'Sacrifice that ship!'
 
