@@ -1,0 +1,7 @@
+json files changed to txt files CANCEL THIS
+fnt files changed to txt files
+
+need to re-run graphics and sound tools on each project
+need to rename font files to the new file names
+
+this is to get electron and electron forge support in

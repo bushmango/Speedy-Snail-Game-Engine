@@ -68,18 +68,23 @@ export async function deploy_assets() {
 let rootDir = 'C:\\dev\\Speedy-Snail-Game-Engine'
 let gameDir = 'ludumDare43'
 let electronDir = `${rootDir}\\electron\\electron-${gameDir}`
+//let electronDirB = `${rootDir}\\electron\\forge-test\\src`
 export async function deploy_to_electron() {
   let src = `${rootDir}\\src-deploy\\public\\${gameDir}\\`
   let dest = path.join(electronDir, `web\\public\\${gameDir}\\`)
+  //let destB = path.join(electronDirB, `web\\public\\${gameDir}\\`)
   //let src = `C:\\dev\\Speedy-Snail-Game-Engine\\src-deploy\\public\\shelter\\`
   //let wwwDir = `/var/www/jams/public/shelter/`
   // await publishLib.putDirectory(src, dest)
   await localCopyDir(src, dest)
+  //await localCopyDir(src, destB)
 
   let src2 = `${rootDir}\\dist\\src-deploy\\public\\js\\${gameDir}\\`
   let dest2 = path.join(electronDir, `web\\public\\js\\${gameDir}\\`)
+  //let dest2B = path.join(electronDirB, `web\\public\\js\\${gameDir}\\`)
 
   await localCopyDir(src2, dest2)
+  //await localCopyDir(src2, dest2B)
 }
 
 import * as copydir from 'copy-dir'

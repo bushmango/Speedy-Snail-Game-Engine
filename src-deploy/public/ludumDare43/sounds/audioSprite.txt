@@ -1,0 +1,58 @@
+{
+  "urls": [
+    "./public/ludumDare43/sounds/audioSprite.ogg",
+    "./public/ludumDare43/sounds/audioSprite.m4a",
+    "./public/ludumDare43/sounds/audioSprite.mp3",
+    "./public/ludumDare43/sounds/audioSprite.ac3"
+  ],
+  "sprite": {
+    "button": [
+      0,
+      140.34013605442178
+    ],
+    "engine001": [
+      2000,
+      1000
+    ],
+    "goat": [
+      4000,
+      709.5011337868477
+    ],
+    "goat001": [
+      6000,
+      1764.7165532879817
+    ],
+    "hurt001": [
+      9000,
+      167.0068027210885
+    ],
+    "lazer": [
+      11000,
+      153.67346938775484
+    ],
+    "phew": [
+      13000,
+      1029.0476190476188
+    ],
+    "pickup001": [
+      16000,
+      382.1541950113385
+    ],
+    "pickup002": [
+      18000,
+      444.46712018140744
+    ],
+    "pickup003": [
+      20000,
+      594.8979591836725
+    ],
+    "slowdown001": [
+      22000,
+      5294.126984126983
+    ],
+    "smash001": [
+      29000,
+      258.68480725623755
+    ]
+  }
+}

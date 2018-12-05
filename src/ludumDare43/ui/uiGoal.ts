@@ -380,7 +380,7 @@ function updateGoalPosition(elapsedTimeSec) {
     (zi.currentZoneSet.maxDistance - d) * 500
   ui.containerVictory.y = 75
 
-  log.x('left: ', zi.currentZoneSet.maxDistance - d)
+  // log.x('left: ', zi.currentZoneSet.maxDistance - d)
 
   ui.containerVictory.visible = ui.containerVictory.x < view.width
 

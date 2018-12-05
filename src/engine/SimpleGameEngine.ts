@@ -162,7 +162,7 @@ export class SimpleGameEngine {
     })
 
     _.forEach(this._preloadAudioSprites, (c) => {
-      loader.add(c, rootDirectory + '/sounds/' + c + '.json')
+      loader.add(c, rootDirectory + '/sounds/' + c + '.json') //'.txt')
     })
     _.forEach(this._preloadBitmapFonts, (c) => {
       loader.add(c + '-font', rootDirectory + '/fonts/' + c + '.txt')
@@ -227,14 +227,18 @@ export class SimpleGameEngine {
     let res = this.loader.resources[key]
     assert.exists(res, `json not loaded ${key}`)
     assert.exists(res.data, `is not json ${key}`)
+
+    //let json = JSON.parse(res.data)
+    // TODO: cache?
+
     return res.data
   }
 
   getXml(key: string) {
     // console.log('get json', key)
     let res = this.loader.resources[key]
-    console.log(key, res)
-    console.log(key, res.data)
+    // console.log(key, res)
+    // console.log(key, res.data)
     assert.exists(res, `xml not loaded ${key}`)
     assert.exists(res.data, `is not xml ${key}`)
 

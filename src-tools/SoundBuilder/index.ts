@@ -204,12 +204,12 @@ function createSprite() {
         `public/${folder}/sounds/audioSprite.ac3`,
       ]
       if (verbose) {
-        console.log(JSON.stringify(obj, null, 2))
+        //console.log(JSON.stringify(obj, null, 2))
       }
 
       let jsonfile = require('jsonfile')
 
-      let file = outPath + 'audioSprite.json'
+      let file = outPath + 'audioSprite.json' // 'audioSprite.txt' 
       console.log('write', file)
       jsonfile.writeFileSync(file, obj, { spaces: 2 })
     })

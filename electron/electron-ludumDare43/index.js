@@ -3,10 +3,10 @@
 // Modules to control application life and create native browser window
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  // eslint-disable-line global-require
-  app.quit()
-}
+// if (require('electron-squirrel-startup')) {
+//   // eslint-disable-line global-require
+//   app.quit()
+// }
 
 const { app, BrowserWindow } = require('electron')
 const electron = require('electron')
@@ -18,6 +18,8 @@ const process = require('process')
 let mainWindow
 
 var isWin = process.platform === 'win32'
+
+var isDev = false
 
 // see: https://github.com/hokein/electron-sample-apps/blob/b721a920e641f6937c8d8277660a15d00c42509f/webgl/main.js#L8
 // see: http://www.html5gamedevs.com/topic/33785-should-pixijs-webgl-work-in-electron/
@@ -81,7 +83,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({ width: 1400, height: 900 })
 
   if (isWin) {
-    //mainWindow.setMenu(null)
+    if (!isDev) {
+      mainWindow.setMenu(null)
+    }
   }
 
   // and load the index.html of the app.
@@ -90,7 +94,9 @@ function createWindow() {
   mainWindow.loadFile('web/ludum-dare-43.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

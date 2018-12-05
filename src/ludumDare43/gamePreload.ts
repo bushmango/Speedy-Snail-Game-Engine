@@ -37,6 +37,6 @@ export function preload(sge) {
     //'ase-512-16',
     //'ase-512-8',
   ])
-  sge.preloadTiledMaps(['tiled-tiles', 'map-pac-001'])
-  sge.preloadPackedSprites([])
+  // sge.preloadTiledMaps(['tiled-tiles', 'map-pac-001'])
+  // sge.preloadPackedSprites([])
 }
