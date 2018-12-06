@@ -1,28 +1,20 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "index.js",
+  "name": "space-goat-coast-to-coast",
+  "version": "1.0.1",
+  "description": "Space Goat: Coast to Coast",
+  "main": "./app/index.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Stevie Bushman",
   "devDependencies": {
     "electron": "^3.0.7",
     "electron-builder": "^20.38.2",
-    "electron-builder-squirrel-windows": "^20.38.2"
+    "electron-builder-squirrel-windows": "^20.38.2",
+    "itchy-electron": "^0.2.1"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
@@ -37,43 +29,24 @@
         {
           "target": "nsis",
           "arch": [
-            "x64",
             "ia32"
-          ]
-        },
-        {
-          "target": "nsis-web",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "msi",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "squirrel",
-          "arch": [
-            "x64"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "x64",
             "ia32"
           ]
-        }
+        },
+        {
+          "target": "7z",
+          "arch": [
+            "ia32"
+          ]
+        } 
+             
       ]
     }
+   
   }
 }

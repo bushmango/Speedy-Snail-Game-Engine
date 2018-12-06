@@ -1,0 +1,8 @@
+{
+  "productName": "space-goat-coast-to-coast",
+  "appVersion": "1.0.2",
+  "itchTargets": {
+    "beta": "stevie-bushman/space-goat-coast-to-coast-beta",
+    "release": "stevie-bushman/space-goat-coast-to-coast"
+  }
+}

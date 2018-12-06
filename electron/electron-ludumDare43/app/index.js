@@ -1,5 +1,4 @@
 // Based on electron-quick-start
-
 // Modules to control application life and create native browser window
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -28,49 +27,6 @@ var isDev = false
 // But, this will make electron/chromium less stable.
 app.commandLine.appendSwitch('--ignore-gpu-blacklist')
 
-function intercept() {
-  electron.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
-    let url = ''
-    try {
-      //console.log('intercept', PROTOCOL)
-
-      // // Strip protocol
-      //console.log('url', request.url)
-      url = request.url.substr(PROTOCOL.length + 1)
-      url = url.replace('C:/', '')
-      //console.log('1', url)
-
-      // Build complete path for node require function
-      url = path.join(__dirname, WEB_FOLDER, url)
-
-      //console.log('2', url)
-
-      // Replace backslashes by forward slashes (windows)
-      if (isWin) {
-        url = url.replace(/\\/g, '/')
-      }
-      //console.log('3', url)
-      url = path.normalize(url)
-
-      //console.log('4', url)
-
-      // Remove cachebuster, etc.
-      if (url.indexOf('?') !== -1) {
-        url = url.substring(0, url.indexOf('?'))
-      }
-
-      // console.log('5', url)
-
-      console.log('Redirect', request.url, ' -> ', url)
-
-      //console.log(url)
-    } catch (err) {
-      console.error('err', err)
-    }
-    callback({ path: url })
-  })
-}
-
 function createWindow() {
   // See:
   // https://github.com/electron/electron/issues/2242
@@ -91,7 +47,7 @@ function createWindow() {
   // and load the index.html of the app.
   //mainWindow.loadFile('index.html')
   //mainWindow.loadFile('/ludum-dare-43.html')
-  mainWindow.loadFile('web/ludum-dare-43.html')
+  mainWindow.loadFile('app/web/ludum-dare-43.html')
 
   // Open the DevTools.
   if (isDev) {
