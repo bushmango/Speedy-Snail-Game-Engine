@@ -81,7 +81,7 @@ export class GameContext {
   particleEmitter1: ParticleEmitter
 
   createSprite(spriteSheet, frame: PIXI.Rectangle, anchorX, anchorY, scale) {
-    let ctx = this
+    let ctx = getContext()
     let baseTex = ctx.sge.getTexture(spriteSheet)
     let tex = new PIXI.Texture(baseTex.baseTexture, frame)
     let sprite = new PIXI.Sprite(tex)

@@ -3,7 +3,7 @@ const preloadPath = '/public/shelter'
 export { settingsPath, preloadPath }
 export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
-  sge.preloadBitmapFonts(['defaultfont'])
+  sge.preloadBitmapFonts(['tahoma12', 'tahoma16', 'tahoma20', 'tahoma24'])
   sge.preloadSprites([
     // 'test-ship',
     'prariesnailgames',

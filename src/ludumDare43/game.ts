@@ -41,6 +41,7 @@ export function run() {
     // Now load sounds & music
     sounds.load(sge, gamePreload.musicPath)
     ctx.onLoaded(sge)
+
     sge.startGameLoop()
   }
 

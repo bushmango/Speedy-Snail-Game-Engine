@@ -7,11 +7,11 @@ export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
   sge.preloadBitmapFonts([
     //'defaultfont',
-    'tahoma24',
     'tahoma12',
-    'tahoma20',
-    //'tahoma48',
     'tahoma16',
+    'tahoma20',
+    'tahoma24',
+    //'tahoma48',
   ])
   sge.preloadSprites([
     // 'test-ship',
