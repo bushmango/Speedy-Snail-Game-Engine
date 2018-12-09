@@ -38,11 +38,17 @@ import * as uiMode from './ui/uiMode'
 
 import { SplashScreen } from 'engine/misc/SplashScreen'
 
-const skipSplashScreen = true
+let final = false
+
+export function getIsFinal() {
+  return final
+}
 
 let debugCollision = false
-
+let skipSplashScreen = true && !final
+let skipMainMenu = true && !final
 let currentContext: GameContext = null
+
 export function getContext() {
   return currentContext
 }
@@ -75,6 +81,8 @@ export class GameContext {
   uiMode = uiMode
 
   stretchyBoi: stretchyBois.IStretchyBoi
+
+  player1: players.IPlayer
 
   // Particles
   particleEmitter1: ParticleEmitter
@@ -122,23 +130,24 @@ export class GameContext {
     menuQuickSettings.create()
 
     // let player = players.create(ctx.layerPlayer)
-    // player.flightController = flightController.create(ctx)
 
     // uiExpBar.create()
 
-    let map = (this.map = maps.create(ctx.layerMap))
-    let jsonTiles = this.sge.getJson('tiled-tiles')
-    tilesLoader.load(jsonTiles)
-    let jsonMap = this.sge.getJson('map-shelter-001')
-    mapLoader.load(map, jsonTiles, jsonMap)
+    // let map = (this.map = maps.create(ctx.layerMap))
+    // let jsonTiles = this.sge.getJson('tiled-tiles')
+    // tilesLoader.load(jsonTiles)
+    // let jsonMap = this.sge.getJson('map-shelter-001')
+    // mapLoader.load(map, jsonTiles, jsonMap)
+    // ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
 
-    ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
+    // stretchyBois.create()
+    // ctx.stretchyBoi = stretchyBois.create()
+    // ctx.stretchyBoi.anim.sprite.x -= 100
+    // ctx.stretchyBoi.anim.sprite.y -= 50
+    // ctx.stretchyBoi.frame = 30
 
-    stretchyBois.create()
-    ctx.stretchyBoi = stretchyBois.create()
-    ctx.stretchyBoi.anim.sprite.x -= 100
-    ctx.stretchyBoi.anim.sprite.y -= 50
-    ctx.stretchyBoi.frame = 30
+    ctx.player1 = players.create()
+    ctx.player1.flightController = flightController.create(ctx)
 
     // log.x('map loaded', jsonMap)
 
@@ -168,8 +177,15 @@ export class GameContext {
     //this.rootContainer.addChild(this.modeBar.container)
 
     ctx.splash = new SplashScreen()
+
     ctx.splash.init(this.sge, 'prariesnailgames', () => {
-      menuStart.slideIn()
+      if (skipMainMenu) {
+        menuStart.slideOut()
+        uiMode.setMode('game')
+      } else {
+        menuStart.slideIn()
+      }
+
       this.rootContainer.visible = true
       //this.rootContainerUI.visible = true
     })
@@ -203,10 +219,10 @@ export class GameContext {
     ctx.splash.update()
 
     // parallaxLayers.updateLayers(ctx);
-    flightController.updateAll(ctx)
+
     cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
     maps.updateAll(ctx.camera.container)
-    tilePickers.updateAll()
+    // tilePickers.updateAll()
     mouseTrails.updateAll()
 
     stretchyBois.updateAll(elapsedTimeSec)
@@ -217,9 +233,12 @@ export class GameContext {
 
     uiHearts.update(elapsedTimeSec)
 
-    if (_.random(true) < 0.1) {
-      ctx.particleEmitter1.emit(50, 50)
-    }
+    flightController.updateAll(ctx)
+    players.updateAll(elapsedTimeSec)
+
+    // if (_.random(true) < 0.1) {
+    //   ctx.particleEmitter1.emit(50, 50)
+    // }
 
     let kb = ctx.sge.keyboard
 
@@ -239,7 +258,7 @@ export class GameContext {
       } else {
       }
 
-      ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
+      // ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
       if (mouse.isRightDown) {
         cameras.shake(ctx.camera, 0.2, 5)

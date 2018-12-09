@@ -18,7 +18,7 @@ import * as enemies from './enemies'
 
 const isActive = true
 
-interface IPlayer {
+export interface IPlayer {
   anim: anim.IAnim
 
   detectorRight: detectors.IDetector
@@ -37,23 +37,15 @@ interface IPlayer {
 }
 let items: IPlayer[] = []
 
-var framesRun = [spriteUtil.frame16(2, 2, 2, 2), spriteUtil.frame16(2, 4, 2, 2)]
+var framesRun = [spriteUtil.frame16(1, 1)]
 
-var animRun: anim.IAnimData = {
+var animDefault: anim.IAnimData = {
   frames: framesRun,
   frameTime: 10 / 60,
   loop: true,
 }
-var animFall: anim.IAnimData = {
-  frames: [spriteUtil.frame16(2, 6, 2, 2)],
-  frameTime: 10 / 60,
-}
-var animDuck: anim.IAnimData = {
-  frames: [spriteUtil.frame16(2, 8, 2, 2)],
-  frameTime: 10 / 60,
-}
 
-export function create(container: PIXI.Container) {
+export function create() {
   let ctx = getContext()
 
   log.x('create player')
@@ -72,23 +64,19 @@ export function create(container: PIXI.Container) {
     detectorBottom: detectors.create(0, 16),
   }
 
-  let baseTex = ctx.sge.getTexture('player1')
-
-  var texs = _.map(framesRun, (c) => new PIXI.Texture(baseTex.baseTexture, c))
-  var tex0 = texs[0]
-
-  let sprite = new PIXI.Sprite(tex0)
-  sprite.anchor.set(0.5, 0.5)
-  sprite.y = 400
-  sprite.x = 250
-  sprite.scale.set(1)
-  container.addChild(sprite)
+  let sprite = ctx.createSprite('s16-512', animDefault.frames[0], 0.5, 0.5, 2)
+  ctx.layerPlayer.addChild(sprite)
   item.anim.sprite = sprite
+  // item.anim.sprite.x = 150
+  // item.anim.sprite.y = 175
   items.push(item)
 
-  moveToB(item, 14, 18)
+  item.x = 150
+  item.y = 75
 
-  anim.playAnim(item.anim, animRun)
+  // moveToB(item, 14, 18)
+
+  anim.playAnim(item.anim, animDefault)
 
   return item
 }
@@ -111,11 +99,9 @@ import { InputControl } from 'engine/gamepad/InputControl'
 
 //export function update()
 
-export function updateAll() {
+export function updateAll(elapsedTimeSec) {
   let ctx = getContext()
   let kb = ctx.sge.keyboard
-
-  let elapsedTime = 1.0 / 60.0
 
   _.forEach(items, (c) => {
     let fc = c.flightController
@@ -182,7 +168,7 @@ export function updateAll() {
     //c.anim.sprite.x = 32 * 4 * easeBx - c.anim.sprite.width / 2
     //c.anim.sprite.y = 32 * 4 * easeBy - c.anim.sprite.height / 2
 
-    anim.update(c.anim, elapsedTime)
+    anim.update(c.anim, elapsedTimeSec)
 
     detectCollisions_coins(c)
     detectCollisions_enemies(c)

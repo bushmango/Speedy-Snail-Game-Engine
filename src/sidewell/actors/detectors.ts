@@ -57,17 +57,17 @@ export function create(ox, oy) {
 }
 
 export function testAgainstMap(c: IDetector, tx, ty) {
-  let ctx = getContext()
-  let tile = maps.getTileAtWorld(ctx.map, tx + c.ox, ty + c.oy)
-  if (tile) {
-    //    log.x(tile.tileData.t)
-    if (tile.tileData.t === 9) {
-      // Can't move
-      return false
-    } else {
-      return true
-    }
-  }
+  // let ctx = getContext()
+  // let tile = maps.getTileAtWorld(ctx.map, tx + c.ox, ty + c.oy)
+  // if (tile) {
+  //   //    log.x(tile.tileData.t)
+  //   if (tile.tileData.t === 9) {
+  //     // Can't move
+  //     return false
+  //   } else {
+  //     return true
+  //   }
+  // }
   return false
 }
 

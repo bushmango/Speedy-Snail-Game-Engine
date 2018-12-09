@@ -15,6 +15,7 @@ export function preload(sge) {
   sge.preloadSprites([
     // 'test-ship',
     'prariesnailgames',
+    's16-512',
     'parallax-buildings',
     'player1',
     'tiles',

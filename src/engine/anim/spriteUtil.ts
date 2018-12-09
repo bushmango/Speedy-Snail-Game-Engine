@@ -1,4 +1,4 @@
-export function frame16(y, x, w, h) {
+export function frame16(y, x, w = 1, h = 1) {
   return new PIXI.Rectangle(16 * x, 16 * y, 16 * w, 16 * h)
 }
 
