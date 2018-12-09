@@ -127,7 +127,7 @@ export function updateAll(elapsedTimeSec, elapsedTimeSecRaw) {
       c.frameSlowdownSec -= elapsedTimeSecRaw
     }
 
-    c.container.position.set(c.x + c.shakeX, c.y + c.shakeY)
+    c.container.position.set(-c.x + c.shakeX, -c.y + c.shakeY)
     c.container.scale.set(c.scale)
   })
 }

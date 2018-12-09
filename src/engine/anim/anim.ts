@@ -13,6 +13,8 @@ export interface IAnim {
   frameTimeLeft: number
   currentAnimation: IAnimData
   done: boolean
+  isCustomFrame: boolean
+  customFrameTexture: PIXI.Texture
 }
 
 export function create(sprite: PIXI.Sprite = null): IAnim {
@@ -22,6 +24,8 @@ export function create(sprite: PIXI.Sprite = null): IAnim {
     frameTimeLeft: 0,
     currentAnimation: null,
     done: true,
+    isCustomFrame: false,
+    customFrameTexture: null,
   }
 }
 
@@ -37,6 +41,8 @@ export function playAnim(anim: IAnim, animData: IAnimData, force = false) {
     })
   }
 
+  anim.isCustomFrame = false
+
   // Continue playing current animation?
   if (!force && anim.currentAnimation === animData) {
     return
@@ -49,7 +55,27 @@ export function playAnim(anim: IAnim, animData: IAnimData, force = false) {
   anim.done = false
 }
 
+export function setFrame(anim: IAnim, frame: PIXI.Rectangle) {
+  if (!anim.customFrameTexture) {
+    anim.customFrameTexture = new PIXI.Texture(
+      anim.sprite.texture.baseTexture,
+      frame
+    )
+  } else {
+    anim.customFrameTexture.frame = frame
+  }
+  anim.sprite.texture = anim.customFrameTexture
+
+  anim.currentAnimation = null
+  anim.isCustomFrame = true
+  anim.done = true
+}
+
 export function update(anim: IAnim, elapsedTime: number) {
+  if (anim.isCustomFrame) {
+    return // Stuck here :)
+  }
+
   if (anim.currentAnimation) {
     anim.frameTimeLeft -= elapsedTime
     if (anim.frameTimeLeft < 0) {

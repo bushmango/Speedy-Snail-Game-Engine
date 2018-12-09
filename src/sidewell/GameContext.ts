@@ -8,10 +8,16 @@ import { InputControl } from 'engine/gamepad/InputControl'
 
 import { ParticleEmitter } from 'engine/particles/ParticleEmitter'
 
+import * as flightController from './flightController'
 import * as players from './actors/players'
+import * as wallPieces from './actors/wallPieces'
+import * as wallStacks from './actors/wallStacks'
+import * as wallStacksGenerator from './actors/wallStacksGenerator'
+import * as scroller from './actors/scroller'
+
 import * as coins from './actors/coins'
 import * as enemies from './actors/enemies'
-import * as flightController from './flightController'
+
 import * as uiExpBar from './ui/uiExpBar'
 import * as log from '../engine/log'
 import * as maps from './map/maps'
@@ -149,6 +155,8 @@ export class GameContext {
     ctx.player1 = players.create()
     ctx.player1.flightController = flightController.create(ctx)
 
+    wallStacksGenerator.generate()
+
     // log.x('map loaded', jsonMap)
 
     for (let i = 0; i < 5; i++) {
@@ -162,8 +170,8 @@ export class GameContext {
     ctx.addLayer(ctx.particleEmitter1.container)
 
     // camera?
-    ctx.camera.x = 50
-    ctx.camera.y = 50
+    ctx.camera.x = -50
+    ctx.camera.y = -50
     ctx.camera.scale = 2
     // ctx.cameraLayers.position.x = 50
     // ctx.cameraLayers.position.y = 50
@@ -207,6 +215,12 @@ export class GameContext {
     return container
   }
 
+  getCameraView() {
+    let ctx = getContext()
+    let view = ctx.sge.getViewSize()
+    return cameras.viewToCameraView(ctx.camera, view.width, view.height)
+  }
+
   onUpdate() {
     let ctx = this
 
@@ -219,6 +233,8 @@ export class GameContext {
     ctx.splash.update()
 
     // parallaxLayers.updateLayers(ctx);
+
+    scroller.update(elapsedTimeSec)
 
     cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
     maps.updateAll(ctx.camera.container)
@@ -235,6 +251,10 @@ export class GameContext {
 
     flightController.updateAll(ctx)
     players.updateAll(elapsedTimeSec)
+
+    wallStacksGenerator.update(elapsedTimeSec)
+    wallStacks.updateAll(elapsedTimeSec)
+    wallPieces.updateAll(elapsedTimeSec)
 
     // if (_.random(true) < 0.1) {
     //   ctx.particleEmitter1.emit(50, 50)

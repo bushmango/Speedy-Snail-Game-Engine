@@ -8,7 +8,6 @@ interface IIsDead {
   isDead: boolean
 }
 
-// todo genericize
 export function removeDead<T extends IIsDead>(
   items: T[],
   name: string,
