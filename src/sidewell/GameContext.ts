@@ -220,6 +220,10 @@ export class GameContext {
     let view = ctx.sge.getViewSize()
     return cameras.viewToCameraView(ctx.camera, view.width, view.height)
   }
+  getCameraWorldPos() {
+    let ctx = getContext()
+    return cameras.cameraWorldPos(ctx.camera)
+  }
 
   onUpdate() {
     let ctx = this
@@ -272,19 +276,19 @@ export class GameContext {
     if (ctx.uiMode.getMode() === 'game') {
       let mouse = ctx.sge.getMouse()
       // log.json(mouse)
-      if (mouse.isLeftDown) {
-        ctx.particleEmitter1.emit(mouse.x, mouse.y)
-        backgroundColorChanger.setRandom()
-      } else {
-      }
+      // if (mouse.isLeftDown) {
+      //   ctx.particleEmitter1.emit(mouse.x, mouse.y)
+      //   backgroundColorChanger.setRandom()
+      // } else {
+      // }
 
       // ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
 
-      if (mouse.isRightDown) {
-        cameras.shake(ctx.camera, 0.2, 5)
-        backgroundColorChanger.cycleColor(elapsedTimeSec)
-        ctx.sfx.playExplode()
-      }
+      // if (mouse.isRightDown) {
+      //   cameras.shake(ctx.camera, 0.2, 5)
+      //   backgroundColorChanger.cycleColor(elapsedTimeSec)
+      //   ctx.sfx.playExplode()
+      // }
 
       if (mouse.isLeftJustDown) {
         ctx.stats.addLife(1)

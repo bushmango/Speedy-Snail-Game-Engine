@@ -90,20 +90,26 @@ export function addLayer(c: ICamera, container: PIXI.Container = null) {
 }
 
 export function xyToCamera(c: ICamera, obj) {
-  let cx = obj.x / c.container.scale.x - c.container.x / c.container.scale.x
-  let cy = obj.y / c.container.scale.y - c.container.y / c.container.scale.y
+  let cx = obj.x / c.scale - c.container.x / c.scale
+  let cy = obj.y / c.scale - c.container.y / c.scale
   return { cx, cy }
 }
 
 export function cameraToXY(c: ICamera, obj) {
-  let x = obj.x * c.container.scale.x + c.container.x * c.container.scale.x
-  let y = obj.y * c.container.scale.y + c.container.y * c.container.scale.y
+  let x = obj.x * c.scale + c.container.x * c.scale
+  let y = obj.y * c.scale + c.container.y * c.scale
+  return { x, y }
+}
+
+export function cameraWorldPos(c: ICamera) {
+  let x = c.x / c.scale
+  let y = c.y / c.scale
   return { x, y }
 }
 
 export function viewToCameraView(c: ICamera, w, h) {
-  let cameraWidth = w / c.container.scale.x
-  let cameraHeight = h / c.container.scale.y
+  let cameraWidth = w / c.scale
+  let cameraHeight = h / c.scale
   return { cameraWidth, cameraHeight }
 }
 

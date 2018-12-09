@@ -43,6 +43,7 @@ export function update(elapsedTimeSec: number) {
   let ctx = getContext()
   let camera = ctx.camera
   let cv = ctx.getCameraView()
+  let cxy = ctx.getCameraWorldPos()
 
   let csx = camera.x / camera.scale
 
@@ -57,9 +58,9 @@ export function update(elapsedTimeSec: number) {
     //   addAStack(lastStack.bx + 1)
     // }
 
-    let margin = -32
+    let margin = -32 // +32 for testing
 
-    if (csx + cv.cameraWidth - margin > lastStack.bx * 16) {
+    if (cxy.x + cv.cameraWidth - margin > lastStack.bx * 16) {
       // Add a stack
       addAStack(lastStack.bx + 1)
     }

@@ -12,6 +12,7 @@ import * as flightController from '../flightController'
 
 import * as detectors from './detectors'
 import * as maps from './../map/maps'
+import * as players_movement from './players_movement'
 
 import * as coins from './coins'
 import * as enemies from './enemies'
@@ -64,7 +65,7 @@ export function create() {
     detectorBottom: detectors.create(0, 16),
   }
 
-  let sprite = ctx.createSprite('s16-512', animDefault.frames[0], 0.5, 0.5, 2)
+  let sprite = ctx.createSprite('s16-512', animDefault.frames[0], 0.5, 0.5, 1)
   ctx.layerPlayer.addChild(sprite)
   item.anim.sprite = sprite
   // item.anim.sprite.x = 150
@@ -104,69 +105,8 @@ export function updateAll(elapsedTimeSec) {
   let kb = ctx.sge.keyboard
 
   _.forEach(items, (c) => {
-    let fc = c.flightController
-    if (fc) {
-      if (fc.hasMove) {
-        let { ox, oy } = flightController.dirToXY(fc.moveDir)
-      }
-      let r = flightController.dirToR(fc.pointDir)
-      c.anim.sprite.rotation = r
-    }
-
-    // Move in our direction
-    let { ox, oy } = flightController.dirToXY(fc.pointDir)
-
-    let testX = c.x + ox
-    let testY = c.y + oy
-
-    let moveFailed = false
-    if (ox > 0) {
-      // Test right
-      if (!detectors.testAgainstMap(c.detectorRight, testX, testY)) {
-        moveFailed = true
-      }
-    }
-    if (ox < 0) {
-      // Test right
-      if (!detectors.testAgainstMap(c.detectorLeft, testX, testY)) {
-        moveFailed = true
-      }
-    }
-    if (oy < 0) {
-      // Test right
-      if (!detectors.testAgainstMap(c.detectorTop, testX, testY)) {
-        moveFailed = true
-      }
-    }
-    if (oy > 0) {
-      // Test right
-      if (!detectors.testAgainstMap(c.detectorBottom, testX, testY)) {
-        moveFailed = true
-      }
-    }
-
-    //c.x = testX
-    //c.y = testY
-    if (!moveFailed) {
-      c.x = testX
-      c.y = testY
-    }
-    c.anim.sprite.x = c.x
-    c.anim.sprite.y = c.y
-
-    detectors.update(c.detectorRight, c.anim.sprite)
-    detectors.update(c.detectorLeft, c.anim.sprite)
-    detectors.update(c.detectorTop, c.anim.sprite)
-    detectors.update(c.detectorBottom, c.anim.sprite)
-
-    // lerp
-    let t = fc.timeAccum / fc.moveTime
-    let tq = tween.quartInOut(t)
-    let easeBx = tween.lerpBounded(c.bx, c.tbx, tq)
-    let easeBy = tween.lerpBounded(c.by, c.tby, tq)
-
-    //c.anim.sprite.x = 32 * 4 * easeBx - c.anim.sprite.width / 2
-    //c.anim.sprite.y = 32 * 4 * easeBy - c.anim.sprite.height / 2
+    
+    players_movement.players_updateMovement(c, elapsedTimeSec)
 
     anim.update(c.anim, elapsedTimeSec)
 
