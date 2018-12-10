@@ -74,7 +74,7 @@ export function create() {
   // item.anim.sprite.y = 175
   items.push(item)
 
-  item.x = 150
+  item.x = 0
   item.y = 75
 
   // moveToB(item, 14, 18)

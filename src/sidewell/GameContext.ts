@@ -61,8 +61,12 @@ export class GameContext {
   //cameraLayer: PIXI.Container
 
   layerFrameRate: PIXI.Container
-  layerMap: PIXI.Container
+  // layerMap: PIXI.Container
+
+  layerMapBack: PIXI.Container
+  layerMapCollision: PIXI.Container
   layerPlayer: PIXI.Container
+  layerMapFore: PIXI.Container
   layerUi: PIXI.Container
   layerDetectors: PIXI.Container
 
@@ -104,8 +108,10 @@ export class GameContext {
     ctx.rootContainer = new PIXI.Container()
 
     ctx.camera = cameras.create()
-    ctx.layerMap = cameras.addLayer(ctx.camera)
+    ctx.layerMapBack = cameras.addLayer(ctx.camera)
+    ctx.layerMapCollision = cameras.addLayer(ctx.camera)
     ctx.layerPlayer = cameras.addLayer(ctx.camera)
+    ctx.layerMapFore = cameras.addLayer(ctx.camera)
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
     ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
     ctx.addLayer(ctx.camera.container)

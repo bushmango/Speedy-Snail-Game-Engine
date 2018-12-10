@@ -4,11 +4,15 @@ import * as wallPieces from './wallPieces'
 import * as wallStacks from './wallStacks'
 import * as wallPiecesData from './wallPiecesData'
 import * as log from 'engine/log'
+import * as spriteUtil from 'engine/anim/spriteUtil'
 
 import * as sectionLoader from './../map/sectionLoader'
 import * as tilesLoader from './../map/tilesLoader'
 
+import * as anim from 'engine/anim/anim'
+
 let bHeight = 10
+let lastBx = -1
 
 let item = {
   minGap: bHeight - 3,
@@ -68,7 +72,7 @@ export function loadInSection(bx, section) {
   let ctx = getContext()
 
   for (let i = 0; i < 10; i++) {
-    addAStack(i)
+    addAStack()
   }
 
   let mk = _.sample(section.mapKeys)
@@ -77,7 +81,9 @@ export function loadInSection(bx, section) {
   sectionLoader.load(jsonTiles, jsonMap, bx)
 }
 
-export function addAStack(bx) {
+export function addAStack() {
+  lastBx++
+  let bx = lastBx
   let s = wallStacks.create(bx)
 
   for (let j = 0; j < 10; j++) {
@@ -89,52 +95,49 @@ export function addAStack(bx) {
 }
 
 export function setBack(bx, by, t, tx, ty) {
-  let stacks = wallStacks.getAll()
-  let lastStack = stacks[stacks.length - 1]
-  //lastStack.items[0].
-
   let b = getAt(bx, by)
   if (b) {
     let td = wallPiecesData.tileDatas
     let d = td[t]
-    log.x(bx, by, d)
 
     if (d) {
       wallPieces.setData(b, d)
     }
+
+    if (t > 1) {
+      anim.setFrame(b.animBack, spriteUtil.frame16(ty, tx))
+      b.animBack.sprite.visible = true
+    } else {
+      b.animBack.sprite.visible = false
+    }
+  } else {
+    //log.x()
+    throw `coudnlt set back for ${bx} ${by}`
   }
 }
 
 export function setCollision(bx, by, t, tx, ty) {
-  let stacks = wallStacks.getAll()
-  let lastStack = stacks[stacks.length - 1]
-  //lastStack.items[0].
-
   let b = getAt(bx, by)
   if (b) {
-    let td = wallPiecesData.tileDatas
-    let d = td[t]
-    log.x(bx, by, d)
+    if (t > 1) {
+      log.x('coll', bx, by, t, tx, ty)
 
-    if (d) {
-      wallPieces.setData(b, d)
+      anim.setFrame(b.animCollison, spriteUtil.frame16(ty, tx))
+      b.animCollison.sprite.visible = true
+    } else {
+      b.animCollison.sprite.visible = false
     }
   }
 }
 
 export function setFore(bx, by, t, tx, ty) {
-  let stacks = wallStacks.getAll()
-  let lastStack = stacks[stacks.length - 1]
-  //lastStack.items[0].
-
   let b = getAt(bx, by)
   if (b) {
-    let td = wallPiecesData.tileDatas
-    let d = td[t]
-    log.x(bx, by, d)
-
-    if (d) {
-      wallPieces.setData(b, d)
+    if (t > 1) {
+      anim.setFrame(b.animFore, spriteUtil.frame16(ty, tx))
+      b.animFore.sprite.visible = true
+    } else {
+      b.animFore.sprite.visible = false
     }
   }
 }
@@ -168,11 +171,11 @@ export function update(elapsedTimeSec: number) {
     //   addAStack(lastStack.bx + 1)
     // }
 
-    let margin = +32 // +32 for testing
+    let margin = -32 // +32 for testing
 
     if (cxy.x + cv.cameraWidth - margin > lastStack.bx * 16) {
       // Add a stack
-      addAStack(lastStack.bx + 1)
+      addAStack()
     }
 
     _.forEach(stacks, (c) => {
