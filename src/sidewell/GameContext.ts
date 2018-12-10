@@ -12,26 +12,19 @@ import * as flightController from './flightController'
 import * as players from './actors/players'
 import * as wallPieces from './actors/wallPieces'
 import * as wallStacks from './actors/wallStacks'
-import * as wallStacksGenerator from './actors/wallStacksGenerator'
+import * as wallStacksGenerator2 from './actors/wallStacksGenerator2'
 import * as scroller from './actors/scroller'
 
 import * as coins from './actors/coins'
 import * as enemies from './actors/enemies'
 
-import * as uiExpBar from './ui/uiExpBar'
-import * as log from '../engine/log'
+import * as log from 'engine/log'
 import * as maps from './map/maps'
 import * as mapLoader from './map/mapLoader'
 import * as tilesLoader from './map/tilesLoader'
 
-import * as tilePickers from './actors/tilePickers'
-import * as mouseTrails from './actors/mouseTrails'
-import * as stretchyBois from './actors/stretchyBois'
 import * as sounds from './sounds/sounds'
 
-import * as uiHearts from './ui/uiHearts'
-
-import * as backgroundColorChanger from './misc/backgroundColorChanger'
 import * as cameras from 'engine/camera/cameras'
 import { KeyCodes } from 'engine/input/Keyboard'
 
@@ -75,18 +68,13 @@ export class GameContext {
 
   layerDebugGraphics: PIXI.Container
 
-  layerMouseTrail: PIXI.Container
-
   map: maps.IMap
-  tilePicker: tilePickers.ITilePicker
   camera: cameras.ICamera
 
   gfx: PIXI.Graphics
   sfx = sounds
   stats = stats
   uiMode = uiMode
-
-  stretchyBoi: stretchyBois.IStretchyBoi
 
   player1: players.IPlayer
 
@@ -121,61 +109,26 @@ export class GameContext {
     ctx.layerDetectors = cameras.addLayer(ctx.camera)
     ctx.layerDebugGraphics = cameras.addLayer(ctx.camera)
     ctx.addLayer(ctx.camera.container)
-
     ctx.layerUi = this.addLayer()
-
-    ctx.layerMouseTrail = this.addLayer()
     ctx.layerFrameRate = this.addLayer()
-
-    uiHearts.create()
-
-    //buttons.create('hello button')
-    // buttons.create('')
 
     menuStart.create()
     menuQuickSettings.create()
 
-    // let player = players.create(ctx.layerPlayer)
-
-    // uiExpBar.create()
-
-    // let map = (this.map = maps.create(ctx.layerMap))
-    // let jsonTiles = this.sge.getJson('tiled-tiles')
-    // tilesLoader.load(jsonTiles)
-    // let jsonMap = this.sge.getJson('map-shelter-001')
-    // mapLoader.load(map, jsonTiles, jsonMap)
-    // ctx.tilePicker = tilePickers.create(ctx.layerPlayer)
-
-    // stretchyBois.create()
-    // ctx.stretchyBoi = stretchyBois.create()
-    // ctx.stretchyBoi.anim.sprite.x -= 100
-    // ctx.stretchyBoi.anim.sprite.y -= 50
-    // ctx.stretchyBoi.frame = 30
-
     ctx.player1 = players.create()
     ctx.player1.flightController = flightController.create(ctx)
 
-    wallStacksGenerator.generate()
-
-    // log.x('map loaded', jsonMap)
-
-    for (let i = 0; i < 5; i++) {
-      let item = mouseTrails.create(ctx.layerMouseTrail)
-      item.rate = 0.2 * (i / 5)
-    }
+    wallStacksGenerator2.generate()
 
     let particles1 = [[0, 0, 32, 32], [32, 32, 32, 32]]
     ctx.particleEmitter1 = new ParticleEmitter()
     ctx.particleEmitter1.init(ctx.sge, 'player1', particles1)
     ctx.addLayer(ctx.particleEmitter1.container)
 
-    // camera?
-    ctx.camera.x = -50
-    ctx.camera.y = -50
+    // Camera
+    ctx.camera.x = 0
+    ctx.camera.y = 0
     ctx.camera.scale = 2
-    // ctx.cameraLayers.position.x = 50
-    // ctx.cameraLayers.position.y = 50
-    // ctx.cameraLayers.scale.set(2, 2)
 
     ctx.sge.stage.addChild(ctx.rootContainer)
     // Move frame rate text layer
@@ -236,33 +189,21 @@ export class GameContext {
 
     ctx.splash.update()
 
-    // parallaxLayers.updateLayers(ctx);
-
-    scroller.update(elapsedTimeSec)
-
-    cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
     maps.updateAll(ctx.camera.container)
-    // tilePickers.updateAll()
-    mouseTrails.updateAll()
-
-    stretchyBois.updateAll(elapsedTimeSec)
 
     menuStart.update(elapsedTimeSec)
     menuQuickSettings.update(elapsedTimeSec)
     buttons.updateAll(elapsedTimeSec)
 
-    uiHearts.update(elapsedTimeSec)
-
     flightController.updateAll(ctx)
     players.updateAll(elapsedTimeSec)
 
-    wallStacksGenerator.update(elapsedTimeSec)
+    scroller.update(elapsedTimeSec)
+    cameras.updateAll(elapsedTimeSec, elapsedTimeSecRaw)
+
+    wallStacksGenerator2.update(elapsedTimeSec)
     wallStacks.updateAll(elapsedTimeSec)
     wallPieces.updateAll(elapsedTimeSec)
-
-    // if (_.random(true) < 0.1) {
-    //   ctx.particleEmitter1.emit(50, 50)
-    // }
 
     let kb = ctx.sge.keyboard
 
@@ -275,36 +216,9 @@ export class GameContext {
 
     if (ctx.uiMode.getMode() === 'game') {
       let mouse = ctx.sge.getMouse()
-      // log.json(mouse)
-      // if (mouse.isLeftDown) {
-      //   ctx.particleEmitter1.emit(mouse.x, mouse.y)
-      //   backgroundColorChanger.setRandom()
-      // } else {
-      // }
-
-      // ctx.stretchyBoi.anim.sprite.tint = ctx.sge.renderer.backgroundColor
-
-      // if (mouse.isRightDown) {
-      //   cameras.shake(ctx.camera, 0.2, 5)
-      //   backgroundColorChanger.cycleColor(elapsedTimeSec)
-      //   ctx.sfx.playExplode()
-      // }
-
-      if (mouse.isLeftJustDown) {
-        ctx.stats.addLife(1)
-      }
-      if (mouse.isRightJustUp) {
-        ctx.stats.addLife(-1)
-      }
     }
 
     ctx.particleEmitter1.update(elapsedTimeSec)
-
-    // players.updateAll()
-    // coins.updateAll()
-    // enemies.updateAll()
-
-    // uiExpBar.update()
 
     // Debugging
     if (ctx.sge.keyboard.justPressed(KeyCodes.r)) {

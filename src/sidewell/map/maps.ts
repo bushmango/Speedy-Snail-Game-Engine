@@ -140,7 +140,7 @@ export function update(c: IMap, cameraLayer: PIXI.Container) {
 
   //let tile = getTileAtWorld(c, localX, localY)
   //if (tile) {
-  let converted = convertWorldToTile(localX, localY)
-  tilePickers.moveToB(ctx.tilePicker, converted.bx, converted.by)
+  // let converted = convertWorldToTile(localX, localY)
+  // tilePickers.moveToB(ctx.tilePicker, converted.bx, converted.by)
   //}
 }

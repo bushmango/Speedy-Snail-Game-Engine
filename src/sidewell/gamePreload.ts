@@ -2,6 +2,8 @@ const settingsPath = 'sidewell-v001'
 const preloadPath = '/public/sidewell'
 const musicPath = preloadPath + '/music/'
 
+import * as wallStacksGenerator2 from './actors/wallStacksGenerator2'
+
 export { settingsPath, preloadPath, musicPath }
 export function preload(sge) {
   sge.preloadAudioSprites(['audioSprite'])
@@ -28,6 +30,8 @@ export function preload(sge) {
     //'ase-512-16',
     //'ase-512-8',
   ])
-  sge.preloadTiledMaps(['tiled-tiles', 'map-shelter-001'])
+
+  //sge.preloadTiledMaps(['s-001-001', 's-002-001', 's-002-002'])
+  sge.preloadTiledMaps(wallStacksGenerator2.getAllMapKeys())
   sge.preloadPackedSprites([])
-}
+} //s16-512

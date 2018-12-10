@@ -50,6 +50,7 @@ export function create() {
   let ctx = getContext()
 
   log.x('create player')
+  let spacing = 8 / 2
   let item: IPlayer = {
     anim: anim.create(),
     bx: 14,
@@ -59,10 +60,11 @@ export function create() {
     x: 0,
     y: 0,
     flightController: null,
-    detectorRight: detectors.create(16, 0),
-    detectorLeft: detectors.create(-16, 0),
-    detectorTop: detectors.create(0, -16),
-    detectorBottom: detectors.create(0, 16),
+
+    detectorRight: detectors.create(spacing, 0),
+    detectorLeft: detectors.create(-spacing, 0),
+    detectorTop: detectors.create(0, -spacing),
+    detectorBottom: detectors.create(0, spacing),
   }
 
   let sprite = ctx.createSprite('s16-512', animDefault.frames[0], 0.5, 0.5, 1)
@@ -105,7 +107,6 @@ export function updateAll(elapsedTimeSec) {
   let kb = ctx.sge.keyboard
 
   _.forEach(items, (c) => {
-    
     players_movement.players_updateMovement(c, elapsedTimeSec)
 
     anim.update(c.anim, elapsedTimeSec)
