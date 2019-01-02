@@ -56,7 +56,9 @@ export class SimpleGameEngine {
       let width = w.innerWidth || e.clientWidth || g.clientWidth
       let height = w.innerHeight || e.clientHeight || g.clientHeight
 
-      this.renderer.resize(width, height)
+      if (this.renderer.autoResize) {
+        this.renderer.resize(width, height)
+      }
       if (this.onResize) {
         this.onResize()
       }
@@ -64,7 +66,11 @@ export class SimpleGameEngine {
   }
   onResize = () => {}
 
-  createRenderer() {
+  createRenderer(options?: {
+    width: number
+    height: number
+    autoResize: boolean
+  }) {
     // Create the renderer
     let renderer = (this.renderer = PIXI.autoDetectRenderer(256, 256, {
       antialias: false,
@@ -82,7 +88,16 @@ export class SimpleGameEngine {
     renderer.view.style.position = 'absolute'
     renderer.view.style.display = 'block'
     renderer.autoResize = true
-    renderer.resize(window.innerWidth, window.innerHeight)
+
+    let width = window.innerWidth
+    let height = window.innerHeight
+    if (options) {
+      width = options.width
+      height = options.height
+      renderer.autoResize = options.autoResize
+    }
+
+    renderer.resize(width, height)
 
     let el = document.getElementById('game-root')
     if (el) {

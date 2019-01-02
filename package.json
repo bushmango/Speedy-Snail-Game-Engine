@@ -12,6 +12,7 @@
     "start-shelter": "tsc ./src-build/run-game-shelter.ts && webpack-dev-server --open --config ./src-build/run-game-shelter.js",
     "start-sidewell": "tsc ./src-build/run-game-sidewell.ts && webpack-dev-server --open --config ./src-build/run-game-sidewell.js",
     "start-ludumDare43": "tsc ./src-build/run-game-ludum-dare-43.ts && webpack-dev-server --open --config ./src-build/run-game-ludum-dare-43.js",
+    "start-crossword": "tsc ./sse-crossword/build/run-game-crossword.ts && webpack-dev-server --open --config ./sse-crossword/build/run-game-crossword.js",
     "dev": "tsc ./src-build/webpack-dev.ts && webpack-dev-server --open --config ./src-build/webpack-dev.js",
     "start-server-ld41": "ts-node-dev --respawn --project tsconfig.server.json src/ludumDare41/serverOnly/runServer.ts",
     "build-server-ld41": "tsc --project tsconfig.server.json",
