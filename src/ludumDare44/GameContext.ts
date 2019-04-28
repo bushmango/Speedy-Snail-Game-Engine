@@ -22,7 +22,8 @@ import { enemyShips } from './actors/enemyShips'
 import { background } from './actors/background'
 import { smashedShipParts } from './actors/smashedShipParts'
 import { powerPellets } from './actors/powerPellets'
-import { playerConroller } from './actors/playerController'
+import { playerContoller } from './actors/playerController'
+import { tailParts } from './actors/tailParts'
 
 let final = false
 export function getIsFinal() {
@@ -237,10 +238,14 @@ export class GameContext {
     powerPellets.destroyAll()
     for (let i = 0; i < 100; i++) {
       let c = enemyShips.create()
-      
+
       if (i === 0) {
         c.isPlayer = true
         anim.setFrame(c.anim, spriteUtil.frame32(1, 1))
+
+        enemyShips.addTail(c)
+        enemyShips.addTail(c)
+        enemyShips.addTail(c)
       }
     }
   }
@@ -257,9 +262,10 @@ export class GameContext {
 
     // Get our player ship
     let playerShip = enemyShips.getAll()[0]
-    playerConroller.update(playerShip)
+    playerContoller.update(playerShip)
 
     enemyShips.updateAll(elapsedTimeSec)
+    tailParts.updateAll(elapsedTimeSec)
     background.updateAll(elapsedTimeSec)
     smashedShipParts.updateAll(elapsedTimeSec)
     powerPellets.updateAll(elapsedTimeSec)

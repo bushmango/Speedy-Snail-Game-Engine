@@ -29,6 +29,6 @@ function update(c: IEnemyShip) {
   }
 }
 
-export const playerConroller = {
+export const playerContoller = {
   update,
 }
