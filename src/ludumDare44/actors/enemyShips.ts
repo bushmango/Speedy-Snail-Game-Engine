@@ -7,8 +7,11 @@ import * as log from '../../engine/log'
 import * as anim from '../../engine/anim/anim'
 import * as chroma from 'chroma-js'
 import { consts } from './consts'
+import { enemyShipAi, IEnemyShipAi } from './enemyShipAi'
+import { IActor, actors } from './actors'
 
-export interface IEnemyShip {
+export interface IEnemyShip extends IActor {
+  ai: IEnemyShipAi
   anim: anim.IAnim
   smoothMover: smoothMoves.ISmoothMover
   bx: number
@@ -36,6 +39,7 @@ function create() {
   let yo = _.random(150, cv.cameraHeight - 150)
   let xo = _.random(-50, 50)
   let item: IEnemyShip = {
+    ai: enemyShipAi.create(),
     anim: anim.create(),
     bx: 0,
     by: 0,
@@ -97,26 +101,9 @@ function updateAll(elapsedTimeSec: number) {
 
 function moveStep() {
   _.forEach(items, (c) => {
-    let ox = 0
-    let oy = 0
-    switch (c.dir) {
-      case 0:
-        ox = 0
-        oy = -1
-        break
-      case 1:
-        ox = 1
-        oy = 0
-        break
-      case 2:
-        ox = 0
-        oy = 1
-        break
-      case 3:
-        ox = -1
-        oy = 0
-        break
-    }
+    enemyShipAi.update(c)
+
+    let { ox, oy } = consts.dirToOxy(c.dir)
     c.bx += ox
     c.by += oy
 
@@ -139,18 +126,10 @@ function explode(c: IEnemyShip) {
 }
 
 function removeDead() {
-  let ctx = getContext()
-  for (let i = 0; i < items.length; i++) {
-    let c = items[i]
-    if (c.isDead) {
-      log.x('kill enemy ship', c)
-
-      ctx.layerPlayer.removeChild(c.anim.sprite)
-
-      items.splice(i, 1)
-      i--
-    }
-  }
+  actors.removeDead('enemyShip', items, (c) => {
+    let ctx = getContext()
+    ctx.layerPlayer.removeChild(c.anim.sprite)
+  })
 }
 
 export const enemyShips = {
