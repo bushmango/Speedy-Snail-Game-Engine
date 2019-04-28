@@ -10,6 +10,7 @@ import { consts } from './consts'
 import { enemyShipAi, IEnemyShipAi } from './enemyShipAi'
 import { IActor, actors, IActorMeta } from './actors'
 import { smashedShipParts } from './smashedShipParts'
+import { background } from './background'
 
 const meta: IActorMeta = {
   name: 'enemyShip',
@@ -114,12 +115,15 @@ function moveStep() {
     c.by += oy
 
     // Check for out of bounds
-    if (c.bx < 0 || c.bx >= consts.gridWidth) {
+    if (!background.inRange(c.bx, c.by)) {
       explode(c)
     }
-    if (c.by < 0 || c.by >= consts.gridWidth) {
+
+    let t = background.getAt(c.bx, c.by)
+    if (t.isDead) {
       explode(c)
     }
+
     // Check hit another player
     _.forEach(items, (d) => {
       if (d === c) {
