@@ -11,6 +11,7 @@ import { enemyShipAi, IEnemyShipAi } from './enemyShipAi'
 import { IActor, actors, IActorMeta } from './actors'
 import { smashedShipParts } from './smashedShipParts'
 import { background } from './background'
+import { powerPellets } from './powerPellets'
 
 const meta: IActorMeta = {
   name: 'enemyShip',
@@ -69,7 +70,7 @@ function create() {
   item.by = _.random(0, consts.gridHeight - 1)
   item.dir = _.random(0, 4 - 1)
 
-  let frame = spriteUtil.frame32(1, 1)
+  let frame = spriteUtil.frame32(1, 2)
   let sprite = ctx.createSprite('ship-001', frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
@@ -135,6 +136,17 @@ function moveStep() {
         explode(c)
       }
     })
+
+    if (c.isDead) {
+      return
+    }
+
+    // Check for hit power pellet
+    _.forEach(powerPellets.getAll(), (d) => {
+      if (!d.isDead && d.bx === c.bx && d.by === c.by) {
+        powerPellets.eat(d)
+      }
+    })
   })
 }
 
@@ -144,6 +156,7 @@ function explode(c: IEnemyShip) {
   }
 
   smashedShipParts.create(c.anim.sprite)
+  powerPellets.create(c.bx, c.by)
 
   c.isDead = true
 }
