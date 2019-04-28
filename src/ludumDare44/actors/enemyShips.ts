@@ -8,7 +8,12 @@ import * as anim from '../../engine/anim/anim'
 import * as chroma from 'chroma-js'
 import { consts } from './consts'
 import { enemyShipAi, IEnemyShipAi } from './enemyShipAi'
-import { IActor, actors } from './actors'
+import { IActor, actors, IActorMeta } from './actors'
+import { smashedShipParts } from './smashedShipParts'
+
+const meta: IActorMeta = {
+  name: 'enemyShip',
+}
 
 export interface IEnemyShip extends IActor {
   ai: IEnemyShipAi
@@ -32,6 +37,7 @@ function getAll() {
 }
 
 function create() {
+  log.x('create', meta.name)
   let ctx = getContext()
   let cv = ctx.getCameraView()
   let x = cv.cameraWidth - 100
@@ -114,6 +120,17 @@ function moveStep() {
     if (c.by < 0 || c.by >= consts.gridWidth) {
       explode(c)
     }
+    // Check hit another player
+    _.forEach(items, (d) => {
+      if (d === c) {
+        return // Skip ourself
+      }
+
+      if (d.bx === c.bx && d.by === c.by) {
+        explode(d)
+        explode(c)
+      }
+    })
   })
 }
 
@@ -122,17 +139,20 @@ function explode(c: IEnemyShip) {
     return
   }
 
+  smashedShipParts.create(c.anim.sprite)
+
   c.isDead = true
 }
 
 function removeDead() {
-  actors.removeDead('enemyShip', items, (c) => {
+  actors.removeDead(meta, items, (c) => {
     let ctx = getContext()
     ctx.layerPlayer.removeChild(c.anim.sprite)
   })
 }
 
 export const enemyShips = {
+  meta,
   getAll,
   create,
   updateAll,

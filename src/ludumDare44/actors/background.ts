@@ -33,7 +33,7 @@ function create() {
   let sprite = ctx.createSprite('ship-001', frame, 0.5, 0.5, 1)
   item.anim.sprite = sprite
 
-  ctx.layerPlayer.addChild(sprite)
+  ctx.layerBelow.addChild(sprite)
 
   items.push(item)
   return item

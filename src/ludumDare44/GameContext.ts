@@ -17,6 +17,7 @@ import * as uiMode from './ui/uiMode'
 
 import { enemyShips } from './actors/enemyShips'
 import { background } from './actors/background'
+import { smashedShipParts } from './actors/smashedShipParts'
 
 let final = false
 export function getIsFinal() {
@@ -236,5 +237,6 @@ export class GameContext {
 
     enemyShips.updateAll(elapsedTimeSec)
     background.updateAll(elapsedTimeSec)
+    smashedShipParts.updateAll(elapsedTimeSec)
   }
 }
