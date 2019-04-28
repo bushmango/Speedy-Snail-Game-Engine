@@ -1,0 +1,77 @@
+- missing sounds
+ - rocket
+ - rocket launch
+ - jettison 
+ - boss riff
+
+
+
+- rescue cats
+- cat pods - rescue cat and snail mode
+x images
+
+- bugged victory when switching modes
+
+- win station / planet image / animate
+- start planet / station?
+
+- enemies made out of parts
+- bomb piece
+
+- test click-drag method?
+- laser delay
+
+x bug engine sound when speed is negative XD
+x bug goat stops complaining when picked up
+x engine sounds could be louder now
+x indicator to click on laser / rocket
+x difficulty selector (scale rates of items)
+x reset button
+- instructions button always visible??
+- more things to sacrifice
+
+x test mode
+
+
+x big asteroid split
+x gun part
+x rocket part
+- mouse and hold to fire weapons?
+x rocket turn toward mouse
+- batteries for lasers?
+- reactors?
+- zones
+x engine particles
+x engines destroy behind
+x crate with snails
+- deliver snails?
+- crate with potatoes?
+
+- rotate selected parts?
+- animate snapping parts together?
+- need sound for snapping parts
+- fly in and out spawner ships
+- game modes based on distance
+
+-- tutorial
+- grab core
+- grab goat
+- grab engine
+- build ship
+
+-- asteroids 1
+-- depot 1
+-- asteroids 2
+-- depot 2
+-- boss fight
+-- land at base! (mission complete)
+
+x spawn asteroids
+x destroy blocks
+- destroy block chains
+- clean up destroy logic
+- create 9 frame particle splitter for destroying blocks and asteroids
+- jettison blocks
+
+- speed 
+- mass
