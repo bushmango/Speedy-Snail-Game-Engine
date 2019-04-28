@@ -4,7 +4,7 @@ import * as smoothMoves from 'engine/anim/smoothMover'
 import { getContext } from '../GameContext'
 import * as log from '../../engine/log'
 
-import * as anim from '../../engine/anim/anim'
+import * as anim from 'engine/anim/anim'
 import * as chroma from 'chroma-js'
 import { consts } from './consts'
 import { enemyShipAi, IEnemyShipAi } from './enemyShipAi'

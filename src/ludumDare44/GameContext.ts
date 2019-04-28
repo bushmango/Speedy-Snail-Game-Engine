@@ -15,10 +15,14 @@ import * as cameras from 'engine/camera/cameras'
 import * as stats from './misc/stats'
 import * as uiMode from './ui/uiMode'
 
+import * as anim from 'engine/anim/anim'
+import * as spriteUtil from 'engine/anim/spriteUtil'
+
 import { enemyShips } from './actors/enemyShips'
 import { background } from './actors/background'
 import { smashedShipParts } from './actors/smashedShipParts'
 import { powerPellets } from './actors/powerPellets'
+import { playerConroller } from './actors/playerController'
 
 let final = false
 export function getIsFinal() {
@@ -221,8 +225,11 @@ export class GameContext {
 
     for (let i = 0; i < 100; i++) {
       let c = enemyShips.create()
-      c.x = 100
-      c.y = 100 + i
+
+      if (i === 0) {
+        c.isPlayer = true
+        anim.setFrame(c.anim, spriteUtil.frame32(1, 1))
+      }
     }
   }
 
@@ -235,6 +242,10 @@ export class GameContext {
       this.stepTimeElapsed -= this.stepTimeMax
       enemyShips.moveStep()
     }
+
+    // Get our player ship
+    let playerShip = enemyShips.getAll()[0]
+    playerConroller.update(playerShip)
 
     enemyShips.updateAll(elapsedTimeSec)
     background.updateAll(elapsedTimeSec)

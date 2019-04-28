@@ -26,10 +26,14 @@ export interface IEnemyShip extends IActor {
   x: number
   y: number
   dir: number
+  lastDir: number
+  lastBx: number
+  lastBy: number
   v: number
   yo: number
   xo: number
   isDead: boolean
+  isPlayer: boolean
   tint: number
 }
 
@@ -51,15 +55,19 @@ function create() {
     anim: anim.create(),
     bx: 0,
     by: 0,
+    lastBx: 0,
+    lastBy: 0,
     x: x,
     y: y,
     smoothMover: smoothMoves.create(x, y),
-    dir: _.random(0, 1, false),
+    dir: 0,
+    lastDir: 0,
     v: _.random(5, 50),
     yo: yo,
     xo: xo,
 
     isDead: false,
+    isPlayer: false,
     tint: chroma
       .random()
       .brighten(1)
@@ -69,6 +77,7 @@ function create() {
   item.bx = _.random(0, consts.gridWidth - 1)
   item.by = _.random(0, consts.gridHeight - 1)
   item.dir = _.random(0, 4 - 1)
+  item.lastDir = item.dir
 
   let frame = spriteUtil.frame32(1, 2)
   let sprite = ctx.createSprite('ship-001', frame, 0.5, 0.5, 1)
@@ -109,9 +118,14 @@ function updateAll(elapsedTimeSec: number) {
 
 function moveStep() {
   _.forEach(items, (c) => {
-    enemyShipAi.update(c)
+    if (!c.isPlayer) {
+      enemyShipAi.update(c)
+    }
 
     let { ox, oy } = consts.dirToOxy(c.dir)
+    c.lastBx = c.bx
+    c.lastBy = c.by
+    c.lastDir = c.dir
     c.bx += ox
     c.by += oy
 
@@ -156,7 +170,7 @@ function explode(c: IEnemyShip) {
   }
 
   smashedShipParts.create(c.anim.sprite)
-  powerPellets.create(c.bx, c.by)
+  powerPellets.create(c.lastBx, c.lastBy)
 
   c.isDead = true
 }
