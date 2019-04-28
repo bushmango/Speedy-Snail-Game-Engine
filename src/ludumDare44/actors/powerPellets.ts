@@ -70,8 +70,19 @@ function eat(c: IPowerPellet) {
   if (c.isDead) {
     return false
   }
-  c.isDead = true
   smashedShipParts.create(c.anim.sprite)
+  kill(c)
+}
+
+function kill(c: IPowerPellet) {
+  c.isDead = true
+}
+
+function destroyAll() {
+  _.forEach(items, (c) => {
+    kill(c)
+  })
+  removeDead()
 }
 
 function removeDead() {
@@ -87,4 +98,5 @@ export const powerPellets = {
   create,
   updateAll,
   eat,
+  destroyAll,
 }

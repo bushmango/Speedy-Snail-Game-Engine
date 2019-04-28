@@ -71,6 +71,17 @@ function createAll() {
   }
 }
 
+function reset() {
+  destroyer.bx = 0
+  destroyer.by = 0
+  destroyer.dir = 1
+  destroyer.timeAccumulator = 0
+  _.forEach(items, (c) => {
+    c.isDead = false
+    c.anim.sprite.visible = true
+  })
+}
+
 function inRange(bx, by) {
   if (bx < 0 || bx >= consts.gridWidth) {
     return false
@@ -132,14 +143,15 @@ function explode(c: IBackgroundPiece) {
 
   smashedShipParts.create(c.anim.sprite)
 
+  c.anim.sprite.visible = false
   c.isDead = true
 }
 
 function removeDead() {
-  actors.removeDead(meta, items, (c) => {
-    c.anim.sprite.visible = false
-    // deadItems.push(c)
-  })
+  //actors.removeDead(meta, items, (c) => {
+  //c.anim.sprite.visible = false
+  // deadItems.push(c)
+  //})
 }
 
 export const background = {
@@ -149,4 +161,5 @@ export const background = {
   updateAll,
   inRange,
   getAt,
+  reset,
 }

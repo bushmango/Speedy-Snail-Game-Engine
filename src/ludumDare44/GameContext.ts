@@ -190,6 +190,11 @@ export class GameContext {
       // enemyShipsSpawns.spawn1()
     }
 
+    if (kb.justPressed(KeyCodes.r)) {
+      // enemyShipsSpawns.spawn1()
+      this.onReset()
+    }
+
     let mouse = ctx.sge.getMouse()
     if (mouse.isLeftJustDown) {
     }
@@ -223,9 +228,16 @@ export class GameContext {
   onActorsCreate() {
     background.createAll()
 
+    this.onReset()
+  }
+
+  onReset() {
+    background.reset()
+    enemyShips.destroyAll()
+    powerPellets.destroyAll()
     for (let i = 0; i < 100; i++) {
       let c = enemyShips.create()
-
+      
       if (i === 0) {
         c.isPlayer = true
         anim.setFrame(c.anim, spriteUtil.frame32(1, 1))

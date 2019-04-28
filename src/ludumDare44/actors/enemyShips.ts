@@ -172,7 +172,17 @@ function explode(c: IEnemyShip) {
   smashedShipParts.create(c.anim.sprite)
   powerPellets.create(c.lastBx, c.lastBy)
 
+  kill(c)
+}
+function kill(c: IEnemyShip) {
   c.isDead = true
+}
+
+function destroyAll() {
+  _.forEach(items, (c) => {
+    kill(c)
+  })
+  removeDead()
 }
 
 function removeDead() {
@@ -189,4 +199,5 @@ export const enemyShips = {
   updateAll,
   explode,
   moveStep,
+  destroyAll,
 }
