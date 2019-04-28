@@ -25,6 +25,8 @@ let destroyer = {
   bx: 0,
   by: 0,
   dir: 1,
+  timeAccumulator: 0,
+  timeAccumulatorMax: (60 * 5) / (32 * 32),
 }
 
 let items: IBackgroundPiece[] = []
@@ -73,7 +75,7 @@ function inRange(bx, by) {
   if (bx < 0 || bx >= consts.gridWidth) {
     return false
   }
-  if (by < 0 || bx >= consts.gridHeight) {
+  if (by < 0 || by >= consts.gridHeight) {
     return false
   }
   return true
@@ -89,7 +91,7 @@ function updateAll(elapsedTimeSec: number) {
   let ctx = getContext()
   let cv = ctx.getCameraView()
 
-  updateDestroyer()
+  updateDestroyer(elapsedTimeSec)
 
   _.forEach(items, (c) => {
     c.anim.sprite.x = c.x
@@ -99,23 +101,28 @@ function updateAll(elapsedTimeSec: number) {
   removeDead()
 }
 
-function updateDestroyer() {
+function updateDestroyer(elapsedTimeSec) {
   // Increase our destroyer
 
-  let t = getAt(destroyer.bx, destroyer.by)
-  if (t && !t.isDead) {
-    explode(t)
-  } else {
-    // Reverse
-    let { ox, oy } = consts.dirToOxy(destroyer.dir)
-    destroyer.bx -= ox
-    destroyer.by -= oy
-    destroyer.dir = consts.turnRight(destroyer.dir)
-  }
+  destroyer.timeAccumulator += elapsedTimeSec
+  if (destroyer.timeAccumulator > destroyer.timeAccumulatorMax) {
+    destroyer.timeAccumulator -= destroyer.timeAccumulatorMax
 
-  let { ox, oy } = consts.dirToOxy(destroyer.dir)
-  destroyer.bx += ox
-  destroyer.by += oy
+    let t = getAt(destroyer.bx, destroyer.by)
+    if (t && !t.isDead) {
+      explode(t)
+    } else {
+      // Reverse
+      let { ox, oy } = consts.dirToOxy(destroyer.dir)
+      destroyer.bx -= ox
+      destroyer.by -= oy
+      destroyer.dir = consts.turnRight(destroyer.dir)
+    }
+
+    let { ox, oy } = consts.dirToOxy(destroyer.dir)
+    destroyer.bx += ox
+    destroyer.by += oy
+  }
 }
 
 function explode(c: IBackgroundPiece) {
