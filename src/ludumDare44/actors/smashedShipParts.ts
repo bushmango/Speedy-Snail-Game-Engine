@@ -23,7 +23,7 @@ let items: ISmashedPart[] = []
 let deadItems: ISmashedPart[] = []
 
 function create(sourceSprite: PIXI.Sprite) {
-  log.x('create', meta.name)
+  // log.x('create', meta.name)
   let ctx = getContext()
   let num = 4
   let startX = sourceSprite.texture.frame.x

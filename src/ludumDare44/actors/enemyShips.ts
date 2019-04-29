@@ -121,7 +121,7 @@ function moveStep() {
     }
 
     let t = background.getAt(c.bx, c.by)
-    if (t.isDead) {
+    if (!t || t.isDead) {
       explode(c)
     }
 

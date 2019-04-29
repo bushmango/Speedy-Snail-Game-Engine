@@ -16,8 +16,8 @@ const meta = {
 
 export interface IBackgroundPiece {
   anim: anim.IAnim
-  x: number
-  y: number
+  bx: number
+  by: number
   isDead: boolean
 }
 
@@ -41,12 +41,10 @@ function getAll() {
 function create() {
   let ctx = getContext()
   let cv = ctx.getCameraView()
-  let x = cv.cameraWidth - 100
-  let y = cv.cameraHeight / 2
   let item: IBackgroundPiece = {
     anim: anim.create(),
-    x: x,
-    y: y,
+    bx: 0,
+    by: 0,
     isDead: false,
   }
 
@@ -64,8 +62,8 @@ function createAll() {
   for (let j = 0; j < 32; j++) {
     for (let i = 0; i < 32; i++) {
       let c = create()
-      c.x = 32 * i
-      c.y = 32 * j
+      c.bx = i
+      c.by = j
       grid.push(c)
     }
   }
@@ -105,8 +103,8 @@ function updateAll(elapsedTimeSec: number) {
   updateDestroyer(elapsedTimeSec)
 
   _.forEach(items, (c) => {
-    c.anim.sprite.x = c.x
-    c.anim.sprite.y = c.y
+    c.anim.sprite.x = c.bx * consts.blockSize
+    c.anim.sprite.y = c.by * consts.blockSize
   })
 
   removeDead()

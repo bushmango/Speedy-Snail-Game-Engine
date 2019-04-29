@@ -15,7 +15,7 @@ function removeDead<T extends IActor>(
   for (let i = 0; i < items.length; i++) {
     let c = items[i]
     if (c.isDead) {
-      log.x('kill', meta.name, c)
+      // log.x('kill', meta.name, c)
 
       cleanup(c)
 

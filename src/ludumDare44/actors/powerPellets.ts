@@ -29,7 +29,7 @@ function getAll() {
 }
 
 function create(bx, by) {
-  log.x('create', meta.name)
+  // log.x('create', meta.name)
   let ctx = getContext()
   let cv = ctx.getCameraView()
   let item: IPowerPellet = {
