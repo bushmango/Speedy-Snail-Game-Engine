@@ -26,5 +26,8 @@
 // import * as game from './parallax/game'
 // game.run()
 
-import * as game from './raid/game'
+// import * as game from './raid/game'
+// game.run()
+
+import * as game from './ludumDare44/game'
 game.run()
