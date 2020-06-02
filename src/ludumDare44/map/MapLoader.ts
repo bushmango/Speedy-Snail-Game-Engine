@@ -1,5 +1,5 @@
 import { _ } from 'engine/importsEngine'
-import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot'
+
 import { TileMap, IGridSpot } from 'engine/tiles/TileMap'
 
 const Layer_Background = 0
@@ -15,7 +15,13 @@ const tilesetHeight = 512
 const defaultTextureName = 'public/ludumdare40/images/ase-512-16.png'
 
 import { loadBasicLayer } from './MapLoaderBasic'
-import { ButtonBoss, ButtonWin, ButtonMid } from 'ludumDare40/entities/Button'
+import { ILD44GridSpot } from './ILD44GridSpot'
+
+const ButtonBoss = 'button-boss'
+
+const ButtonWin = 'button-win'
+
+const ButtonMid = 'button-mid'
 
 export {
   Layer_Background,
@@ -84,7 +90,7 @@ function inSquareRange(t, y1, y2, x1, x2) {
   return false
 }
 
-export function addTex(y, x, tm: TileMap<ILD40GridSpot>) {
+export function addTex(y, x, tm: TileMap<ILD44GridSpot>) {
   let texKey = '_' + y + '_' + x
 
   if (x >= tilesetWidth || y >= tilesetHeight) {
@@ -108,7 +114,7 @@ export function addTex(y, x, tm: TileMap<ILD40GridSpot>) {
 export function load(
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   json,
   levelMetadata
@@ -143,7 +149,7 @@ function loadBackgroundLayer(
   json,
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   data: any
 ) {
@@ -164,7 +170,7 @@ function loadBackgroundDecorLayer(
   json,
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   data: any
 ) {
@@ -186,7 +192,7 @@ function loadWallLayer(
   json,
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   data: any
 ) {
@@ -276,7 +282,7 @@ function loadDecorLayer(
   json,
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   data: any
 ) {
@@ -287,7 +293,7 @@ function loadMarkerLayer(
   json,
   x,
   y,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   mapMeta: IMapMedatada,
   data: any
 ) {

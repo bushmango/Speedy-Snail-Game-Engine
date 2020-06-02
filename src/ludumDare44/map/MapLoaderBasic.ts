@@ -1,5 +1,5 @@
 import { TileMap } from 'engine/tiles/TileMap'
-import { ILD40GridSpot } from 'ludumDare40/map/ILD40GridSpot'
+import { ILD44GridSpot } from './ILD44GridSpot'
 
 const tilesPerRow = 32
 const tilesetWidth = 512
@@ -20,11 +20,11 @@ export function loadBasicLayer(
   json,
   xDest,
   yDest,
-  tm: TileMap<ILD40GridSpot>,
+  tm: TileMap<ILD44GridSpot>,
   layer,
   data: any,
   pcb: (t: number, x: number, y: number) => any,
-  cb: (gs: ILD40GridSpot, t: number, x: number, y: number) => any,
+  cb: (gs: ILD44GridSpot, t: number, x: number, y: number) => any,
   clearEmpty: boolean = true
 ) {
   let { width, height } = json
